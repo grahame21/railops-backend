@@ -1,0 +1,4 @@
+type: worker
+name: trainfinder-updater
+env: python
+startCommand: python update_trains_loop.py
