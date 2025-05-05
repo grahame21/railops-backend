@@ -1,5 +1,10 @@
 name: Auto-Refresh TrainFinder Cookie
 
+permissions:
+  contents: read
+  actions: write
+  secrets: write
+
 on:
   schedule:
     - cron: '0 16 * * *'  # Daily at 2:30 AM Adelaide
@@ -8,10 +13,6 @@ on:
 jobs:
   refresh-cookie:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: write
-      secrets: write
 
     steps:
     - uses: actions/checkout@v4
@@ -42,15 +43,23 @@ jobs:
           if (!newCookie || newCookie.length < 50) {
             core.setFailed("❌ Cookie is empty or invalid");
           } else {
-            await github.rest.actions.updateRepoSecret({
+            const { data: publicKey } = await github.rest.actions.getRepoPublicKey({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const sodium = require('tweetsodium');
+            const messageBytes = Buffer.from(newCookie);
+            const keyBytes = Buffer.from(publicKey.key, 'base64');
+            const encryptedBytes = sodium.seal(messageBytes, keyBytes);
+            const encryptedValue = Buffer.from(encryptedBytes).toString('base64');
+
+            await github.rest.actions.createOrUpdateRepoSecret({
               repository: context.repo.repo,
               owner: context.repo.owner,
               secret_name: "TRAINFINDER_COOKIE",
-              encrypted_value: newCookie,
-              key_id: (await github.rest.actions.getRepoPublicKey({
-                owner: context.repo.owner,
-                repo: context.repo.repo
-              })).data.key_id
+              encrypted_value: encryptedValue,
+              key_id: publicKey.key_id
             });
+
             core.info("✅ TRAINFINDER_COOKIE updated successfully");
           }
