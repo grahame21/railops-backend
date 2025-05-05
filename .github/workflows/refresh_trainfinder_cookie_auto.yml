@@ -30,9 +30,7 @@ jobs:
         TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
       run: |
         python trainfinder_login_username.py
-        echo "COOKIE_VALUE<<EOF" >> $GITHUB_ENV
-        cat cookie.txt >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
+        echo "COOKIE_VALUE=$(cat cookie.txt)" >> $GITHUB_ENV
 
     - name: Update TRAINFINDER_COOKIE secret
       uses: actions/github-script@v7
