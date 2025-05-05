@@ -1,4 +1,14 @@
-type: worker
-name: trainfinder-updater
-env: python
-startCommand: python update_trains_loop.py
+services:
+  - type: worker
+    name: trainfinder-updater
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python update_trains_loop.py
+    envVars:
+      - key: COOKIE_VALUE
+        sync: false
+      - key: NETLIFY_TOKEN
+        sync: false
+      - key: NETLIFY_SITE_ID
+        sync: false
