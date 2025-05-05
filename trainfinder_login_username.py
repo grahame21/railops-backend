@@ -1,32 +1,45 @@
-name: Refresh TrainFinder Cookie
+import os
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
-on:
-  schedule:
-    - cron: '0 16 * * *'  # Every day at 2:30 AM Adelaide time
-  workflow_dispatch:
+USERNAME = os.environ.get("TRAINFINDER_USERNAME")
+PASSWORD = os.environ.get("TRAINFINDER_PASSWORD")
 
-jobs:
-  refresh-cookie:
-    runs-on: ubuntu-latest
+if not USERNAME or not PASSWORD:
+    raise Exception("❌ Missing login credentials in environment variables.")
 
-    steps:
-    - uses: actions/checkout@v4
+options = Options()
+options.add_argument("--headless")
+options.add_argument("--disable-gpu")
+options.add_argument("--no-sandbox")
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+driver = webdriver.Chrome(options=options)
+driver.get("https://trainfinder.otenko.com/home/nextlevel")
 
-    - name: Install dependencies
-      run: pip install selenium
+try:
+    print("Logging in to TrainFinder...")
+    time.sleep(3)
 
-    - name: Run TrainFinder login script
-      env:
-        TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
-        TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-      run: |
-        python trainfinder_login.py
-        echo "COOKIE_VALUE=$(<cookie.txt)" >> $GITHUB_ENV
+    driver.find_element(By.ID, "useR_name").send_keys(USERNAME)
+    driver.find_element(By.ID, "pasS_word").send_keys(PASSWORD)
+    driver.find_element(By.ID, "pasS_word").submit()
 
-    - name: Upload cookie to GitHub Secret (manual step still required)
-      run: echo "::warning::Cookie written to GITHUB_ENV — use gh CLI or actions/github-script to upload"
+    time.sleep(5)
+
+    cookies = driver.get_cookies()
+    auth_cookie = next((c["value"] for c in cookies if c["name"] == ".ASPXAUTH"), None)
+
+    if auth_cookie:
+        with open("cookie.txt", "w") as f:
+            f.write(auth_cookie)
+        print("✅ .ASPXAUTH cookie saved to cookie.txt")
+    else:
+        print("❌ .ASPXAUTH cookie not found — login likely failed")
+
+except Exception as e:
+    print("❌ Login failed:", e)
+
+finally:
+    driver.quit()
