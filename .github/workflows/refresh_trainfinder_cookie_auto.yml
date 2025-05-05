@@ -32,9 +32,32 @@ jobs:
         python trainfinder_login_username.py
         echo "COOKIE_VALUE=$(cat cookie.txt)" >> $GITHUB_ENV
 
-    - name: Update TRAINFINDER_COOKIE
-      uses: hmanzur/actions-set-secret@v2.0.0
+    - name: Install tweetsodium for encryption
+      run: npm install tweetsodium
+
+    - name: Update TRAINFINDER_COOKIE secret
+      uses: actions/github-script@v7
       with:
-        name: TRAINFINDER_COOKIE
-        value: ${{ env.COOKIE_VALUE }}
-        repository: ${{ github.repository }}
+        script: |
+          const sodium = require('tweetsodium');
+          const newCookie = process.env.COOKIE_VALUE;
+          if (!newCookie || newCookie.length < 50) {
+            core.setFailed("❌ Cookie is empty or invalid");
+          } else {
+            const { data: publicKey } = await github.rest.actions.getRepoPublicKey({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const messageBytes = Buffer.from(newCookie);
+            const keyBytes = Buffer.from(publicKey.key, 'base64');
+            const encryptedBytes = sodium.seal(messageBytes, keyBytes);
+            const encryptedValue = Buffer.from(encryptedBytes).toString('base64');
+            await github.rest.actions.createOrUpdateRepoSecret({
+              repository: context.repo.repo,
+              owner: context.repo.owner,
+              secret_name: "TRAINFINDER_COOKIE",
+              encrypted_value: encryptedValue,
+              key_id: publicKey.key_id
+            });
+            core.info("✅ TRAINFINDER_COOKIE updated successfully");
+          }
