@@ -3,6 +3,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 USERNAME = os.environ.get("TRAINFINDER_USERNAME")
 PASSWORD = os.environ.get("TRAINFINDER_PASSWORD")
@@ -23,8 +24,9 @@ try:
     time.sleep(3)
 
     driver.find_element(By.ID, "useR_name").send_keys(USERNAME)
-    driver.find_element(By.ID, "pasS_word").send_keys(PASSWORD)
-    driver.find_element(By.ID, "pasS_word").submit()
+    pw_field = driver.find_element(By.ID, "pasS_word")
+    pw_field.send_keys(PASSWORD)
+    pw_field.send_keys(Keys.RETURN)
 
     time.sleep(5)
 
