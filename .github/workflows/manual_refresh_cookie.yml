@@ -1,0 +1,30 @@
+name: Manual Refresh TrainFinder Cookie
+
+on:
+  workflow_dispatch:
+
+jobs:
+  refresh-cookie:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: pip install selenium
+
+    - name: Run TrainFinder login script
+      env:
+        TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+        TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+      run: |
+        python trainfinder_login_username.py
+        echo "✅ .ASPXAUTH cookie saved locally."
+        echo "==== COPY BELOW AND UPDATE IN GITHUB SECRETS ===="
+        cat cookie.txt
+        echo "==== END COOKIE ===="
