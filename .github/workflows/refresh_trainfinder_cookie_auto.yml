@@ -25,7 +25,7 @@ jobs:
         TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
         TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
       run: |
-        python trainfinder_login.py
+        python trainfinder_login_username.py
         echo "COOKIE_VALUE=$(<cookie.txt)" >> $GITHUB_ENV
 
     - name: Upload cookie to GitHub Secret (manual step still required)
