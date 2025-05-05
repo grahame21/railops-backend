@@ -22,7 +22,7 @@ jobs:
 
     - name: Run TrainFinder login script
       env:
-        TRAINFINDER_EMAIL: ${{ secrets.TRAINFINDER_EMAIL }}
+        TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
         TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
       run: |
         python trainfinder_login.py
