@@ -2,8 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
 
-USERNAME = "your-email@example.com"
-PASSWORD = "your-password"
+USERNAME = "RAIL-01"
+PASSWORD = "cextih-jaskoJ-4susda"
 
 options = Options()
 options.add_argument("--headless")
