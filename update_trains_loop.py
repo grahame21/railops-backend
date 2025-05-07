@@ -15,11 +15,20 @@ headers = {
 def fetch_trains():
     print("🔄 Fetching train data from TrainFinder...")
     try:
+        params = {
+            "north": -10.0,
+            "south": -45.0,
+            "east": 155.0,
+            "west": 110.0,
+            "zoom": 6
+        }
         response = requests.get(
             "https://trainfinder.otenko.com/Home/GetViewPortData",
             headers=headers,
+            params=params,
             timeout=10,
         )
+        print(f"STATUS: {response.status_code}")
         if response.status_code != 200:
             print(f"❌ HTTP {response.status_code} from TrainFinder.")
             return None
