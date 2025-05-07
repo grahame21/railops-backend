@@ -1,69 +1,41 @@
-import os
-import time
 import requests
+import time
+import os
 import json
 
-cookie_value = os.environ.get("COOKIE_VALUE")
-netlify_token = os.environ.get("NETLIFY_TOKEN")
-netlify_site_id = os.environ.get("NETLIFY_SITE_ID")
+TRAINFINDER_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
+OUTPUT_FILE = "trains.json"
+SLEEP_INTERVAL = 30  # seconds
+
+# Load cookie from GitHub secret (Render sets it as an env variable)
+cookie_value = os.getenv("TRAINFINDER_COOKIE")
+
+if not cookie_value:
+    print("ERROR: TRAINFINDER_COOKIE environment variable is missing.")
+    exit(1)
 
 headers = {
-    "Cookie": f".ASPXAUTH={cookie_value}",
     "User-Agent": "Mozilla/5.0",
+    "Cookie": f".ASPXAUTH={cookie_value}",
+    "Referer": "https://trainfinder.otenko.com/home/nextlevel",
+    "X-Requested-With": "XMLHttpRequest",
 }
 
 def fetch_trains():
-    print("🔄 Fetching train data from TrainFinder...")
     try:
-        params = {
-            "north": -10.0,
-            "south": -45.0,
-            "east": 155.0,
-            "west": 110.0,
-            "zoom": 6
-        }
-        response = requests.get(
-            "https://trainfinder.otenko.com/Home/GetViewPortData",
-            headers=headers,
-            params=params,
-            timeout=10,
-        )
-        print(f"STATUS: {response.status_code}")
-        if response.status_code != 200:
-            print(f"❌ HTTP {response.status_code} from TrainFinder.")
-            return None
-        data = response.json()
-        if "Trains" not in data or not data["Trains"]:
-            print("⚠️ No train data found in response.")
-            return None
-        print(f"✅ Fetched {len(data['Trains'])} trains.")
-        return data["Trains"]
+        response = requests.get(TRAINFINDER_URL, headers=headers, timeout=10)
+        if response.status_code == 200 and response.text.strip():
+            data = response.json()
+            with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            print(f"Updated {OUTPUT_FILE} at {time.strftime('%H:%M:%S')}")
+        else:
+            print(f"TrainFinder returned status {response.status_code} or empty body.")
+            with open(OUTPUT_FILE, "w") as f:
+                f.write("[]")  # write empty list to avoid errors
     except Exception as e:
-        print(f"❌ Error fetching trains: {e}")
-        return None
-
-def save_trains(trains):
-    with open("trains.json", "w") as f:
-        json.dump(trains, f, indent=2)
-    print("💾 Saved trains to trains.json.")
-
-def upload_to_netlify():
-    print("🚀 Uploading trains.json to Netlify...")
-    url = f"https://api.netlify.com/api/v1/sites/{netlify_site_id}/deploys"
-    files = {"file": ("trains.json", open("trains.json", "rb"))}
-    headers = {"Authorization": f"Bearer {netlify_token}"}
-    response = requests.post(url, files=files, headers=headers)
-    print(f"📡 Upload status: {response.status_code}")
-    if response.ok:
-        print("✅ Upload to Netlify successful.")
-    else:
-        print(f"❌ Netlify upload failed: {response.text}")
+        print(f"Error fetching train data: {e}")
 
 while True:
-    trains = fetch_trains()
-    if trains:
-        save_trains(trains)
-        upload_to_netlify()
-    else:
-        print("⚠️ No trains fetched, skipping save/upload.")
-    time.sleep(60)
+    fetch_trains()
+    time.sleep(SLEEP_INTERVAL)
