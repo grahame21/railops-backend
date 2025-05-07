@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import os
 import time
 
@@ -15,20 +16,21 @@ options.add_argument('--disable-dev-shm-usage')
 driver = webdriver.Chrome(options=options)
 driver.get("https://trainfinder.otenko.com/home/nextlevel")
 
-# Wait to ensure page is fully loaded
+# Wait for full page load
 time.sleep(3)
 
-# Fill in the login fields
+# Fill in username and password
 driver.find_element(By.ID, "useR_name").send_keys(USERNAME)
-driver.find_element(By.ID, "pasS_word").send_keys(PASSWORD)
+password_input = driver.find_element(By.ID, "pasS_word")
+password_input.send_keys(PASSWORD)
 
-# Press Enter or simulate login
-driver.find_element(By.ID, "pasS_word").submit()
+# Press Enter to trigger login
+password_input.send_keys(Keys.RETURN)
 
-# Wait for login to complete
+# Wait for login to process
 time.sleep(5)
 
-# Get cookies
+# Look for the cookie
 cookies = driver.get_cookies()
 for cookie in cookies:
     if cookie['name'] == '.ASPXAUTH':
@@ -36,5 +38,4 @@ for cookie in cookies:
             f.write(cookie['value'])
 
 driver.quit()
-
 print("✅ .ASPXAUTH cookie saved locally.")
