@@ -1,4 +1,4 @@
-name: TrainFinder Updater
+name: Update Train Data
 
 on:
   schedule:
@@ -6,22 +6,38 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-trains:
+  update:
     runs-on: ubuntu-latest
+
+    env:
+      TRAINFINDER_COOKIE: ${{ secrets.TRAINFINDER_COOKIE }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install requests
 
-      - name: Run updater
-        env:
-          COOKIE_VALUE: ${{ secrets.TRAINFINDER_COOKIE }}
-          NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: python update_trains_loop.py
+      - name: Run train updater
+        run: python update_trains_autozoom.py
+
+      - name: Commit updated trains.json
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add trains.json
+          git commit -m "Update trains.json [bot]" || echo "No changes to commit"
+          git push
+
+      - name: Trigger Netlify build
+        run: |
+          curl -X POST -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" \
+          https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/builds
