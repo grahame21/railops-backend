@@ -3,8 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-USERNAME = "your-email@example.com"  # replace with your TrainFinder email
-PASSWORD = "your-password"           # replace with your TrainFinder password
+USERNAME = "RAIL-01"  # replace with your TrainFinder email
+PASSWORD = "cextih-jaskoJ-4susda"           # replace with your TrainFinder password
 
 options = Options()
 options.add_argument("--headless=new")
