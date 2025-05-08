@@ -1,37 +1,36 @@
-name: Refresh TrainFinder Cookie Daily
+name: Refresh TrainFinder Cookie
 
 on:
   schedule:
-    - cron: '50 5 * * *'  # Runs at 05:50 UTC daily
+    - cron: '0 1 * * *'  # Runs daily at 1:00 AM UTC
   workflow_dispatch:
 
 jobs:
   refresh-cookie:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install selenium pynacl
+          sudo apt-get update
+          sudo apt-get install -y chromium-chromedriver
+          sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
 
-      - name: Run login script to refresh cookie
+      - name: Run login script
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-        run: |
-          python trainfinder_login_username.py
-          echo "✅ .ASPXAUTH cookie saved locally."
-          echo "==== COPY BELOW AND UPDATE IN GITHUB SECRETS ===="
-          cat cookie.txt
-          echo "==== END COOKIE ===="
+        run: python trainfinder_login_username.py
 
-      # Optional: auto-update secret (requires access token with `repo` and `admin:repo_hook`)
-      # Uncomment and configure if you want to automatically push new cookie to GitHub Secrets.
-      # - name: Update GitHub secret (requires custom script/token)
-      #   run: python update_secret.py
+      - name: Update GitHub Secret
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python update_secret.py
