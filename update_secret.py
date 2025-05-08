@@ -1,49 +1,44 @@
 import os
 import requests
-import base64
 
-GITHUB_REPO = "grahame21/railops-backend"  # Replace with your actual repo
-GITHUB_SECRET_NAME = "ASPXAUTH_COOKIE"
+repo = os.getenv("GITHUB_REPOSITORY")
+token = os.getenv("GH_TOKEN")
+secret_name = "TRAINFINDER_COOKIE"
 
-# Read your cookie
-with open("cookie.txt", "r") as file:
-    new_cookie = file.read().strip()
+with open("cookie.txt", "r") as f:
+    secret_value = f.read().strip()
 
-# Get token and repo info
-token = os.environ["GH_PAT"]
+url = f"https://api.github.com/repos/{repo}/actions/secrets/{secret_name}"
 headers = {
-    "Authorization": f"token {token}",
-    "Accept": "application/vnd.github+json",
+    "Authorization": f"Bearer {token}",
+    "Accept": "application/vnd.github+json"
 }
 
-# Get public key for encryption
-response = requests.get(f"https://api.github.com/repos/{GITHUB_REPO}/actions/secrets/public-key", headers=headers)
-response.raise_for_status()
-data = response.json()
-public_key = data["key"]
-key_id = data["key_id"]
+# Get the public key
+key_resp = requests.get(
+    f"https://api.github.com/repos/{repo}/actions/secrets/public-key",
+    headers=headers,
+)
+key_data = key_resp.json()
 
-# Encrypt the secret using the public key
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.hashes import SHA256
-from cryptography.hazmat.backends import default_backend
+from base64 import b64encode
 from nacl import encoding, public
 
-def encrypt_secret(public_key_str, secret_value):
-    public_key = public.PublicKey(public_key_str.encode("utf-8"), encoding.Base64Encoder())
-    sealed_box = public.SealedBox(public_key)
+def encrypt(public_key: str, secret_value: str) -> str:
+    key = public.PublicKey(public_key.encode("utf-8"), encoding.Base64Encoder())
+    sealed_box = public.SealedBox(key)
     encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
-    return base64.b64encode(encrypted).decode("utf-8")
+    return b64encode(encrypted).decode("utf-8")
 
-encrypted_value = encrypt_secret(public_key, new_cookie)
+encrypted_value = encrypt(key_data["key"], secret_value)
 
-# PUT the new encrypted value
-res = requests.put(
-    f"https://api.github.com/repos/{GITHUB_REPO}/actions/secrets/{GITHUB_SECRET_NAME}",
-    headers=headers,
-    json={"encrypted_value": encrypted_value, "key_id": key_id},
-)
-res.raise_for_status()
+# Upload the secret
+resp = requests.put(url, headers=headers, json={
+    "encrypted_value": encrypted_value,
+    "key_id": key_data["key_id"]
+})
 
-print("✅ ASPXAUTH_COOKIE GitHub Secret updated.")
+if resp.status_code == 201 or resp.status_code == 204:
+    print("✅ GitHub secret updated successfully.")
+else:
+    print(f"❌ Failed to update secret: {resp.status_code} {resp.text}")
