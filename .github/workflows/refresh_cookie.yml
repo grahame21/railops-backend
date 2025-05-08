@@ -1,0 +1,37 @@
+name: Refresh TrainFinder Cookie Daily
+
+on:
+  schedule:
+    - cron: '50 5 * * *'  # Runs at 05:50 UTC daily
+  workflow_dispatch:
+
+jobs:
+  refresh-cookie:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run login script to refresh cookie
+        env:
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+        run: |
+          python trainfinder_login_username.py
+          echo "✅ .ASPXAUTH cookie saved locally."
+          echo "==== COPY BELOW AND UPDATE IN GITHUB SECRETS ===="
+          cat cookie.txt
+          echo "==== END COOKIE ===="
+
+      # Optional: auto-update secret (requires access token with `repo` and `admin:repo_hook`)
+      # Uncomment and configure if you want to automatically push new cookie to GitHub Secrets.
+      # - name: Update GitHub secret (requires custom script/token)
+      #   run: python update_secret.py
