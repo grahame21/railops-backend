@@ -1,41 +1,46 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 import os
 import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 USERNAME = os.getenv("TRAINFINDER_USERNAME")
 PASSWORD = os.getenv("TRAINFINDER_PASSWORD")
 
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
+if not USERNAME or not PASSWORD:
+    print("❌ Missing credentials. Make sure TRAINFINDER_USERNAME and TRAINFINDER_PASSWORD are set.")
+    exit(1)
 
-driver = webdriver.Chrome(options=options)
-driver.get("https://trainfinder.otenko.com/home/nextlevel")
+# Set up headless Chrome
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
 
-# Wait for full page load
-time.sleep(3)
+driver = webdriver.Chrome(options=chrome_options)
 
-# Fill in username and password
-driver.find_element(By.ID, "useR_name").send_keys(USERNAME)
-password_input = driver.find_element(By.ID, "pasS_word")
-password_input.send_keys(PASSWORD)
+try:
+    driver.get("https://trainfinder.otenko.com/home/nextlevel")
+    time.sleep(2)
 
-# Press Enter to trigger login
-password_input.send_keys(Keys.RETURN)
+    driver.find_element(By.ID, "useR_name").send_keys(USERNAME)
+    driver.find_element(By.ID, "pasS_word").send_keys(PASSWORD)
+    driver.find_element(By.ID, "btnLogiN").click()
+    time.sleep(3)
 
-# Wait for login to process
-time.sleep(5)
+    # Grab .ASPXAUTH cookie
+    cookies = driver.get_cookies()
+    for cookie in cookies:
+        if cookie["name"] == ".ASPXAUTH":
+            with open("cookie.txt", "w") as f:
+                f.write(cookie["value"])
+            print("✅ .ASPXAUTH cookie saved locally.")
+            print("==== COPY BELOW AND UPDATE IN GITHUB SECRETS ====")
+            print(cookie["value"])
+            print("==== END COOKIE ====")
+            break
+    else:
+        print("❌ .ASPXAUTH cookie not found. Login may have failed.")
 
-# Look for the cookie
-cookies = driver.get_cookies()
-for cookie in cookies:
-    if cookie['name'] == '.ASPXAUTH':
-        with open("cookie.txt", "w") as f:
-            f.write(cookie['value'])
-
-driver.quit()
-print("✅ .ASPXAUTH cookie saved locally.")
+finally:
+    driver.quit()
