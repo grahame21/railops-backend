@@ -8,6 +8,7 @@ on:
 jobs:
   refresh-cookie:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -18,27 +19,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install selenium pynacl requests
+          pip install selenium requests pynacl
           sudo apt-get update
-          sudo apt-get install -y jq wget unzip
-
-      - name: Install Google Chrome
-        run: |
+          sudo apt-get install -y wget unzip
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt install -y ./google-chrome-stable_current_amd64.deb
-
-      - name: Install matching ChromeDriver
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
-
-          CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json" \
-            | jq -r --arg ver "$CHROME_VERSION" '
-                .channels.Stable.downloads.chromedriver[]
-                | select(.platform == "linux64")
-                | .url')
-
-          wget -O chromedriver.zip "$CHROMEDRIVER_URL"
-          unzip chromedriver.zip
+          wget https://storage.googleapis.com/chrome-for-testing-public/136.0.7103.92/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
           sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
           sudo chmod +x /usr/bin/chromedriver
 
