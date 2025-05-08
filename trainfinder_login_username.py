@@ -19,8 +19,8 @@ driver.get("https://trainfinder.otenko.com/home/nextlevel")
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "useR_name")))
 
 # Fill in login fields
-driver.find_element(By.ID, "useR_name").send_keys("your_username_here")
-driver.find_element(By.ID, "pasS_word").send_keys("your_password_here")
+driver.find_element(By.ID, "useR_name").send_keys("RAIL-01")
+driver.find_element(By.ID, "pasS_word").send_keys("cextih-jaskoJ-4susda")
 
 # Print current URL for debugging
 print("Current URL:", driver.current_url)
