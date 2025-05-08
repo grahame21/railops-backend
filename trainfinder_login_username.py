@@ -6,8 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import os
 import time
 
-username = os.environ.get("RAIL-01")
-password = os.environ.get("cextih-jaskoJ-4susda")
+username = os.environ.get("TRAINFINDER_USERNAME")
+password = os.environ.get("TRAINFINDER_PASSWORD")
 
 chrome_options = Options()
 chrome_options.add_argument("--headless")
@@ -25,16 +25,12 @@ try:
     driver.find_element(By.ID, "user_passworD").send_keys(password)
     driver.find_element(By.ID, "btnLogiN").click()
 
-    # Wait for the login to complete
-    WebDriverWait(driver, 10).until(
-        lambda d: d.current_url != "https://trainfinder.otenko.com/home/nextlevel"
-    )
-
+    # Wait for redirect or cookie to appear
+    WebDriverWait(driver, 10).until(lambda d: d.current_url != "https://trainfinder.otenko.com/home/nextlevel")
     print("Current URL:", driver.current_url)
 
-    # Check if cookie was set
     cookies = driver.get_cookies()
-    auth_cookie = next((c["value"] for c in cookies if c["name"] == ".ASPXAUTH"), None)
+    auth_cookie = next((c["value"] for c in cookies if c.get("name") == ".ASPXAUTH"), None)
 
     if auth_cookie:
         with open("cookie.txt", "w") as f:
@@ -45,7 +41,7 @@ try:
         exit(1)
 
 except Exception as e:
-    print("❌ Login error:", e)
+    print("❌ Login error:", str(e))
     exit(1)
 finally:
     driver.quit()
