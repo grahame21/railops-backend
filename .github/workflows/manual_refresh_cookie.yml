@@ -1,4 +1,4 @@
-name: Manual Refresh TrainFinder Cookie
+name: Manual Cookie Refresh
 
 on:
   workflow_dispatch:
@@ -7,24 +7,32 @@ jobs:
   refresh-cookie:
     runs-on: ubuntu-latest
 
+    env:
+      TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+      TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: pip install selenium
+      - name: Install dependencies
+        run: |
+          pip install selenium
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          sudo ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver
 
-    - name: Run TrainFinder login script
-      env:
-        TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
-        TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-      run: |
-        python trainfinder_login_username.py
-        echo "✅ .ASPXAUTH cookie saved locally."
-        echo "==== COPY BELOW AND UPDATE IN GITHUB SECRETS ===="
-        cat cookie.txt
-        echo "==== END COOKIE ===="
+      - name: Run login script
+        run: python trainfinder_login_username.py
+
+      - name: Output new cookie
+        run: |
+          echo "✅ .ASPXAUTH cookie saved locally."
+          echo "==== COPY BELOW AND UPDATE IN GITHUB SECRETS ===="
+          cat cookie.txt
+          echo "==== END COOKIE ===="
