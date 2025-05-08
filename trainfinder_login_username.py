@@ -1,45 +1,44 @@
+import os
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 
-# Set up Chrome in headless mode
-chrome_options = Options()
-chrome_options.add_argument("--headless=new")
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--no-sandbox")
+username = os.environ["TRAINFINDER_USERNAME"]
+password = os.environ["TRAINFINDER_PASSWORD"]
 
-# Launch browser
-driver = webdriver.Chrome(options=chrome_options)
+# Chrome options
+options = Options()
+options.add_argument("--headless=new")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-gpu")
+
+# Start browser
+driver = webdriver.Chrome(options=options)
+driver.get("https://trainfinder.otenko.com/account/logout")  # force logout
+
+# Then go to login page
 driver.get("https://trainfinder.otenko.com/home/nextlevel")
-
-# Wait until login page loads
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "useR_name")))
-
-# Fill in login fields
-driver.find_element(By.ID, "useR_name").send_keys("RAIL-01")
-driver.find_element(By.ID, "pasS_word").send_keys("cextih-jaskoJ-4susda")
-
-# Print current URL for debugging
+time.sleep(2)
 print("Current URL:", driver.current_url)
 
-# Try to click login button
+# Wait for login field
 try:
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "btnLogiN"))
-    ).click()
-except:
-    # Fallback if the button ID changes
-    WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//input[@type='submit' and contains(@value, 'Login')]"))
-    ).click()
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "useR_name")))
+    driver.find_element(By.ID, "useR_name").send_keys(username)
+    driver.find_element(By.ID, "pasS_word").send_keys(password)
 
-# Wait for login to complete and cookie to be set
-WebDriverWait(driver, 10).until(lambda d: ".ASPXAUTH" in [c['name'] for c in d.get_cookies()])
+    # Click login
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "btnLogiN"))).click()
 
-# Extract .ASPXAUTH cookie
+    # Wait for dashboard redirect
+    WebDriverWait(driver, 10).until(lambda d: "NextLevel" in d.current_url)
+except Exception as e:
+    print("Login form not found or login failed:", e)
+
+# Extract ASPXAUTH cookie
 cookie_value = None
 for cookie in driver.get_cookies():
     if cookie["name"] == ".ASPXAUTH":
@@ -52,7 +51,6 @@ if cookie_value:
         f.write(cookie_value)
     print("✅ .ASPXAUTH cookie saved locally.")
 else:
-    print("❌ Login failed or cookie not found.")
+    print("❌ Cookie not found.")
 
-# Clean up
 driver.quit()
