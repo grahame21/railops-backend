@@ -1,44 +1,47 @@
+import base64
 import os
 import requests
-
-repo = os.getenv("GITHUB_REPOSITORY")
-token = os.getenv("GH_TOKEN")
-secret_name = "TRAINFINDER_COOKIE"
-
-with open("cookie.txt", "r") as f:
-    secret_value = f.read().strip()
-
-url = f"https://api.github.com/repos/{repo}/actions/secrets/{secret_name}"
-headers = {
-    "Authorization": f"Bearer {token}",
-    "Accept": "application/vnd.github+json"
-}
-
-# Get the public key
-key_resp = requests.get(
-    f"https://api.github.com/repos/{repo}/actions/secrets/public-key",
-    headers=headers,
-)
-key_data = key_resp.json()
-
-from base64 import b64encode
 from nacl import encoding, public
 
-def encrypt(public_key: str, secret_value: str) -> str:
-    key = public.PublicKey(public_key.encode("utf-8"), encoding.Base64Encoder())
-    sealed_box = public.SealedBox(key)
-    encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
-    return b64encode(encrypted).decode("utf-8")
+# GitHub environment variables
+repo = os.environ['GITHUB_REPOSITORY']
+token = os.environ['GH_TOKEN']
+api_url = f'https://api.github.com/repos/{repo}'
 
-encrypted_value = encrypt(key_data["key"], secret_value)
+# Step 1: Read the new cookie
+with open('cookie.txt', 'r') as f:
+    cookie_value = f.read().strip()
 
-# Upload the secret
-resp = requests.put(url, headers=headers, json={
-    "encrypted_value": encrypted_value,
-    "key_id": key_data["key_id"]
+# Step 2: Get the public key for the repository
+res = requests.get(f'{api_url}/actions/secrets/public-key', headers={
+    'Authorization': f'token {token}',
+    'Accept': 'application/vnd.github.v3+json'
 })
+res.raise_for_status()
+key_data = res.json()
+public_key = key_data['key']
+key_id = key_data['key_id']
 
-if resp.status_code == 201 or resp.status_code == 204:
-    print("✅ GitHub secret updated successfully.")
-else:
-    print(f"❌ Failed to update secret: {resp.status_code} {resp.text}")
+# Step 3: Encrypt the secret
+def encrypt(public_key_str, secret_value):
+    public_key = public.PublicKey(public_key_str.encode('utf-8'), encoding.Base64Encoder())
+    sealed_box = public.SealedBox(public_key)
+    encrypted = sealed_box.encrypt(secret_value.encode('utf-8'))
+    return base64.b64encode(encrypted).decode('utf-8')
+
+encrypted_cookie = encrypt(public_key, cookie_value)
+
+# Step 4: Update the secret
+put_res = requests.put(
+    f'{api_url}/actions/secrets/TRAINFINDER_COOKIE',
+    headers={
+        'Authorization': f'token {token}',
+        'Accept': 'application/vnd.github.v3+json'
+    },
+    json={
+        'encrypted_value': encrypted_cookie,
+        'key_id': key_id
+    }
+)
+put_res.raise_for_status()
+print("✅ GitHub secret TRAINFINDER_COOKIE updated successfully.")
