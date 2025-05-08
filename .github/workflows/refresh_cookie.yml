@@ -1,50 +1,77 @@
-name: Refresh TrainFinder Cookie
+import os
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from nacl import encoding, public
 
-on:
-  schedule:
-    - cron: '0 1 * * *'  # Daily at 1:00 AM UTC
-  workflow_dispatch:
+# --- SETUP ENV VARIABLES ---
+username = os.getenv("TRAINFINDER_USERNAME")
+password = os.getenv("TRAINFINDER_PASSWORD")
+repo = os.getenv("GITHUB_REPOSITORY")
+token = os.getenv("GH_TOKEN")
+secret_name = "TRAINFINDER_COOKIE"
 
-jobs:
-  refresh-cookie:
-    runs-on: ubuntu-latest
+# --- START SELENIUM CHROME ---
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+driver = webdriver.Chrome(options=chrome_options)
 
-    steps:
-      - uses: actions/checkout@v3
+# --- LOGIN TO TRAINFINDER ---
+driver.get("https://trainfinder.otenko.com/home/nextlevel")
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "useR_name")))
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+driver.find_element(By.ID, "useR_name").send_keys(username)
+driver.find_element(By.ID, "pasS_word").send_keys(password)
+driver.find_element(By.CLASS_NAME, "button-green").click()
 
-      - name: Install dependencies
-        run: |
-          pip install selenium requests pynacl
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install -y ./google-chrome-stable_current_amd64.deb
-          wget https://storage.googleapis.com/chrome-for-testing-public/136.0.7103.92/linux64/chromedriver-linux64.zip
-          unzip chromedriver-linux64.zip
-          sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
-          sudo chmod +x /usr/bin/chromedriver
+# Wait for login to complete
+time.sleep(4)
 
-      - name: Run login script
-        env:
-          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
-          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-        run: python trainfinder_login_username.py
+# --- EXTRACT .ASPXAUTH COOKIE ---
+cookie_value = None
+for cookie in driver.get_cookies():
+    if cookie["name"] == ".ASPXAUTH":
+        cookie_value = cookie["value"]
+        break
 
-      - name: Update GitHub Secret
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python update_secret.py
+driver.quit()
 
-      - name: Trigger Netlify Build
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_API_TOKEN: ${{ secrets.NETLIFY_API_TOKEN }}
-        run: |
-          curl -X POST https://api.netlify.com/build_hooks/${NETLIFY_SITE_ID} \
-            -H "Authorization: Bearer $NETLIFY_API_TOKEN"
+if not cookie_value:
+    raise Exception("❌ Login succeeded but .ASPXAUTH cookie not found.")
+
+# --- GET REPO PUBLIC KEY FOR SECRET ---
+headers = {"Authorization": f"Bearer {token}"}
+url = f"https://api.github.com/repos/{repo}/actions/secrets/public-key"
+res = requests.get(url, headers=headers)
+res.raise_for_status()
+key_data = res.json()
+public_key = key_data["key"]
+key_id = key_data["key_id"]
+
+# --- ENCRYPT COOKIE ---
+def encrypt(public_key_str, secret_value):
+    public_key = public.PublicKey(public_key_str.encode("utf-8"), encoding.Base64Encoder())
+    sealed_box = public.SealedBox(public_key)
+    encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
+    return base64.b64encode(encrypted).decode("utf-8")
+
+encrypted_value = encrypt(public_key, cookie_value)
+
+# --- UPLOAD SECRET TO GITHUB ---
+payload = {
+    "encrypted_value": encrypted_value,
+    "key_id": key_id
+}
+res = requests.put(
+    f"https://api.github.com/repos/{repo}/actions/secrets/{secret_name}",
+    headers={"Authorization": f"Bearer {token}"},
+    json=payload
+)
+res.raise_for_status()
+print("✅ Cookie successfully updated as GitHub secret.")
