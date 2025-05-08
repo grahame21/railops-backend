@@ -21,7 +21,7 @@ jobs:
           pip install selenium pynacl requests
           sudo apt-get update
           sudo apt-get install -y chromium-chromedriver
-          sudo ln -sf /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+          if [ ! -e /usr/bin/chromedriver ]; then sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver; fi
 
       - name: Run login script
         env:
@@ -37,6 +37,8 @@ jobs:
 
       - name: Trigger Netlify Build
         env:
-          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_API_TOKEN: ${{ secrets.NETLIFY_API_TOKEN }}
         run: |
-          curl -X POST "$NETLIFY_BUILD_HOOK"
+          curl -X POST https://api.netlify.com/build_hooks/${NETLIFY_SITE_ID} \
+            -H "Authorization: Bearer $NETLIFY_API_TOKEN"
