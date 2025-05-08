@@ -2,7 +2,7 @@ name: Refresh TrainFinder Cookie
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Runs daily at 1:00 AM UTC
+    - cron: '0 1 * * *'  # Daily at 1:00 AM UTC
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install selenium pynacl
+          pip install selenium pynacl requests
           sudo apt-get update
           sudo apt-get install -y chromium-chromedriver
           sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
@@ -34,3 +34,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python update_secret.py
+
+      - name: Trigger Netlify Build
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_API_TOKEN: ${{ secrets.NETLIFY_API_TOKEN }}
+        run: |
+          curl -X POST https://api.netlify.com/build_hooks/${NETLIFY_SITE_ID} \
+            -H "Authorization: Bearer $NETLIFY_API_TOKEN"
