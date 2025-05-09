@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 import os
 
 username = os.getenv("TRAINFINDER_USERNAME")
@@ -22,10 +23,13 @@ try:
     driver.find_element(By.ID, "useR_name").send_keys(username)
     driver.find_element(By.ID, "pasS_word").send_keys(password)
 
-    # Click login button
+    # Click login button (uses JavaScript)
     driver.find_element(By.XPATH, "//div[contains(@class, 'button-green')]").click()
 
-    # Wait for login to succeed (map page loads)
+    # Give JS login time to redirect
+    time.sleep(3)
+
+    # Wait for element from dashboard page
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "zoomToTrain"))
     )
