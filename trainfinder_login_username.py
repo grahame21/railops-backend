@@ -1,9 +1,9 @@
+# trainfinder_login_username.py
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 import os
 
 username = os.getenv("TRAINFINDER_USERNAME")
@@ -14,27 +14,20 @@ chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
+print("Launching browser to login...")
 driver = webdriver.Chrome(options=chrome_options)
 driver.get("https://trainfinder.otenko.com/home/nextlevel")
 print("Current URL:", driver.current_url)
 
 try:
-    # Enter credentials
     driver.find_element(By.ID, "useR_name").send_keys(username)
     driver.find_element(By.ID, "pasS_word").send_keys(password)
-
-    # Click login button (uses JavaScript)
     driver.find_element(By.XPATH, "//div[contains(@class, 'button-green')]").click()
 
-    # Give JS login time to redirect
-    time.sleep(3)
-
-    # Wait for element from dashboard page
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "zoomToTrain"))
     )
 
-    # Extract cookie
     cookies = driver.get_cookies()
     aspx_cookie = next((c["value"] for c in cookies if c["name"] == ".ASPXAUTH"), None)
 
