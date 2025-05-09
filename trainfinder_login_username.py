@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 import os
 
 username = os.getenv("TRAINFINDER_USERNAME")
@@ -15,36 +14,37 @@ chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
 driver = webdriver.Chrome(options=chrome_options)
+driver.get("https://trainfinder.otenko.com/home/nextlevel")
+print("Current URL:", driver.current_url)
 
 try:
-    driver.get("https://trainfinder.otenko.com/home/nextlevel")
-    print("Current URL:", driver.current_url)
-
-    # Fill in username/password
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "useR_name"))).send_keys(username)
+    # Enter credentials
+    driver.find_element(By.ID, "useR_name").send_keys(username)
     driver.find_element(By.ID, "pasS_word").send_keys(password)
 
     # Click login button
-    driver.find_element(By.CLASS_NAME, "button-green").click()
+    driver.find_element(By.XPATH, "//div[contains(@class, 'button-green')]").click()
 
-    # Wait until redirected to map page
-    WebDriverWait(driver, 10).until(EC.url_contains("nextlevel"))
+    # Wait for login to succeed (map page loads)
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "zoomToTrain"))
+    )
 
-    # Extract the .ASPXAUTH cookie
+    # Extract cookie
     cookies = driver.get_cookies()
-    for cookie in cookies:
-        if cookie["name"] == ".ASPXAUTH":
-            with open("cookie.txt", "w") as f:
-                f.write(cookie["value"])
-            print("✅ Cookie saved.")
-            break
+    aspx_cookie = next((c["value"] for c in cookies if c["name"] == ".ASPXAUTH"), None)
+
+    if aspx_cookie:
+        with open("cookie.txt", "w") as f:
+            f.write(aspx_cookie)
+        print("✅ Login successful. Cookie saved to cookie.txt")
     else:
-        raise Exception("❌ .ASPXAUTH cookie not found.")
+        print("❌ .ASPXAUTH cookie not found.")
+        exit(1)
 
 except Exception as e:
-    print("❌ Login error:", str(e))
+    print("❌ Login error:", e)
+    exit(1)
+
 finally:
     driver.quit()
-
-# Optional: call update_secret.py automatically
-os.system("python update_secret.py")
