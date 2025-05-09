@@ -2,14 +2,16 @@ name: Auto Refresh TrainFinder Cookie
 
 on:
   schedule:
-    - cron: "0 4 * * *"  # Every day at 4:00 AM
-  workflow_dispatch:     # Optional: allow manual trigger
+    - cron: "0 4 * * *"  # Runs daily at 4:00 AM UTC
+  workflow_dispatch:     # Allows manual trigger
 
 jobs:
   update-cookie:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -29,7 +31,7 @@ jobs:
           sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
           sudo chmod +x /usr/bin/chromedriver
 
-      - name: Run TrainFinder login
+      - name: Login to TrainFinder
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
