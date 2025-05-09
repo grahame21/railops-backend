@@ -1,22 +1,15 @@
-name: Refresh TrainFinder Cookie
+name: Auto Refresh TrainFinder Cookie
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 1 * * *"  # Runs daily at 1:00 AM UTC
+    - cron: "0 4 * * *"  # Every day at 4:00 AM
+  workflow_dispatch:     # Optional: allow manual trigger
 
 jobs:
-  refresh-cookie:
+  update-cookie:
     runs-on: ubuntu-latest
-
-    env:
-      TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
-      TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Needs `repo` scope
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,18 +20,23 @@ jobs:
         run: |
           pip install selenium pynacl requests
           sudo apt-get update
-          sudo apt-get install -y wget unzip
+          sudo apt-get install -y wget unzip xvfb
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt install -y ./google-chrome-stable_current_amd64.deb
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-          DRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/$CHROME_VERSION/linux64/chromedriver-linux64.zip"
-          wget $DRIVER_URL -O driver.zip
-          unzip driver.zip
+          wget https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
           sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
           sudo chmod +x /usr/bin/chromedriver
 
-      - name: Run TrainFinder login to get cookie
-        run: python trainfinder_login_username.py
+      - name: Run TrainFinder login
+        env:
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+        run: xvfb-run --auto-servernum python trainfinder_login_username.py
 
-      - name: Upload ASPXAUTH cookie to GitHub Secret
+      - name: Update GitHub secret with new cookie
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python update_secret.py
