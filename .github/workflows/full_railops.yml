@@ -1,0 +1,54 @@
+name: Full RailOps Auto Flow
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/2 * * * *'  # Runs every 2 minutes
+
+jobs:
+  full_run:
+    runs-on: ubuntu-latest
+
+    env:
+      TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+      TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Chrome + Chromedriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install -y ./google-chrome-stable_current_amd64.deb
+          LATEST=$(curl -s https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json | jq -r '.channels.Stable.downloads.chromedriver[] | select(.platform == "linux64") | .url')
+          wget $LATEST -O chromedriver.zip
+          unzip chromedriver.zip
+          sudo mv chromedriver-linux64/chromedriver /usr/bin/chromedriver
+          sudo chmod +x /usr/bin/chromedriver
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: pip install selenium pynacl requests
+
+      - name: Run Login Script and Save Cookie
+        run: python trainfinder_login_username.py
+
+      - name: Upload Cookie to GitHub Secret
+        run: python update_secret.py
+
+      - name: Run Train Data Updater
+        run: python update_trains_autozoom.py
+
+      - name: Upload trains.json to Netlify
+        run: |
+          curl -X POST -H "Authorization: Bearer ${{ secrets.NETLIFY_AUTH_TOKEN }}" \
+          -d '{}' https://api.netlify.com/build_hooks/${{ secrets.NETLIFY_BUILD_HOOK }}
