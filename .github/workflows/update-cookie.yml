@@ -1,0 +1,40 @@
+name: Refresh TrainFinder Cookie and Location
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *"  # Runs daily at 1:00 AM UTC
+
+jobs:
+  refresh-cookie:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install selenium
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          sudo ln -sf /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+
+      - name: Run TrainFinder login script
+        env:
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+        run: python trainfinder_login_username.py
+
+      - name: Commit updated cookie and location
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add cookie.txt location.txt || echo "No files to add"
+          git commit -m "Update cookie.txt and location.txt [auto]" || echo "No changes to commit"
+          git push
