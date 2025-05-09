@@ -5,51 +5,50 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-# Setup
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=options)
+import os
 
-# Navigate to TrainFinder
-driver.get("https://trainfinder.otenko.com/home/nextlevel")
-print("Current URL:", driver.current_url)
+username = os.environ.get("TRAINFINDER_USERNAME")
+password = os.environ.get("TRAINFINDER_PASSWORD")
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+
+driver = webdriver.Chrome(options=chrome_options)
 
 try:
-    # Enter login details
+    driver.get("https://trainfinder.otenko.com/home/nextlevel")
+    print("Current URL:", driver.current_url)
+
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "useR_name"))
     )
-    driver.find_element(By.ID, "useR_name").send_keys("RAIL-01")
-    driver.find_element(By.ID, "pasS_word").send_keys("cextih-jaskoJ-4susda")
-    driver.find_element(By.XPATH, "//div[contains(text(), 'Log In')]").click()
 
-    # Wait for login to process
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "mainMenuBar"))
-    )
+    driver.find_element(By.ID, "useR_name").send_keys(username)
+    driver.find_element(By.ID, "pasS_word").send_keys(password)
 
-    # Extract .ASPXAUTH cookie
+    login_button = driver.find_element(By.XPATH, "//div[contains(text(),'Log In')]")
+    login_button.click()
+
+    WebDriverWait(driver, 10).until(lambda d: d.current_url != "https://trainfinder.otenko.com/home/nextlevel")
+
     cookies = driver.get_cookies()
-    for cookie in cookies:
-        if cookie['name'] == '.ASPXAUTH':
-            with open("cookie.txt", "w") as f:
-                f.write(cookie['value'])
-            print("✅ .ASPXAUTH cookie saved.")
+    auth_cookie = next((c for c in cookies if c["name"] == ".ASPXAUTH"), None)
 
-    # Try to find current location (if town/suburb label exists)
-    try:
-        location_elem = driver.find_element(By.CLASS_NAME, "stationDisplay")
-        location = location_elem.text.strip()
-        with open("location.txt", "w") as locf:
-            locf.write(location)
-        print("📍 Location saved:", location)
-    except:
-        print("⚠️ Location not found.")
+    if not auth_cookie:
+        raise Exception("❌ .ASPXAUTH cookie not found.")
+
+    with open("cookie.txt", "w") as f:
+        f.write(auth_cookie["value"])
+        print("✅ Saved .ASPXAUTH cookie.")
+
+    with open("location.txt", "w") as f:
+        f.write(driver.current_url)
+        print("✅ Saved current location.")
 
 except Exception as e:
-    print("❌ Login error:", str(e))
+    print("❌ Login error:", e)
 
 finally:
     driver.quit()
