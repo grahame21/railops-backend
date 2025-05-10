@@ -1,45 +1,45 @@
-name: Full RailOps Automation
+name: RailOps Auto Login and Update
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: "*/2 * * * *"  # every 2 minutes
   workflow_dispatch:
 
 jobs:
-  update-everything:
+  run:
     runs-on: ubuntu-latest
 
+    env:
+      TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+      TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
-        sudo ln -fs /snap/bin/chromium.chromedriver /usr/bin/chromedriver
-        sudo ln -fs /snap/bin/chromium /usr/bin/google-chrome
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          sudo ln -sf /usr/bin/chromedriver /usr/local/bin/chromedriver
 
-    - name: Login and save cookie
-      env:
-        TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
-        TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-      run: |
-        python trainfinder_login_username.py
+      - name: Download Chrome
+        run: |
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install ./google-chrome-stable_current_amd64.deb
 
-    - name: Update cookie secret
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
-      run: |
-        python update_secret.py
+      - name: Run login script
+        run: python trainfinder_login_username.py
 
-    - name: Update train data
-      run: |
-        python update_trains.py
+      - name: Update GitHub secret with cookie
+        run: python update_secret.py
+
+      - name: Update train data
+        run: python update_trains_loop.py
