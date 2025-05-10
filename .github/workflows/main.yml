@@ -1,0 +1,45 @@
+name: Full RailOps Automation
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update-everything:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser chromium-chromedriver
+        sudo ln -fs /snap/bin/chromium.chromedriver /usr/bin/chromedriver
+        sudo ln -fs /snap/bin/chromium /usr/bin/google-chrome
+
+    - name: Login and save cookie
+      env:
+        TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+        TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+      run: |
+        python trainfinder_login_username.py
+
+    - name: Update cookie secret
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        python update_secret.py
+
+    - name: Update train data
+      run: |
+        python update_trains.py
