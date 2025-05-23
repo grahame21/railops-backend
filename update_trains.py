@@ -2,16 +2,15 @@ import os
 import json
 import requests
 
-# Create static directory if it doesn't exist
+# Ensure the static folder exists
 os.makedirs("static", exist_ok=True)
 
-# Load TrainFinder cookie from environment or file
-cookie_path = "cookie.txt"
-if not os.path.exists(cookie_path):
-    print("❌ Missing cookie.txt file.")
+# Load cookie
+if not os.path.exists("cookie.txt"):
+    print("❌ cookie.txt not found.")
     exit(1)
 
-with open(cookie_path, "r") as f:
+with open("cookie.txt", "r") as f:
     cookie_value = f.read().strip()
 
 headers = {
@@ -25,11 +24,12 @@ response = requests.get(url, headers=headers)
 
 if response.status_code == 200:
     data = response.json()
-    output = []
+    trains = data.get("Trains", [])
+    results = []
 
-    for train in data.get("Trains", []):
+    for train in trains:
         if train.get("Latitude") and train.get("Longitude"):
-            output.append({
+            results.append({
                 "loco": train["LocoNum"],
                 "lat": train["Latitude"],
                 "lon": train["Longitude"],
@@ -39,7 +39,7 @@ if response.status_code == 200:
             })
 
     with open("static/trains.json", "w") as f:
-        json.dump(output, f, indent=2)
-    print("✅ trains.json updated in static/")
+        json.dump(results, f, indent=2)
+    print("✅ trains.json written to static/")
 else:
-    print(f"❌ Failed to fetch train data: {response.status_code}")
+    print(f"❌ Error: HTTP {response.status_code}")
