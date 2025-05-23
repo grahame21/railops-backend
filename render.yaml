@@ -1,1 +1,7 @@
-# Ignore unless using Render
+services:
+  - type: worker
+    name: trainfinder-updater
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python update_trains.py
+    schedule: "*/2 * * * *"  # every 2 mins
