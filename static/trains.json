@@ -1,25 +1,16 @@
-fetch('static/trains.json')
-  .then(response => response.json())
-  .then(data => {
-    data.forEach(train => {
-      const marker = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.fromLonLat([train.lon, train.lat])),
-        name: train.loco,
-      });
-
-      marker.setStyle(new ol.style.Style({
-        image: new ol.style.Icon({
-          src: 'static/train-icon.png', // make sure this exists
-          scale: 0.05
-        }),
-        text: new ol.style.Text({
-          text: train.loco,
-          offsetY: -25,
-          fill: new ol.style.Fill({ color: '#000' }),
-          stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
-        })
-      }));
-
-      vectorSource.addFeature(marker);
-    });
-  });
+[
+  {
+    "loco": "NR74",
+    "lat": -34.9285,
+    "lon": 138.6007,
+    "operator": "Pacific National",
+    "status": "on time"
+  },
+  {
+    "loco": "DL47",
+    "lat": -33.8679,
+    "lon": 151.2073,
+    "operator": "Aurizon",
+    "status": "delayed"
+  }
+]
