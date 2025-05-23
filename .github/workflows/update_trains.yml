@@ -1,59 +1,38 @@
-import os
-import json
-import time
-import requests
-from datetime import datetime
+name: Update Train Data
 
-TRAINS_JSON_PATH = os.path.join("static", "trains.json")
-TRAINFINDER_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/2 * * * *"
 
-# Load cookie from file or environment
-with open("cookie.txt", "r") as f:
-    cookie_value = f.read().strip()
+jobs:
+  update-trains:
+    runs-on: ubuntu-latest
 
-headers = {
-    "Cookie": f".ASPXAUTH={cookie_value}",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-def fetch_train_data():
-    try:
-        response = requests.get(TRAINFINDER_URL, headers=headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
-            return None
-    except Exception as e:
-        print(f"Exception during request: {e}")
-        return None
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-def transform_data(raw_data):
-    trains = []
-    for item in raw_data:
-        try:
-            trains.append({
-                "loco": item.get("Loco", "Unknown"),
-                "lat": item.get("Lat"),
-                "lon": item.get("Lon"),
-                "operator": item.get("OperatorName", "Unknown"),
-                "status": item.get("Status", "")
-            })
-        except Exception as e:
-            print(f"Error processing item: {e}")
-    return trains
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-def save_trains(trains):
-    os.makedirs("static", exist_ok=True)
-    with open(TRAINS_JSON_PATH, "w") as f:
-        json.dump(trains, f, indent=2)
+      - name: Run train update script
+        env:
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+        run: python update_trains.py
 
-if __name__ == "__main__":
-    print(f"[{datetime.now()}] Fetching train data...")
-    raw = fetch_train_data()
-    if raw:
-        trains = transform_data(raw)
-        save_trains(trains)
-        print(f"[{datetime.now()}] trains.json updated successfully with {len(trains)} trains.")
-    else:
-        print("Failed to fetch or parse data.")
+      - name: Push updated trains.json
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add static/trains.json
+          git commit -m "Update trains.json"
+          git push
