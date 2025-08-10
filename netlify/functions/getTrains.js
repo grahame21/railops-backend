@@ -1,51 +1,61 @@
-import fetch from "node-fetch";
+// netlify/functions/getTrains.js
+// Proxies TrainFinder viewport data with your stored .ASPXAUTH cookie
 
-export async function handler() {
-  const username = process.env.TRAINFINDER_USERNAME;
-  const password = process.env.TRAINFINDER_PASSWORD;
+const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
 
-  if (!username || !password) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: "TrainFinder credentials not set" })
-    };
-  }
-
+exports.handler = async (event) => {
   try {
-    // 1️⃣ Login to TrainFinder
-    const loginRes = await fetch("https://trainfinder.otenko.com/Login/Login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: `Username=${encodeURIComponent(username)}&Password=${encodeURIComponent(password)}`
-    });
+    // Read query params (fallbacks keep it harmless if caller forgets them)
+    const { lat = "-34.9285", lng = "138.6007", zm = "8" } = event.queryStringParameters || {};
 
-    const cookies = loginRes.headers.raw()["set-cookie"];
-    const authCookie = cookies.find(c => c.startsWith(".ASPXAUTH"));
-    if (!authCookie) throw new Error("Login failed — no auth cookie returned");
+    const authCookie = process.env.TF_AUTH_COOKIE; // <- set this in Netlify env
+    if (!authCookie) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "TF_AUTH_COOKIE not set in environment." }),
+      };
+    }
 
-    // 2️⃣ Fetch live train data
-    const trainsRes = await fetch("https://trainfinder.otenko.com/Home/GetViewPortData", {
-      method: "POST",
-      headers: {
-        "cookie": authCookie,
-        "x-requested-with": "XMLHttpRequest",
-        "accept": "application/json, text/javascript, */*; q=0.01"
-      }
-    });
+    // Same endpoint TrainFinder calls from the site
+    const url = "https://trainfinder.otenko.com/Home/GetViewPortData";
 
-    const trainsJson = await trainsRes.json();
+    // Build headers TrainFinder expects (pared down to the useful ones)
+    const headers = {
+      "accept": "*/*",
+      "x-requested-with": "XMLHttpRequest",
+      "origin": "https://trainfinder.otenko.com",
+      "referer": `https://trainfinder.otenko.com/home/nextlevel?lat=${lat}&lng=${lng}&zm=${zm}`,
+      "cookie": `.ASPXAUTH=${authCookie}`,
+    };
 
+    // TrainFinder’s endpoint is a POST with no body
+    const resp = await fetch(url, { method: "POST", headers });
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      return {
+        statusCode: resp.status,
+        body: JSON.stringify({
+          error: "TrainFinder responded with an error",
+          status: resp.status,
+          body: text.slice(0, 5000),
+        }),
+      };
+    }
+
+    // Should be JSON already
+    const data = await resp.json();
+
+    // Return JSON to the browser
     return {
       statusCode: 200,
-      body: JSON.stringify(trainsJson)
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+      body: JSON.stringify(data),
     };
-
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({ error: err.message || String(err) }),
     };
   }
-}
+};
