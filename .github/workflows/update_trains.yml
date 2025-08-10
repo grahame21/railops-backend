@@ -1,86 +1,53 @@
 name: Update trains.json (TrainFinder live)
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "*/1 * * * *"   # every minute
-  workflow_dispatch: {}
+    - cron: "*/1 * * * *" # every minute
 
 jobs:
-  update:
+  update-trains:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
-
-    env:
-      DATA_SITE_NAME: traintracker2-0-data   # change if taken
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Netlify CLI + jq + curl
-        run: |
-          npm i -g netlify-cli
-          sudo apt-get update -y
-          sudo apt-get install -y jq curl
-
-      # --- FETCH (via curl, mirroring your browser request) ---
       - name: Fetch trains.json via curl (pass 1)
         env:
-          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}                 # ".ASPXAUTH=..."
-          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}                  # e.g. https://trainfinder.otenko.com/Home/GetViewPortData  (you can include ?lat=...&lng=...&zm=...)
-          REF: ${{ secrets.TRAINFINDER_REFERER }}                       # e.g. https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
-          UA: ${{ secrets.TRAINFINDER_UA }}                             # optional (defaults below)
-          METHOD: ${{ secrets.TRAINFINDER_METHOD }}                     # "POST" or "GET" (default POST)
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
+          REF: ${{ secrets.TRAINFINDER_REFERER }}
+          UA: ${{ secrets.TRAINFINDER_UA }}
+          METHOD: ${{ secrets.TRAINFINDER_METHOD }}
         run: |
           set -euo pipefail
           mkdir -p deploy
-
-          # Build final URL with a cache-busting param
-          TS=$(date +%s)
-          if [[ "$URL" == *"?"* ]]; then
-            FINAL_URL="${URL}&t=${TS}"
-          else
-            FINAL_URL="${URL}?t=${TS}"
-          fi
-
           METH="${METHOD:-POST}"
-          echo "[info] $METH $FINAL_URL"
-
-          # Common headers (trimmed to what's needed)
-          HDR_ACCEPT='accept: */*'
-          HDR_ORIGIN='origin: https://trainfinder.otenko.com'
-          HDR_XREQ='x-requested-with: XMLHttpRequest'
-          HDR_REF="referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}"
-          HDR_UA="user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}"
-
+          echo "[info] ${METH} ${URL}"
           if [[ "$METH" == "GET" ]]; then
             curl --fail-with-body -sS \
-              -X GET "$FINAL_URL" \
-              -H "$HDR_ACCEPT" \
-              -H "$HDR_REF" \
-              -H "$HDR_XREQ" \
-              -H "$HDR_UA" \
+              -X GET "$URL" \
+              -H 'accept: */*' \
+              -H "referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}" \
+              -H 'x-requested-with: XMLHttpRequest' \
+              -H "origin: https://trainfinder.otenko.com" \
+              -H "user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}" \
               -b "$COOKIE" \
               -o deploy/trains.json
           else
-            # POST with empty body (your curl had content-length: 0)
             curl --fail-with-body -sS \
-              -X POST "$FINAL_URL" \
-              -H "$HDR_ACCEPT" \
-              -H "$HDR_REF" \
-              -H "$HDR_ORIGIN" \
-              -H "$HDR_XREQ" \
-              -H "$HDR_UA" \
+              -X POST "$URL" \
+              -H 'accept: */*' \
+              -H "referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}" \
+              -H 'x-requested-with: XMLHttpRequest' \
+              -H "origin: https://trainfinder.otenko.com" \
+              -H "user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}" \
               -b "$COOKIE" \
+              --data-raw '' \
               -o deploy/trains.json
           fi
-
-          # Quick peek
-          echo "[head] trains.json:"
-          head -c 400 deploy/trains.json | tr -d '\n' || true
-          echo
-
-          # Netlify headers for no-cache + CORS
+          head -c 400 deploy/trains.json | tr -d '\n' || true; echo
           cat > deploy/_headers <<'H'
           /trains.json
             Cache-Control: no-store, no-cache, must-revalidate, max-age=0
@@ -91,8 +58,8 @@ jobs:
             Access-Control-Allow-Headers: *
           H
 
-      - name: Wait 20 seconds
-        run: sleep 20
+      - name: Wait 30 seconds
+        run: sleep 30
 
       - name: Fetch trains.json via curl (pass 2)
         env:
@@ -103,94 +70,38 @@ jobs:
           METHOD: ${{ secrets.TRAINFINDER_METHOD }}
         run: |
           set -euo pipefail
-          TS=$(date +%s)
-          if [[ "$URL" == *"?"* ]]; then
-            FINAL_URL="${URL}&t=${TS}"
-          else
-            FINAL_URL="${URL}?t=${TS}"
-          fi
           METH="${METHOD:-POST}"
-          echo "[info] $METH $FINAL_URL"
-
-          HDR_ACCEPT='accept: */*'
-          HDR_ORIGIN='origin: https://trainfinder.otenko.com'
-          HDR_XREQ='x-requested-with: XMLHttpRequest'
-          HDR_REF="referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}"
-          HDR_UA="user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}"
-
+          echo "[info] ${METH} ${URL}"
           if [[ "$METH" == "GET" ]]; then
             curl --fail-with-body -sS \
-              -X GET "$FINAL_URL" \
-              -H "$HDR_ACCEPT" \
-              -H "$HDR_REF" \
-              -H "$HDR_XREQ" \
-              -H "$HDR_UA" \
+              -X GET "$URL" \
+              -H 'accept: */*' \
+              -H "referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}" \
+              -H 'x-requested-with: XMLHttpRequest' \
+              -H "origin: https://trainfinder.otenko.com" \
+              -H "user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}" \
               -b "$COOKIE" \
               -o deploy/trains.json
           else
             curl --fail-with-body -sS \
-              -X POST "$FINAL_URL" \
-              -H "$HDR_ACCEPT" \
-              -H "$HDR_REF" \
-              -H "$HDR_ORIGIN" \
-              -H "$HDR_XREQ" \
-              -H "$HDR_UA" \
+              -X POST "$URL" \
+              -H 'accept: */*' \
+              -H "referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}" \
+              -H 'x-requested-with: XMLHttpRequest' \
+              -H "origin: https://trainfinder.otenko.com" \
+              -H "user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}" \
               -b "$COOKIE" \
+              --data-raw '' \
               -o deploy/trains.json
           fi
+          head -c 400 deploy/trains.json | tr -d '\n' || true; echo
 
-          echo "[head] trains.json:"
-          head -c 400 deploy/trains.json | tr -d '\n' || true
-          echo
-
-      # --- NETLIFY DEPLOY (creates/uses a data-only site) ---
-      - name: Ensure data site exists (with team context)
-        id: ensure_site
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v2
+        with:
+          publish-dir: deploy
+          production-deploy: true
+          deploy-message: "Update trains.json"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          DATA_SITE_NAME: ${{ env.DATA_SITE_NAME }}
-        run: |
-          set -e
-          USER_JSON=$(netlify api getCurrentUser)
-          TEAM_SLUG=$(echo "$USER_JSON" | jq -r '.memberships[0].account.slug')
-          echo "Team slug: $TEAM_SLUG"
-
-          SITE_JSON=$(netlify api listSites --data '{ "page": 1, "per_page": 1000 }')
-          SITE_ID=$(echo "$SITE_JSON" | jq -r '.[] | select(.name=="'"$DATA_SITE_NAME"'") | .id' | head -n1)
-
-          if [ -z "$SITE_ID" ] || [ "$SITE_ID" = "null" ]; then
-            echo "Creating site $DATA_SITE_NAME under team $TEAM_SLUG..."
-            CREATE_JSON=$(netlify api createSite --data '{ "account_slug": "'"$TEAM_SLUG"'", "name": "'"$DATA_SITE_NAME"'" }')
-            SITE_ID=$(echo "$CREATE_JSON" | jq -r '.id')
-          else
-            echo "Found existing site: $SITE_ID"
-          fi
-
-          if [ -z "$SITE_ID" ] || [ "$SITE_ID" = "null" ]; then
-            echo "Failed to get/create site." >&2
-            exit 1
-          fi
-
-          echo "site_id=$SITE_ID" >> "$GITHUB_OUTPUT"
-
-      - name: Get actual site URL (print it)
-        id: site_info
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: |
-          SITE_ID="${{ steps.ensure_site.outputs.site_id }}"
-          INFO=$(netlify api getSite --data '{ "site_id": "'"$SITE_ID"'" }')
-          echo "$INFO" | jq -r '{name, url, ssl_url}'
-          echo "ssl_url=$(echo "$INFO" | jq -r .ssl_url)" >> "$GITHUB_OUTPUT"
-
-      - name: Deploy trains.json to data site (prod)
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ steps.ensure_site.outputs.site_id }}
-        run: |
-          netlify deploy --dir deploy --prod --message "auto: $GITHUB_RUN_ID-$GITHUB_RUN_NUMBER"
-
-      - name: Print final data URL
-        run: |
-          echo "Data file:"
-          echo "${{ steps.site_info.outputs.ssl_url }}/trains.json"
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
