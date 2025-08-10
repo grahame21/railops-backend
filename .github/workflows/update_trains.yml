@@ -32,9 +32,10 @@ jobs:
         env:
           TRAINFINDER_VIEWPORT_URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
           TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
-          HTTP_PROXY_URL: ${{ secrets.HTTP_PROXY_URL }}
           TRAINFINDER_METHOD: ${{ secrets.TRAINFINDER_METHOD }}
           TRAINFINDER_POST_BODY: ${{ secrets.TRAINFINDER_POST_BODY }}
+          TRAINFINDER_HEADERS_JSON: ${{ secrets.TRAINFINDER_HEADERS_JSON }}
+          TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
         run: |
           python scripts/update_trains.py
 
@@ -45,9 +46,10 @@ jobs:
         env:
           TRAINFINDER_VIEWPORT_URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
           TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
-          HTTP_PROXY_URL: ${{ secrets.HTTP_PROXY_URL }}
           TRAINFINDER_METHOD: ${{ secrets.TRAINFINDER_METHOD }}
           TRAINFINDER_POST_BODY: ${{ secrets.TRAINFINDER_POST_BODY }}
+          TRAINFINDER_HEADERS_JSON: ${{ secrets.TRAINFINDER_HEADERS_JSON }}
+          TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
         run: |
           python scripts/update_trains.py
 
@@ -59,9 +61,9 @@ jobs:
       - name: Install Netlify CLI
         run: npm i -g netlify-cli
 
-      - name: Deploy trains.json to Netlify (prod)
+      - name: Deploy trains.json to Netlify (alias: data)
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
-          netlify deploy --dir deploy --prod --message "auto: $GITHUB_RUN_ID-$GITHUB_RUN_NUMBER"
+          netlify deploy --dir deploy --alias data --message "auto: $GITHUB_RUN_ID-$GITHUB_RUN_NUMBER"
