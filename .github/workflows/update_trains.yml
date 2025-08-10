@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
+    env:
+      DATA_SITE_NAME: traintracker2-0-data   # change if this name is taken
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,17 +56,59 @@ jobs:
         run: |
           python scripts/update_trains.py
 
-      - name: Setup Node
+      - name: Setup Node + tools
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install Netlify CLI
-        run: npm i -g netlify-cli
+      - name: Install Netlify CLI + jq
+        run: |
+          npm i -g netlify-cli
+          sudo apt-get update -y && sudo apt-get install -y jq
 
-      - name: Deploy trains.json to Netlify (alias: data)
+      - name: Ensure data site exists (create if missing, with team context)
+        id: ensure_site
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          DATA_SITE_NAME: ${{ env.DATA_SITE_NAME }}
         run: |
-          netlify deploy --dir deploy --alias data --message "auto: $GITHUB_RUN_ID-$GITHUB_RUN_NUMBER"
+          set -e
+          echo "Fetching current user (team context)..."
+          USER_JSON=$(netlify api getCurrentUser)
+          TEAM_SLUG=$(echo "$USER_JSON" | jq -r '.memberships[0].account.slug')
+          TEAM_ID=$(echo "$USER_JSON" | jq -r '.memberships[0].account.id')
+          echo "Team slug: $TEAM_SLUG"
+          echo "Team id:   $TEAM_ID"
+
+          echo "Looking for existing site named $DATA_SITE_NAME..."
+          SITE_JSON=$(netlify api listSites --data '{ "page": 1, "per_page": 1000 }')
+          SITE_ID=$(echo "$SITE_JSON" | jq -r '.[] | select(.name=="'"$DATA_SITE_NAME"'") | .id' | head -n1)
+
+          if [ -z "$SITE_ID" ] || [ "$SITE_ID" = "null" ]; then
+            echo "No site named $DATA_SITE_NAME. Creating under team $TEAM_SLUG..."
+            CREATE_JSON=$(netlify api createSite --data '{ "account_slug": "'"$TEAM_SLUG"'", "name": "'"$DATA_SITE_NAME"'" }')
+            SITE_ID=$(echo "$CREATE_JSON" | jq -r '.id')
+          else
+            echo "Found existing site: $SITE_ID"
+          fi
+
+          if [ -z "$SITE_ID" ] || [ "$SITE_ID" = "null" ]; then
+            echo "Failed to get or create data site. Check NETLIFY_AUTH_TOKEN." >&2
+            exit 1
+          fi
+
+          echo "site_id=$SITE_ID" >> "$GITHUB_OUTPUT"
+          echo "data_url=https://$DATA_SITE_NAME.netlify.app/trains.json" >> "$GITHUB_OUTPUT"
+          echo "Will deploy to: https://$DATA_SITE_NAME.netlify.app/trains.json"
+
+      - name: Deploy trains.json to data site (prod)
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ steps.ensure_site.outputs.site_id }}
+        run: |
+          netlify deploy --dir deploy --prod --message "auto: $GITHUB_RUN_ID-$GITHUB_RUN_NUMBER"
+
+      - name: Print final data URL
+        run: |
+          echo "Your data file is here:"
+          echo "${{ steps.ensure_site.outputs.data_url }}"
