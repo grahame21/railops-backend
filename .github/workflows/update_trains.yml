@@ -2,7 +2,7 @@ name: Update trains.json (TrainFinder live)
 
 on:
   schedule:
-    - cron: "*/1 * * * *"
+    - cron: "*/1 * * * *"   # every minute
   workflow_dispatch: {}
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 5
 
     env:
-      DATA_SITE_NAME: traintracker2-0-data
+      DATA_SITE_NAME: traintracker2-0-data   # change if this subdomain is taken
 
     steps:
       - name: Checkout
@@ -27,25 +27,39 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Sanity check repo layout
-        run: |
-          echo "Root:" && ls -la
-          echo "scripts/:" && ls -la scripts || true
-
+      # Quick sanity to ensure the script is present
       - name: Show first lines of scripts/fetch_trains.py
         run: |
-          echo "----- scripts/fetch_trains.py (head) -----"
-          sed -n '1,30p' scripts/fetch_trains.py || true
-          echo "------------------------------------------"
+          sed -n '1,40p' scripts/fetch_trains.py
+
+      # Optional but useful: verify cookie is valid
+      - name: Check TrainFinder auth
+        env:
+          TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+        run: |
+          python - << 'PY'
+          import os, requests
+          cookie = os.environ.get("TRAINFINDER_COOKIE_RAW","").strip()
+          if not cookie:
+            raise SystemExit("No TRAINFINDER_COOKIE_RAW set")
+          h = {
+            "x-requested-with":"XMLHttpRequest",
+            "referer":"https://trainfinder.otenko.com/home/nextlevel",
+            "user-agent":"Mozilla/5.0 TrainTracker/2.0"
+          }
+          h["Cookie"] = cookie
+          r = requests.post("https://trainfinder.otenko.com/Home/IsLoggedIn", headers=h, timeout=20)
+          print("IsLoggedIn status:", r.status_code, "body:", r.text[:120])
+          PY
 
       - name: First fetch -> deploy/trains.json
         env:
           TRAINFINDER_VIEWPORT_URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
-          TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
           TRAINFINDER_METHOD: ${{ secrets.TRAINFINDER_METHOD }}
           TRAINFINDER_POST_BODY: ${{ secrets.TRAINFINDER_POST_BODY }}
           TRAINFINDER_HEADERS_JSON: ${{ secrets.TRAINFINDER_HEADERS_JSON }}
           TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
         run: |
           python scripts/fetch_trains.py
 
@@ -55,11 +69,11 @@ jobs:
       - name: Second fetch -> update file again
         env:
           TRAINFINDER_VIEWPORT_URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
-          TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
           TRAINFINDER_METHOD: ${{ secrets.TRAINFINDER_METHOD }}
           TRAINFINDER_POST_BODY: ${{ secrets.TRAINFINDER_POST_BODY }}
           TRAINFINDER_HEADERS_JSON: ${{ secrets.TRAINFINDER_HEADERS_JSON }}
           TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
         run: |
           python scripts/fetch_trains.py
 
@@ -101,8 +115,16 @@ jobs:
           fi
 
           echo "site_id=$SITE_ID" >> "$GITHUB_OUTPUT"
-          echo "data_url=https://$DATA_SITE_NAME.netlify.app/trains.json" >> "$GITHUB_OUTPUT"
-          echo "Will deploy to: https://$DATA_SITE_NAME.netlify.app/trains.json"
+
+      - name: Get actual site URL (print it)
+        id: site_info
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          SITE_ID="${{ steps.ensure_site.outputs.site_id }}"
+          INFO=$(netlify api getSite --data '{ "site_id": "'"$SITE_ID"'" }')
+          echo "$INFO" | jq -r '{name, url, ssl_url}'
+          echo "ssl_url=$(echo "$INFO" | jq -r .ssl_url)" >> "$GITHUB_OUTPUT"
 
       - name: Deploy trains.json to data site (prod)
         env:
@@ -113,5 +135,5 @@ jobs:
 
       - name: Print final data URL
         run: |
-          echo "Your data file is here:"
-          echo "${{ steps.ensure_site.outputs.data_url }}"
+          echo "Data file:"
+          echo "${{ steps.site_info.outputs.ssl_url }}/trains.json"
