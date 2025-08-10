@@ -8,85 +8,142 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 6
 
     env:
-      DATA_SITE_NAME: traintracker2-0-data   # change if this subdomain is taken
+      DATA_SITE_NAME: traintracker2-0-data   # change if taken
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Python deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
-
-      # Quick sanity to ensure the script is present
-      - name: Show first lines of scripts/fetch_trains.py
-        run: |
-          sed -n '1,40p' scripts/fetch_trains.py
-
-      # Optional but useful: verify cookie is valid
-      - name: Check TrainFinder auth
-        env:
-          TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
-        run: |
-          python - << 'PY'
-          import os, requests
-          cookie = os.environ.get("TRAINFINDER_COOKIE_RAW","").strip()
-          if not cookie:
-            raise SystemExit("No TRAINFINDER_COOKIE_RAW set")
-          h = {
-            "x-requested-with":"XMLHttpRequest",
-            "referer":"https://trainfinder.otenko.com/home/nextlevel",
-            "user-agent":"Mozilla/5.0 TrainTracker/2.0"
-          }
-          h["Cookie"] = cookie
-          r = requests.post("https://trainfinder.otenko.com/Home/IsLoggedIn", headers=h, timeout=20)
-          print("IsLoggedIn status:", r.status_code, "body:", r.text[:120])
-          PY
-
-      - name: First fetch -> deploy/trains.json
-        env:
-          TRAINFINDER_VIEWPORT_URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
-          TRAINFINDER_METHOD: ${{ secrets.TRAINFINDER_METHOD }}
-          TRAINFINDER_POST_BODY: ${{ secrets.TRAINFINDER_POST_BODY }}
-          TRAINFINDER_HEADERS_JSON: ${{ secrets.TRAINFINDER_HEADERS_JSON }}
-          TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
-          TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
-        run: |
-          python scripts/fetch_trains.py
-
-      - name: Wait 30 seconds
-        run: sleep 30
-
-      - name: Second fetch -> update file again
-        env:
-          TRAINFINDER_VIEWPORT_URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
-          TRAINFINDER_METHOD: ${{ secrets.TRAINFINDER_METHOD }}
-          TRAINFINDER_POST_BODY: ${{ secrets.TRAINFINDER_POST_BODY }}
-          TRAINFINDER_HEADERS_JSON: ${{ secrets.TRAINFINDER_HEADERS_JSON }}
-          TRAINFINDER_COOKIE_RAW: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
-          TRAINFINDER_ASPXAUTH: ${{ secrets.TRAINFINDER_ASPXAUTH }}
-        run: |
-          python scripts/fetch_trains.py
-
-      - name: Setup Node + tools
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install Netlify CLI + jq
+      - name: Install Netlify CLI + jq + curl
         run: |
           npm i -g netlify-cli
-          sudo apt-get update -y && sudo apt-get install -y jq
+          sudo apt-get update -y
+          sudo apt-get install -y jq curl
 
+      # --- FETCH (via curl, mirroring your browser request) ---
+      - name: Fetch trains.json via curl (pass 1)
+        env:
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}                 # ".ASPXAUTH=..."
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}                  # e.g. https://trainfinder.otenko.com/Home/GetViewPortData  (you can include ?lat=...&lng=...&zm=...)
+          REF: ${{ secrets.TRAINFINDER_REFERER }}                       # e.g. https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
+          UA: ${{ secrets.TRAINFINDER_UA }}                             # optional (defaults below)
+          METHOD: ${{ secrets.TRAINFINDER_METHOD }}                     # "POST" or "GET" (default POST)
+        run: |
+          set -euo pipefail
+          mkdir -p deploy
+
+          # Build final URL with a cache-busting param
+          TS=$(date +%s)
+          if [[ "$URL" == *"?"* ]]; then
+            FINAL_URL="${URL}&t=${TS}"
+          else
+            FINAL_URL="${URL}?t=${TS}"
+          fi
+
+          METH="${METHOD:-POST}"
+          echo "[info] $METH $FINAL_URL"
+
+          # Common headers (trimmed to what's needed)
+          HDR_ACCEPT='accept: */*'
+          HDR_ORIGIN='origin: https://trainfinder.otenko.com'
+          HDR_XREQ='x-requested-with: XMLHttpRequest'
+          HDR_REF="referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}"
+          HDR_UA="user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}"
+
+          if [[ "$METH" == "GET" ]]; then
+            curl --fail-with-body -sS \
+              -X GET "$FINAL_URL" \
+              -H "$HDR_ACCEPT" \
+              -H "$HDR_REF" \
+              -H "$HDR_XREQ" \
+              -H "$HDR_UA" \
+              -b "$COOKIE" \
+              -o deploy/trains.json
+          else
+            # POST with empty body (your curl had content-length: 0)
+            curl --fail-with-body -sS \
+              -X POST "$FINAL_URL" \
+              -H "$HDR_ACCEPT" \
+              -H "$HDR_REF" \
+              -H "$HDR_ORIGIN" \
+              -H "$HDR_XREQ" \
+              -H "$HDR_UA" \
+              -b "$COOKIE" \
+              -o deploy/trains.json
+          fi
+
+          # Quick peek
+          echo "[head] trains.json:"
+          head -c 400 deploy/trains.json | tr -d '\n' || true
+          echo
+
+          # Netlify headers for no-cache + CORS
+          cat > deploy/_headers <<'H'
+          /trains.json
+            Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+            Pragma: no-cache
+            Expires: 0
+            Access-Control-Allow-Origin: *
+            Access-Control-Allow-Methods: GET, OPTIONS
+            Access-Control-Allow-Headers: *
+          H
+
+      - name: Wait 20 seconds
+        run: sleep 20
+
+      - name: Fetch trains.json via curl (pass 2)
+        env:
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
+          REF: ${{ secrets.TRAINFINDER_REFERER }}
+          UA: ${{ secrets.TRAINFINDER_UA }}
+          METHOD: ${{ secrets.TRAINFINDER_METHOD }}
+        run: |
+          set -euo pipefail
+          TS=$(date +%s)
+          if [[ "$URL" == *"?"* ]]; then
+            FINAL_URL="${URL}&t=${TS}"
+          else
+            FINAL_URL="${URL}?t=${TS}"
+          fi
+          METH="${METHOD:-POST}"
+          echo "[info] $METH $FINAL_URL"
+
+          HDR_ACCEPT='accept: */*'
+          HDR_ORIGIN='origin: https://trainfinder.otenko.com'
+          HDR_XREQ='x-requested-with: XMLHttpRequest'
+          HDR_REF="referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}"
+          HDR_UA="user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}"
+
+          if [[ "$METH" == "GET" ]]; then
+            curl --fail-with-body -sS \
+              -X GET "$FINAL_URL" \
+              -H "$HDR_ACCEPT" \
+              -H "$HDR_REF" \
+              -H "$HDR_XREQ" \
+              -H "$HDR_UA" \
+              -b "$COOKIE" \
+              -o deploy/trains.json
+          else
+            curl --fail-with-body -sS \
+              -X POST "$FINAL_URL" \
+              -H "$HDR_ACCEPT" \
+              -H "$HDR_REF" \
+              -H "$HDR_ORIGIN" \
+              -H "$HDR_XREQ" \
+              -H "$HDR_UA" \
+              -b "$COOKIE" \
+              -o deploy/trains.json
+          fi
+
+          echo "[head] trains.json:"
+          head -c 400 deploy/trains.json | tr -d '\n' || true
+          echo
+
+      # --- NETLIFY DEPLOY (creates/uses a data-only site) ---
       - name: Ensure data site exists (with team context)
         id: ensure_site
         env:
