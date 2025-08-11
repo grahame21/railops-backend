@@ -3,12 +3,13 @@ name: Update trains.json (TrainFinder live)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *"   # every 5 minutes
 
 jobs:
   update-trains:
     runs-on: ubuntu-latest
     timeout-minutes: 6
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -19,27 +20,31 @@ jobs:
           sudo apt-get install -y curl
           npm i -g netlify-cli
 
+      # 1) Auth sanity: POST with an empty body (forces Content-Length: 0)
       - name: Check TrainFinder auth
         env:
-          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}   # e.g. ".ASPXAUTH=...; ASP.NET_SessionId=..."
         run: |
           set -e
           echo "[info] POST IsLoggedIn"
           curl -sS -X POST 'https://trainfinder.otenko.com/Home/IsLoggedIn' \
+            -H 'accept: */*' \
             -H 'x-requested-with: XMLHttpRequest' \
             -H 'origin: https://trainfinder.otenko.com' \
             -H 'referer: https://trainfinder.otenko.com/home/nextlevel' \
             -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
             -b "$COOKIE" \
+            --data-raw '' \
             -o islogin.txt
           echo -n "[IsLoggedIn] "; head -c 200 islogin.txt; echo
-          grep -qi 'true' islogin.txt || (echo "::error::Cookie invalid. Refresh TRAINFINDER_COOKIE_RAW" && exit 1)
+          grep -qi 'true' islogin.txt || (echo "::error::Cookie invalid or not accepted. Recopy full Cookie header value." && exit 1)
 
-      - name: Fetch trains.json (POST empty body, referer has viewport)
+      # 2) Fetch the viewport data via POST with empty body; Referer carries lat/lng/zm
+      - name: Fetch trains.json (POST empty body)
         env:
           COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
-          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
-          REF: ${{ secrets.TRAINFINDER_REFERER }}
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}    # https://trainfinder.otenko.com/Home/GetViewPortData
+          REF: ${{ secrets.TRAINFINDER_REFERER }}         # https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
         run: |
           set -e
           mkdir -p deploy
@@ -55,10 +60,10 @@ jobs:
             --data-raw '' \
             -o deploy/trains.json
           echo -n "[head] "; head -c 300 deploy/trains.json | tr -d '\n'; echo
-          # warn if it's the null blob (no viewport recognized)
+          # Warn if server returned the "nulls" blob (means viewport not recognized)
           grep -q '"favs":null' deploy/trains.json && echo "::warning::Null payload. Adjust lat/lng/zm in TRAINFINDER_REFERER."
 
-          # Netlify headers (CORS + no-cache)
+          # Netlify headers for CORS + no-cache
           cat > deploy/_headers <<'H'
           /trains.json
             Cache-Control: no-store, no-cache, must-revalidate, max-age=0
@@ -69,6 +74,7 @@ jobs:
             Access-Control-Allow-Headers: *
           H
 
+      # 3) Deploy to a fixed Netlify site (provide its Site ID in secrets)
       - name: Deploy trains.json to Netlify (prod)
         uses: nwtgck/actions-netlify@v2
         with:
