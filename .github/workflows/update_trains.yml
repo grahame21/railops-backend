@@ -3,13 +3,12 @@ name: Update trains.json (TrainFinder live)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/2 * * * *"   # every 2 minutes
+    - cron: "*/5 * * * *"
 
 jobs:
   update-trains:
     runs-on: ubuntu-latest
     timeout-minutes: 6
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -17,69 +16,49 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y jq curl
+          sudo apt-get install -y curl
           npm i -g netlify-cli
 
-      # ---- Try GET first (viewport in URL) ----
-      - name: Fetch via GET (viewport in URL)
-        id: get_fetch
-        continue-on-error: true
+      - name: Check TrainFinder auth
         env:
-          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}        # e.g. https://trainfinder.otenko.com/Home/GetViewPortData?lat=...&lng=...&zm=...
-          REF: ${{ secrets.TRAINFINDER_REFERER }}             # e.g. https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
-          UA:  ${{ secrets.TRAINFINDER_UA }}
-          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}       # .ASPXAUTH=...
-        run: |
-          set -euo pipefail
-          mkdir -p deploy
-          echo "[info] GET $URL"
-          curl --fail-with-body -sS \
-            -X GET "$URL" \
-            -H 'accept: */*' \
-            -H 'accept-language: en-GB,en;q=0.9,en-US;q=0.8,en-AU;q=0.7' \
-            -H "referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}" \
-            -H 'x-requested-with: XMLHttpRequest' \
-            -H "user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}" \
-            -b "$COOKIE" \
-            -o deploy/trains.json
-          head -c 400 deploy/trains.json | tr -d '\n' || true; echo
-
-      # ---- If GET failed, try POST with empty body (exactly like your browser) ----
-      - name: Fetch via POST (empty body) fallback
-        if: steps.get_fetch.outcome != 'success'
-        env:
-          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}        # can be plain endpoint OR include lat/lng/zm
-          REF: ${{ secrets.TRAINFINDER_REFERER }}
-          UA:  ${{ secrets.TRAINFINDER_UA }}
           COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
         run: |
-          set -euo pipefail
+          set -e
+          echo "[info] POST IsLoggedIn"
+          curl -sS -X POST 'https://trainfinder.otenko.com/Home/IsLoggedIn' \
+            -H 'x-requested-with: XMLHttpRequest' \
+            -H 'origin: https://trainfinder.otenko.com' \
+            -H 'referer: https://trainfinder.otenko.com/home/nextlevel' \
+            -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
+            -b "$COOKIE" \
+            -o islogin.txt
+          echo -n "[IsLoggedIn] "; head -c 200 islogin.txt; echo
+          grep -qi 'true' islogin.txt || (echo "::error::Cookie invalid. Refresh TRAINFINDER_COOKIE_RAW" && exit 1)
+
+      - name: Fetch trains.json (POST empty body, referer has viewport)
+        env:
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
+          REF: ${{ secrets.TRAINFINDER_REFERER }}
+        run: |
+          set -e
+          mkdir -p deploy
           echo "[info] POST $URL"
           curl --fail-with-body -sS \
             -X POST "$URL" \
             -H 'accept: */*' \
-            -H 'accept-language: en-GB,en;q=0.9,en-US;q=0.8,en-AU;q=0.7' \
-            -H "referer: ${REF:-https://trainfinder.otenko.com/home/nextlevel}" \
+            -H "referer: ${REF}" \
             -H 'origin: https://trainfinder.otenko.com' \
             -H 'x-requested-with: XMLHttpRequest' \
-            -H "user-agent: ${UA:-Mozilla/5.0 (TrainTracker/2.0)}" \
+            -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
             -b "$COOKIE" \
             --data-raw '' \
             -o deploy/trains.json
-          head -c 400 deploy/trains.json | tr -d '\n' || true; echo
+          echo -n "[head] "; head -c 300 deploy/trains.json | tr -d '\n'; echo
+          # warn if it's the null blob (no viewport recognized)
+          grep -q '"favs":null' deploy/trains.json && echo "::warning::Null payload. Adjust lat/lng/zm in TRAINFINDER_REFERER."
 
-      # ---- Quick sanity: fail fast if response is the "all nulls" blob or HTML error ----
-      - name: Validate response shape
-        run: |
-          set -e
-          if grep -q '<h1 class="error">' deploy/trains.json || grep -q '<html' deploy/trains.json; then
-            echo "::error::Server returned HTML error page (likely bad cookie or headers)."
-            exit 1
-          fi
-          if grep -q '"favs":null' deploy/trains.json; then
-            echo "::warning::Server returned null payload (no viewport). Check URL/Referer lat,lng,zm."
-          fi
-          # Write Netlify headers (no-cache + CORS)
+          # Netlify headers (CORS + no-cache)
           cat > deploy/_headers <<'H'
           /trains.json
             Cache-Control: no-store, no-cache, must-revalidate, max-age=0
@@ -90,39 +69,16 @@ jobs:
             Access-Control-Allow-Headers: *
           H
 
-      # ---- Deploy to your Netlify data site ----
-      - name: Ensure data site exists (team aware)
-        id: ensure_site
+      - name: Deploy trains.json to Netlify (prod)
+        uses: nwtgck/actions-netlify@v2
+        with:
+          publish-dir: ./deploy
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Automated update trains.json"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: |
-          set -e
-          SITE_NAME="${{ secrets.NETLIFY_DATA_SITE_NAME }}"
-          if [ -z "$SITE_NAME" ]; then SITE_NAME="traintracker2-0-data"; fi
-          echo "Target site: $SITE_NAME"
-          USER_JSON=$(netlify api getCurrentUser)
-          TEAM_SLUG=$(echo "$USER_JSON" | jq -r '.memberships[0].account.slug')
-          SITE_JSON=$(netlify api listSites --data '{ "page": 1, "per_page": 1000 }')
-          SITE_ID=$(echo "$SITE_JSON" | jq -r '.[] | select(.name=="'"$SITE_NAME"'") | .id' | head -n1)
-          if [ -z "$SITE_ID" ] || [ "$SITE_ID" = "null" ]; then
-            CREATE_JSON=$(netlify api createSite --data '{ "account_slug": "'"$TEAM_SLUG"'", "name": "'"$SITE_NAME"'" }')
-            SITE_ID=$(echo "$CREATE_JSON" | jq -r '.id')
-          fi
-          echo "site_id=$SITE_ID" >> "$GITHUB_OUTPUT"
-
-      - name: Deploy trains.json (prod)
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ steps.ensure_site.outputs.site_id }}
-        run: |
-          netlify deploy --dir deploy --prod --message "auto: $GITHUB_RUN_ID-$GITHUB_RUN_NUMBER"
-
-      - name: Print data URL
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: |
-          SITE_ID="${{ steps.ensure_site.outputs.site_id }}"
-          INFO=$(netlify api getSite --data '{ "site_id": "'"$SITE_ID"'" }')
-          SSL_URL=$(echo "$INFO" | jq -r .ssl_url)
-          echo "Data file:"
-          echo "${SSL_URL}/trains.json"
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
