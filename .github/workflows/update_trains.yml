@@ -39,33 +39,44 @@ jobs:
           echo -n "[IsLoggedIn] "; head -c 200 islogin.txt | tr -d '\n'; echo
           grep -qi 'true' islogin.txt || (echo "::error::Cookie invalid or not accepted. Recopy full Cookie header value." && exit 1)
 
-      # 2) Fetch viewport data: POST empty body + viewport params appended to URL
-      - name: Fetch trains.json (POST empty body with viewport in URL)
+      # 2) Warm up session on NextLevel, then POST viewport (empty body) to GetViewPortData
+      - name: Fetch trains.json (warm-up + POST)
         env:
-          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
-          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}    # https://trainfinder.otenko.com/Home/GetViewPortData
-          REF: ${{ secrets.TRAINFINDER_REFERER }}         # https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}        # full Cookie header value
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}         # https://trainfinder.otenko.com/Home/GetViewPortData
+          REF: ${{ secrets.TRAINFINDER_REFERER }}              # https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
         run: |
           set -e
           mkdir -p deploy
+          touch cj.txt
 
           # Extract lat/lng/zm from REF
           LAT=$(echo "$REF" | sed -n 's/.*[?&]lat=\([^&]*\).*/\1/p')
           LNG=$(echo "$REF" | sed -n 's/.*[?&]lng=\([^&]*\).*/\1/p')
           ZM=$(echo "$REF" | sed -n 's/.*[?&]zm=\([^&]*\).*/\1/p')
-
           if [ -z "$LAT" ] || [ -z "$LNG" ] || [ -z "$ZM" ]; then
             echo "::error::TRAINFINDER_REFERER must include lat,lng,zm"; exit 1
           fi
 
-          # Build URL with viewport
+          # Build URL with viewport params
           if [[ "$URL" == *"?"* ]]; then
             VURL="${URL}&lat=${LAT}&lng=${LNG}&zm=${ZM}"
           else
             VURL="${URL}?lat=${LAT}&lng=${LNG}&zm=${ZM}"
           fi
 
-          echo "[info] POST $VURL (from REF=$REF)"
+          echo "[warmup] GET $REF"
+          # 1) Warm-up: hit NextLevel with your cookie; capture any session cookies issued
+          curl -sS -X GET "$REF" \
+            -H 'accept: text/html,*/*' \
+            -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
+            -H 'referer: https://trainfinder.otenko.com/' \
+            -b "$COOKIE" \
+            --cookie-jar cj.txt \
+            -o /dev/null
+
+          echo "[info] POST $VURL"
+          # 2) Actual data call: POST empty body using BOTH your cookie and the jar
           CODE=$(curl -sS -o deploy/trains.json -w "%{http_code}" \
             -X POST "$VURL" \
             -H 'accept: */*' \
@@ -74,17 +85,19 @@ jobs:
             -H 'x-requested-with: XMLHttpRequest' \
             -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
             -b "$COOKIE" \
+            -b cj.txt \
+            --cookie-jar cj.txt \
             --data-raw '')
 
-          echo "[POST] HTTP $CODE  $(head -c 200 deploy/trains.json | tr -d '\n')"
+          echo "[POST] HTTP $CODE  $(head -c 220 deploy/trains.json | tr -d '\n')"
           test "$CODE" -ge 200 -a "$CODE" -lt 400
 
           # Warn if server returned the "nulls" blob (means viewport not recognized)
           if grep -q '"favs":null' deploy/trains.json; then
-            echo "::warning::Null payload. Try a different zoom (zm=6 or zm=7) or adjust lat/lng and update TRAINFINDER_REFERER."
+            echo "::warning::Still null. Try a different zoom (zm=6/7) or slightly different lat/lng in TRAINFINDER_REFERER, then rerun."
           fi
 
-          # Netlify headers for CORS + no-cache
+          # CORS/no-cache headers for Netlify
           cat > deploy/_headers <<'H'
           /trains.json
             Cache-Control: no-store, no-cache, must-revalidate, max-age=0
@@ -95,7 +108,7 @@ jobs:
             Access-Control-Allow-Headers: *
           H
 
-      # 3) Deploy to a fixed Netlify site (provide Site ID in secrets)
+      # 3) Deploy to your Netlify site (fixed Site ID in secrets)
       - name: Deploy trains.json to Netlify (prod)
         uses: nwtgck/actions-netlify@v2
         with:
