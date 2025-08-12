@@ -3,7 +3,7 @@ name: Update trains.json (TrainFinder live)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes
+    - cron: "*/5 * * * *"
 
 jobs:
   update-trains:
@@ -20,36 +20,60 @@ jobs:
           sudo apt-get install -y curl
           npm i -g netlify-cli
 
-      # 1) Auth sanity: POST with an empty body (forces Content-Length: 0)
-      - name: Check TrainFinder auth
+      - name: Check TrainFinder auth (POST empty body)
+        id: auth
         env:
-          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}   # e.g. ".ASPXAUTH=...; ASP.NET_SessionId=..."
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
         run: |
           set -e
           echo "[info] POST IsLoggedIn"
-          curl -sS -X POST 'https://trainfinder.otenko.com/Home/IsLoggedIn' \
+          CODE=$(curl -sS -o islogin.txt -w "%{http_code}" -X POST 'https://trainfinder.otenko.com/Home/IsLoggedIn' \
             -H 'accept: */*' \
             -H 'x-requested-with: XMLHttpRequest' \
             -H 'origin: https://trainfinder.otenko.com' \
             -H 'referer: https://trainfinder.otenko.com/home/nextlevel' \
             -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
             -b "$COOKIE" \
-            --data-raw '' \
-            -o islogin.txt
-          echo -n "[IsLoggedIn] "; head -c 200 islogin.txt; echo
-          grep -qi 'true' islogin.txt || (echo "::error::Cookie invalid or not accepted. Recopy full Cookie header value." && exit 1)
+            --data-raw '')
+          echo "[IsLoggedIn] HTTP $CODE  $(head -c 200 islogin.txt | tr -d '\n')"
+          grep -qi 'true' islogin.txt || (echo "::error::Cookie invalid or missing session. Recopy FULL Cookie header value." && exit 1)
 
-      # 2) Fetch the viewport data via POST with empty body; Referer carries lat/lng/zm
-      - name: Fetch trains.json (POST empty body)
+      # Attempt 1 — GET with viewport in URL
+      - name: Fetch trains.json (GET with viewport)
+        id: fetch_get
+        continue-on-error: true
         env:
           COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
-          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}    # https://trainfinder.otenko.com/Home/GetViewPortData
-          REF: ${{ secrets.TRAINFINDER_REFERER }}         # https://trainfinder.otenko.com/home/nextlevel?lat=...&lng=...&zm=...
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
+          REF: ${{ secrets.TRAINFINDER_REFERER }}
         run: |
           set -e
           mkdir -p deploy
+          VURL="${URL}?lat=$(echo "$REF" | sed -n 's/.*lat=\([^&]*\).*/\1/p')&lng=$(echo "$REF" | sed -n 's/.*lng=\([^&]*\).*/\1/p')&zm=$(echo "$REF" | sed -n 's/.*zm=\([^&]*\).*/\1/p')"
+          echo "[info] GET $VURL"
+          CODE=$(curl -sS -o deploy/trains.json -w "%{http_code}" \
+            -X GET "$VURL" \
+            -H 'accept: */*' \
+            -H "referer: ${REF}" \
+            -H 'x-requested-with: XMLHttpRequest' \
+            -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
+            -b "$COOKIE")
+          echo "[GET] HTTP $CODE  $(head -c 200 deploy/trains.json | tr -d '\n')"
+          test "$CODE" -ge 200 -a "$CODE" -lt 400
+
+      # Attempt 2 — POST with empty body
+      - name: Fetch trains.json (POST empty body)
+        id: fetch_post
+        if: steps.fetch_get.outcome != 'success'
+        continue-on-error: true
+        env:
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
+          REF: ${{ secrets.TRAINFINDER_REFERER }}
+        run: |
+          set -e
           echo "[info] POST $URL"
-          curl --fail-with-body -sS \
+          CODE=$(curl -sS -o deploy/trains.json -w "%{http_code}" \
             -X POST "$URL" \
             -H 'accept: */*' \
             -H "referer: ${REF}" \
@@ -57,13 +81,51 @@ jobs:
             -H 'x-requested-with: XMLHttpRequest' \
             -H 'user-agent: Mozilla/5.0 (TrainTracker/2.0)' \
             -b "$COOKIE" \
-            --data-raw '' \
-            -o deploy/trains.json
-          echo -n "[head] "; head -c 300 deploy/trains.json | tr -d '\n'; echo
-          # Warn if server returned the "nulls" blob (means viewport not recognized)
-          grep -q '"favs":null' deploy/trains.json && echo "::warning::Null payload. Adjust lat/lng/zm in TRAINFINDER_REFERER."
+            --data-raw '')
+          echo "[POST] HTTP $CODE  $(head -c 200 deploy/trains.json | tr -d '\n')"
+          test "$CODE" -ge 200 -a "$CODE" -lt 400
 
-          # Netlify headers for CORS + no-cache
+      # Attempt 3 — POST empty body + extra browser headers
+      - name: Fetch trains.json (POST w/ extras)
+        id: fetch_post2
+        if: steps.fetch_get.outcome != 'success' && steps.fetch_post.outcome != 'success'
+        env:
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE_RAW }}
+          URL: ${{ secrets.TRAINFINDER_VIEWPORT_URL }}
+          REF: ${{ secrets.TRAINFINDER_REFERER }}
+        run: |
+          set -e
+          echo "[info] POST $URL (extra headers)"
+          CODE=$(curl -sS -o deploy/trains.json -w "%{http_code}" \
+            -X POST "$URL" \
+            -H 'accept: */*' \
+            -H 'accept-language: en-GB,en;q=0.9,en-US;q=0.8,en-AU;q=0.7' \
+            -H "referer: ${REF}" \
+            -H 'origin: https://trainfinder.otenko.com' \
+            -H 'sec-fetch-dest: empty' \
+            -H 'sec-fetch-mode: cors' \
+            -H 'sec-fetch-site: same-origin' \
+            -H 'x-requested-with: XMLHttpRequest' \
+            -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0' \
+            -b "$COOKIE" \
+            --data-raw '')
+          echo "[POST2] HTTP $CODE  $(head -c 200 deploy/trains.json | tr -d '\n')"
+          test "$CODE" -ge 200 -a "$CODE" -lt 400
+
+      - name: Validate response
+        run: |
+          set -e
+          if [ ! -s deploy/trains.json ]; then
+            echo "::error::No trains.json was written (all attempts failed)."; exit 1;
+          fi
+          if grep -q '<html' deploy/trains.json || grep -q '<h1' deploy/trains.json; then
+            echo "::error::Server returned HTML (HTTP 500/redirect). Usually bad cookie or blocked request."
+            exit 1
+          fi
+          if grep -q '"favs":null' deploy/trains.json; then
+            echo "::warning::Null payload: the server did not detect your viewport. Ensure REF has lat,lng,zm and matches your area."
+          fi
+          # Write CORS/no-cache headers for Netlify
           cat > deploy/_headers <<'H'
           /trains.json
             Cache-Control: no-store, no-cache, must-revalidate, max-age=0
@@ -74,7 +136,6 @@ jobs:
             Access-Control-Allow-Headers: *
           H
 
-      # 3) Deploy to a fixed Netlify site (provide its Site ID in secrets)
       - name: Deploy trains.json to Netlify (prod)
         uses: nwtgck/actions-netlify@v2
         with:
