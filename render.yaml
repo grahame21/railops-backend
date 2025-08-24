@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: railops-json
+    env: docker
+    plan: starter
+    autoDeploy: true
