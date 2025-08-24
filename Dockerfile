@@ -1,14 +1,13 @@
-# ✅ Uses Playwright image with browsers preinstalled
-FROM mcr.microsoft.com/playwright/python:v1.45.0-jammy
+FROM python:3.10-slim
 
 WORKDIR /app
-COPY app/requirements.txt /app/
-
-# Flask/gunicorn/requests; playwright already present in this image
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app /app
 
-ENV PORT=10000
-EXPOSE 10000
-CMD ["bash","-lc","gunicorn -w 1 -b 0.0.0.0:${PORT} server:app --timeout 120"]
+# (optional) avoid python buffering in logs
+ENV PYTHONUNBUFFERED=1
+
+# IMPORTANT: shell form so $PORT expands on Render
+CMD gunicorn -w 1 -b 0.0.0.0:$PORT app:app --timeout 120 --graceful-timeout 30
