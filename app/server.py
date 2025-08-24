@@ -1,12 +1,33 @@
-# ---- STRICT train extractor (drop-in) ----
-import math, time, json
+# ---- server.py (full) ----
+import os, json, time, math, asyncio, threading
 from datetime import datetime, timezone
+from pathlib import Path
+from flask import Flask, jsonify, send_file, Response
+try:
+    from flask_cors import CORS
+    HAVE_CORS = True
+except Exception:
+    HAVE_CORS = False
 
+# ---------- Config ----------
+OUT_DIR = Path("/app/static")
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+OUT_PATH = OUT_DIR / "trains.json"
+
+DEFAULT_REFERERS = (
+    # Feel free to tweak/append; you can also set TRAINFINDER_REFERER in Render
+    "https://trainfinder.otenko.com/home/nextlevel?lat=-30.0&lng=136.0&zm=6;"
+    "https://trainfinder.otenko.com/home/nextlevel?lat=-25.5&lng=134.5&zm=6"
+)
+
+FETCH_INTERVAL_SEC = int(os.getenv("FETCH_INTERVAL_SEC", "60"))
+
+# ---------- Utilities / Extractor (strict: only trains) ----------
 PLACE_WORDS = {"station","siding","loop","yard","depot","junction","platform","crossing",
                "halt","terminal","shelter","works","mine","loader","silo"}
 
 def _num(v):
-    try: 
+    try:
         if v is None: return None
         x = float(v)
         if math.isnan(x): return None
@@ -15,8 +36,11 @@ def _num(v):
         return None
 
 def _get(o, keys):
-    for k in (keys if isinstance(keys,(list,tuple)) else [keys]):
-        if isinstance(o, dict) and k in o: return o[k]
+    if isinstance(keys, (list, tuple)):
+        for k in keys:
+            if isinstance(o, dict) and k in o: return o[k]
+    else:
+        if isinstance(o, dict) and keys in o: return o[keys]
     return None
 
 def _latlon(r):
@@ -36,7 +60,7 @@ def _parse_ts(v):
         return int(datetime.fromisoformat(s).timestamp()*1000)
     except Exception:
         try:
-            n = int(float(v));  # secs?
+            n = int(float(v))
             if n < 10_000_000_000: n *= 1000
             return n
         except Exception:
@@ -58,7 +82,7 @@ def _is_train_like(r):
     oper = _get(r, ["operator","Operator","company","Company","owner","Owner"])
     if _looks_place_text(name) or _looks_place_text(oper): 
         return False
-    return False  # be strict: no dynamics => not a train
+    return False  # strict: no dynamics => not a train
 
 def _train_id(r, idx):
     for k in ["id","ID","Id","ServiceNumber","Headcode","HeadCode","TrainId","Run","Name","Unit","Consist"]:
@@ -88,7 +112,6 @@ def _all_arrays(obj, out=None):
     return out
 
 def _score_array(rows):
-    # higher = more train-like
     if not rows: return -1
     smp = rows[:80]
     dyn = plc = have_ll = 0
@@ -105,8 +128,7 @@ def extract_trains_from_payload(payload, max_age_min=60):
     arrays.sort(key=_score_array, reverse=True)
     best = arrays[0] if arrays else None
     if not best or _score_array(best) < 10:
-        return []  # nothing train-like
-    # latest per id and fresh
+        return []
     now = int(time.time()*1000)
     latest = {}
     for i, r in enumerate(best):
@@ -119,6 +141,131 @@ def extract_trains_from_payload(payload, max_age_min=60):
         if t and (now - t) > max_age_min*60*1000: 
             continue
         k = _train_id(r, i)
-        if (k not in latest) or (t >= latest[k].get("ts", 0)):
-            latest[k] = _normalize(r, i)
-    return [v for v in latest.values() if v]
+        n = _normalize(r, i)
+        if n and ((k not in latest) or ((n["ts"] or 0) >= (latest[k]["ts"] or 0))):
+            latest[k] = n
+    return list(latest.values())
+
+# ---------- Playwright capture ----------
+async def fetch_trains_with_browser_once(referer: str, cookie_value: str, timeout_ms=15000):
+    from playwright.async_api import async_playwright
+    UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
+    candidates = []
+
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(headless=True, args=["--no-sandbox","--disable-dev-shm-usage"])
+        context = await browser.new_context(
+            user_agent=UA,
+            viewport={"width": 430, "height": 860},
+            locale="en-AU",
+            timezone_id="Australia/Adelaide"
+        )
+        if cookie_value:
+            await context.add_cookies([{
+                "name":"ASPXAUTH","value":cookie_value,
+                "domain":"trainfinder.otenko.com","path":"/",
+                "httpOnly":True,"secure":True
+            }])
+        page = await context.new_page()
+
+        async def tap_response(resp):
+            try:
+                if resp.request.resource_type not in ("xhr","fetch"): 
+                    return
+                if resp.status != 200: 
+                    return
+                ctype = (resp.headers or {}).get("content-type","")
+                if "json" not in ctype.lower():
+                    if int(resp.headers.get("content-length","0") or 0) > 1_000_000:
+                        return
+                data = await resp.json()
+            except Exception:
+                return
+            rows = extract_trains_from_payload(data)
+            if rows and len(rows) >= 3:
+                # score by count (simple)
+                candidates.append((len(rows), rows))
+
+        page.on("response", lambda resp: asyncio.create_task(tap_response(resp)))
+
+        await page.goto(referer, wait_until="domcontentloaded", timeout=timeout_ms)
+        try:
+            await page.wait_for_load_state("networkidle", timeout=8000)
+        except Exception:
+            pass
+        await asyncio.sleep(3)
+
+        await context.close()
+        await browser.close()
+
+    if candidates:
+        candidates.sort(key=lambda t: t[0], reverse=True)
+        return candidates[0][1]
+    return []
+
+# ---------- Periodic writer ----------
+def _write_trains_file(trains):
+    payload = {
+        "updated": datetime.now(timezone.utc).isoformat(),
+        "trains": trains
+    }
+    OUT_PATH.write_text(json.dumps(payload), encoding="utf-8")
+    print(f"{datetime.now(timezone.utc).isoformat()} wrote trains.json with {len(trains)} trains", flush=True)
+
+async def fetch_and_write_once_async():
+    referers = (os.getenv("TRAINFINDER_REFERER") or DEFAULT_REFERERS).split(";")
+    cookie   = os.getenv("ASPXAUTH", "")
+    for ref in map(str.strip, referers):
+        if not ref: continue
+        trains = await fetch_trains_with_browser_once(ref, cookie)
+        if trains:
+            _write_trains_file(trains)
+            return
+    # If nothing captured, keep previous file but log:
+    print(f"{datetime.now(timezone.utc).isoformat()} no trains captured (check cookie/referer).", flush=True)
+
+def background_loop():
+    # create a placeholder file if missing
+    if not OUT_PATH.exists():
+        _write_trains_file([])
+    # periodic run
+    while True:
+        try:
+            asyncio.run(fetch_and_write_once_async())
+        except Exception as e:
+            print("Fetch cycle error:", e, flush=True)
+        time.sleep(FETCH_INTERVAL_SEC)
+
+# ---------- Flask app ----------
+app = Flask(__name__, static_folder=str(OUT_DIR), static_url_path="")
+if HAVE_CORS:
+    CORS(app)  # allow your Netlify/any origin to GET /trains.json
+
+@app.route("/")
+def home():
+    return jsonify({"ok": True, "message": "RailOps backend. GET /trains.json for live data."})
+
+@app.route("/trains.json")
+def trains_json():
+    if not OUT_PATH.exists():
+        _write_trains_file([])
+    return send_file(str(OUT_PATH), mimetype="application/json")
+
+@app.route("/healthz")
+def health():
+    return Response("ok", mimetype="text/plain")
+
+# optional manual fetch trigger
+@app.route("/force")
+def force():
+    try:
+        asyncio.run(fetch_and_write_once_async())
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+# start background on import
+threading.Thread(target=background_loop, daemon=True).start()
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
