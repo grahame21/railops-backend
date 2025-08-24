@@ -9,6 +9,9 @@ from urllib.parse import urlparse, parse_qs
 import requests
 from flask import Flask, jsonify, make_response
 
+# New: headless browser fallback
+from playwright.sync_api import sync_playwright
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 ASPXAUTH = os.getenv("ASPXAUTH", "").strip()
@@ -17,7 +20,7 @@ PROXY_URL = os.getenv("PROXY_URL", "").strip()
 
 PRIMARY_REFERER = os.getenv(
     "TRAINFINDER_REFERER",
-    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=112.0,-44.0,154.0,-9.0"  # AU-wide default
+    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=112.0,-44.0,154.0,-9.0"  # AU-wide
 ).strip()
 
 FALLBACK_REFERERS = [
@@ -38,41 +41,29 @@ lock = threading.Lock()
 
 
 def _parse_referer_viewport(referer: str):
-    """
-    Extract zm and bbox=minlon,minlat,maxlon,maxlat from the referer query string.
-    Returns (zoom:int, (w,s,e,n)) with floats. If missing, returns sensible defaults.
-    """
     try:
         qs = parse_qs(urlparse(referer).query)
         zm = int(qs.get("zm", [6])[0])
-        bbox_str = qs.get("bbox", ["112.0,-44.0,154.0,-9.0"])[0]
-        parts = [float(x) for x in bbox_str.split(",")]
-        if len(parts) == 4:
-            w, s, e, n = parts
-        else:
-            w, s, e, n = 112.0, -44.0, 154.0, -9.0
+        w, s, e, n = [float(x) for x in qs.get("bbox", ["112.0,-44.0,154.0,-9.0"])[0].split(",")]
         return zm, (w, s, e, n)
     except Exception:
         return 6, (112.0, -44.0, 154.0, -9.0)
 
 
 def _post_viewport(url: str, headers: dict, cookies: dict, payload: dict):
-    """POST helper with form-encoded payload."""
-    form_headers = headers.copy()
-    form_headers["content-type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-    return session.post(url, headers=form_headers, cookies=cookies, data=payload, proxies=proxies, timeout=30)
+    h = headers.copy()
+    h["content-type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+    return session.post(url, headers=h, cookies=cookies, data=payload, proxies=proxies, timeout=30)
 
 
 def _is_all_null(obj):
     return obj is None or (isinstance(obj, dict) and all(v is None for v in obj.values()))
 
 
-def _try_fetch_with_referer(referer: str):
+def _try_fetch_with_requests(referer: str):
     """
-    1) GET NextLevel (primes ASP.NET session).
-    2) Try several POST body shapes to /Home/GetViewPortData using the same session.
-    Returns (data, payload_shape) or (None, None) if still null.
-    Raises on HTTP/network errors.
+    Our original requests-based approach: prime session via GET, then POST with common payload shapes.
+    Returns (data, 'requests:<shape>') or (None, None).
     """
     if not ASPXAUTH:
         raise RuntimeError("ASPXAUTH env var is not set")
@@ -95,20 +86,19 @@ def _try_fetch_with_referer(referer: str):
     }
     cookies = {".ASPXAUTH": ASPXAUTH}
 
-    # 1) Prime session/viewport
+    # 1) Prime ASP.NET session
     g = session.get(referer, headers=browser_headers, cookies=cookies, proxies=proxies, timeout=30)
     g.raise_for_status()
 
-    # 2) Try payload shapes
+    # 2) Try several payload shapes
     url = "https://trainfinder.otenko.com/Home/GetViewPortData"
     payloads = [
         ("bbox_zm", {"bbox": f"{w},{s},{e},{n}", "zm": str(zm)}),
         ("bounds_zoom", {"bounds": f"{w},{s},{e},{n}", "zoom": str(zm)}),
         ("nsew_zoom", {"north": str(n), "south": str(s), "east": str(e), "west": str(w), "zoom": str(zm)}),
         ("vp_combo", {"vp": f"{w},{s},{e},{n}|{zm}"}),
-        ("empty", {}),  # last resort: some builds use empty body
+        ("empty", {}),
     ]
-
     for shape_name, payload in payloads:
         r = _post_viewport(url, xhr_headers, cookies, payload)
         logging.info("POST shape=%s HTTP %s", shape_name, r.status_code)
@@ -116,13 +106,11 @@ def _try_fetch_with_referer(referer: str):
         try:
             data = r.json()
         except Exception:
-            logging.error("Response not JSON for shape=%s", shape_name)
             data = None
 
         if not _is_all_null(data):
-            return data, shape_name
+            return data, f"requests:{shape_name}"
 
-        # brief retry on same shape
         time.sleep(0.8)
         r2 = _post_viewport(url, xhr_headers, cookies, payload)
         logging.info("Retry shape=%s HTTP %s", shape_name, r2.status_code)
@@ -130,31 +118,86 @@ def _try_fetch_with_referer(referer: str):
         try:
             data2 = r2.json()
         except Exception:
-            logging.error("Retry response not JSON for shape=%s", shape_name)
             data2 = None
 
         if not _is_all_null(data2):
-            return data2, shape_name
+            return data2, f"requests:{shape_name}"
 
     return None, None
 
 
+def _try_fetch_with_browser(referer: str):
+    """
+    Browser-context fallback: load the page, let its JS set up session/viewport,
+    then call the XHR from inside the page using fetch().
+    Returns (data, 'browser') or (None, None).
+    """
+    if not ASPXAUTH:
+        raise RuntimeError("ASPXAUTH env var is not set")
+
+    launch_kwargs = {"headless": True, "args": ["--no-sandbox"]}
+    if PROXY_URL:
+        launch_kwargs["proxy"] = {"server": PROXY_URL}
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(**launch_kwargs)
+        context = browser.new_context()
+        # Set auth cookie before navigating
+        context.add_cookies([{
+            "name": ".ASPXAUTH",
+            "value": ASPXAUTH,
+            "domain": "trainfinder.otenko.com",
+            "path": "/",
+            "httpOnly": True,
+            "secure": True,
+            "sameSite": "Lax"
+        }])
+        page = context.new_page()
+        page.goto(referer, wait_until="domcontentloaded", timeout=30000)
+
+        js = """
+            async () => {
+                try {
+                    const res = await fetch('/Home/GetViewPortData', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    try { return await res.json(); } catch { return null; }
+                } catch (e) {
+                    return null;
+                }
+            }
+        """
+        data = page.evaluate(js)
+        context.close()
+        browser.close()
+
+    if data is not None and not _is_all_null(data):
+        return data, "browser"
+    return None, None
+
+
 def fetch_trainfinder():
-    last_error = None
-    for idx, ref in enumerate(REFERERS_TO_TRY, start=1):
+    # 1) Try plain requests first (faster/cheaper)
+    for ref in REFERERS_TO_TRY:
         try:
-            logging.info("Attempt %d with referer: %s", idx, ref)
-            data, shape = _try_fetch_with_referer(ref)
+            logging.info("Attempt (requests) with referer: %s", ref)
+            data, shape = _try_fetch_with_requests(ref)
             if data is not None:
                 return data, ref, shape
-            logging.warning("Null payload for %s; trying next referer.", ref)
-        except Exception as e:
-            last_error = e
-            logging.error("Error with referer %s: %s", ref, e)
+            logging.warning("Null via requests for %s; will try browser.", ref)
 
-    if last_error:
-        raise RuntimeError(f"All referers failed; last error: {last_error}")
-    raise RuntimeError("All referers returned null payloads. Adjust TRAINFINDER_REFERER zoom/bbox.")
+            # 2) Fallback to real browser context
+            logging.info("Attempt (browser) with referer: %s", ref)
+            data2, shape2 = _try_fetch_with_browser(ref)
+            if data2 is not None:
+                return data2, ref, shape2
+            logging.warning("Null via browser for %s; trying next referer.", ref)
+        except Exception as e:
+            logging.error("Error for referer %s: %s", ref, e)
+
+    raise RuntimeError("All referers and methods returned null payloads. Check cookie and viewport.")
 
 
 def background_loop():
@@ -167,8 +210,7 @@ def background_loop():
                 last_success_referer = used_ref
                 last_payload_shape = shape
                 last_updated = datetime.now(timezone.utc).isoformat()
-            logging.info("Updated trains.json at %s (referer used: %s, shape: %s)",
-                         last_updated, used_ref, shape)
+            logging.info("Updated trains.json at %s (via %s, referer: %s)", last_updated, shape, used_ref)
         except Exception as e:
             logging.error("Fetch cycle error: %s", e)
         time.sleep(UPDATE_INTERVAL_SECONDS)
@@ -176,14 +218,12 @@ def background_loop():
 
 app = Flask(__name__)
 
-
 @app.after_request
 def add_cors(resp):
     resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
-
 
 @app.route("/")
 def health():
@@ -196,13 +236,11 @@ def health():
             "interval_seconds": UPDATE_INTERVAL_SECONDS
         })
 
-
 @app.route("/trains.json")
 def trains():
     with lock:
         resp = make_response(json.dumps(latest_payload, ensure_ascii=False, separators=(",", ":")))
     resp.mimetype = "application/json"
     return resp
-
 
 threading.Thread(target=background_loop, daemon=True).start()
