@@ -18,16 +18,16 @@ ASPXAUTH = os.getenv("ASPXAUTH", "").strip()
 UPDATE_INTERVAL_SECONDS = int(os.getenv("UPDATE_INTERVAL_SECONDS", "60"))
 PROXY_URL = os.getenv("PROXY_URL", "").strip()
 
-# Primary referer (if you set TRAINFINDER_REFERER in Render, we’ll try it first)
+# Primary referer (lat/lng preferred). You can override with TRAINFINDER_REFERER in Render.
 PRIMARY_REFERER = os.getenv(
     "TRAINFINDER_REFERER",
-    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=112.0,-44.0,154.0,-9.0"  # AU-wide default
+    "https://trainfinder.otenko.com/home/nextlevel?lat=-34.93&lng=138.60&zm=10"  # Adelaide metro default
 ).strip()
 
-# Useful fallbacks (SA-wide and Adelaide corridor). We’ll try these if the first returns nulls.
+# Useful fallbacks (SA-wide, AU-wide). We’ll try these if the first returns nulls.
 FALLBACK_REFERERS = [
-    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=129.0,-38.5,141.5,-25.5",  # South Australia
-    "https://trainfinder.otenko.com/home/nextlevel?zm=7&bbox=134.0,-35.9,141.0,-28.0",  # Adelaide corridor
+    "https://trainfinder.otenko.com/home/nextlevel?lat=-30.0&lng=136.0&zm=6",   # South Australia
+    "https://trainfinder.otenko.com/home/nextlevel?lat=-25.5&lng=134.5&zm=6",   # Australia
 ]
 
 # Build ordered list (avoid duplicates)
@@ -45,19 +45,32 @@ lock = threading.Lock()
 
 def _parse_referer_viewport(referer: str):
     """
-    Extract zm and bbox=minlon,minlat,maxlon,maxlat from the referer query string.
-    Returns (zoom:int, (w,s,e,n)) with floats. If missing, returns sensible defaults.
+    Accepts either:
+      - ...?lat=..&lng=..&zm=..   (preferred)
+      - ...?bbox=w,s,e,n&zm=..
+    Returns (zoom:int, (w,s,e,n)) with floats.
+    If only lat/lng provided, we approximate a bbox from zoom.
     """
+    def approx_bbox_from_latlng(lat, lng, zm):
+        # crude but effective bbox size by zoom
+        lon_delta = 360 / (2 ** zm)   # degrees
+        lat_delta = 170 / (2 ** zm)   # mercator-ish
+        return (lng - lon_delta, lat - lat_delta, lng + lon_delta, lat + lat_delta)
+
     try:
         qs = parse_qs(urlparse(referer).query)
         zm = int(qs.get("zm", [6])[0])
-        bbox_str = qs.get("bbox", ["112.0,-44.0,154.0,-9.0"])[0]
-        parts = [float(x) for x in bbox_str.split(",")]
-        if len(parts) == 4:
-            w, s, e, n = parts
-        else:
-            w, s, e, n = 112.0, -44.0, 154.0, -9.0
-        return zm, (w, s, e, n)
+
+        if "bbox" in qs:
+            w, s, e, n = [float(x) for x in qs["bbox"][0].split(",")]
+            return zm, (w, s, e, n)
+
+        if "lat" in qs and "lng" in qs:
+            lat = float(qs["lat"][0]); lng = float(qs["lng"][0])
+            return zm, approx_bbox_from_latlng(lat, lng, zm)
+
+        # final fallback (AU-wide)
+        return 6, (112.0, -44.0, 154.0, -9.0)
     except Exception:
         return 6, (112.0, -44.0, 154.0, -9.0)
 
@@ -145,8 +158,9 @@ def _try_fetch_with_requests(referer: str):
 
 def _try_fetch_with_browser(referer: str):
     """
-    Open the map in a real browser, then wait for *the page's own*
-    POST /Home/GetViewPortData and return its JSON body.
+    Open the map in a real browser, 'wiggle' the map so the site fires its own
+    /Home/GetViewPortData XHR, capture that exact response. If the site uses
+    anti-forgery tokens, reuse theirs. Falls back to an in-page fetch with token.
     """
     if not ASPXAUTH:
         raise RuntimeError("ASPXAUTH env var is not set")
@@ -171,12 +185,25 @@ def _try_fetch_with_browser(referer: str):
         page = context.new_page()
         page.goto(referer, wait_until="domcontentloaded", timeout=30000)
 
-        # Let the page settle; then wait for the real XHR it makes
+        # Nudge the map to trigger their XHR
         try:
-            page.wait_for_load_state("networkidle", timeout=10000)
+            page.wait_for_load_state("networkidle", timeout=8000)
         except Exception:
-            pass  # continue
+            pass
+        try:
+            box = page.viewport_size or {"width": 1280, "height": 800}
+            x = int(box["width"] * 0.5); y = int(box["height"] * 0.5)
+            page.mouse.move(x, y)
+            page.mouse.down()
+            page.mouse.move(x + 80, y, steps=12)  # small pan
+            page.mouse.up()
+            page.wait_for_timeout(600)
+            page.mouse.wheel(0, -300)            # slight zoom
+            page.wait_for_timeout(600)
+        except Exception:
+            pass
 
+        # 1) Prefer: capture the site's own POST
         data = None
         try:
             resp = page.wait_for_response(
@@ -190,27 +217,37 @@ def _try_fetch_with_browser(referer: str):
         except Exception:
             data = None
 
-        # If we didn’t see an auto XHR, force one from inside the page (with cookies + tokens)
+        # 2) Fallback: do an in-page fetch, include anti-forgery token if present
         if data is None:
+            token = None
+            try:
+                token = page.locator('input[name="__RequestVerificationToken"]').first().evaluate("el => el.value")
+            except Exception:
+                try:
+                    token = page.locator('meta[name="__RequestVerificationToken"]').first().get_attribute("content")
+                except Exception:
+                    token = None
+
             js = """
-                async () => {
+                async (tok) => {
+                    const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                    if (tok) headers['RequestVerificationToken'] = tok;
                     try {
                         const res = await fetch('/Home/GetViewPortData', {
                             method: 'POST',
                             credentials: 'include',
-                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                            headers
                         });
                         try { return await res.json(); } catch { return null; }
                     } catch { return null; }
                 }
             """
             try:
-                data = page.evaluate(js)
+                data = page.evaluate(js, token)
             except Exception:
                 data = None
 
-        context.close()
-        browser.close()
+        context.close(); browser.close()
 
     if data is not None and not _is_all_null(data):
         return data, "browser:captured"
