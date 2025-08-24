@@ -8,26 +8,29 @@ from urllib.parse import urlparse, parse_qs
 
 import requests
 from flask import Flask, jsonify, make_response
+from playwright.sync_api import sync_playwright  # headless browser fallback
 
-# New: headless browser fallback
-from playwright.sync_api import sync_playwright
-
+# ---------- Logging ----------
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
+# ---------- Env / Config ----------
 ASPXAUTH = os.getenv("ASPXAUTH", "").strip()
 UPDATE_INTERVAL_SECONDS = int(os.getenv("UPDATE_INTERVAL_SECONDS", "60"))
 PROXY_URL = os.getenv("PROXY_URL", "").strip()
 
+# Primary referer (if you set TRAINFINDER_REFERER in Render, we’ll try it first)
 PRIMARY_REFERER = os.getenv(
     "TRAINFINDER_REFERER",
-    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=112.0,-44.0,154.0,-9.0"  # AU-wide
+    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=112.0,-44.0,154.0,-9.0"  # AU-wide default
 ).strip()
 
+# Useful fallbacks (SA-wide and Adelaide corridor). We’ll try these if the first returns nulls.
 FALLBACK_REFERERS = [
-    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=129.0,-38.5,141.5,-25.5",  # SA-wide
+    "https://trainfinder.otenko.com/home/nextlevel?zm=6&bbox=129.0,-38.5,141.5,-25.5",  # South Australia
     "https://trainfinder.otenko.com/home/nextlevel?zm=7&bbox=134.0,-35.9,141.0,-28.0",  # Adelaide corridor
 ]
 
+# Build ordered list (avoid duplicates)
 REFERERS_TO_TRY = [PRIMARY_REFERER] + [r for r in FALLBACK_REFERERS if r != PRIMARY_REFERER]
 
 proxies = {"http": PROXY_URL, "https": PROXY_URL} if PROXY_URL else None
@@ -41,19 +44,29 @@ lock = threading.Lock()
 
 
 def _parse_referer_viewport(referer: str):
+    """
+    Extract zm and bbox=minlon,minlat,maxlon,maxlat from the referer query string.
+    Returns (zoom:int, (w,s,e,n)) with floats. If missing, returns sensible defaults.
+    """
     try:
         qs = parse_qs(urlparse(referer).query)
         zm = int(qs.get("zm", [6])[0])
-        w, s, e, n = [float(x) for x in qs.get("bbox", ["112.0,-44.0,154.0,-9.0"])[0].split(",")]
+        bbox_str = qs.get("bbox", ["112.0,-44.0,154.0,-9.0"])[0]
+        parts = [float(x) for x in bbox_str.split(",")]
+        if len(parts) == 4:
+            w, s, e, n = parts
+        else:
+            w, s, e, n = 112.0, -44.0, 154.0, -9.0
         return zm, (w, s, e, n)
     except Exception:
         return 6, (112.0, -44.0, 154.0, -9.0)
 
 
 def _post_viewport(url: str, headers: dict, cookies: dict, payload: dict):
-    h = headers.copy()
-    h["content-type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-    return session.post(url, headers=h, cookies=cookies, data=payload, proxies=proxies, timeout=30)
+    """POST helper with form-encoded payload."""
+    form_headers = headers.copy()
+    form_headers["content-type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+    return session.post(url, headers=form_headers, cookies=cookies, data=payload, proxies=proxies, timeout=30)
 
 
 def _is_all_null(obj):
@@ -62,7 +75,7 @@ def _is_all_null(obj):
 
 def _try_fetch_with_requests(referer: str):
     """
-    Our original requests-based approach: prime session via GET, then POST with common payload shapes.
+    Fast path: prime ASP.NET session with GET, then POST common payload shapes via requests.
     Returns (data, 'requests:<shape>') or (None, None).
     """
     if not ASPXAUTH:
@@ -86,11 +99,11 @@ def _try_fetch_with_requests(referer: str):
     }
     cookies = {".ASPXAUTH": ASPXAUTH}
 
-    # 1) Prime ASP.NET session
+    # 1) Prime session/viewport
     g = session.get(referer, headers=browser_headers, cookies=cookies, proxies=proxies, timeout=30)
     g.raise_for_status()
 
-    # 2) Try several payload shapes
+    # 2) Try payload shapes
     url = "https://trainfinder.otenko.com/Home/GetViewPortData"
     payloads = [
         ("bbox_zm", {"bbox": f"{w},{s},{e},{n}", "zm": str(zm)}),
@@ -99,6 +112,7 @@ def _try_fetch_with_requests(referer: str):
         ("vp_combo", {"vp": f"{w},{s},{e},{n}|{zm}"}),
         ("empty", {}),
     ]
+
     for shape_name, payload in payloads:
         r = _post_viewport(url, xhr_headers, cookies, payload)
         logging.info("POST shape=%s HTTP %s", shape_name, r.status_code)
@@ -106,11 +120,13 @@ def _try_fetch_with_requests(referer: str):
         try:
             data = r.json()
         except Exception:
+            logging.error("Response not JSON for shape=%s", shape_name)
             data = None
 
         if not _is_all_null(data):
             return data, f"requests:{shape_name}"
 
+        # brief retry on same shape
         time.sleep(0.8)
         r2 = _post_viewport(url, xhr_headers, cookies, payload)
         logging.info("Retry shape=%s HTTP %s", shape_name, r2.status_code)
@@ -118,6 +134,7 @@ def _try_fetch_with_requests(referer: str):
         try:
             data2 = r2.json()
         except Exception:
+            logging.error("Retry response not JSON for shape=%s", shape_name)
             data2 = None
 
         if not _is_all_null(data2):
@@ -128,9 +145,8 @@ def _try_fetch_with_requests(referer: str):
 
 def _try_fetch_with_browser(referer: str):
     """
-    Browser-context fallback: load the page, let its JS set up session/viewport,
-    then call the XHR from inside the page using fetch().
-    Returns (data, 'browser') or (None, None).
+    Open the map in a real browser, then wait for *the page's own*
+    POST /Home/GetViewPortData and return its JSON body.
     """
     if not ASPXAUTH:
         raise RuntimeError("ASPXAUTH env var is not set")
@@ -155,31 +171,57 @@ def _try_fetch_with_browser(referer: str):
         page = context.new_page()
         page.goto(referer, wait_until="domcontentloaded", timeout=30000)
 
-        js = """
-            async () => {
-                try {
-                    const res = await fetch('/Home/GetViewPortData', {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    });
-                    try { return await res.json(); } catch { return null; }
-                } catch (e) {
-                    return null;
+        # Let the page settle; then wait for the real XHR it makes
+        try:
+            page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            pass  # continue
+
+        data = None
+        try:
+            resp = page.wait_for_response(
+                lambda r: ("/Home/GetViewPortData" in r.url) and (r.request.method == "POST"),
+                timeout=15000
+            )
+            try:
+                data = resp.json()
+            except Exception:
+                data = None
+        except Exception:
+            data = None
+
+        # If we didn’t see an auto XHR, force one from inside the page (with cookies + tokens)
+        if data is None:
+            js = """
+                async () => {
+                    try {
+                        const res = await fetch('/Home/GetViewPortData', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        });
+                        try { return await res.json(); } catch { return null; }
+                    } catch { return null; }
                 }
-            }
-        """
-        data = page.evaluate(js)
+            """
+            try:
+                data = page.evaluate(js)
+            except Exception:
+                data = None
+
         context.close()
         browser.close()
 
     if data is not None and not _is_all_null(data):
-        return data, "browser"
+        return data, "browser:captured"
     return None, None
 
 
 def fetch_trainfinder():
-    # 1) Try plain requests first (faster/cheaper)
+    """
+    Try requests first (faster). If null, try full browser capture.
+    Iterate across PRIMARY + FALLBACK referers until one works.
+    """
     for ref in REFERERS_TO_TRY:
         try:
             logging.info("Attempt (requests) with referer: %s", ref)
@@ -188,7 +230,6 @@ def fetch_trainfinder():
                 return data, ref, shape
             logging.warning("Null via requests for %s; will try browser.", ref)
 
-            # 2) Fallback to real browser context
             logging.info("Attempt (browser) with referer: %s", ref)
             data2, shape2 = _try_fetch_with_browser(ref)
             if data2 is not None:
@@ -206,7 +247,7 @@ def background_loop():
         try:
             data, used_ref, shape = fetch_trainfinder()
             with lock:
-                latest_payload = data
+                latest_payload = data  # passthrough; adapt shape here if your frontend needs a different format
                 last_success_referer = used_ref
                 last_payload_shape = shape
                 last_updated = datetime.now(timezone.utc).isoformat()
@@ -218,12 +259,14 @@ def background_loop():
 
 app = Flask(__name__)
 
+
 @app.after_request
 def add_cors(resp):
     resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
+
 
 @app.route("/")
 def health():
@@ -236,6 +279,7 @@ def health():
             "interval_seconds": UPDATE_INTERVAL_SECONDS
         })
 
+
 @app.route("/trains.json")
 def trains():
     with lock:
@@ -243,4 +287,6 @@ def trains():
     resp.mimetype = "application/json"
     return resp
 
+
+# Start background fetcher
 threading.Thread(target=background_loop, daemon=True).start()
