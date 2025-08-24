@@ -1,13 +1,17 @@
 FROM python:3.10-slim
 
+# run from /app
 WORKDIR /app
+
+# install deps
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
+# copy your code folder named 'app' into /app
 COPY app /app
 
-# (optional) avoid python buffering in logs
-ENV PYTHONUNBUFFERED=1
+# helpful to see what's actually inside the image (can remove later)
+RUN echo "==== LIST /app ====" && ls -la /app
 
-# IMPORTANT: shell form so $PORT expands on Render
+# Render injects $PORT; shell-form CMD lets it expand
 CMD gunicorn -w 1 -b 0.0.0.0:$PORT app:app --timeout 120 --graceful-timeout 30
