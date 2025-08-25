@@ -1,260 +1,173 @@
 # app/app.py
 import os, json, time, logging
-from typing import Any, Dict, List, Tuple, Optional
-from urllib.parse import urlencode
-from flask import Flask, request, jsonify, make_response
+from pathlib import Path
+from datetime import datetime, timedelta
 import requests
+from flask import Flask, request, jsonify, send_file
 
-# ──────────────────────────────────────────────
-# CONFIG / ENV
-# ──────────────────────────────────────────────
-TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
-TF_REFERER  = os.getenv("TF_REFERER", "https://trainfinder.otenko.com/home/nextlevel").strip()
+APP_ROOT = Path(__file__).resolve().parent
+DATA_DIR  = APP_ROOT / "static" / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+TRAINS_JSON_PATH = DATA_DIR / "trains.json"
 
-# Use your desktop Chrome UA if TF_UA is not set
-TF_UA = os.getenv(
-    "TF_UA",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/125.0.0.0 Safari/537.36"
-).strip()
-
-SESSION_TIMEOUT = 15  # seconds for outbound requests
-
-# ──────────────────────────────────────────────
-# LOGGING
-# ──────────────────────────────────────────────
-logging.basicConfig(level=logging.INFO, format="%(levelname)s:railops:%(message)s")
-log = logging.getLogger("railops")
-
-# ──────────────────────────────────────────────
-# FLASK
-# ──────────────────────────────────────────────
+# ------------ Flask ------------
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
 
-def add_cors(resp):
-    # very permissive CORS for quick testing; lock down later
-    resp.headers["Access-Control-Allow-Origin"] = "*"
-    resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    return resp
+# ------------ Config ------------
+TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
+UA_CHROME = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+)
+DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-34.9285"))   # Adelaide CBD
+DEFAULT_LNG = float(os.getenv("VIEW_LNG", "138.6007"))
+DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "7"))             # 6-7 tends to work
 
-@app.after_request
-def after(resp):
-    return add_cors(resp)
+# Refresh interval for on-demand caching
+CACHE_SECONDS = int(os.getenv("CACHE_SECONDS", "30"))
 
-@app.route("/healthz")
-def healthz():
-    return add_cors(make_response("ok", 200))
+# ------------ HTTP session ------------
+session = requests.Session()
+session.headers.update({
+    "X-Requested-With": "XMLHttpRequest",
+    "Accept": "*/*",
+    "Origin": "https://trainfinder.otenko.com",
+    "User-Agent": UA_CHROME,
+})
+if TF_ASPXAUTH:
+    session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
 
-@app.route("/")
-def root():
-    return add_cors(make_response("ok, true", 200))
+# Helper: warmup + viewport POST
+def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
+    ref = f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
+    # Per-request referer
+    H = {"Referer": ref}
+    # Warmup GET
+    g = session.get(ref, timeout=20)
+    app.logger.info("Warmup GET %s -> %s", ref, g.status_code)
 
-# ──────────────────────────────────────────────
-# HELPERS
-# ──────────────────────────────────────────────
-def new_session() -> requests.Session:
-    s = requests.Session()
-    s.headers.update({
-        "User-Agent": TF_UA,
-        "Accept": "application/json, text/plain, */*",
-        "Referer": TF_REFERER if TF_REFERER else "https://trainfinder.otenko.com/",
-        "Origin": "https://trainfinder.otenko.com",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Connection": "keep-alive",
-    })
-    # Attach auth cookie if provided
-    if TF_ASPXAUTH:
-        # IMPORTANT: 'httponly' must go via 'rest'
-        s.cookies.set(
-            "TF_ASPXAUTH",
-            TF_ASPXAUTH,
-            domain="trainfinder.otenko.com",
-            secure=True,
-            rest={"HttpOnly": True}
-        )
-    return s
-
-def warmup(s: requests.Session, lat: float, lng: float, zm: int) -> Tuple[int, str]:
-    """
-    Prime the server (mimic opening map at a viewport).
-    """
+    # POST to get data
+    resp = session.post(
+        "https://trainfinder.otenko.com/Home/GetViewPortData",
+        data={"lat": lat, "lng": lng, "zm": zm},
+        headers=H,
+        timeout=25,
+    )
+    app.logger.info(
+        "POST GetViewPortData (lat=%.6f,lng=%.6f,zm=%s) -> %s; bytes=%s; preview=%r",
+        lat, lng, zm, resp.status_code, len(resp.text), resp.text[:160]
+    )
+    resp.raise_for_status()
+    # If TF returns text "null", treat as empty dict to avoid JSON error
+    if resp.text.strip() == "null":
+        return {}
     try:
-        params = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
-        url = f"https://trainfinder.otenko.com/home/nextlevel?{urlencode(params)}"
-        r = s.get(url, timeout=SESSION_TIMEOUT)
-        log.info("Warmup GET %s -> %d", url, r.status_code)
-        return r.status_code, r.text
+        return resp.json()
     except Exception as e:
-        log.warning("Warmup failed: %s", e)
-        return 0, str(e)
+        app.logger.warning("JSON parse failed: %s", e)
+        return {}
 
-def fetch_viewport(
-    lat: float, lng: float, zm: int,
-    bbox: Optional[str] = None
-) -> Tuple[Optional[Dict[str, Any]], str, int]:
+# Extract your real trains here (adjust if your schema differs)
+def transform_tf_payload(tf: dict) -> dict:
     """
-    POST to TrainFinder to get viewport data.
-    Returns: (json_dict or None, raw_text, http_status)
+    Return { 'updated': ISO8601, 'trains': [ ... ] }
+    Put your own extraction logic here. For now, keep raw TF payload too.
     """
-    s = new_session()
+    now = datetime.utcnow().isoformat() + "Z"
+    # Example: if TF has a key 'tts' or 'places' etc. You’ll refine later.
+    return {
+        "updated": now,
+        "source": "trainfinder",
+        "viewport": {},
+        "raw": tf,          # keep raw for now so you can see it on disk
+        "trains": [],       # fill once you know TF’s markers array shape
+    }
 
-    # Warmup (best effort)
-    warmup(s, lat, lng, zm)
+def write_trains(data: dict):
+    tmp = TRAINS_JSON_PATH.with_suffix(".tmp.json")
+    with tmp.open("w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False)
+    tmp.replace(TRAINS_JSON_PATH)
 
-    url = "https://trainfinder.otenko.com/Home/GetViewPortData"
+def needs_refresh(path: Path, max_age_seconds: int) -> bool:
+    if not path.exists():
+        return True
+    age = time.time() - path.stat().st_mtime
+    return age > max_age_seconds
 
-    # Some deployments expect form data, others accept JSON; form works reliably.
-    form = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
-    if bbox:
-        # If caller passes bbox (south,west,north,east), forward it as-is
-        form["bbox"] = bbox
+# ---------- Routes ----------
+@app.get("/health")
+def health():
+    return jsonify(ok=True, ts=datetime.utcnow().isoformat()+"Z")
 
-    try:
-        r = s.post(url, data=form, timeout=SESSION_TIMEOUT)
-        log.info("POST %s (form=%s) -> %d", url, f"lat={form['lat']},lng={form['lng']},zm={form['zm']}" + (f",bbox={bbox}" if bbox else ""), r.status_code)
-        txt = r.text
-        j = None
-        if r.headers.get("content-type", "").startswith("application/json"):
-            try:
-                j = r.json()
-            except Exception:
-                # fall back to manual parse attempt
-                pass
-        if j is None:
-            try:
-                j = json.loads(txt)
-            except Exception:
-                # Not valid JSON; return raw
-                return None, txt, r.status_code
-
-        # Quick sanity check — in prior logs we saw keys but empty content
-        keys = sorted(list(j.keys())) if isinstance(j, dict) else []
-        if keys:
-            log.info("Sample JSON keys: %s", keys[:8])
-
-        # Heuristic: if everything is null/empty, hint about auth/zoom
-        if isinstance(j, dict) and all((v is None or v == [] or v == {}) for v in j.values()):
-            log.warning("TrainFinder payload looks empty/unauthorized.")
-
-        return j, txt, r.status_code
-
-    except Exception as e:
-        log.exception("Viewport fetch failed: %s", e)
-        return None, str(e), 0
-
-def _get_float(d: Dict[str, Any], *names) -> Optional[float]:
-    for n in names:
-        if n in d and isinstance(d[n], (int, float)):
-            return float(d[n])
-        if n in d and isinstance(d[n], str):
-            try:
-                return float(d[n])
-            except Exception:
-                pass
-    return None
-
-def extract_trains(payload: Any) -> List[Dict[str, Any]]:
-    """
-    Try to extract marker-like entries (lat/lng + id/title) from whatever
-    structure TrainFinder returns. We scan common buckets and generic lists.
-    """
-    results: List[Dict[str, Any]] = []
-
-    if not isinstance(payload, dict):
-        return results
-
-    candidate_lists: List[Any] = []
-    # Buckets we've seen in logs
-    for key in ("tts", "places", "alerts", "webcams", "atcsObj", "atcsGomi"):
-        val = payload.get(key)
-        if isinstance(val, list):
-            candidate_lists.append(val)
-        elif isinstance(val, dict):
-            # sometimes nested lists live inside dicts (e.g., places: {items:[...]})
-            for v in val.values():
-                if isinstance(v, list):
-                    candidate_lists.append(v)
-
-    # Fallback: scan any list values for lat/lng patterns
-    if not candidate_lists:
-        for v in payload.values():
-            if isinstance(v, list):
-                candidate_lists.append(v)
-
-    def add_marker(obj: Dict[str, Any]):
-        lat = _get_float(obj, "lat", "Lat", "latitude", "Latitude", "iLat", "y")
-        lng = _get_float(obj, "lng", "Lng", "longitude", "Longitude", "iLng", "x")
-        if lat is None or lng is None:
-            return
-        # Try to build a reasonable label
-        title = None
-        for k in ("name", "title", "desc", "Description", "id", "train", "service"):
-            if k in obj and isinstance(obj[k], (str, int, float)):
-                title = str(obj[k]); break
-        marker = {"lat": lat, "lng": lng}
-        if title:
-            marker["title"] = title
-        # Include a few raw fields for debugging
-        for k in ("id", "train", "line", "service", "speed", "dir"):
-            if k in obj:
-                marker[k] = obj[k]
-        results.append(marker)
-
-    for arr in candidate_lists:
-        if not isinstance(arr, list):
-            continue
-        for item in arr:
-            if isinstance(item, dict):
-                add_marker(item)
-
-    return results
-
-# ──────────────────────────────────────────────
-# API
-# ──────────────────────────────────────────────
-@app.route("/trains", methods=["GET", "OPTIONS"])
-def trains():
-    if request.method == "OPTIONS":
-        return add_cors(make_response("", 204))
-
-    # Defaults if not provided
-    lat = float(request.args.get("lat", "-33.860000"))
-    lng = float(request.args.get("lng", "151.210000"))
-    zm  = int(request.args.get("zm", "12"))
-
-    # Optional bbox "south,west,north,east"
-    bbox = request.args.get("bbox")
-    j, txt, code = fetch_viewport(lat, lng, zm, bbox)
-
-    if j is None:
-        # Pass through raw error text to help debugging
-        return add_cors(make_response(jsonify({
-            "ok": False, "status": code, "error": "upstream", "detail": txt
-        }), 502))
-
-    markers = extract_trains(j)
-    # Persist to container (for quick inspection)
-    try:
-        with open("/app/trains.json", "w") as f:
-            json.dump({"at": int(time.time()), "lat": lat, "lng": lng, "zm": zm,
-                       "bbox": bbox, "count": len(markers), "markers": markers}, f)
-        log.info("wrote /app/trains.json with %d markers", len(markers))
-    except Exception as e:
-        log.warning("Failed writing trains.json: %s", e)
-
-    return add_cors(make_response(jsonify({
+@app.get("/status")
+def status():
+    info = {
         "ok": True,
-        "count": len(markers),
-        "markers": markers
-    }), 200))
+        "has_cookie": bool(TF_ASPXAUTH),
+        "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM},
+        "trains_json_exists": TRAINS_JSON_PATH.exists(),
+        "trains_json_mtime": (
+            datetime.utcfromtimestamp(TRAINS_JSON_PATH.stat().st_mtime).isoformat()+"Z"
+            if TRAINS_JSON_PATH.exists() else None
+        ),
+        "cache_seconds": CACHE_SECONDS,
+    }
+    return jsonify(info)
 
+@app.get("/trains.json")
+def trains_json():
+    """
+    Serve cached trains; auto-refresh if file is too old (> CACHE_SECONDS).
+    """
+    lat = float(request.args.get("lat", DEFAULT_LAT))
+    lng = float(request.args.get("lng", DEFAULT_LNG))
+    zm = int(request.args.get("zm", DEFAULT_ZM))
 
-# ──────────────────────────────────────────────
-# LOCAL DEV ENTRY
-# ──────────────────────────────────────────────
+    if needs_refresh(TRAINS_JSON_PATH, CACHE_SECONDS):
+        app.logger.info("Cache expired -> fetching TF viewport")
+        tf = fetch_viewport(lat, lng, zm)
+        data = transform_tf_payload(tf)
+        write_trains(data)
+    # Always return file (fresh or cached)
+    return send_file(TRAINS_JSON_PATH, mimetype="application/json")
+
+@app.get("/update")
+def update_now():
+    """
+    Force an immediate fetch (useful for manual refresh or CI pings).
+    """
+    lat = float(request.args.get("lat", DEFAULT_LAT))
+    lng = float(request.args.get("lng", DEFAULT_LNG))
+    zm = int(request.args.get("zm", DEFAULT_ZM))
+
+    tf = fetch_viewport(lat, lng, zm)
+    data = transform_tf_payload(tf)
+    write_trains(data)
+    return jsonify({"ok": True, "wrote": str(TRAINS_JSON_PATH), "counts": {
+        "trains": len(data.get("trains", [])),
+        "raw_keys": list(data.get("raw", {}).keys()) if isinstance(data.get("raw"), dict) else None
+    }})
+
+@app.get("/debug/viewport")
+def debug_viewport():
+    """
+    Raw passthrough of TF response (no transform) – super helpful for seeing real content.
+    """
+    lat = float(request.args.get("lat", DEFAULT_LAT))
+    lng = float(request.args.get("lng", DEFAULT_LNG))
+    zm  = int(request.args.get("zm", DEFAULT_ZM))
+    tf = fetch_viewport(lat, lng, zm)
+    return (json.dumps(tf, ensure_ascii=False), 200, {"Content-Type": "application/json"})
+
+# Root
+@app.get("/")
+def root():
+    return jsonify({
+        "ok": True,
+        "endpoints": ["/health", "/status", "/trains.json", "/update", "/debug/viewport"]
+    })
+
 if __name__ == "__main__":
-    # For local testing only: flask’s built-in server
-    port = int(os.getenv("PORT", "10000"))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
