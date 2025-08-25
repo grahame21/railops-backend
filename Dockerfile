@@ -1,17 +1,11 @@
 FROM python:3.10-slim
 
-# run from /app
 WORKDIR /app
+COPY app/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# install deps
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
-
-# copy your code folder named 'app' into /app
 COPY app /app
 
-# helpful to see what's actually inside the image (can remove later)
-RUN echo "==== LIST /app ====" && ls -la /app
-
-# Render injects $PORT; shell-form CMD lets it expand
-CMD gunicorn -w 1 -b 0.0.0.0:$PORT app:app --timeout 120 --graceful-timeout 30
+# Render sets $PORT; default to 10000 for local runs
+ENV PORT=10000
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:10000", "app:app"]
