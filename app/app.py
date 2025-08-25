@@ -1,199 +1,107 @@
-# app/app.py
-import math
-import os
-import time
-import re
-from typing import Any, Dict, List, Tuple, Optional
+# --- BEGIN SUPER SIMPLE TEST UI --------------------------------------------
+from flask import Response
 
-import requests
-from flask import Flask, jsonify, request, Response
+@staticmethod
+def _html_page():
+    return """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RailOps Quick Tester</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji"; }
+  body { margin: 24px; }
+  h1 { margin: 0 0 12px 0; font-size: 20px; }
+  .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; max-width: 900px; margin-bottom: 16px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  input[type=text] { padding: 8px 10px; border: 1px solid #ccc; border-radius: 8px; min-width: 240px; }
+  button { padding: 8px 12px; border: 1px solid #999; background: #f7f7f7; border-radius: 8px; cursor: pointer; }
+  button.primary { background: #0b5cff; color: white; border-color: #0b5cff; }
+  .help { color: #555; font-size: 13px; }
+  pre { background: #0a0a0a; color: #d9d9d9; padding: 12px; border-radius: 10px; overflow:auto; max-height: 50vh;}
+  .grid { display:grid; grid-template-columns: repeat(3,minmax(180px,1fr)); gap:8px; }
+  .muted { color:#666; }
+</style>
+</head>
+<body>
+  <h1>RailOps Quick Tester</h1>
 
-app = Flask(__name__)
+  <div class="card">
+    <div class="row" style="margin-bottom:8px">
+      <label for="token"><strong>.ASPXAUTH</strong></label>
+      <input id="token" type="text" placeholder="paste your ASPXAUTH here">
+      <button id="save">Save in this tab</button>
+      <span class="help">Or leave blank to use server env <code>TF_AUTH_COOKIE</code>.</span>
+    </div>
+    <div class="row muted" id="status">No token set (will try server env)</div>
+  </div>
 
-TF_BASE = "https://trainfinder.otenko.com"
-UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0")
+  <div class="card">
+    <div class="row" style="margin-bottom:8px">
+      <strong>Viewport Params</strong>
+    </div>
+    <div class="grid" style="margin-bottom:8px">
+      <input id="lat" type="text" value="-33.8688"  placeholder="lat">
+      <input id="lng" type="text" value="151.2093"  placeholder="lng">
+      <input id="zm"  type="text" value="12"        placeholder="zoom (int)">
+    </div>
+    <div class="row">
+      <button class="primary" id="btn-auth">/authcheck</button>
+      <button class="primary" id="btn-vp">/debug/viewport</button>
+      <button class="primary" id="btn-scan">/scan</button>
+      <button id="btn-clear">Clear output</button>
+    </div>
+  </div>
 
-DEFAULT_LAT = -33.8688
-DEFAULT_LNG = 151.2093
-DEFAULT_ZM  = 12
+  <div class="card">
+    <div class="row" style="margin-bottom:8px"><strong>Output</strong></div>
+    <pre id="out"></pre>
+  </div>
 
-# Sample scan points and zooms
-HOTSPOTS: List[Tuple[str, float, float]] = [
-    ("Sydney",   -33.868800, 151.209300),
-    ("Melbourne",-37.813600, 144.963100),
-    ("Brisbane", -27.469800, 153.025100),
-    ("Perth",    -31.952300, 115.861300),
-    ("Adelaide", -34.928500, 138.600700),
-]
-ZOOMS = [11, 12, 13]
+<script>
+  const $ = sel => document.querySelector(sel);
+  const out = $('#out'), status = $('#status');
 
-VIEW_W, VIEW_H = 1280, 720
-TILE_SIZE = 256.0
+  function getToken(){ return ($('#token').value||'').trim(); }
+  function hdrs() {
+    const t = getToken();
+    return t ? { 'X-TF-ASPXAUTH': t } : {};
+  }
+  function log(obj){ out.textContent += (typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2)) + "\\n"; }
+  function setStatus(){ 
+    const t = getToken();
+    status.textContent = t ? "Token set in page (header X-TF-ASPXAUTH will be sent)" : "No token set (server env TF_AUTH_COOKIE will be used if configured)";
+  }
 
-def _safe_float(s: Any, fallback: float) -> float:
-    try:
-        return float(s)
-    except Exception:
-        try:
-            # Extract first float-like token if garbage is appended
-            m = re.search(r"-?\d+(?:\.\d+)?", str(s))
-            return float(m.group(0)) if m else fallback
-        except Exception:
-            return fallback
+  $('#save').onclick = () => { setStatus(); $('#token').blur(); };
+  $('#btn-clear').onclick = () => { out.textContent = ""; };
+  $('#btn-auth').onclick = async () => {
+    log("GET /authcheck …");
+    const r = await fetch('/authcheck', { headers: hdrs() });
+    const j = await r.json();
+    log(j);
+  };
+  $('#btn-vp').onclick = async () => {
+    const lat = $('#lat').value.trim(), lng = $('#lng').value.trim(), zm = $('#zm').value.trim();
+    const url = `/debug/viewport?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&zm=${encodeURIComponent(zm)}`;
+    log(`GET ${url} …`);
+    const r = await fetch(url, { headers: hdrs() });
+    const j = await r.json();
+    log(j);
+  };
+  $('#btn-scan').onclick = async () => {
+    log("GET /scan …");
+    const r = await fetch('/scan', { headers: hdrs() });
+    const j = await r.json();
+    log(j);
+  };
+  setStatus();
+</script>
+</body>
+</html>"""
 
-def _safe_int(s: Any, fallback: int) -> int:
-    try:
-        return int(s)
-    except Exception:
-        # Be tolerant of things like "12https://..." in logs
-        m = re.search(r"-?\d+", str(s))
-        return int(m.group(0)) if m else fallback
-
-def _new_session(aspx_cookie: Optional[str]) -> requests.Session:
-    """Creates a session and optionally injects the .ASPXAUTH cookie.
-
-    Precedence:
-      - X-TF-ASPXAUTH header on the inbound request
-      - ?cookie= query string on our endpoint
-      - TF_AUTH_COOKIE environment variable (Render → Env Vars)
-      - function argument (aspx_cookie)
-    """
-    sess = requests.Session()
-    sess.headers.update({
-        "User-Agent": UA,
-        "Accept": "*/*",
-        "X-Requested-With": "XMLHttpRequest",
-        "Origin": TF_BASE,
-        "Referer": f"{TF_BASE}/home/nextlevel?lat={DEFAULT_LAT}&lng={DEFAULT_LNG}&zm={DEFAULT_ZM}",
-    })
-
-    header_cookie = request.headers.get("X-TF-ASPXAUTH")
-    query_cookie  = request.args.get("cookie")
-    env_cookie    = os.getenv("TF_AUTH_COOKIE")
-    cookie_value = header_cookie or query_cookie or env_cookie or aspx_cookie
-
-    if cookie_value:
-        # domain/path allow the cookie to be sent to trainfinder.otenko.com
-        sess.cookies.set(".ASPXAUTH", cookie_value, domain="trainfinder.otenko.com", path="/")
-    return sess
-
-def is_logged_in(sess: requests.Session) -> Tuple[bool, str]:
-    r = sess.post(f"{TF_BASE}/Home/IsLoggedIn", data=b"", timeout=12)
-    text = (r.text or "").strip()
-    ok = r.ok and text.lower() in {"true", "1", "ok", "yes"}
-    return ok, text
-
-# ---- mercator helpers with overflow guards ----
-def _world_to_latlng(x: float, y: float) -> Tuple[float, float]:
-    # Clamp world coords to keep exp/sinh well-behaved
-    MAX = 3.0e6
-    x = max(-MAX, min(MAX, x))
-    y = max(-MAX, min(MAX, y))
-    # Standard inverse mercator, but use sinh and clamp argument
-    n = (math.pi - (2.0 * math.pi * y) / TILE_SIZE)
-    n = max(-20.0, min(20.0, n))        # avoid overflow in sinh
-    lat = math.degrees(math.atan(math.sinh(n)))
-    lng = (x / TILE_SIZE) * 360.0 - 180.0
-    return lat, lng
-
-def compute_bounds(lat: float, lng: float, zm: int, w: int, h: int) -> Tuple[float, float, float, float]:
-    scale = 2.0 ** zm
-
-    # Forward mercator to "world" coords
-    siny = math.sin(math.radians(lat))
-    siny = max(min(siny, 0.9999), -0.9999)
-    world_y = TILE_SIZE * (0.5 - math.log((1 + siny)/(1 - siny)) / (4 * math.pi))
-    world_x = TILE_SIZE * ((lng + 180.0) / 360.0)
-
-    # Viewport corners (in world pixels), then convert back to lat/lng
-    tlx = world_x - (w / 2.0); tly = world_y - (h / 2.0)
-    brx = world_x + (w / 2.0); bry = world_y + (h / 2.0)
-    west, north = _world_to_latlng(tlx / scale * TILE_SIZE, tly / scale * TILE_SIZE)
-    east, south = _world_to_latlng(brx / scale * TILE_SIZE, bry / scale * TILE_SIZE)
-    return west, south, east, north
-
-def fetch_viewport(sess: requests.Session, lat: float, lng: float, zm: int) -> requests.Response:
-    # Many endpoints expect a warmup navigation
-    _ = sess.get(f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", timeout=12)
-    url = f"{TF_BASE}/Home/GetViewPortData"
-    data = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(int(zm))}
-    return sess.post(url, data=data, timeout=12)
-
-# ---------------- routes ----------------
-
-@app.get("/healthz")
-def healthz():
-    return jsonify(ok=True, ts=int(time.time()))
-
-@app.get("/authcheck")
-def authcheck():
-    sess = _new_session(None)
-    ok, raw = is_logged_in(sess)
-    return jsonify(ok=ok, raw=raw, cookie_present=(".ASPXAUTH" in sess.cookies.get_dict()))
-
-@app.get("/debug/viewport")
-def debug_viewport():
-    lat = _safe_float(request.args.get("lat"), DEFAULT_LAT)
-    lng = _safe_float(request.args.get("lng"), DEFAULT_LNG)
-    zm  = _safe_int(request.args.get("zm"),  DEFAULT_ZM)
-
-    sess = _new_session(None)
-    ok, raw = is_logged_in(sess)
-
-    warm = sess.get(f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", timeout=12)
-    r = fetch_viewport(sess, lat, lng, zm)
-    text = r.text or ""
-    return jsonify({
-        "input": {"lat": lat, "lng": lng, "zm": zm},
-        "is_logged_in": ok,
-        "is_logged_in_raw": raw,
-        "warmup_status": warm.status_code,
-        "status": r.status_code,
-        "bytes": len(text),
-        "preview": text[:200],
-    })
-
-@app.get("/proxy/raw")
-def proxy_raw():
-    lat = _safe_float(request.args.get("lat"), DEFAULT_LAT)
-    lng = _safe_float(request.args.get("lng"), DEFAULT_LNG)
-    zm  = _safe_int(request.args.get("zm"),  DEFAULT_ZM)
-    sess = _new_session(None)
-    r = fetch_viewport(sess, lat, lng, zm)
-    return Response(response=r.content, status=r.status_code,
-                    mimetype=r.headers.get("Content-Type","application/json"))
-
-@app.get("/scan")
-def scan():
-    sess = _new_session(request.args.get("cookie"))
-    coords: List[Tuple[str,float,float]] = []
-    if "lat" in request.args and "lng" in request.args:
-        coords.append(("caller", _safe_float(request.args["lat"], DEFAULT_LAT),
-                                _safe_float(request.args["lng"], DEFAULT_LNG)))
-    coords.extend(HOTSPOTS)
-    tried = []
-    for name, la, ln in coords:
-        for z in ZOOMS:
-            r = fetch_viewport(sess, la, ln, z)
-            text = r.text or ""
-            tried.append({"where": name, "lat": la, "lng": ln, "zm": z,
-                          "status": r.status_code, "bytes": len(text)})
-            if r.ok and len(text) > 150:
-                return jsonify({
-                    "hit": {"where": name, "lat": la, "lng": ln, "zm": z},
-                    "bytes": len(text),
-                    "snippet": text[:400],
-                })
-    return jsonify({"hit": None, "tried": tried})
-
-@app.get("/")
-def root():
-    return jsonify(
-        message="railops-json ready",
-        routes=["/healthz",
-                "/authcheck",
-                "/debug/viewport?lat=&lng=&zm=",
-                "/proxy/raw?lat=&lng=&zm=",
-                "/scan?lat=&lng=&cookie="]
-    )
+@app.get("/try")
+def try_ui():
+    return Response(_html_page.__func__(), mimetype="text/html")
+# --- END SUPER SIMPLE TEST UI ----------------------------------------------
