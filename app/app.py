@@ -1,9 +1,9 @@
 # app/app.py
-import os, json, time, logging
+import os, json, time, logging, re
 from pathlib import Path
 from datetime import datetime
 import requests
-from flask import Flask, request, jsonify, send_file, abort
+from flask import Flask, request, jsonify, send_file
 
 APP_ROOT = Path(__file__).resolve().parent
 DATA_DIR  = APP_ROOT / "static" / "data"
@@ -15,10 +15,10 @@ app.logger.setLevel(logging.INFO)
 
 # ---------------- Config ----------------
 TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
-TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # e.g. "_ga=GA1.1.123; _ga_X=GS1.1.2; __stripe_mid=abc"
+TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # e.g. "_ga=GA1.1.188...; __stripe_mid=abc; ..."
 UA_CHROME = (
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-    '(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 )
 DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney by default
 DEFAULT_LNG = float(os.getenv("VIEW_LNG", "151.2093"))
@@ -27,7 +27,6 @@ CACHE_SECONDS = int(os.getenv("CACHE_SECONDS", "30"))
 
 # --------------- HTTP session ---------------
 session = requests.Session()
-
 BASE_HEADERS = {
     "User-Agent": UA_CHROME,
     "Accept-Language": "en-AU,en;q=0.9",
@@ -46,8 +45,6 @@ session.headers.update(BASE_HEADERS)
 # Attach cookies
 if TF_ASPXAUTH:
     session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
-
-# Optionally attach all other TF cookies you see in DevTools (Application → Cookies)
 if TF_EXTRA_COOKIES:
     for part in TF_EXTRA_COOKIES.split(";"):
         part = part.strip()
@@ -58,40 +55,95 @@ if TF_EXTRA_COOKIES:
                 session.cookies.set(name, val, domain="trainfinder.otenko.com")
 
 # --------------- Helpers ---------------
+TOKEN_RE = re.compile(
+    r'name=["\']__RequestVerificationToken["\']\s+value=["\']([^"\']+)["\']',
+    re.IGNORECASE
+)
+
 def _referer(lat: float, lng: float, zm: int) -> str:
     return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
 
-def _warmup(lat: float, lng: float, zm: int) -> int:
+def _parse_float(name: str, default: float) -> float:
+    val = request.args.get(name)
+    if val is None:
+        return float(default)
+    try:
+        return float(str(val).strip())
+    except Exception:
+        return float(default)
+
+def _parse_int(name: str, default: int) -> int:
+    val = request.args.get(name)
+    if val is None:
+        return int(default)
+    s = str(val).strip()
+    num = ""
+    for ch in s:
+        if ch.isdigit() or (ch == "-" and not num):
+            num += ch
+        else:
+            break
+    try:
+        return int(num) if num else int(default)
+    except Exception:
+        return int(default)
+
+def _extract_verification_token(html: str) -> str | None:
+    # Try hidden input on the page
+    m = TOKEN_RE.search(html or "")
+    if m:
+        return m.group(1)
+    # Fallback: sometimes token appears in cookies
+    for c in session.cookies:
+        if "VerificationToken" in c.name or "RequestVerificationToken" in c.name:
+            return c.value
+    return None
+
+def _warmup_and_token(lat: float, lng: float, zm: int) -> tuple[int, str | None]:
     ref = _referer(lat, lng, zm)
     h = {"Referer": ref}
     g = session.get(ref, headers=h, timeout=20)
-    app.logger.info("Warmup GET %s -> %s", ref, g.status_code)
-    return g.status_code
+    token = _extract_verification_token(g.text)
+    app.logger.info(
+        "Warmup GET %s -> %s; token_len=%s",
+        ref, g.status_code, (len(token) if token else 0)
+    )
+    return g.status_code, token
 
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
     """
-    Warm up TF page, then POST viewport request.
+    Warm up TF page, extract anti-forgery token, then POST viewport request.
     Returns parsed JSON or {} if TF sends 'null'.
     """
+    _, token = _warmup_and_token(lat, lng, zm)
     ref = _referer(lat, lng, zm)
-    _warmup(lat, lng, zm)
 
     post_headers = {
         "Referer": ref,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
     }
+    # Include RequestVerificationToken header if we found one
+    if token:
+        post_headers["RequestVerificationToken"] = token
+
     # Keep the browser-ish headers
-    post_headers.update({k: v for k, v in BASE_HEADERS.items() if k not in ("Accept",)})
+    for k, v in BASE_HEADERS.items():
+        if k not in post_headers:
+            post_headers[k] = v
+
+    form = {"lat": lat, "lng": lng, "zm": zm}
+    if token:
+        form["__RequestVerificationToken"] = token
 
     resp = session.post(
         "https://trainfinder.otenko.com/Home/GetViewPortData",
-        data={"lat": lat, "lng": lng, "zm": zm},
+        data=form,
         headers=post_headers,
         timeout=25,
     )
     app.logger.info(
-        "POST GetViewPortData (lat=%.6f,lng=%.6f,zm=%s) -> %s; bytes=%s; preview=%r",
-        lat, lng, zm, resp.status_code, len(resp.text), resp.text[:160]
+        "POST GetViewPortData (lat=%.6f,lng=%.6f,zm=%s) -> %s; token=%s; bytes=%s; preview=%r",
+        lat, lng, zm, resp.status_code, bool(token), len(resp.text), resp.text[:160]
     )
     resp.raise_for_status()
 
@@ -106,8 +158,8 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
 
 def transform_tf_payload(tf: dict) -> dict:
     """
-    Normalize TF response into a stable schema.
-    We'll keep trains[] empty until we see real TF structure.
+    Normalize TF response into a stable schema. We'll fill trains[] later
+    once we see a real payload structure from /debug/viewport.
     """
     now = datetime.utcnow().isoformat() + "Z"
     return {
@@ -130,36 +182,8 @@ def needs_refresh(path: Path, max_age_seconds: int) -> bool:
     age = time.time() - path.stat().st_mtime
     return age > max_age_seconds
 
-def _parse_float(name: str, default: float) -> float:
-    """Robust query param float parser; strips junk and falls back."""
-    val = request.args.get(name, None)
-    if val is None:
-        return float(default)
-    try:
-        return float(str(val).strip())
-    except Exception:
-        return float(default)
-
-def _parse_int(name: str, default: int) -> int:
-    """Robust query param int parser; strips junk and falls back."""
-    val = request.args.get(name, None)
-    if val is None:
-        return int(default)
-    s = str(val).strip()
-    # keep leading digits only
-    num = ""
-    for ch in s:
-        if ch.isdigit() or (ch == "-" and not num):
-            num += ch
-        else:
-            break
-    try:
-        return int(num) if num else int(default)
-    except Exception:
-        return int(default)
-
 def _looks_logged_in(html: str) -> bool:
-    lower = html.lower()
+    lower = (html or "").lower()
     markers = ["log off", "logout", "rules of use", "signed in", "favorites", "favourites"]
     return any(m in lower for m in markers)
 
@@ -199,9 +223,11 @@ def authcheck():
     ref = _referer(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
     r = session.get(ref, headers={"Referer": ref}, timeout=20)
     ok = _looks_logged_in(r.text)
-    app.logger.info("Authcheck GET -> %s; logged_in_guess=%s; bytes=%s",
-                    r.status_code, ok, len(r.text))
-    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text)})
+    # Show if token exists on the default warmup, too
+    token = _extract_verification_token(r.text)
+    app.logger.info("Authcheck GET -> %s; logged_in_guess=%s; bytes=%s; token_len=%s",
+                    r.status_code, ok, len(r.text), (len(token) if token else 0))
+    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text), "token_len": (len(token) if token else 0)})
 
 @app.get("/trains.json")
 def trains_json():
@@ -236,7 +262,7 @@ def update_now():
 
 @app.get("/debug/viewport")
 def debug_viewport():
-    """Return raw TF JSON; hardened against bad query strings."""
+    """Return raw TF JSON for a given viewport."""
     lat = _parse_float("lat", DEFAULT_LAT)
     lng = _parse_float("lng", DEFAULT_LNG)
     zm  = _parse_int("zm", DEFAULT_ZM)
@@ -284,7 +310,7 @@ def root():
             "/health", "/status", "/headers", "/cookie/echo", "/authcheck",
             "/trains.json", "/update", "/debug/viewport", "/scan"
         ],
-        "howto": "Set TF_ASPXAUTH and (optionally) TF_EXTRA_COOKIES env vars to mirror your browser cookies."
+        "note": "App extracts __RequestVerificationToken from warmup page and sends it in POST."
     })
 
 if __name__ == "__main__":
