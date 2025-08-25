@@ -21,10 +21,10 @@ UA_CHROME = (
     "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 )
 
-# Default viewport + a reasonable browser window size (px) for bbox math
+# Default viewport and window size (px) used for bbox
 DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney
 DEFAULT_LNG = float(os.getenv("VIEW_LNG", "151.2093"))
-DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "11"))            # many layers unlock >= 11
+DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "12"))            # many layers unlock >= 11
 VIEW_W = int(os.getenv("VIEW_W", "1280"))
 VIEW_H = int(os.getenv("VIEW_H", "800"))
 
@@ -64,33 +64,29 @@ TOKEN_RE = re.compile(r'name=["\']__RequestVerificationToken["\']\s+value=["\'](
 META_RE  = re.compile(r'<meta[^>]+(?:name|id)=["\'](?:csrf\-token|xsrf\-token|requestverificationtoken)["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE)
 JS_RE    = re.compile(r'RequestVerificationToken["\']?\s*[:=]\s*["\']([^"\']+)["\']', re.IGNORECASE)
 
+TILE_SIZE = 256.0
+MIN_LAT = -85.05112878
+MAX_LAT =  85.05112878
+
 def _referer(lat: float, lng: float, zm: int) -> str:
     return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
 
 def _parse_float(name: str, default: float) -> float:
     val = request.args.get(name)
-    if val is None:
-        return float(default)
-    try:
-        return float(str(val).strip())
-    except Exception:
-        return float(default)
+    if val is None: return float(default)
+    try: return float(str(val).strip())
+    except Exception: return float(default)
 
 def _parse_int(name: str, default: int) -> int:
     val = request.args.get(name)
-    if val is None:
-        return int(default)
+    if val is None: return int(default)
     s = str(val).strip()
     num = ""
     for ch in s:
-        if ch.isdigit() or (ch == "-" and not num):
-            num += ch
-        else:
-            break
-    try:
-        return int(num) if num else int(default)
-    except Exception:
-        return int(default)
+        if ch.isdigit() or (ch == "-" and not num): num += ch
+        else: break
+    try: return int(num) if num else int(default)
+    except Exception: return int(default)
 
 def _warmup(lat: float, lng: float, zm: int) -> tuple[int, str]:
     """GET the page to seed session; return (status, html[:2048])."""
@@ -102,53 +98,58 @@ def _warmup(lat: float, lng: float, zm: int) -> tuple[int, str]:
 def _extract_token_from(html: str) -> str | None:
     for regex in (TOKEN_RE, META_RE, JS_RE):
         m = regex.search(html or "")
-        if m:
-            return m.group(1)
-    # Cookie fallbacks commonly used by ASP.NET Core / Angular
+        if m: return m.group(1)
+    # Cookie fallbacks used by some stacks
     for c in session.cookies:
         nm = c.name.lower()
         if any(k in nm for k in ("xsrf", "csrf", "verification", "antiforg")):
             return c.value
     return None
 
-# --- Web Mercator helpers to compute viewport bounds ---
-TILE_SIZE = 256
-
-def _latlng_to_world(lng: float, lat: float) -> tuple[float, float]:
-    siny = math.sin(lat * math.pi / 180)
-    # Clamp to mercator limits
-    siny = min(max(siny, -0.9999), 0.9999)
-    x = TILE_SIZE * (0.5 + lng / 360.0)
-    y = TILE_SIZE * (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi))
+# --- Web Mercator projection utilities (correct + safe) ---
+def _project(lng: float, lat: float, zoom: int) -> tuple[float, float]:
+    """to pixel coords at zoom z."""
+    lat = max(MIN_LAT, min(MAX_LAT, lat))
+    world = TILE_SIZE * (1 << zoom)
+    x = (lng + 180.0) / 360.0 * world
+    siny = math.sin(math.radians(lat))
+    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * world
     return x, y
 
-def _world_to_latlng(x: float, y: float) -> tuple[float, float]:
-    lng = (x / TILE_SIZE - 0.5) * 360.0
-    n = math.pi - 2.0 * math.pi * (y / TILE_SIZE - 0.5)
-    lat = 180.0 / math.pi * math.atan(0.5 * (math.exp(n) - math.exp(-n)))
+def _unproject(x: float, y: float, zoom: int) -> tuple[float, float]:
+    """from pixel coords at zoom z to (lng, lat)."""
+    world = TILE_SIZE * (1 << zoom)
+    lng = x / world * 360.0 - 180.0
+    n = math.pi - 2.0 * math.pi * (y / world)
+    lat = math.degrees(math.atan(math.sinh(n)))  # no overflow; y∈[0,world] ⇒ n∈[-π,π]
     return lng, lat
 
 def compute_bounds(lat: float, lng: float, zoom: int, px_w: int, px_h: int):
-    """Approximate geographic bounds from center, zoom and viewport size."""
-    scale = 2 ** zoom
-    cx, cy = _latlng_to_world(lng, lat)
-    cx *= scale
-    cy *= scale
+    """Compute geographic bounds (north/south/east/west) for a given center, zoom and viewport size."""
+    cx, cy = _project(lng, lat, zoom)
     half_w = px_w / 2.0
     half_h = px_h / 2.0
-    # top-left and bottom-right world coords
-    tlx, tly = cx - half_w / TILE_SIZE, cy - half_h / TILE_SIZE
-    brx, bry = cx + half_w / TILE_SIZE, cy + half_h / TILE_SIZE
-    # back to lat/lng
-    west, north = _world_to_latlng(tlx / scale * TILE_SIZE, tly / scale * TILE_SIZE)
-    east, south = _world_to_latlng(brx / scale * TILE_SIZE, bry / scale * TILE_SIZE)
-    # Normalize longitudes
+
+    world = TILE_SIZE * (1 << zoom)
+
+    # pixel bounds (clamped to world)
+    left   = max(0.0, min(world, cx - half_w))
+    right  = max(0.0, min(world, cx + half_w))
+    top    = max(0.0, min(world, cy - half_h))
+    bottom = max(0.0, min(world, cy + half_h))
+
+    west,  north = _unproject(left,  top,    zoom)
+    east,  south = _unproject(right, bottom, zoom)
+
+    # handle dateline wrap (not typical for AU, but keep it tidy)
     if east < west:
         east += 360.0
+
     return {
         "north": north, "south": south, "east": east, "west": west,
         "minLat": min(north, south), "maxLat": max(north, south),
         "minLng": min(west, east),  "maxLng": max(west, east),
+        "px": {"left": left, "right": right, "top": top, "bottom": bottom, "world": world}
     }
 
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
@@ -166,28 +167,24 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
     }
     if token:
-        # Try the usual header names
         post_headers["RequestVerificationToken"] = token
         post_headers.setdefault("X-CSRF-TOKEN", token)
         post_headers.setdefault("X-XSRF-TOKEN", token)
-    # keep browser-like headers
     for k, v in BASE_HEADERS.items():
         if k not in post_headers:
             post_headers[k] = v
 
-    # Primary fields that we know about
+    # Primary fields + common aliases
     form = {
-        "lat": lat,
-        "lng": lng,
-        "zm": zm,
+        "lat": lat, "lng": lng, "zm": zm, "z": zm,
         # bounds under many aliases
         "n": bounds["north"], "s": bounds["south"], "e": bounds["east"], "w": bounds["west"],
         "north": bounds["north"], "south": bounds["south"], "east": bounds["east"], "west": bounds["west"],
         "minLat": bounds["minLat"], "maxLat": bounds["maxLat"], "minLng": bounds["minLng"], "maxLng": bounds["maxLng"],
-        # sometimes handlers expect JSON-ish strings
         "boundsNE": f"{bounds['north']},{bounds['east']}",
         "boundsSW": f"{bounds['south']},{bounds['west']}",
-        # hint fields seen in many MVC apps
+        "northEastLat": bounds["north"], "northEastLng": bounds["east"],
+        "southWestLat": bounds["south"], "southWestLng": bounds["west"],
         "width": VIEW_W, "height": VIEW_H,
     }
     if token:
@@ -234,8 +231,7 @@ def write_trains(data: dict):
     tmp.replace(TRAINS_JSON_PATH)
 
 def needs_refresh(path: Path, max_age_seconds: int) -> bool:
-    if not path.exists():
-        return True
+    if not path.exists(): return True
     age = time.time() - path.stat().st_mtime
     return age > max_age_seconds
 
@@ -304,6 +300,14 @@ def debug_tokens():
     ]
     return jsonify({"warmup_html_len": html_len, "token_len": tlen, "cookie_tokens": cookie_tokens})
 
+@app.get("/debug/bounds")
+def debug_bounds():
+    lat = _parse_float("lat", DEFAULT_LAT)
+    lng = _parse_float("lng", DEFAULT_LNG)
+    zm  = _parse_int("zm", DEFAULT_ZM)
+    b = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
+    return jsonify(b)
+
 @app.get("/trains.json")
 def trains_json():
     lat = _parse_float("lat", DEFAULT_LAT)
@@ -346,15 +350,14 @@ def debug_viewport():
 @app.get("/scan")
 def scan():
     """
-    Probe busy AU viewports at higher zooms; write first non-empty to trains.json.
+    Probe busy AU viewports at zooms 11–13; write first non-empty to trains.json.
     """
     probes = [
-        # Sydney / Melbourne / Brisbane / Perth / Adelaide at zooms 11–13
-        (-33.8688, 151.2093, 11), (-33.8688, 151.2093, 12), (-33.8688, 151.2093, 13),
-        (-37.8136, 144.9631, 11), (-37.8136, 144.9631, 12), (-37.8136, 144.9631, 13),
-        (-27.4698, 153.0251, 11), (-27.4698, 153.0251, 12), (-27.4698, 153.0251, 13),
-        (-31.9523, 115.8613, 11), (-31.9523, 115.8613, 12), (-31.9523, 115.8613, 13),
-        (-34.9285, 138.6007, 11), (-34.9285, 138.6007, 12), (-34.9285, 138.6007, 13),
+        (-33.8688, 151.2093, 11), (-33.8688, 151.2093, 12), (-33.8688, 151.2093, 13),  # Sydney
+        (-37.8136, 144.9631, 11), (-37.8136, 144.9631, 12), (-37.8136, 144.9631, 13),  # Melbourne
+        (-27.4698, 153.0251, 11), (-27.4698, 153.0251, 12), (-27.4698, 153.0251, 13),  # Brisbane
+        (-31.9523, 115.8613, 11), (-31.9523, 115.8613, 12), (-31.9523, 115.8613, 13),  # Perth
+        (-34.9285, 138.6007, 11), (-34.9285, 138.6007, 12), (-34.9285, 138.6007, 13),  # Adelaide
     ]
     tried = []
     for lat, lng, zm in probes:
@@ -380,10 +383,10 @@ def root():
         "ok": True,
         "endpoints": [
             "/health", "/status", "/headers", "/cookie/echo", "/authcheck",
-            "/debug/warmup_dump", "/debug/tokens",
+            "/debug/warmup_dump", "/debug/tokens", "/debug/bounds",
             "/trains.json", "/update", "/debug/viewport", "/scan"
         ],
-        "note": "Sends many common bbox field names; unknown ones are ignored by the server."
+        "note": "Correct Web Mercator bounds; sends many bbox aliases; unknown fields are ignored server-side."
     })
 
 if __name__ == "__main__":
