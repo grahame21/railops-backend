@@ -1,9 +1,9 @@
 # app/app.py
-import os, json, time, logging, re
+import os, json, time, math, logging, re
 from pathlib import Path
 from datetime import datetime
 import requests
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
 
 APP_ROOT = Path(__file__).resolve().parent
 DATA_DIR  = APP_ROOT / "static" / "data"
@@ -15,14 +15,19 @@ app.logger.setLevel(logging.INFO)
 
 # ---------------- Config ----------------
 TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
-TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # e.g. "_ga=GA1.1.188...; __stripe_mid=abc; ..."
+TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # semicolon-separated cookie list
 UA_CHROME = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 )
-DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney by default
+
+# Default viewport + a reasonable browser window size (px) for bbox math
+DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney
 DEFAULT_LNG = float(os.getenv("VIEW_LNG", "151.2093"))
-DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "6"))             # 6–7 usually best
+DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "11"))            # many layers unlock >= 11
+VIEW_W = int(os.getenv("VIEW_W", "1280"))
+VIEW_H = int(os.getenv("VIEW_H", "800"))
+
 CACHE_SECONDS = int(os.getenv("CACHE_SECONDS", "30"))
 
 # --------------- HTTP session ---------------
@@ -55,10 +60,9 @@ if TF_EXTRA_COOKIES:
                 session.cookies.set(name, val, domain="trainfinder.otenko.com")
 
 # --------------- Helpers ---------------
-TOKEN_RE = re.compile(
-    r'name=["\']__RequestVerificationToken["\']\s+value=["\']([^"\']+)["\']',
-    re.IGNORECASE
-)
+TOKEN_RE = re.compile(r'name=["\']__RequestVerificationToken["\']\s+value=["\']([^"\']+)["\']', re.IGNORECASE)
+META_RE  = re.compile(r'<meta[^>]+(?:name|id)=["\'](?:csrf\-token|xsrf\-token|requestverificationtoken)["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE)
+JS_RE    = re.compile(r'RequestVerificationToken["\']?\s*[:=]\s*["\']([^"\']+)["\']', re.IGNORECASE)
 
 def _referer(lat: float, lng: float, zm: int) -> str:
     return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
@@ -88,50 +92,104 @@ def _parse_int(name: str, default: int) -> int:
     except Exception:
         return int(default)
 
-def _extract_verification_token(html: str) -> str | None:
-    # Try hidden input on the page
-    m = TOKEN_RE.search(html or "")
-    if m:
-        return m.group(1)
-    # Fallback: sometimes token appears in cookies
+def _warmup(lat: float, lng: float, zm: int) -> tuple[int, str]:
+    """GET the page to seed session; return (status, html[:2048])."""
+    ref = _referer(lat, lng, zm)
+    g = session.get(ref, headers={"Referer": ref}, timeout=20)
+    app.logger.info("Warmup GET %s -> %s; bytes=%s", ref, g.status_code, len(g.text or ""))
+    return g.status_code, (g.text or "")[:2048]
+
+def _extract_token_from(html: str) -> str | None:
+    for regex in (TOKEN_RE, META_RE, JS_RE):
+        m = regex.search(html or "")
+        if m:
+            return m.group(1)
+    # Cookie fallbacks commonly used by ASP.NET Core / Angular
     for c in session.cookies:
-        if "VerificationToken" in c.name or "RequestVerificationToken" in c.name:
+        nm = c.name.lower()
+        if any(k in nm for k in ("xsrf", "csrf", "verification", "antiforg")):
             return c.value
     return None
 
-def _warmup_and_token(lat: float, lng: float, zm: int) -> tuple[int, str | None]:
-    ref = _referer(lat, lng, zm)
-    h = {"Referer": ref}
-    g = session.get(ref, headers=h, timeout=20)
-    token = _extract_verification_token(g.text)
-    app.logger.info(
-        "Warmup GET %s -> %s; token_len=%s",
-        ref, g.status_code, (len(token) if token else 0)
-    )
-    return g.status_code, token
+# --- Web Mercator helpers to compute viewport bounds ---
+TILE_SIZE = 256
+
+def _latlng_to_world(lng: float, lat: float) -> tuple[float, float]:
+    siny = math.sin(lat * math.pi / 180)
+    # Clamp to mercator limits
+    siny = min(max(siny, -0.9999), 0.9999)
+    x = TILE_SIZE * (0.5 + lng / 360.0)
+    y = TILE_SIZE * (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi))
+    return x, y
+
+def _world_to_latlng(x: float, y: float) -> tuple[float, float]:
+    lng = (x / TILE_SIZE - 0.5) * 360.0
+    n = math.pi - 2.0 * math.pi * (y / TILE_SIZE - 0.5)
+    lat = 180.0 / math.pi * math.atan(0.5 * (math.exp(n) - math.exp(-n)))
+    return lng, lat
+
+def compute_bounds(lat: float, lng: float, zoom: int, px_w: int, px_h: int):
+    """Approximate geographic bounds from center, zoom and viewport size."""
+    scale = 2 ** zoom
+    cx, cy = _latlng_to_world(lng, lat)
+    cx *= scale
+    cy *= scale
+    half_w = px_w / 2.0
+    half_h = px_h / 2.0
+    # top-left and bottom-right world coords
+    tlx, tly = cx - half_w / TILE_SIZE, cy - half_h / TILE_SIZE
+    brx, bry = cx + half_w / TILE_SIZE, cy + half_h / TILE_SIZE
+    # back to lat/lng
+    west, north = _world_to_latlng(tlx / scale * TILE_SIZE, tly / scale * TILE_SIZE)
+    east, south = _world_to_latlng(brx / scale * TILE_SIZE, bry / scale * TILE_SIZE)
+    # Normalize longitudes
+    if east < west:
+        east += 360.0
+    return {
+        "north": north, "south": south, "east": east, "west": west,
+        "minLat": min(north, south), "maxLat": max(north, south),
+        "minLng": min(west, east),  "maxLng": max(west, east),
+    }
 
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
     """
-    Warm up TF page, extract anti-forgery token, then POST viewport request.
-    Returns parsed JSON or {} if TF sends 'null'.
+    Warm up, try to extract any token-ish value (best-effort), compute bounds,
+    then POST a super-set of common field names so the server model binder can hit.
     """
-    _, token = _warmup_and_token(lat, lng, zm)
-    ref = _referer(lat, lng, zm)
+    _, html = _warmup(lat, lng, zm)
+    token = _extract_token_from(html)
+    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
 
+    ref = _referer(lat, lng, zm)
     post_headers = {
         "Referer": ref,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
     }
-    # Include RequestVerificationToken header if we found one
     if token:
+        # Try the usual header names
         post_headers["RequestVerificationToken"] = token
-
-    # Keep the browser-ish headers
+        post_headers.setdefault("X-CSRF-TOKEN", token)
+        post_headers.setdefault("X-XSRF-TOKEN", token)
+    # keep browser-like headers
     for k, v in BASE_HEADERS.items():
         if k not in post_headers:
             post_headers[k] = v
 
-    form = {"lat": lat, "lng": lng, "zm": zm}
+    # Primary fields that we know about
+    form = {
+        "lat": lat,
+        "lng": lng,
+        "zm": zm,
+        # bounds under many aliases
+        "n": bounds["north"], "s": bounds["south"], "e": bounds["east"], "w": bounds["west"],
+        "north": bounds["north"], "south": bounds["south"], "east": bounds["east"], "west": bounds["west"],
+        "minLat": bounds["minLat"], "maxLat": bounds["maxLat"], "minLng": bounds["minLng"], "maxLng": bounds["maxLng"],
+        # sometimes handlers expect JSON-ish strings
+        "boundsNE": f"{bounds['north']},{bounds['east']}",
+        "boundsSW": f"{bounds['south']},{bounds['west']}",
+        # hint fields seen in many MVC apps
+        "width": VIEW_W, "height": VIEW_H,
+    }
     if token:
         form["__RequestVerificationToken"] = token
 
@@ -141,14 +199,14 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         headers=post_headers,
         timeout=25,
     )
+    txt = resp.text.strip()
     app.logger.info(
-        "POST GetViewPortData (lat=%.6f,lng=%.6f,zm=%s) -> %s; token=%s; bytes=%s; preview=%r",
-        lat, lng, zm, resp.status_code, bool(token), len(resp.text), resp.text[:160]
+        "POST GetViewPortData (lat=%.5f,lng=%.5f,zm=%s) -> %s; token=%s; bytes=%s; preview=%r",
+        lat, lng, zm, resp.status_code, bool(token), len(txt), txt[:160]
     )
     resp.raise_for_status()
 
-    t = resp.text.strip()
-    if t == "null" or t == "":
+    if txt in ("", "null"):
         return {}
     try:
         return resp.json()
@@ -158,8 +216,7 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
 
 def transform_tf_payload(tf: dict) -> dict:
     """
-    Normalize TF response into a stable schema. We'll fill trains[] later
-    once we see a real payload structure from /debug/viewport.
+    Stub mapper: once we see real data at /debug/viewport, we’ll fill trains[].
     """
     now = datetime.utcnow().isoformat() + "Z"
     return {
@@ -182,11 +239,6 @@ def needs_refresh(path: Path, max_age_seconds: int) -> bool:
     age = time.time() - path.stat().st_mtime
     return age > max_age_seconds
 
-def _looks_logged_in(html: str) -> bool:
-    lower = (html or "").lower()
-    markers = ["log off", "logout", "rules of use", "signed in", "favorites", "favourites"]
-    return any(m in lower for m in markers)
-
 # --------------- Routes ---------------
 @app.get("/health")
 def health():
@@ -199,7 +251,7 @@ def status():
         "has_cookie": bool(TF_ASPXAUTH),
         "cookie_len": len(TF_ASPXAUTH),
         "extra_cookies": [c.name for c in session.cookies if c.domain.endswith("otenko.com") and c.name != ".ASPXAUTH"],
-        "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM},
+        "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM, "w": VIEW_W, "h": VIEW_H},
         "trains_json_exists": TRAINS_JSON_PATH.exists(),
         "trains_json_mtime": (
             datetime.utcfromtimestamp(TRAINS_JSON_PATH.stat().st_mtime).isoformat()+"Z"
@@ -222,12 +274,35 @@ def headers_echo():
 def authcheck():
     ref = _referer(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
     r = session.get(ref, headers={"Referer": ref}, timeout=20)
-    ok = _looks_logged_in(r.text)
-    # Show if token exists on the default warmup, too
-    token = _extract_verification_token(r.text)
-    app.logger.info("Authcheck GET -> %s; logged_in_guess=%s; bytes=%s; token_len=%s",
-                    r.status_code, ok, len(r.text), (len(token) if token else 0))
-    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text), "token_len": (len(token) if token else 0)})
+    ok = "logout" in (r.text or "").lower() or "rules of use" in (r.text or "").lower()
+    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text)})
+
+@app.get("/debug/warmup_dump")
+def warmup_dump():
+    lat = _parse_float("lat", DEFAULT_LAT)
+    lng = _parse_float("lng", DEFAULT_LNG)
+    zm  = _parse_int("zm", DEFAULT_ZM)
+    _, html = _warmup(lat, lng, zm)
+    token = _extract_token_from(html)
+    out = f"=== first 2048 chars of warmup HTML ===\n{html}\n\n[guessed token length: {len(token) if token else 0}]"
+    return Response(out, mimetype="text/plain")
+
+@app.get("/debug/tokens")
+def debug_tokens():
+    html_len = 0
+    try:
+        _, html = _warmup(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
+        html_len = len(html)
+        token = _extract_token_from(html)
+        tlen = len(token) if token else 0
+    except Exception:
+        tlen = 0
+    cookie_tokens = [
+        {"name": c.name, "len": len(c.value)}
+        for c in session.cookies
+        if any(k in c.name.lower() for k in ("xsrf", "csrf", "verification", "antiforg"))
+    ]
+    return jsonify({"warmup_html_len": html_len, "token_len": tlen, "cookie_tokens": cookie_tokens})
 
 @app.get("/trains.json")
 def trains_json():
@@ -262,7 +337,6 @@ def update_now():
 
 @app.get("/debug/viewport")
 def debug_viewport():
-    """Return raw TF JSON for a given viewport."""
     lat = _parse_float("lat", DEFAULT_LAT)
     lng = _parse_float("lng", DEFAULT_LNG)
     zm  = _parse_int("zm", DEFAULT_ZM)
@@ -271,25 +345,23 @@ def debug_viewport():
 
 @app.get("/scan")
 def scan():
-    """Probe multiple busy viewports (zm 6/7) and write the first non-empty."""
+    """
+    Probe busy AU viewports at higher zooms; write first non-empty to trains.json.
+    """
     probes = [
-        (-33.8688, 151.2093, 6),  # Sydney
-        (-33.8688, 151.2093, 7),
-        (-37.8136, 144.9631, 6),  # Melbourne
-        (-37.8136, 144.9631, 7),
-        (-27.4698, 153.0251, 6),  # Brisbane
-        (-27.4698, 153.0251, 7),
-        (-31.9523, 115.8613, 6),  # Perth
-        (-31.9523, 115.8613, 7),
-        (-34.9285, 138.6007, 6),  # Adelaide
-        (-34.9285, 138.6007, 7),
+        # Sydney / Melbourne / Brisbane / Perth / Adelaide at zooms 11–13
+        (-33.8688, 151.2093, 11), (-33.8688, 151.2093, 12), (-33.8688, 151.2093, 13),
+        (-37.8136, 144.9631, 11), (-37.8136, 144.9631, 12), (-37.8136, 144.9631, 13),
+        (-27.4698, 153.0251, 11), (-27.4698, 153.0251, 12), (-27.4698, 153.0251, 13),
+        (-31.9523, 115.8613, 11), (-31.9523, 115.8613, 12), (-31.9523, 115.8613, 13),
+        (-34.9285, 138.6007, 11), (-34.9285, 138.6007, 12), (-34.9285, 138.6007, 13),
     ]
     tried = []
     for lat, lng, zm in probes:
         tf = fetch_viewport(lat, lng, zm)
         txt = json.dumps(tf, ensure_ascii=False)
         tried.append({"lat": lat, "lng": lng, "zm": zm, "bytes": len(txt)})
-        if len(txt) > 200:  # heuristic to dodge the 98-byte "null"
+        if len(txt) > 200:  # heuristic: non-empty payload
             data = transform_tf_payload(tf)
             write_trains(data)
             return jsonify({
@@ -308,9 +380,10 @@ def root():
         "ok": True,
         "endpoints": [
             "/health", "/status", "/headers", "/cookie/echo", "/authcheck",
+            "/debug/warmup_dump", "/debug/tokens",
             "/trains.json", "/update", "/debug/viewport", "/scan"
         ],
-        "note": "App extracts __RequestVerificationToken from warmup page and sends it in POST."
+        "note": "Sends many common bbox field names; unknown ones are ignored by the server."
     })
 
 if __name__ == "__main__":
