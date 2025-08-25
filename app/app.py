@@ -47,7 +47,7 @@ BASE_HEADERS = {
 }
 session.headers.update(BASE_HEADERS)
 
-# Attach cookies
+# Attach cookies you supply
 if TF_ASPXAUTH:
     session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
 if TF_EXTRA_COOKIES:
@@ -59,15 +59,69 @@ if TF_EXTRA_COOKIES:
             if name and val:
                 session.cookies.set(name, val, domain="trainfinder.otenko.com")
 
-# --------------- Helpers ---------------
+# --------------- Token finders ---------------
 TOKEN_RE = re.compile(r'name=["\']__RequestVerificationToken["\']\s+value=["\']([^"\']+)["\']', re.IGNORECASE)
 META_RE  = re.compile(r'<meta[^>]+(?:name|id)=["\'](?:csrf\-token|xsrf\-token|requestverificationtoken)["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE)
 JS_RE    = re.compile(r'RequestVerificationToken["\']?\s*[:=]\s*["\']([^"\']+)["\']', re.IGNORECASE)
 
+def _extract_token_from(html_full: str) -> str | None:
+    for regex in (TOKEN_RE, META_RE, JS_RE):
+        m = regex.search(html_full or "")
+        if m:
+            return m.group(1)
+    # Cookie fallbacks commonly used by ASP.NET stacks
+    for c in session.cookies:
+        nm = c.name.lower()
+        if any(k in nm for k in ("xsrf", "csrf", "verification", "antiforg")):
+            return c.value
+    return None
+
+# --------------- Web Mercator (safe) ---------------
 TILE_SIZE = 256.0
 MIN_LAT = -85.05112878
 MAX_LAT =  85.05112878
 
+def _project(lng: float, lat: float, zoom: int) -> tuple[float, float]:
+    lat = max(MIN_LAT, min(MAX_LAT, lat))
+    world = TILE_SIZE * (1 << zoom)
+    x = (lng + 180.0) / 360.0 * world
+    siny = math.sin(math.radians(lat))
+    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * world
+    return x, y
+
+def _unproject(x: float, y: float, zoom: int) -> tuple[float, float]:
+    world = TILE_SIZE * (1 << zoom)
+    lng = x / world * 360.0 - 180.0
+    n = math.pi - 2.0 * math.pi * (y / world)
+    lat = math.degrees(math.atan(math.sinh(n)))
+    return lng, lat
+
+def compute_bounds(lat: float, lng: float, zoom: int, px_w: int, px_h: int):
+    cx, cy = _project(lng, lat, zoom)
+    half_w = px_w / 2.0
+    half_h = px_h / 2.0
+    world = TILE_SIZE * (1 << zoom)
+
+    # pixel bounds (clamped)
+    left   = max(0.0, min(world, cx - half_w))
+    right  = max(0.0, min(world, cx + half_w))
+    top    = max(0.0, min(world, cy - half_h))
+    bottom = max(0.0, min(world, cy + half_h))
+
+    west,  north = _unproject(left,  top,    zoom)
+    east,  south = _unproject(right, bottom, zoom)
+
+    if east < west:
+        east += 360.0
+
+    return {
+        "north": north, "south": south, "east": east, "west": west,
+        "minLat": min(north, south), "maxLat": max(north, south),
+        "minLng": min(west, east),  "maxLng": max(west, east),
+        "px": {"left": left, "right": right, "top": top, "bottom": bottom, "world": world}
+    }
+
+# --------------- Network helpers ---------------
 def _referer(lat: float, lng: float, zm: int) -> str:
     return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
 
@@ -89,79 +143,25 @@ def _parse_int(name: str, default: int) -> int:
     except Exception: return int(default)
 
 def _warmup(lat: float, lng: float, zm: int) -> tuple[int, str]:
-    """GET the page to seed session; return (status, html[:2048])."""
+    """GET the page to seed session; return (status, FULL html)."""
     ref = _referer(lat, lng, zm)
-    g = session.get(ref, headers={"Referer": ref}, timeout=20)
-    app.logger.info("Warmup GET %s -> %s; bytes=%s", ref, g.status_code, len(g.text or ""))
-    return g.status_code, (g.text or "")[:2048]
-
-def _extract_token_from(html: str) -> str | None:
-    for regex in (TOKEN_RE, META_RE, JS_RE):
-        m = regex.search(html or "")
-        if m: return m.group(1)
-    # Cookie fallbacks used by some stacks
-    for c in session.cookies:
-        nm = c.name.lower()
-        if any(k in nm for k in ("xsrf", "csrf", "verification", "antiforg")):
-            return c.value
-    return None
-
-# --- Web Mercator projection utilities (correct + safe) ---
-def _project(lng: float, lat: float, zoom: int) -> tuple[float, float]:
-    """to pixel coords at zoom z."""
-    lat = max(MIN_LAT, min(MAX_LAT, lat))
-    world = TILE_SIZE * (1 << zoom)
-    x = (lng + 180.0) / 360.0 * world
-    siny = math.sin(math.radians(lat))
-    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * world
-    return x, y
-
-def _unproject(x: float, y: float, zoom: int) -> tuple[float, float]:
-    """from pixel coords at zoom z to (lng, lat)."""
-    world = TILE_SIZE * (1 << zoom)
-    lng = x / world * 360.0 - 180.0
-    n = math.pi - 2.0 * math.pi * (y / world)
-    lat = math.degrees(math.atan(math.sinh(n)))  # no overflow; y∈[0,world] ⇒ n∈[-π,π]
-    return lng, lat
-
-def compute_bounds(lat: float, lng: float, zoom: int, px_w: int, px_h: int):
-    """Compute geographic bounds (north/south/east/west) for a given center, zoom and viewport size."""
-    cx, cy = _project(lng, lat, zoom)
-    half_w = px_w / 2.0
-    half_h = px_h / 2.0
-
-    world = TILE_SIZE * (1 << zoom)
-
-    # pixel bounds (clamped to world)
-    left   = max(0.0, min(world, cx - half_w))
-    right  = max(0.0, min(world, cx + half_w))
-    top    = max(0.0, min(world, cy - half_h))
-    bottom = max(0.0, min(world, cy + half_h))
-
-    west,  north = _unproject(left,  top,    zoom)
-    east,  south = _unproject(right, bottom, zoom)
-
-    # handle dateline wrap (not typical for AU, but keep it tidy)
-    if east < west:
-        east += 360.0
-
-    return {
-        "north": north, "south": south, "east": east, "west": west,
-        "minLat": min(north, south), "maxLat": max(north, south),
-        "minLng": min(west, east),  "maxLng": max(west, east),
-        "px": {"left": left, "right": right, "top": top, "bottom": bottom, "world": world}
-    }
+    g = session.get(ref, headers={"Referer": ref}, timeout=20, allow_redirects=True)
+    html = g.text or ""
+    app.logger.info("Warmup GET %s -> %s; bytes=%s", ref, g.status_code, len(html))
+    return g.status_code, html
 
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
     """
-    Warm up, try to extract any token-ish value (best-effort), compute bounds,
+    Warm up, extract verification token (full-page scan), compute bounds,
     then POST a super-set of common field names so the server model binder can hit.
     """
     _, html = _warmup(lat, lng, zm)
     token = _extract_token_from(html)
-    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
+    app.logger.info("Token guess length: %s", (len(token) if token else 0))
 
+    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
     ref = _referer(lat, lng, zm)
+
     post_headers = {
         "Referer": ref,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -174,7 +174,6 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         if k not in post_headers:
             post_headers[k] = v
 
-    # Primary fields + common aliases
     form = {
         "lat": lat, "lng": lng, "zm": zm, "z": zm,
         # bounds under many aliases
@@ -195,6 +194,7 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         data=form,
         headers=post_headers,
         timeout=25,
+        allow_redirects=True,
     )
     txt = resp.text.strip()
     app.logger.info(
@@ -280,7 +280,10 @@ def warmup_dump():
     zm  = _parse_int("zm", DEFAULT_ZM)
     _, html = _warmup(lat, lng, zm)
     token = _extract_token_from(html)
-    out = f"=== first 2048 chars of warmup HTML ===\n{html}\n\n[guessed token length: {len(token) if token else 0}]"
+    # Truncate unless full=1
+    full = request.args.get("full") == "1"
+    show = html if full else html[:2048]
+    out = f"=== warmup HTML ({'full' if full else 'first 2048 chars'}) ===\n{show}\n\n[guessed token length: {len(token) if token else 0}]"
     return Response(out, mimetype="text/plain")
 
 @app.get("/debug/tokens")
@@ -386,7 +389,7 @@ def root():
             "/debug/warmup_dump", "/debug/tokens", "/debug/bounds",
             "/trains.json", "/update", "/debug/viewport", "/scan"
         ],
-        "note": "Correct Web Mercator bounds; sends many bbox aliases; unknown fields are ignored server-side."
+        "note": "Scans FULL warmup HTML for token; correct Mercator bounds; sends many bbox aliases."
     })
 
 if __name__ == "__main__":
