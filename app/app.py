@@ -1,5 +1,5 @@
 # app/app.py
-import os, json, time, logging
+import os, json, time, logging, re
 from pathlib import Path
 from datetime import datetime
 import requests
@@ -16,43 +16,71 @@ app.logger.setLevel(logging.INFO)
 # ---------------- Config ----------------
 TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
 UA_CHROME = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+    '(KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
 )
-DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-34.9285"))   # Adelaide CBD
-DEFAULT_LNG = float(os.getenv("VIEW_LNG", "138.6007"))
-DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "7"))             # 6–7 tends to work
+DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney
+DEFAULT_LNG = float(os.getenv("VIEW_LNG", "151.2093"))
+DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "6"))             # 6–7 usually best
 CACHE_SECONDS = int(os.getenv("CACHE_SECONDS", "30"))
 
 # --------------- HTTP session ---------------
 session = requests.Session()
-session.headers.update({
+
+# Core headers used by both GET and POST calls
+BASE_HEADERS = {
+    "User-Agent": UA_CHROME,
+    "Accept-Language": "en-AU,en;q=0.9",
     "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
     "Origin": "https://trainfinder.otenko.com",
-    "User-Agent": UA_CHROME,
-    "Accept-Language": "en-AU,en;q=0.9",
-})
+    # Extra browser-y bits; not always required but helps some ASP.NET stacks
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin",
+    # Client Hints (static string is fine)
+    "sec-ch-ua": '"Google Chrome";v="123", "Chromium";v="123", "Not:A-Brand";v="99"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+}
+
+session.headers.update(BASE_HEADERS)
+
+# Attach cookie
 if TF_ASPXAUTH:
-    # attach cookie to correct domain
     session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
 
 # --------------- Helpers ---------------
+def _referer(lat: float, lng: float, zm: int) -> str:
+    return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
+
+def _warmup(lat: float, lng: float, zm: int) -> int:
+    ref = _referer(lat, lng, zm)
+    h = {"Referer": ref}
+    g = session.get(ref, headers=h, timeout=20)
+    app.logger.info("Warmup GET %s -> %s", ref, g.status_code)
+    return g.status_code
+
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
     """
     Warm up TrainFinder page, then POST the viewport request.
     Returns parsed JSON ({} if TF returns 'null' or parsing fails).
     """
-    ref = f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
-    # Warmup GET
-    g = session.get(ref, timeout=20)
-    app.logger.info("Warmup GET %s -> %s", ref, g.status_code)
+    ref = _referer(lat, lng, zm)
+    _warmup(lat, lng, zm)
 
-    # POST
+    # POST payload as x-www-form-urlencoded
+    post_headers = {
+        "Referer": ref,
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    }
+    post_headers.update({k: v for k, v in BASE_HEADERS.items() if k not in ("Accept",)})
+    # Accept is already fine; leaving as-is
+
     resp = session.post(
         "https://trainfinder.otenko.com/Home/GetViewPortData",
         data={"lat": lat, "lng": lng, "zm": zm},
-        headers={"Referer": ref, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+        headers=post_headers,
         timeout=25,
     )
     app.logger.info(
@@ -98,6 +126,19 @@ def needs_refresh(path: Path, max_age_seconds: int) -> bool:
     age = time.time() - path.stat().st_mtime
     return age > max_age_seconds
 
+def looks_like_logged_in(html: str) -> bool:
+    """
+    Heuristic: if we're authenticated the HTML often contains things like
+    'Log off' / 'Logout' / a profile name / rules page that only appears post-login.
+    Adjust this if you see a unique marker on your account.
+    """
+    markers = [
+        "Log off", "Logout", "My Account", "Rules of Use", "Signed in",
+        "TrainFinder", "Your Account", "Favorites",
+    ]
+    lower = html.lower()
+    return any(m.lower() in lower for m in markers)
+
 # --------------- Routes ---------------
 @app.get("/health")
 def health():
@@ -108,6 +149,8 @@ def status():
     info = {
         "ok": True,
         "has_cookie": bool(TF_ASPXAUTH),
+        "cookie_len": len(TF_ASPXAUTH),
+        "cookie_head": TF_ASPXAUTH[:12] + "..." if TF_ASPXAUTH else None,
         "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM},
         "trains_json_exists": TRAINS_JSON_PATH.exists(),
         "trains_json_mtime": (
@@ -117,6 +160,29 @@ def status():
         "cache_seconds": CACHE_SECONDS,
     }
     return jsonify(info)
+
+@app.get("/cookie/echo")
+def cookie_echo():
+    """
+    Debug: show which cookies this server will send to trainfinder.otenko.com
+    (only the names, not values). Helps confirm .ASPXAUTH is present.
+    """
+    names = [c.name for c in session.cookies if c.domain.endswith("otenko.com")]
+    return jsonify({"cookies_for_otenko": names})
+
+@app.get("/authcheck")
+def authcheck():
+    """
+    Fetch a page that should look different when logged in (rules / nextlevel).
+    We don't expose the HTML; we just run a heuristic to decide if it looks logged in.
+    """
+    ref = _referer(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
+    h = {"Referer": ref}
+    r = session.get(ref, headers=h, timeout=20)
+    ok = looks_like_logged_in(r.text)
+    app.logger.info("Authcheck GET -> %s; logged_in_guess=%s; bytes=%s",
+                    r.status_code, ok, len(r.text))
+    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text)})
 
 @app.get("/trains.json")
 def trains_json():
@@ -158,7 +224,7 @@ def update_now():
 @app.get("/debug/viewport")
 def debug_viewport():
     """
-    Raw passthrough of TF response (no transform) – super helpful for seeing real content.
+    Raw JSON passthrough of TF response (no transform).
     """
     lat = float(request.args.get("lat", DEFAULT_LAT))
     lng = float(request.args.get("lng", DEFAULT_LNG))
@@ -206,7 +272,10 @@ def scan():
 def root():
     return jsonify({
         "ok": True,
-        "endpoints": ["/health", "/status", "/trains.json", "/update", "/debug/viewport", "/scan"]
+        "endpoints": [
+            "/health", "/status", "/cookie/echo", "/authcheck",
+            "/trains.json", "/update", "/debug/viewport", "/scan"
+        ]
     })
 
 if __name__ == "__main__":
