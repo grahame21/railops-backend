@@ -1,6 +1,10 @@
 services:
   - type: web
     name: railops-json
-    env: docker
-    plan: starter
-    autoDeploy: true
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 1 -b 0.0.0.0:10000 app:app
+    envVars:
+      - key: TF_AUTH_COOKIE
+        sync: false   # set this in Render dashboard to your .ASPXAUTH value
