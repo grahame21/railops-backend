@@ -15,17 +15,17 @@ app.logger.setLevel(logging.INFO)
 
 # ---------------- Config ----------------
 TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
-TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # semicolon-separated cookie list from your browser (optional)
+TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # semicolon-separated "name=value; name2=value2"
 
 UA_CHROME = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
 )
 
-# Default viewport and window size (px) used for bbox
+# Default viewport + render size (px)
 DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney
 DEFAULT_LNG = float(os.getenv("VIEW_LNG", "151.2093"))
-DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "12"))            # detail shows up >= 11
+DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "12"))
 VIEW_W = int(os.getenv("VIEW_W", "1280"))
 VIEW_H = int(os.getenv("VIEW_H", "800"))
 
@@ -42,60 +42,23 @@ BASE_HEADERS = {
     "Sec-Fetch-Dest": "empty",
     "Sec-Fetch-Mode": "cors",
     "Sec-Fetch-Site": "same-origin",
-    "sec-ch-ua": '"Google Chrome";v="125", "Chromium";v="125", "Not:A-Brand";v="99"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
 }
 session.headers.update(BASE_HEADERS)
 
-# Attach cookies you supply (optional but helps)
-if TF_ASPXAUTH:
-    session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
-if TF_EXTRA_COOKIES:
-    for part in TF_EXTRA_COOKIES.split(";"):
-        part = part.strip()
-        if "=" in part:
-            name, val = part.split("=", 1)
-            name, val = name.strip(), val.strip()
-            if name and val:
-                session.cookies.set(name, val, domain="trainfinder.otenko.com")
+def _load_env_cookies():
+    """Load cookies from env into the session (names + values only)."""
+    if TF_ASPXAUTH:
+        session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
+    if TF_EXTRA_COOKIES:
+        for part in TF_EXTRA_COOKIES.split(";"):
+            part = part.strip()
+            if "=" in part:
+                name, val = part.split("=", 1)
+                name, val = name.strip(), val.strip()
+                if name and val:
+                    session.cookies.set(name, val, domain="trainfinder.otenko.com")
 
-# --------------- Token finders ---------------
-# HTML patterns (hidden input, meta, JS var)
-TOKEN_RE = re.compile(r'name=["\']__RequestVerificationToken["\']\s+value=["\']([^"\']+)["\']', re.IGNORECASE)
-META_RE  = re.compile(r'<meta[^>]+(?:name|id)=["\'](?:csrf\-token|xsrf\-token|requestverificationtoken)["\'][^>]*content=["\']([^"\']+)["\']', re.IGNORECASE)
-JS_RE    = re.compile(r'RequestVerificationToken["\']?\s*[:=]\s*["\']([^"\']+)["\']', re.IGNORECASE)
-
-# Cookie patterns (ASP.NET Core anti-forgery defaults)
-COOKIE_CANDIDATES = (
-    "__RequestVerificationToken",
-    ".AspNetCore.Antiforgery",   # prefix (random suffix)
-    "XSRF-TOKEN", "CSRF-TOKEN",  # common alternates
-)
-
-def _extract_token_from(html_full: str) -> str | None:
-    """Try multiple token shapes in the full HTML."""
-    if html_full:
-        for regex in (TOKEN_RE, META_RE, JS_RE):
-            m = regex.search(html_full)
-            if m:
-                return m.group(1)
-    return None
-
-def _find_cookie_token() -> tuple[str | None, str | None]:
-    """
-    Return (cookie_name, cookie_value) for any likely anti-forgery cookie.
-    Looks across both the session cookie jar AND the last response cookies.
-    """
-    # Prefer ASP.NET Core antiforgery cookie (randomized suffix)
-    best_name, best_val = None, None
-    for c in session.cookies:
-        name = c.name
-        lname = name.lower()
-        if any(k.lower() in lname for k in COOKIE_CANDIDATES) or lname.startswith(".aspnetcore.antiforgery"):
-            best_name, best_val = name, c.value
-            break
-    return best_name, best_val
+_load_env_cookies()
 
 # --------------- Web Mercator (safe) ---------------
 TILE_SIZE = 256.0
@@ -122,19 +85,14 @@ def compute_bounds(lat: float, lng: float, zoom: int, px_w: int, px_h: int):
     half_w = px_w / 2.0
     half_h = px_h / 2.0
     world = TILE_SIZE * (1 << zoom)
-
-    # pixel bounds (clamped)
     left   = max(0.0, min(world, cx - half_w))
     right  = max(0.0, min(world, cx + half_w))
     top    = max(0.0, min(world, cy - half_h))
     bottom = max(0.0, min(world, cy + half_h))
-
     west,  north = _unproject(left,  top,    zoom)
     east,  south = _unproject(right, bottom, zoom)
-
     if east < west:
         east += 360.0
-
     return {
         "north": north, "south": south, "east": east, "west": west,
         "minLat": min(north, south), "maxLat": max(north, south),
@@ -160,96 +118,76 @@ def _parse_int(name: str, default: int) -> int:
     try: return int(num) if num else int(default)
     except Exception: return int(default)
 
-# --------------- Network helpers ---------------
+# --------------- Helpers ---------------
 def _referer(lat: float, lng: float, zm: int) -> str:
     return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
 
-def _warmup_sequence(lat: float, lng: float, zm: int) -> str:
-    """
-    Hit multiple pages to seed cookies and surface any hidden tokens.
-    Return concatenated HTML bodies for scanning.
-    """
-    html_blobs: list[str] = []
-
-    def _get(url: str, ref: str):
-        r = session.get(url, headers={"Referer": ref}, timeout=25, allow_redirects=True)
-        app.logger.info("Warmup GET %s -> %s; bytes=%s", url, r.status_code, len(r.text or ""))
-        html_blobs.append(r.text or "")
-
-    ref0 = _referer(lat, lng, zm)
-    _get(ref0, ref0)  # /home/nextlevel
-    _get("https://trainfinder.otenko.com/home", ref0)
-    _get("https://trainfinder.otenko.com/", ref0)
-    _get("https://trainfinder.otenko.com/home/index", ref0)
-
-    return "\n<!-- SPLIT -->\n".join(html_blobs)
-
-def _build_verification_headers(html: str) -> dict:
-    """
-    Build the right header(s) for ASP.NET anti-forgery:
-    - If we have both cookie and form token, send "RequestVerificationToken: cookie:form" (ASP.NET Core).
-    - Else if only form token, send it.
-    - Also mirror into common alternate header names.
-    """
-    form_token = _extract_token_from(html)
-    cookie_name, cookie_token = _find_cookie_token()
-
-    app.logger.info(
-        "Token guess length: %s; cookie token: %s",
-        (len(form_token) if form_token else 0),
-        (f"{cookie_name}({len(cookie_token)})" if cookie_token else "None")
+def is_logged_in(lat: float, lng: float, zm: int) -> bool:
+    """Mirror your curl: POST /Home/IsLoggedIn with cookie only."""
+    ref = _referer(lat, lng, zm)
+    headers = {
+        **BASE_HEADERS,
+        "Referer": ref,
+        "Accept": "*/*",
+    }
+    r = session.post(
+        "https://trainfinder.otenko.com/Home/IsLoggedIn",
+        headers=headers,
+        data=b"",  # -> Content-Length: 0
+        timeout=15,
+        allow_redirects=True,
     )
+    app.logger.info("IsLoggedIn -> %s; bytes=%s", r.status_code, len(r.text or ""))
+    txt = (r.text or "").strip().lower()
+    # Common ASP.NET responses: "true"/"false", or JSON true/false
+    if txt in ("true", "false"):
+        return txt == "true"
+    if r.headers.get("content-type","").startswith("application/json"):
+        try:
+            j = r.json()
+            if isinstance(j, bool): return j
+            if isinstance(j, str): return j.lower() == "true"
+        except Exception:
+            pass
+    return r.ok and "true" in txt
 
-    headers = {}
-    if cookie_token and form_token:
-        combo = f"{cookie_token}:{form_token}"
-        headers["RequestVerificationToken"] = combo
-        headers["X-CSRF-TOKEN"] = combo
-        headers["X-XSRF-TOKEN"] = combo
-    elif form_token:
-        headers["RequestVerificationToken"] = form_token
-        headers["X-CSRF-TOKEN"] = form_token
-        headers["X-XSRF-TOKEN"] = form_token
-    elif cookie_token:
-        # Some stacks accept cookie only for simple endpoints; try it.
-        headers["RequestVerificationToken"] = cookie_token
-        headers["X-CSRF-TOKEN"] = cookie_token
-        headers["X-XSRF-TOKEN"] = cookie_token
-
-    return headers
+def _warmup(lat: float, lng: float, zm: int):
+    """Single warmup to seed any page-required cookies (also useful for debugging)."""
+    ref = _referer(lat, lng, zm)
+    url = ref
+    r = session.get(url, headers={"Referer": ref}, timeout=20, allow_redirects=True)
+    app.logger.info("Warmup GET %s -> %s; bytes=%s", url, r.status_code, len(r.text or ""))
 
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
     """
-    Warm up several pages, extract anti-forgery tokens, compute bounds,
-    then POST a super-set of common field names so the server model binder can hit.
+    Verify login (cookie-based), warm up a page for referer/cookies,
+    compute bounds, then POST to GetViewPortData.
     """
-    html = _warmup_sequence(lat, lng, zm)
-    vf_headers = _build_verification_headers(html)
+    ok = is_logged_in(lat, lng, zm)
+    if not ok:
+        app.logger.info("Not logged in per IsLoggedIn; attempting warmup then retry")
+        _warmup(lat, lng, zm)
+        if not is_logged_in(lat, lng, zm):
+            app.logger.info("Still not logged in after warmup")
+            return {}
+
+    _warmup(lat, lng, zm)
 
     bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
     ref = _referer(lat, lng, zm)
 
     post_headers = {
+        **BASE_HEADERS,
         "Referer": ref,
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        **BASE_HEADERS,
-        **vf_headers,
     }
 
     form = {
         "lat": lat, "lng": lng, "zm": zm, "z": zm,
-        # bounds under many aliases
         "n": bounds["north"], "s": bounds["south"], "e": bounds["east"], "w": bounds["west"],
-        "north": bounds["north"], "south": bounds["south"], "east": bounds["east"], "west": bounds["west"],
         "minLat": bounds["minLat"], "maxLat": bounds["maxLat"], "minLng": bounds["minLng"], "maxLng": bounds["maxLng"],
-        "boundsNE": f"{bounds['north']},{bounds['east']}",
-        "boundsSW": f"{bounds['south']},{bounds['west']}",
-        "northEastLat": bounds["north"], "northEastLng": bounds["east"],
-        "southWestLat": bounds["south"], "southWestLng": bounds["west"],
         "width": VIEW_W, "height": VIEW_H,
     }
-    if "RequestVerificationToken" in post_headers:
-        form["__RequestVerificationToken"] = post_headers["RequestVerificationToken"].split(":")[-1]
 
     resp = session.post(
         "https://trainfinder.otenko.com/Home/GetViewPortData",
@@ -260,11 +198,10 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
     )
     txt = resp.text.strip()
     app.logger.info(
-        "POST GetViewPortData (lat=%.5f,lng=%.5f,zm=%s) -> %s; token=%s; bytes=%s; preview=%r",
-        lat, lng, zm, resp.status_code, bool(vf_headers), len(txt), txt[:160]
+        "POST GetViewPortData (lat=%.5f,lng=%.5f,zm=%s) -> %s; bytes=%s; preview=%r",
+        lat, lng, zm, resp.status_code, len(txt), txt[:160]
     )
     resp.raise_for_status()
-
     if txt in ("", "null"):
         return {}
     try:
@@ -274,7 +211,6 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         return {}
 
 def transform_tf_payload(tf: dict) -> dict:
-    """Stub mapper: fill when we see real keys."""
     now = datetime.utcnow().isoformat() + "Z"
     return {
         "updated": now,
@@ -302,11 +238,12 @@ def health():
 
 @app.get("/status")
 def status():
+    # mask exact cookie values
+    extra = [c.name for c in session.cookies if c.domain.endswith("otenko.com") and c.name != ".ASPXAUTH"]
     info = {
         "ok": True,
-        "has_cookie": bool(TF_ASPXAUTH),
-        "cookie_len": len(TF_ASPXAUTH),
-        "extra_cookies": [c.name for c in session.cookies if c.domain.endswith("otenko.com") and c.name != ".ASPXAUTH"],
+        "has_ASPXAUTH": any(c.name == ".ASPXAUTH" for c in session.cookies if c.domain.endswith("otenko.com")),
+        "extra_cookies": extra,
         "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM, "w": VIEW_W, "h": VIEW_H},
         "trains_json_exists": TRAINS_JSON_PATH.exists(),
         "trains_json_mtime": (
@@ -319,49 +256,13 @@ def status():
 
 @app.get("/cookie/echo")
 def cookie_echo():
-    names = {c.domain: [ck.name for ck in session.cookies if ck.domain == c.domain] for c in session.cookies}
+    names = sorted({c.name for c in session.cookies if c.domain.endswith("otenko.com")})
     return jsonify({"cookies": names})
-
-@app.get("/headers")
-def headers_echo():
-    return jsonify(dict(session.headers))
 
 @app.get("/authcheck")
 def authcheck():
-    ref = _referer(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
-    r = session.get(ref, headers={"Referer": ref}, timeout=20)
-    ok = "logout" in (r.text or "").lower() or "rules of use" in (r.text or "").lower()
-    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text)})
-
-@app.get("/debug/warmup_dump")
-def warmup_dump():
-    lat = _parse_float("lat", DEFAULT_LAT)
-    lng = _parse_float("lng", DEFAULT_LNG)
-    zm  = _parse_int("zm", DEFAULT_ZM)
-    html = _warmup_sequence(lat, lng, zm)
-    token = _extract_token_from(html)
-    cname, ctoken = _find_cookie_token()
-    full = request.args.get("full") == "1"
-    show = html if full else html[:4096]
-    out = (
-        f"=== warmup HTML ({'full' if full else 'first 4096 chars'}) ===\n{show}\n\n"
-        f"[guessed form token length: {len(token) if token else 0}] "
-        f"[cookie token: {cname}({len(ctoken) if ctoken else 0})]"
-    )
-    return Response(out, mimetype="text/plain")
-
-@app.get("/debug/tokens")
-def debug_tokens():
-    html = _warmup_sequence(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
-    t = _extract_token_from(html)
-    cname, ctoken = _find_cookie_token()
-    return jsonify({
-        "warmup_concat_len": len(html),
-        "form_token_len": (len(t) if t else 0),
-        "cookie_token_name": cname,
-        "cookie_token_len": (len(ctoken) if ctoken else 0),
-        "cookie_names": [c.name for c in session.cookies if c.domain.endswith("otenko.com")],
-    })
+    ok = is_logged_in(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
+    return jsonify({"logged_in": ok})
 
 @app.get("/debug/bounds")
 def debug_bounds():
@@ -412,22 +313,19 @@ def debug_viewport():
 
 @app.get("/scan")
 def scan():
-    """
-    Probe busy AU viewports at zooms 11–13; write first non-empty to trains.json.
-    """
     probes = [
-        (-33.8688, 151.2093, 11), (-33.8688, 151.2093, 12), (-33.8688, 151.2093, 13),  # Sydney
-        (-37.8136, 144.9631, 11), (-37.8136, 144.9631, 12), (-37.8136, 144.9631, 13),  # Melbourne
-        (-27.4698, 153.0251, 11), (-27.4698, 153.0251, 12), (-27.4698, 153.0251, 13),  # Brisbane
-        (-31.9523, 115.8613, 11), (-31.9523, 115.8613, 12), (-31.9523, 115.8613, 13),  # Perth
-        (-34.9285, 138.6007, 11), (-34.9285, 138.6007, 12), (-34.9285, 138.6007, 13),  # Adelaide
+        (-33.8688, 151.2093, 11), (-33.8688, 151.2093, 12), (-33.8688, 151.2093, 13),
+        (-37.8136, 144.9631, 11), (-37.8136, 144.9631, 12), (-37.8136, 144.9631, 13),
+        (-27.4698, 153.0251, 11), (-27.4698, 153.0251, 12), (-27.4698, 153.0251, 13),
+        (-31.9523, 115.8613, 11), (-31.9523, 115.8613, 12), (-31.9523, 115.8613, 13),
+        (-34.9285, 138.6007, 11), (-34.9285, 138.6007, 12), (-34.9285, 138.6007, 13),
     ]
     tried = []
     for lat, lng, zm in probes:
         tf = fetch_viewport(lat, lng, zm)
         txt = json.dumps(tf, ensure_ascii=False)
         tried.append({"lat": lat, "lng": lng, "zm": zm, "bytes": len(txt)})
-        if len(txt) > 200:  # heuristic: non-empty payload
+        if len(txt) > 200:
             data = transform_tf_payload(tf)
             write_trains(data)
             return jsonify({
@@ -445,11 +343,10 @@ def root():
     return jsonify({
         "ok": True,
         "endpoints": [
-            "/health", "/status", "/headers", "/cookie/echo", "/authcheck",
-            "/debug/warmup_dump", "/debug/tokens", "/debug/bounds",
-            "/trains.json", "/update", "/debug/viewport", "/scan"
+            "/health", "/status", "/cookie/echo", "/authcheck",
+            "/debug/bounds", "/trains.json", "/update", "/debug/viewport", "/scan"
         ],
-        "note": "Warms multiple pages; supports ASP.NET Core token format cookie:form; sends many bbox aliases."
+        "note": "Uses .ASPXAUTH (and optional extra cookies); verifies via /Home/IsLoggedIn; sends bbox aliases."
     })
 
 if __name__ == "__main__":
