@@ -1,7 +1,7 @@
 # app/app.py
 import os, json, time, logging
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 import requests
 from flask import Flask, request, jsonify, send_file
 
@@ -10,11 +10,10 @@ DATA_DIR  = APP_ROOT / "static" / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 TRAINS_JSON_PATH = DATA_DIR / "trains.json"
 
-# ------------ Flask ------------
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
 
-# ------------ Config ------------
+# ---------------- Config ----------------
 TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
 UA_CHROME = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -22,36 +21,38 @@ UA_CHROME = (
 )
 DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-34.9285"))   # Adelaide CBD
 DEFAULT_LNG = float(os.getenv("VIEW_LNG", "138.6007"))
-DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "7"))             # 6-7 tends to work
-
-# Refresh interval for on-demand caching
+DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "7"))             # 6–7 tends to work
 CACHE_SECONDS = int(os.getenv("CACHE_SECONDS", "30"))
 
-# ------------ HTTP session ------------
+# --------------- HTTP session ---------------
 session = requests.Session()
 session.headers.update({
+    "Accept": "application/json, text/javascript, */*; q=0.01",
     "X-Requested-With": "XMLHttpRequest",
-    "Accept": "*/*",
     "Origin": "https://trainfinder.otenko.com",
     "User-Agent": UA_CHROME,
+    "Accept-Language": "en-AU,en;q=0.9",
 })
 if TF_ASPXAUTH:
+    # attach cookie to correct domain
     session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
 
-# Helper: warmup + viewport POST
+# --------------- Helpers ---------------
 def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
+    """
+    Warm up TrainFinder page, then POST the viewport request.
+    Returns parsed JSON ({} if TF returns 'null' or parsing fails).
+    """
     ref = f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
-    # Per-request referer
-    H = {"Referer": ref}
     # Warmup GET
     g = session.get(ref, timeout=20)
     app.logger.info("Warmup GET %s -> %s", ref, g.status_code)
 
-    # POST to get data
+    # POST
     resp = session.post(
         "https://trainfinder.otenko.com/Home/GetViewPortData",
         data={"lat": lat, "lng": lng, "zm": zm},
-        headers=H,
+        headers={"Referer": ref, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
         timeout=25,
     )
     app.logger.info(
@@ -59,8 +60,9 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         lat, lng, zm, resp.status_code, len(resp.text), resp.text[:160]
     )
     resp.raise_for_status()
-    # If TF returns text "null", treat as empty dict to avoid JSON error
-    if resp.text.strip() == "null":
+
+    t = resp.text.strip()
+    if t == "null" or t == "":
         return {}
     try:
         return resp.json()
@@ -68,20 +70,20 @@ def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
         app.logger.warning("JSON parse failed: %s", e)
         return {}
 
-# Extract your real trains here (adjust if your schema differs)
 def transform_tf_payload(tf: dict) -> dict:
     """
-    Return { 'updated': ISO8601, 'trains': [ ... ] }
-    Put your own extraction logic here. For now, keep raw TF payload too.
+    Normalize the TF response into a stable schema:
+      { updated, source, viewport, trains[], raw }
+    For now, we leave trains[] empty and keep raw so you can inspect it.
+    Once you share a sample of /debug/viewport, we’ll fill trains[].
     """
     now = datetime.utcnow().isoformat() + "Z"
-    # Example: if TF has a key 'tts' or 'places' etc. You’ll refine later.
     return {
         "updated": now,
         "source": "trainfinder",
         "viewport": {},
-        "raw": tf,          # keep raw for now so you can see it on disk
-        "trains": [],       # fill once you know TF’s markers array shape
+        "trains": [],
+        "raw": tf if isinstance(tf, dict) else {}
     }
 
 def write_trains(data: dict):
@@ -96,7 +98,7 @@ def needs_refresh(path: Path, max_age_seconds: int) -> bool:
     age = time.time() - path.stat().st_mtime
     return age > max_age_seconds
 
-# ---------- Routes ----------
+# --------------- Routes ---------------
 @app.get("/health")
 def health():
     return jsonify(ok=True, ts=datetime.utcnow().isoformat()+"Z")
@@ -130,7 +132,6 @@ def trains_json():
         tf = fetch_viewport(lat, lng, zm)
         data = transform_tf_payload(tf)
         write_trains(data)
-    # Always return file (fresh or cached)
     return send_file(TRAINS_JSON_PATH, mimetype="application/json")
 
 @app.get("/update")
@@ -145,10 +146,14 @@ def update_now():
     tf = fetch_viewport(lat, lng, zm)
     data = transform_tf_payload(tf)
     write_trains(data)
-    return jsonify({"ok": True, "wrote": str(TRAINS_JSON_PATH), "counts": {
-        "trains": len(data.get("trains", [])),
-        "raw_keys": list(data.get("raw", {}).keys()) if isinstance(data.get("raw"), dict) else None
-    }})
+    return jsonify({
+        "ok": True,
+        "wrote": str(TRAINS_JSON_PATH),
+        "counts": {
+            "trains": len(data.get("trains", [])),
+            "raw_keys": list(data.get("raw", {}).keys()) if isinstance(data.get("raw"), dict) else None
+        }
+    })
 
 @app.get("/debug/viewport")
 def debug_viewport():
@@ -161,12 +166,47 @@ def debug_viewport():
     tf = fetch_viewport(lat, lng, zm)
     return (json.dumps(tf, ensure_ascii=False), 200, {"Content-Type": "application/json"})
 
-# Root
+@app.get("/scan")
+def scan():
+    """
+    Try multiple busy viewports (zm 6/7 across major cities).
+    Writes trains.json with the first non-empty result.
+    """
+    probes = [
+        (-33.8688, 151.2093, 6),  # Sydney
+        (-33.8688, 151.2093, 7),
+        (-37.8136, 144.9631, 6),  # Melbourne
+        (-37.8136, 144.9631, 7),
+        (-27.4698, 153.0251, 6),  # Brisbane
+        (-27.4698, 153.0251, 7),
+        (-31.9523, 115.8613, 6),  # Perth
+        (-31.9523, 115.8613, 7),
+        (-34.9285, 138.6007, 6),  # Adelaide
+        (-34.9285, 138.6007, 7),
+    ]
+    tried = []
+    for lat, lng, zm in probes:
+        tf = fetch_viewport(lat, lng, zm)
+        txt = json.dumps(tf, ensure_ascii=False)
+        tried.append({"lat": lat, "lng": lng, "zm": zm, "bytes": len(txt)})
+        if len(txt) > 200:  # heuristic to dodge the "null shell"
+            data = transform_tf_payload(tf)
+            write_trains(data)
+            return jsonify({
+                "ok": True,
+                "picked": {"lat": lat, "lng": lng, "zm": zm},
+                "bytes": len(txt),
+                "wrote": str(TRAINS_JSON_PATH),
+                "trains_guess": len(data.get("trains", [])),
+                "tried": tried
+            })
+    return jsonify({"ok": False, "message": "All probes looked empty", "tried": tried})
+
 @app.get("/")
 def root():
     return jsonify({
         "ok": True,
-        "endpoints": ["/health", "/status", "/trains.json", "/update", "/debug/viewport"]
+        "endpoints": ["/health", "/status", "/trains.json", "/update", "/debug/viewport", "/scan"]
     })
 
 if __name__ == "__main__":
