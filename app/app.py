@@ -1,353 +1,213 @@
-# app/app.py
-import os, json, time, math, logging, re
-from pathlib import Path
-from datetime import datetime
-import requests
-from flask import Flask, request, jsonify, send_file, Response
+import math
+import os
+import time
+from typing import Any, Dict, List, Tuple, Optional
 
-APP_ROOT = Path(__file__).resolve().parent
-DATA_DIR  = APP_ROOT / "static" / "data"
-DATA_DIR.mkdir(parents=True, exist_ok=True)
-TRAINS_JSON_PATH = DATA_DIR / "trains.json"
+import requests
+from flask import Flask, jsonify, request, Response
 
 app = Flask(__name__)
-app.logger.setLevel(logging.INFO)
 
-# ---------------- Config ----------------
-TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
-TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # semicolon-separated "name=value; name2=value2"
+# ------------------------------ Config ---------------------------------
 
-UA_CHROME = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
-)
+TF_BASE = "https://trainfinder.otenko.com"
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0")
 
-# Default viewport + render size (px)
-DEFAULT_LAT = float(os.getenv("VIEW_LAT", "-33.8688"))   # Sydney
-DEFAULT_LNG = float(os.getenv("VIEW_LNG", "151.2093"))
-DEFAULT_ZM  = int(os.getenv("VIEW_ZM", "12"))
-VIEW_W = int(os.getenv("VIEW_W", "1280"))
-VIEW_H = int(os.getenv("VIEW_H", "800"))
+# Default map viewport (Sydney CBD)
+DEFAULT_LAT = -33.8688
+DEFAULT_LNG = 151.2093
+DEFAULT_ZM  = 12
 
-CACHE_SECONDS = int(os.getenv("CACHE_SECONDS", "30"))
+# Known “hot” test spots where the site often has data
+HOTSPOTS = [
+    ("Tokyo",    35.681236, 139.767125),
+    ("Osaka",    34.702485, 135.495951),
+    ("Nagoya",   35.170915, 136.881537),
+    ("Sapporo",  43.068661, 141.350755),
+]
 
-# --------------- HTTP session ---------------
-session = requests.Session()
-BASE_HEADERS = {
-    "User-Agent": UA_CHROME,
-    "Accept-Language": "en-AU,en;q=0.9",
-    "Accept": "application/json, text/javascript, */*; q=0.01",
-    "X-Requested-With": "XMLHttpRequest",
-    "Origin": "https://trainfinder.otenko.com",
-    "Sec-Fetch-Dest": "empty",
-    "Sec-Fetch-Mode": "cors",
-    "Sec-Fetch-Site": "same-origin",
-}
-session.headers.update(BASE_HEADERS)
+ZOOMS = [11, 12, 13]
 
-def _load_env_cookies():
-    """Load cookies from env into the session (names + values only)."""
-    if TF_ASPXAUTH:
-        session.cookies.set(".ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com")
-    if TF_EXTRA_COOKIES:
-        for part in TF_EXTRA_COOKIES.split(";"):
-            part = part.strip()
-            if "=" in part:
-                name, val = part.split("=", 1)
-                name, val = name.strip(), val.strip()
-                if name and val:
-                    session.cookies.set(name, val, domain="trainfinder.otenko.com")
-
-_load_env_cookies()
-
-# --------------- Web Mercator (safe) ---------------
+VIEW_W, VIEW_H = 1280, 720   # used only for internal bound calc demo (safe now)
 TILE_SIZE = 256.0
-MIN_LAT = -85.05112878
-MAX_LAT =  85.05112878
 
-def _project(lng: float, lat: float, zoom: int) -> tuple[float, float]:
-    lat = max(MIN_LAT, min(MAX_LAT, lat))
-    world = TILE_SIZE * (1 << zoom)
-    x = (lng + 180.0) / 360.0 * world
-    siny = math.sin(math.radians(lat))
-    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * world
-    return x, y
+# ------------------------------ Helpers --------------------------------
 
-def _unproject(x: float, y: float, zoom: int) -> tuple[float, float]:
-    world = TILE_SIZE * (1 << zoom)
-    lng = x / world * 360.0 - 180.0
-    n = math.pi - 2.0 * math.pi * (y / world)
-    lat = math.degrees(math.atan(math.sinh(n)))
-    return lng, lat
-
-def compute_bounds(lat: float, lng: float, zoom: int, px_w: int, px_h: int):
-    cx, cy = _project(lng, lat, zoom)
-    half_w = px_w / 2.0
-    half_h = px_h / 2.0
-    world = TILE_SIZE * (1 << zoom)
-    left   = max(0.0, min(world, cx - half_w))
-    right  = max(0.0, min(world, cx + half_w))
-    top    = max(0.0, min(world, cy - half_h))
-    bottom = max(0.0, min(world, cy + half_h))
-    west,  north = _unproject(left,  top,    zoom)
-    east,  south = _unproject(right, bottom, zoom)
-    if east < west:
-        east += 360.0
-    return {
-        "north": north, "south": south, "east": east, "west": west,
-        "minLat": min(north, south), "maxLat": max(north, south),
-        "minLng": min(west, east),  "maxLng": max(west, east),
-        "px": {"left": left, "right": right, "top": top, "bottom": bottom, "world": world}
-    }
-
-# --------------- Parse helpers ---------------
-def _parse_float(name: str, default: float) -> float:
-    val = request.args.get(name)
-    if val is None: return float(default)
-    try: return float(str(val).strip())
-    except Exception: return float(default)
-
-def _parse_int(name: str, default: int) -> int:
-    val = request.args.get(name)
-    if val is None: return int(default)
-    s = str(val).strip()
-    num = ""
-    for ch in s:
-        if ch.isdigit() or (ch == "-" and not num): num += ch
-        else: break
-    try: return int(num) if num else int(default)
-    except Exception: return int(default)
-
-# --------------- Helpers ---------------
-def _referer(lat: float, lng: float, zm: int) -> str:
-    return f"https://trainfinder.otenko.com/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
-
-def is_logged_in(lat: float, lng: float, zm: int) -> bool:
-    """Mirror your curl: POST /Home/IsLoggedIn with cookie only."""
-    ref = _referer(lat, lng, zm)
-    headers = {
-        **BASE_HEADERS,
-        "Referer": ref,
-        "Accept": "*/*",
-    }
-    r = session.post(
-        "https://trainfinder.otenko.com/Home/IsLoggedIn",
-        headers=headers,
-        data=b"",  # -> Content-Length: 0
-        timeout=15,
-        allow_redirects=True,
-    )
-    app.logger.info("IsLoggedIn -> %s; bytes=%s", r.status_code, len(r.text or ""))
-    txt = (r.text or "").strip().lower()
-    # Common ASP.NET responses: "true"/"false", or JSON true/false
-    if txt in ("true", "false"):
-        return txt == "true"
-    if r.headers.get("content-type","").startswith("application/json"):
-        try:
-            j = r.json()
-            if isinstance(j, bool): return j
-            if isinstance(j, str): return j.lower() == "true"
-        except Exception:
-            pass
-    return r.ok and "true" in txt
-
-def _warmup(lat: float, lng: float, zm: int):
-    """Single warmup to seed any page-required cookies (also useful for debugging)."""
-    ref = _referer(lat, lng, zm)
-    url = ref
-    r = session.get(url, headers={"Referer": ref}, timeout=20, allow_redirects=True)
-    app.logger.info("Warmup GET %s -> %s; bytes=%s", url, r.status_code, len(r.text or ""))
-
-def fetch_viewport(lat: float, lng: float, zm: int) -> dict:
-    """
-    Verify login (cookie-based), warm up a page for referer/cookies,
-    compute bounds, then POST to GetViewPortData.
-    """
-    ok = is_logged_in(lat, lng, zm)
-    if not ok:
-        app.logger.info("Not logged in per IsLoggedIn; attempting warmup then retry")
-        _warmup(lat, lng, zm)
-        if not is_logged_in(lat, lng, zm):
-            app.logger.info("Still not logged in after warmup")
-            return {}
-
-    _warmup(lat, lng, zm)
-
-    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
-    ref = _referer(lat, lng, zm)
-
-    post_headers = {
-        **BASE_HEADERS,
-        "Referer": ref,
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-    }
-
-    form = {
-        "lat": lat, "lng": lng, "zm": zm, "z": zm,
-        "n": bounds["north"], "s": bounds["south"], "e": bounds["east"], "w": bounds["west"],
-        "minLat": bounds["minLat"], "maxLat": bounds["maxLat"], "minLng": bounds["minLng"], "maxLng": bounds["maxLng"],
-        "width": VIEW_W, "height": VIEW_H,
-    }
-
-    resp = session.post(
-        "https://trainfinder.otenko.com/Home/GetViewPortData",
-        data=form,
-        headers=post_headers,
-        timeout=25,
-        allow_redirects=True,
-    )
-    txt = resp.text.strip()
-    app.logger.info(
-        "POST GetViewPortData (lat=%.5f,lng=%.5f,zm=%s) -> %s; bytes=%s; preview=%r",
-        lat, lng, zm, resp.status_code, len(txt), txt[:160]
-    )
-    resp.raise_for_status()
-    if txt in ("", "null"):
-        return {}
+def _safe_float(s: Any, fallback: float) -> float:
     try:
-        return resp.json()
-    except Exception as e:
-        app.logger.warning("JSON parse failed: %s", e)
-        return {}
+        return float(s)
+    except Exception:
+        return fallback
 
-def transform_tf_payload(tf: dict) -> dict:
-    now = datetime.utcnow().isoformat() + "Z"
-    return {
-        "updated": now,
-        "source": "trainfinder",
-        "viewport": {},
-        "trains": [],
-        "raw": tf if isinstance(tf, dict) else {}
+def _safe_int(s: Any, fallback: int) -> int:
+    try:
+        return int(str(s).strip())
+    except Exception:
+        return fallback
+
+def _new_session(aspx_cookie: Optional[str]) -> requests.Session:
+    sess = requests.Session()
+    sess.headers.update({
+        "User-Agent": UA,
+        "Accept": "*/*",
+        "X-Requested-With": "XMLHttpRequest",
+        "Origin": TF_BASE,
+        "Referer": f"{TF_BASE}/home/nextlevel?lat={DEFAULT_LAT}&lng={DEFAULT_LNG}&zm={DEFAULT_ZM}",
+    })
+    # Allow both env var and per-request override
+    cookie_value = (request.headers.get("X-TF-ASPXAUTH")
+                    or request.args.get("cookie")
+                    or aspx_cookie)
+    if cookie_value:
+        # Pin cookie to the proper domain & path
+        sess.cookies.set(".ASPXAUTH", cookie_value, domain="trainfinder.otenko.com", path="/")
+    return sess
+
+def is_logged_in(sess: requests.Session) -> Tuple[bool, str]:
+    """Hit IsLoggedIn exactly as the browser does; return (bool, raw_text)."""
+    url = f"{TF_BASE}/Home/IsLoggedIn"
+    r = sess.post(url, data=b"")
+    text = (r.text or "").strip()
+    ok = r.ok and ("true" in text.lower() or text == "True" or text == "1")
+    return ok, text
+
+# ------------------------ (Safe) math utilities -------------------------
+
+def _world_to_latlng(x: float, y: float) -> Tuple[float, float]:
+    """Inverse Spherical Mercator; clamp to avoid exp overflow."""
+    # Clamp to a sane world range
+    MAX = 3.0e6
+    x = max(-MAX, min(MAX, x))
+    y = max(-MAX, min(MAX, y))
+    n = (math.pi - (2.0 * math.pi * y) / TILE_SIZE)
+    # tanh-identity variant to avoid overflow
+    # lat = atan(sinh(n)) in degrees
+    sinh_n = math.sinh(max(-20.0, min(20.0, n)))
+    lat = math.degrees(math.atan(sinh_n))
+    lng = (x / TILE_SIZE) * 360.0 - 180.0
+    return lat, lng
+
+def compute_bounds(lat: float, lng: float, zm: int, w: int, h: int) -> Tuple[float,float,float,float]:
+    """Demonstrational bounds calc; not sent to TF anymore (TF only needs lat,lng,zm)."""
+    scale = 2.0 ** zm
+    # Convert center lat/lng to world pixels
+    siny = math.sin(math.radians(lat))
+    siny = max(min(siny, 0.9999), -0.9999)
+    world_y = TILE_SIZE * (0.5 - math.log((1 + siny)/(1 - siny)) / (4 * math.pi))
+    world_x = TILE_SIZE * ((lng + 180.0) / 360.0)
+    # top-left / bottom-right in world px
+    tlx = world_x - (w / 2.0)
+    tly = world_y - (h / 2.0)
+    brx = world_x + (w / 2.0)
+    bry = world_y + (h / 2.0)
+    west, north = _world_to_latlng(tlx / scale * TILE_SIZE, tly / scale * TILE_SIZE)
+    east, south = _world_to_latlng(brx / scale * TILE_SIZE, bry / scale * TILE_SIZE)
+    return west, south, east, north
+
+# --------------------------- TF endpoints -------------------------------
+
+def fetch_viewport(sess: requests.Session, lat: float, lng: float, zm: int) -> requests.Response:
+    """
+    Replays the site’s XHR. The site currently accepts lat/lng/zm form fields.
+    (Don’t guess extra params; the server ignores them and in some cases
+     returns ‘null’ fields regardless.)
+    """
+    url = f"{TF_BASE}/Home/GetViewPortData"
+    data = {
+        "lat": f"{lat:.6f}",
+        "lng": f"{lng:.6f}",
+        "zm":  str(int(zm)),
     }
+    # Warm up like a browser (the site does this on every pan/zoom)
+    _ = sess.get(f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", timeout=12)
+    r = sess.post(url, data=data, timeout=12)
+    return r
 
-def write_trains(data: dict):
-    tmp = TRAINS_JSON_PATH.with_suffix(".tmp.json")
-    with tmp.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False)
-    tmp.replace(TRAINS_JSON_PATH)
+# ----------------------------- Routes ----------------------------------
 
-def needs_refresh(path: Path, max_age_seconds: int) -> bool:
-    if not path.exists(): return True
-    age = time.time() - path.stat().st_mtime
-    return age > max_age_seconds
-
-# --------------- Routes ---------------
-@app.get("/health")
-def health():
-    return jsonify(ok=True, ts=datetime.utcnow().isoformat()+"Z")
-
-@app.get("/status")
-def status():
-    # mask exact cookie values
-    extra = [c.name for c in session.cookies if c.domain.endswith("otenko.com") and c.name != ".ASPXAUTH"]
-    info = {
-        "ok": True,
-        "has_ASPXAUTH": any(c.name == ".ASPXAUTH" for c in session.cookies if c.domain.endswith("otenko.com")),
-        "extra_cookies": extra,
-        "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM, "w": VIEW_W, "h": VIEW_H},
-        "trains_json_exists": TRAINS_JSON_PATH.exists(),
-        "trains_json_mtime": (
-            datetime.utcfromtimestamp(TRAINS_JSON_PATH.stat().st_mtime).isoformat()+"Z"
-            if TRAINS_JSON_PATH.exists() else None
-        ),
-        "cache_seconds": CACHE_SECONDS,
-    }
-    return jsonify(info)
-
-@app.get("/cookie/echo")
-def cookie_echo():
-    names = sorted({c.name for c in session.cookies if c.domain.endswith("otenko.com")})
-    return jsonify({"cookies": names})
+@app.get("/healthz")
+def healthz():
+    return jsonify(ok=True, ts=int(time.time()))
 
 @app.get("/authcheck")
 def authcheck():
-    ok = is_logged_in(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
-    return jsonify({"logged_in": ok})
-
-@app.get("/debug/bounds")
-def debug_bounds():
-    lat = _parse_float("lat", DEFAULT_LAT)
-    lng = _parse_float("lng", DEFAULT_LNG)
-    zm  = _parse_int("zm", DEFAULT_ZM)
-    b = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
-    return jsonify(b)
-
-@app.get("/trains.json")
-def trains_json():
-    lat = _parse_float("lat", DEFAULT_LAT)
-    lng = _parse_float("lng", DEFAULT_LNG)
-    zm  = _parse_int("zm", DEFAULT_ZM)
-
-    if needs_refresh(TRAINS_JSON_PATH, CACHE_SECONDS):
-        app.logger.info("Cache expired -> fetching TF viewport")
-        tf = fetch_viewport(lat, lng, zm)
-        data = transform_tf_payload(tf)
-        write_trains(data)
-    return send_file(TRAINS_JSON_PATH, mimetype="application/json")
-
-@app.get("/update")
-def update_now():
-    lat = _parse_float("lat", DEFAULT_LAT)
-    lng = _parse_float("lng", DEFAULT_LNG)
-    zm  = _parse_int("zm", DEFAULT_ZM)
-
-    tf = fetch_viewport(lat, lng, zm)
-    data = transform_tf_payload(tf)
-    write_trains(data)
-    return jsonify({
-        "ok": True,
-        "wrote": str(TRAINS_JSON_PATH),
-        "counts": {
-            "trains": len(data.get("trains", [])),
-            "raw_keys": list(data.get("raw", {}).keys()) if isinstance(data.get("raw"), dict) else None
-        }
-    })
+    sess = _new_session(os.getenv("TF_AUTH_COOKIE"))
+    ok, raw = is_logged_in(sess)
+    return jsonify(ok=ok, raw=raw, cookie_present=(".ASPXAUTH" in sess.cookies.get_dict()))
 
 @app.get("/debug/viewport")
 def debug_viewport():
-    lat = _parse_float("lat", DEFAULT_LAT)
-    lng = _parse_float("lng", DEFAULT_LNG)
-    zm  = _parse_int("zm", DEFAULT_ZM)
-    tf = fetch_viewport(lat, lng, zm)
-    return (json.dumps(tf, ensure_ascii=False), 200, {"Content-Type": "application/json"})
+    lat = _safe_float(request.args.get("lat"), DEFAULT_LAT)
+    lng = _safe_float(request.args.get("lng"), DEFAULT_LNG)
+    zm  = _safe_int(request.args.get("zm"),  DEFAULT_ZM)
+
+    sess = _new_session(os.getenv("TF_AUTH_COOKIE"))
+    ok, raw = is_logged_in(sess)
+    warm = sess.get(f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", timeout=12)
+    r = fetch_viewport(sess, lat, lng, zm)
+
+    return jsonify({
+        "input": {"lat": lat, "lng": lng, "zm": zm},
+        "is_logged_in": ok,
+        "is_logged_in_raw": raw,
+        "warmup_status": warm.status_code,
+        "status": r.status_code,
+        "bytes": len(r.content or b""),
+        "preview": (r.text[:200] if r.text else ""),
+    })
+
+@app.get("/proxy/raw")
+def proxy_raw():
+    """
+    Return the raw TF JSON (helpful to A/B with your browser devtools).
+    Pass lat,lng,zm and optional ?cookie=... to override env var.
+    """
+    lat = _safe_float(request.args.get("lat"), DEFAULT_LAT)
+    lng = _safe_float(request.args.get("lng"), DEFAULT_LNG)
+    zm  = _safe_int(request.args.get("zm"),  DEFAULT_ZM)
+
+    sess = _new_session(os.getenv("TF_AUTH_COOKIE"))
+    r = fetch_viewport(sess, lat, lng, zm)
+    # pipe through exactly what TF sent back
+    return Response(response=r.content, status=r.status_code, mimetype=r.headers.get("Content-Type","application/json"))
 
 @app.get("/scan")
 def scan():
-    probes = [
-        (-33.8688, 151.2093, 11), (-33.8688, 151.2093, 12), (-33.8688, 151.2093, 13),
-        (-37.8136, 144.9631, 11), (-37.8136, 144.9631, 12), (-37.8136, 144.9631, 13),
-        (-27.4698, 153.0251, 11), (-27.4698, 153.0251, 12), (-27.4698, 153.0251, 13),
-        (-31.9523, 115.8613, 11), (-31.9523, 115.8613, 12), (-31.9523, 115.8613, 13),
-        (-34.9285, 138.6007, 11), (-34.9285, 138.6007, 12), (-34.9285, 138.6007, 13),
-    ]
+    """
+    Try caller coords first (if provided), then several known hot spots, at multiple zooms.
+    Returns the first non-empty payload + small summary so your logs don’t just show 'nulls'.
+    """
+    cookie_override = request.args.get("cookie")
+    sess = _new_session(cookie_override or os.getenv("TF_AUTH_COOKIE"))
+
+    # First: whatever the caller asked for
+    coords: List[Tuple[str,float,float]] = []
+    if "lat" in request.args and "lng" in request.args:
+        coords.append(("caller", _safe_float(request.args["lat"], DEFAULT_LAT),
+                                _safe_float(request.args["lng"], DEFAULT_LNG)))
+    # Then: known hotspots
+    coords.extend(HOTSPOTS)
+
     tried = []
-    for lat, lng, zm in probes:
-        tf = fetch_viewport(lat, lng, zm)
-        txt = json.dumps(tf, ensure_ascii=False)
-        tried.append({"lat": lat, "lng": lng, "zm": zm, "bytes": len(txt)})
-        if len(txt) > 200:
-            data = transform_tf_payload(tf)
-            write_trains(data)
-            return jsonify({
-                "ok": True,
-                "picked": {"lat": lat, "lng": lng, "zm": zm},
-                "bytes": len(txt),
-                "wrote": str(TRAINS_JSON_PATH),
-                "trains_guess": len(data.get("trains", [])),
-                "tried": tried
-            })
-    return jsonify({"ok": False, "message": "All probes looked empty", "tried": tried})
+    for name, la, ln in coords:
+        for z in ZOOMS:
+            r = fetch_viewport(sess, la, ln, z)
+            text = (r.text or "")
+            payload_len = len(text)
+            tried.append({"where": name, "lat": la, "lng": ln, "zm": z, "status": r.status_code, "bytes": payload_len})
+            # Most “all-null” replies are tiny (≈98 bytes). If it's bigger, return it.
+            if r.ok and payload_len > 150:
+                return jsonify({
+                    "hit": {"where": name, "lat": la, "lng": ln, "zm": z},
+                    "bytes": payload_len,
+                    "snippet": text[:400],
+                })
+    return jsonify({"hit": None, "tried": tried})
 
 @app.get("/")
 def root():
-    return jsonify({
-        "ok": True,
-        "endpoints": [
-            "/health", "/status", "/cookie/echo", "/authcheck",
-            "/debug/bounds", "/trains.json", "/update", "/debug/viewport", "/scan"
-        ],
-        "note": "Uses .ASPXAUTH (and optional extra cookies); verifies via /Home/IsLoggedIn; sends bbox aliases."
-    })
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
+    return jsonify(
+        message="railops-json ready",
+        routes=["/healthz", "/authcheck", "/debug/viewport?lat=&lng=&zm=", "/proxy/raw?lat=&lng=&zm=", "/scan?lat=&lng=&cookie="]
+    )
