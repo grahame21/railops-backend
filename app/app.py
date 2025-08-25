@@ -1,20 +1,23 @@
 import os, json, time, logging, threading, requests
 from flask import Flask, jsonify, send_file
 
-# Logging
-logging.basicConfig(level=getattr(logging, os.getenv("TF_LOG_LEVEL", "INFO").upper(), logging.INFO))
+# ---------- Logging ----------
+logging.basicConfig(
+    level=getattr(logging, os.getenv("TF_LOG_LEVEL", "INFO").upper(), logging.INFO),
+    format="%(levelname)s:%(name)s:%(message)s",
+)
 log = logging.getLogger("railops")
 
-# ENV from Render (set these in the dashboard)
+# ---------- Env vars (set these in Render → Environment) ----------
 TF_COOKIE  = os.getenv("TF_ASPXAUTH", "").strip()   # ONLY the value, not ".ASPXAUTH=<...>"
-TF_REFERER = os.getenv("TF_REFERER", "").strip()    # e.g. https://trainfinder.otenko.com/home/nextlevel?lat=-34.93&lng=138.60&zm=7
+TF_REFERER = os.getenv("TF_REFERER", "").strip()    # e.g. https://trainfinder.otenko.com/home/nextlevel?lat=-33.86&lng=151.21&zm=7
 TF_UA      = os.getenv("TF_UA", "Mozilla/5.0").strip()
 
 DATA_PATH = "/app/trains.json"
-API_WARM  = "https://trainfinder.otenko.com/home/nextlevel"
+API_WARM  = TF_REFERER or "https://trainfinder.otenko.com/home/nextlevel?lat=-33.86&lng=151.21&zm=7"
 API_POST  = "https://trainfinder.otenko.com/Home/GetViewPortData"
 
-# HTTP session setup
+# ---------- HTTP session (looks like a real browser) ----------
 S = requests.Session()
 S.headers.update({
     "accept": "*/*",
@@ -22,32 +25,37 @@ S.headers.update({
     "user-agent": TF_UA or "Mozilla/5.0",
     "x-requested-with": "XMLHttpRequest",
     "origin": "https://trainfinder.otenko.com",
-    "referer": TF_REFERER,
+    "referer": TF_REFERER or API_WARM,
+    # Step 3 additions:
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "dnt": "1",
 })
 if TF_COOKIE:
-    # IMPORTANT: cookie NAME is .ASPXAUTH; env contains ONLY the VALUE
+    # EXACT cookie name expected by the site; env contains ONLY the value
     S.cookies.set(".ASPXAUTH", TF_COOKIE, domain="trainfinder.otenko.com", secure=True)
 
 def warmup():
+    """Open the exact map URL (with lat/lng/zm) to set server-side viewport/session."""
     try:
-        r = S.get(API_WARM, timeout=20)
-        log.info("Warmup GET -> %s", r.status_code)
+        r = S.get(API_WARM, timeout=20, allow_redirects=True)
+        log.info("Warmup GET %s -> %s", API_WARM, r.status_code)
     except Exception as e:
         log.warning("Warmup failed: %s", e)
 
 def fetch_raw():
+    """POST to the viewport endpoint; site expects an empty form body with proper headers."""
     warmup()
     try:
-        r = S.post(API_POST, data=b"", timeout=30)  # mirrors the browser empty POST
+        r = S.post(API_POST, data=b"", timeout=30)
         log.info("POST %s -> %s", API_POST, r.status_code)
         try:
             js = r.json()
         except Exception:
             log.error("Non-JSON response: %s", r.text[:500])
             return None
-        # Common empty case when cookie/referer/zoom are wrong:
         if not js or (isinstance(js, dict) and all(v is None for v in js.values())):
             log.warning("Empty/NULL payload. Check TF_ASPXAUTH / TF_REFERER (zoom/viewport).")
+            log.warning("Sample of JSON: %s", str(js)[:400])
             return None
         return js
     except Exception as e:
@@ -55,9 +63,15 @@ def fetch_raw():
         return None
 
 def extract_trains(js):
-    """Adjust this once you know TrainFinder's exact schema."""
-    if isinstance(js, dict) and "trains" in js:
-        return js["trains"]
+    """
+    Adjust this once you know TrainFinder's exact JSON schema.
+    For now, try common shapes; otherwise return an empty list to keep trains.json valid.
+    """
+    if isinstance(js, dict):
+        # Common patterns worth trying:
+        for key in ("trains", "data", "results", "entities"):
+            if key in js and isinstance(js[key], list):
+                return js[key]
     if isinstance(js, list):
         return js
     return []
@@ -73,7 +87,7 @@ def write_trains():
         log.exception("Failed to write trains.json: %s", e)
     return trains
 
-# Flask app & routes
+# ---------- Flask ----------
 app = Flask(__name__)
 
 @app.get("/")
@@ -85,7 +99,7 @@ def debug():
     return jsonify({
         "has_cookie": bool(TF_COOKIE),
         "cookie_len": len(TF_COOKIE),
-        "referer": TF_REFERER,
+        "referer": TF_REFERER or API_WARM,
         "ua": TF_UA,
     })
 
@@ -101,7 +115,7 @@ def serve_trains():
             json.dump([], f)
     return send_file(DATA_PATH, mimetype="application/json")
 
-# Optional background refresher (every 30s). Disable with ENABLE_REFRESH=0
+# ---------- Optional background refresher (every 30s). Disable with ENABLE_REFRESH=0 ----------
 def refresher():
     time.sleep(5)
     while True:
