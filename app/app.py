@@ -128,4 +128,164 @@ def needs_refresh(path: Path, max_age_seconds: int) -> bool:
     if not path.exists():
         return True
     age = time.time() - path.stat().st_mtime
-    return age > max_age_secon
+    return age > max_age_seconds
+
+def _parse_float(name: str, default: float) -> float:
+    """Robust query param float parser; strips junk and falls back."""
+    val = request.args.get(name, None)
+    if val is None:
+        return float(default)
+    try:
+        return float(str(val).strip())
+    except Exception:
+        return float(default)
+
+def _parse_int(name: str, default: int) -> int:
+    """Robust query param int parser; strips junk and falls back."""
+    val = request.args.get(name, None)
+    if val is None:
+        return int(default)
+    s = str(val).strip()
+    # keep leading digits only
+    num = ""
+    for ch in s:
+        if ch.isdigit() or (ch == "-" and not num):
+            num += ch
+        else:
+            break
+    try:
+        return int(num) if num else int(default)
+    except Exception:
+        return int(default)
+
+def _looks_logged_in(html: str) -> bool:
+    lower = html.lower()
+    markers = ["log off", "logout", "rules of use", "signed in", "favorites", "favourites"]
+    return any(m in lower for m in markers)
+
+# --------------- Routes ---------------
+@app.get("/health")
+def health():
+    return jsonify(ok=True, ts=datetime.utcnow().isoformat()+"Z")
+
+@app.get("/status")
+def status():
+    info = {
+        "ok": True,
+        "has_cookie": bool(TF_ASPXAUTH),
+        "cookie_len": len(TF_ASPXAUTH),
+        "extra_cookies": [c.name for c in session.cookies if c.domain.endswith("otenko.com") and c.name != ".ASPXAUTH"],
+        "view": {"lat": DEFAULT_LAT, "lng": DEFAULT_LNG, "zm": DEFAULT_ZM},
+        "trains_json_exists": TRAINS_JSON_PATH.exists(),
+        "trains_json_mtime": (
+            datetime.utcfromtimestamp(TRAINS_JSON_PATH.stat().st_mtime).isoformat()+"Z"
+            if TRAINS_JSON_PATH.exists() else None
+        ),
+        "cache_seconds": CACHE_SECONDS,
+    }
+    return jsonify(info)
+
+@app.get("/cookie/echo")
+def cookie_echo():
+    names = {c.domain: [ck.name for ck in session.cookies if ck.domain == c.domain] for c in session.cookies}
+    return jsonify({"cookies": names})
+
+@app.get("/headers")
+def headers_echo():
+    return jsonify(dict(session.headers))
+
+@app.get("/authcheck")
+def authcheck():
+    ref = _referer(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM)
+    r = session.get(ref, headers={"Referer": ref}, timeout=20)
+    ok = _looks_logged_in(r.text)
+    app.logger.info("Authcheck GET -> %s; logged_in_guess=%s; bytes=%s",
+                    r.status_code, ok, len(r.text))
+    return jsonify({"status": r.status_code, "logged_in_guess": ok, "bytes": len(r.text)})
+
+@app.get("/trains.json")
+def trains_json():
+    lat = _parse_float("lat", DEFAULT_LAT)
+    lng = _parse_float("lng", DEFAULT_LNG)
+    zm  = _parse_int("zm", DEFAULT_ZM)
+
+    if needs_refresh(TRAINS_JSON_PATH, CACHE_SECONDS):
+        app.logger.info("Cache expired -> fetching TF viewport")
+        tf = fetch_viewport(lat, lng, zm)
+        data = transform_tf_payload(tf)
+        write_trains(data)
+    return send_file(TRAINS_JSON_PATH, mimetype="application/json")
+
+@app.get("/update")
+def update_now():
+    lat = _parse_float("lat", DEFAULT_LAT)
+    lng = _parse_float("lng", DEFAULT_LNG)
+    zm  = _parse_int("zm", DEFAULT_ZM)
+
+    tf = fetch_viewport(lat, lng, zm)
+    data = transform_tf_payload(tf)
+    write_trains(data)
+    return jsonify({
+        "ok": True,
+        "wrote": str(TRAINS_JSON_PATH),
+        "counts": {
+            "trains": len(data.get("trains", [])),
+            "raw_keys": list(data.get("raw", {}).keys()) if isinstance(data.get("raw"), dict) else None
+        }
+    })
+
+@app.get("/debug/viewport")
+def debug_viewport():
+    """Return raw TF JSON; hardened against bad query strings."""
+    lat = _parse_float("lat", DEFAULT_LAT)
+    lng = _parse_float("lng", DEFAULT_LNG)
+    zm  = _parse_int("zm", DEFAULT_ZM)
+    tf = fetch_viewport(lat, lng, zm)
+    return (json.dumps(tf, ensure_ascii=False), 200, {"Content-Type": "application/json"})
+
+@app.get("/scan")
+def scan():
+    """Probe multiple busy viewports (zm 6/7) and write the first non-empty."""
+    probes = [
+        (-33.8688, 151.2093, 6),  # Sydney
+        (-33.8688, 151.2093, 7),
+        (-37.8136, 144.9631, 6),  # Melbourne
+        (-37.8136, 144.9631, 7),
+        (-27.4698, 153.0251, 6),  # Brisbane
+        (-27.4698, 153.0251, 7),
+        (-31.9523, 115.8613, 6),  # Perth
+        (-31.9523, 115.8613, 7),
+        (-34.9285, 138.6007, 6),  # Adelaide
+        (-34.9285, 138.6007, 7),
+    ]
+    tried = []
+    for lat, lng, zm in probes:
+        tf = fetch_viewport(lat, lng, zm)
+        txt = json.dumps(tf, ensure_ascii=False)
+        tried.append({"lat": lat, "lng": lng, "zm": zm, "bytes": len(txt)})
+        if len(txt) > 200:  # heuristic to dodge the 98-byte "null"
+            data = transform_tf_payload(tf)
+            write_trains(data)
+            return jsonify({
+                "ok": True,
+                "picked": {"lat": lat, "lng": lng, "zm": zm},
+                "bytes": len(txt),
+                "wrote": str(TRAINS_JSON_PATH),
+                "trains_guess": len(data.get("trains", [])),
+                "tried": tried
+            })
+    return jsonify({"ok": False, "message": "All probes looked empty", "tried": tried})
+
+@app.get("/")
+def root():
+    return jsonify({
+        "ok": True,
+        "endpoints": [
+            "/health", "/status", "/headers", "/cookie/echo", "/authcheck",
+            "/trains.json", "/update", "/debug/viewport", "/scan"
+        ],
+        "howto": "Set TF_ASPXAUTH and (optionally) TF_EXTRA_COOKIES env vars to mirror your browser cookies."
+    })
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
