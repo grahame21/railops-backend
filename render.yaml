@@ -5,5 +5,5 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn -w 1 -b 0.0.0.0:$PORT app.app:app
     envVars:
-      - key: TF_AUTH_COOKIE    # optional: paste your .ASPXAUTH value in Render
+      - key: TF_AUTH_COOKIE
         sync: false
