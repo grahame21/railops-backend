@@ -1,307 +1,260 @@
-# app.py
-import os
-import json
-import time
-import threading
-import logging
-from pathlib import Path
-from typing import Dict, Any, Optional
-
+# app/app.py
+import os, json, time, logging
+from typing import Any, Dict, List, Tuple, Optional
+from urllib.parse import urlencode
+from flask import Flask, request, jsonify, make_response
 import requests
-from flask import Flask, jsonify, send_file, request, render_template, abort, Response
 
-# -----------------------------------------------------------------------------
-# Flask app
-# -----------------------------------------------------------------------------
-app = Flask(
-    __name__,
-    static_folder="static",      # serve /static/*
-    template_folder="templates"  # look for dashboard.html here if you have it
-)
+# ──────────────────────────────────────────────
+# CONFIG / ENV
+# ──────────────────────────────────────────────
+TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
+TF_REFERER  = os.getenv("TF_REFERER", "https://trainfinder.otenko.com/home/nextlevel").strip()
 
+# Use your desktop Chrome UA if TF_UA is not set
+TF_UA = os.getenv(
+    "TF_UA",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/125.0.0.0 Safari/537.36"
+).strip()
+
+SESSION_TIMEOUT = 15  # seconds for outbound requests
+
+# ──────────────────────────────────────────────
+# LOGGING
+# ──────────────────────────────────────────────
+logging.basicConfig(level=logging.INFO, format="%(levelname)s:railops:%(message)s")
 log = logging.getLogger("railops")
-logging.basicConfig(
-    level=os.getenv("LOG_LEVEL", "INFO"),
-    format="%(levelname)s:%(name)s:%(message)s"
-)
 
-# -----------------------------------------------------------------------------
-# Config / Env
-# -----------------------------------------------------------------------------
-# TrainFinder
-TF_BASE = "https://trainfinder.otenko.com"
-TF_AUTH = os.getenv("TF_ASPXAUTH", "").strip()  # cookie value for .ASPXAUTH
-TF_UA = os.getenv("TF_UA", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                           "(KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36")
-# Optional: if you want to force a specific warmup URL; otherwise we build one from lat/lng/zm
-TF_REFERER_URL = os.getenv("TF_REFERER_URL", "").strip()
+# ──────────────────────────────────────────────
+# FLASK
+# ──────────────────────────────────────────────
+app = Flask(__name__)
 
-# Refresh cadence
-REFRESH_SECONDS = int(os.getenv("REFRESH_SECONDS", "30"))
+def add_cors(resp):
+    # very permissive CORS for quick testing; lock down later
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return resp
 
-# Default viewport if none provided by query
-DEFAULT_LAT = os.getenv("DEFAULT_LAT", "-33.86")
-DEFAULT_LNG = os.getenv("DEFAULT_LNG", "151.21")
-DEFAULT_ZM  = os.getenv("DEFAULT_ZM",  "7")
+@app.after_request
+def after(resp):
+    return add_cors(resp)
 
-# Storage paths
-APP_DIR = Path(__file__).resolve().parent
-DATA_DIR = APP_DIR  # keep alongside app.py so Render logs show it in /app
-TRAINS_JSON_PATH = DATA_DIR / "trains.json"
+@app.route("/healthz")
+def healthz():
+    return add_cors(make_response("ok", 200))
 
-# -----------------------------------------------------------------------------
-# HTTP session with headers/cookies
-# -----------------------------------------------------------------------------
-def make_session() -> requests.Session:
+@app.route("/")
+def root():
+    return add_cors(make_response("ok, true", 200))
+
+# ──────────────────────────────────────────────
+# HELPERS
+# ──────────────────────────────────────────────
+def new_session() -> requests.Session:
     s = requests.Session()
     s.headers.update({
         "User-Agent": TF_UA,
-        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Accept": "application/json, text/plain, */*",
+        "Referer": TF_REFERER if TF_REFERER else "https://trainfinder.otenko.com/",
+        "Origin": "https://trainfinder.otenko.com",
         "Accept-Language": "en-US,en;q=0.9",
-        "X-Requested-With": "XMLHttpRequest",
-        "Referer": TF_REFERER_URL if TF_REFERER_URL else f"{TF_BASE}/home/nextlevel"
+        "Connection": "keep-alive",
     })
-    if TF_AUTH:
-        # .ASPXAUTH cookie name used by TrainFinder
-        s.cookies.set(".ASPXAUTH", TF_AUTH, domain="trainfinder.otenko.com", path="/")
+    # Attach auth cookie if provided
+    if TF_ASPXAUTH:
+        # IMPORTANT: 'httponly' must go via 'rest'
+        s.cookies.set(
+            "TF_ASPXAUTH",
+            TF_ASPXAUTH,
+            domain="trainfinder.otenko.com",
+            secure=True,
+            rest={"HttpOnly": True}
+        )
     return s
 
-# -----------------------------------------------------------------------------
-# TrainFinder fetch
-# -----------------------------------------------------------------------------
-def build_referer(lat: str, lng: str, zm: str) -> str:
-    """A clean Referer URL (no 'TF_REFERER=' prefix)."""
-    if TF_REFERER_URL:
-        return TF_REFERER_URL
-    return f"{TF_BASE}/home/nextlevel?lat={lat}&lng={lng}&zm={zm}"
-
-def fetch_trains(lat: str, lng: str, zm: str, bbox: Optional[str] = None) -> Dict[str, Any]:
+def warmup(s: requests.Session, lat: float, lng: float, zm: int) -> Tuple[int, str]:
     """
-    Warm up the site with a GET (Referer), then POST to GetViewPortData.
-    Returns raw JSON dict from TrainFinder.
+    Prime the server (mimic opening map at a viewport).
     """
-    sess = make_session()
-
-    # Warmup GET
-    ref = build_referer(lat, lng, zm)
     try:
-        r_get = sess.get(ref, timeout=20)
-        log.info("Warmup GET %s -> %s", ref, r_get.status_code)
+        params = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
+        url = f"https://trainfinder.otenko.com/home/nextlevel?{urlencode(params)}"
+        r = s.get(url, timeout=SESSION_TIMEOUT)
+        log.info("Warmup GET %s -> %d", url, r.status_code)
+        return r.status_code, r.text
     except Exception as e:
         log.warning("Warmup failed: %s", e)
+        return 0, str(e)
 
-    # POST payload
-    form = {"lat": lat, "lng": lng, "zm": zm}
+def fetch_viewport(
+    lat: float, lng: float, zm: int,
+    bbox: Optional[str] = None
+) -> Tuple[Optional[Dict[str, Any]], str, int]:
+    """
+    POST to TrainFinder to get viewport data.
+    Returns: (json_dict or None, raw_text, http_status)
+    """
+    s = new_session()
+
+    # Warmup (best effort)
+    warmup(s, lat, lng, zm)
+
+    url = "https://trainfinder.otenko.com/Home/GetViewPortData"
+
+    # Some deployments expect form data, others accept JSON; form works reliably.
+    form = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
     if bbox:
-        # bbox format: "south,west,north,east"
+        # If caller passes bbox (south,west,north,east), forward it as-is
         form["bbox"] = bbox
 
-    # Ensure Referer header points to the warmup viewport
-    sess.headers["Referer"] = ref
-
-    url = f"{TF_BASE}/Home/GetViewPortData"
-    r = sess.post(url, data=form, timeout=30)
-    log.info("POST %s (form=%s) -> %s", url, {k: form[k] for k in form}, r.status_code)
-    r.raise_for_status()
-    data = r.json()
-
-    # Debug what keys we actually see
-    if isinstance(data, dict):
-        log.info("Sample JSON keys: %s", list(data.keys()))
-        # Some TF responses put objects under 'atcsObj' or similar; keep raw
-    else:
-        log.warning("Unexpected JSON shape: %s", type(data))
-
-    return data
-
-def write_trains_file(payload: Dict[str, Any]) -> int:
-    """Write raw JSON; return a simple 'count' heuristic if available."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    with open(TRAINS_JSON_PATH, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False)
-    # Try to derive a count from known keys (best-effort)
-    count = 0
-    if isinstance(payload, dict):
-        # If ATCS objects present as dict with trains keyed, try length
-        for key in ("atcsObj", "trains", "objects"):
-            val = payload.get(key)
-            if isinstance(val, (list, dict)):
-                count = len(val)
-                break
-    log.info("wrote %s with %d trains", str(TRAINS_JSON_PATH), count)
-    return count
-
-# -----------------------------------------------------------------------------
-# Background refresher (optional)
-# -----------------------------------------------------------------------------
-_stop_flag = threading.Event()
-
-def _refresher():
-    # Use defaults unless overridden via environment
-    lat = DEFAULT_LAT
-    lng = DEFAULT_LNG
-    zm  = DEFAULT_ZM
-    bbox = os.getenv("DEFAULT_BBOX", "").strip() or None
-
-    while not _stop_flag.is_set():
-        try:
-            data = fetch_trains(lat, lng, zm, bbox=bbox)
-            write_trains_file(data)
-        except Exception as e:
-            log.exception("refresher error: %s", e)
-        _stop_flag.wait(REFRESH_SECONDS)
-
-# Start thread unless disabled
-if os.getenv("DISABLE_REFRESHER", "").lower() not in ("1", "true", "yes"):
-    t = threading.Thread(target=_refresher, name="refresher", daemon=True)
-    t.start()
-
-# -----------------------------------------------------------------------------
-# Routes
-# -----------------------------------------------------------------------------
-@app.get("/")
-def root_ok():
-    return Response("ok, true", mimetype="text/plain")
-
-@app.get("/trains")
-def get_trains_now():
-    """
-    On-demand refresh based on query params:
-      /trains?lat=-33.86&lng=151.21&zm=12&bbox=-35.8,138.4,-34.6,139.0
-    If no params, returns the last written trains.json (or fetches with defaults if missing).
-    """
-    lat = request.args.get("lat", "").strip()
-    lng = request.args.get("lng", "").strip()
-    zm  = request.args.get("zm", "").strip()
-    bbox = request.args.get("bbox", "").strip() or None
-
-    # If full viewport specified, fetch fresh
-    if lat and lng and zm:
-        try:
-            data = fetch_trains(lat, lng, zm, bbox=bbox)
-            write_trains_file(data)
-            return jsonify(data)
-        except Exception as e:
-            log.exception("on-demand fetch failed: %s", e)
-            return jsonify({"error": str(e)}), 500
-
-    # Otherwise, serve the last snapshot (or fetch with defaults on first run)
-    if TRAINS_JSON_PATH.exists():
-        return send_file(TRAINS_JSON_PATH, mimetype="application/json")
-
-    # No file yet — fetch with defaults
     try:
-        data = fetch_trains(DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM, bbox=os.getenv("DEFAULT_BBOX"))
-        write_trains_file(data)
-        return jsonify(data)
+        r = s.post(url, data=form, timeout=SESSION_TIMEOUT)
+        log.info("POST %s (form=%s) -> %d", url, f"lat={form['lat']},lng={form['lng']},zm={form['zm']}" + (f",bbox={bbox}" if bbox else ""), r.status_code)
+        txt = r.text
+        j = None
+        if r.headers.get("content-type", "").startswith("application/json"):
+            try:
+                j = r.json()
+            except Exception:
+                # fall back to manual parse attempt
+                pass
+        if j is None:
+            try:
+                j = json.loads(txt)
+            except Exception:
+                # Not valid JSON; return raw
+                return None, txt, r.status_code
+
+        # Quick sanity check — in prior logs we saw keys but empty content
+        keys = sorted(list(j.keys())) if isinstance(j, dict) else []
+        if keys:
+            log.info("Sample JSON keys: %s", keys[:8])
+
+        # Heuristic: if everything is null/empty, hint about auth/zoom
+        if isinstance(j, dict) and all((v is None or v == [] or v == {}) for v in j.values()):
+            log.warning("TrainFinder payload looks empty/unauthorized.")
+
+        return j, txt, r.status_code
+
     except Exception as e:
-        log.exception("initial fetch failed: %s", e)
-        return jsonify({"error": str(e)}), 500
+        log.exception("Viewport fetch failed: %s", e)
+        return None, str(e), 0
 
-@app.get("/data/trains.json")
-def data_trains_json():
-    """Static JSON endpoint the frontend can poll."""
-    if not TRAINS_JSON_PATH.exists():
-        return jsonify({"error": "trains.json not available yet"}), 404
-    return send_file(TRAINS_JSON_PATH, mimetype="application/json")
+def _get_float(d: Dict[str, Any], *names) -> Optional[float]:
+    for n in names:
+        if n in d and isinstance(d[n], (int, float)):
+            return float(d[n])
+        if n in d and isinstance(d[n], str):
+            try:
+                return float(d[n])
+            except Exception:
+                pass
+    return None
 
-@app.get("/dashboard")
-def dashboard():
+def extract_trains(payload: Any) -> List[Dict[str, Any]]:
     """
-    Serve your existing templates/dashboard.html if it exists.
-    If you don’t have a templates/ folder in the image, we return a simple fallback page
-    that fetches /data/trains.json so you still get a basic view.
+    Try to extract marker-like entries (lat/lng + id/title) from whatever
+    structure TrainFinder returns. We scan common buckets and generic lists.
     """
-    # If a real template exists, render it
-    tpl = APP_DIR / "templates" / "dashboard.html"
-    if tpl.exists():
-        return render_template("dashboard.html")
+    results: List[Dict[str, Any]] = []
 
-    # Fallback minimal page
-    html = """<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>RailOps Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
-      pre { background:#111; color:#0f0; padding:12px; border-radius:8px; overflow:auto; }
-      .row { margin: 8px 0; }
-      label { display:inline-block; width:60px; }
-      input { width: 200px; }
-      button { padding:6px 12px; }
-    </style>
-  </head>
-  <body>
-    <h1>RailOps – Dashboard (fallback)</h1>
+    if not isinstance(payload, dict):
+        return results
 
-    <div class="row"><label>lat</label><input id="lat" value="-33.86"></div>
-    <div class="row"><label>lng</label><input id="lng" value="151.21"></div>
-    <div class="row"><label>zm</label><input id="zm"  value="12"></div>
-    <div class="row"><label>bbox</label><input id="bbox" placeholder="-35.8,138.4,-34.6,139.0"></div>
-    <div class="row"><button id="btn">Fetch /trains</button></div>
+    candidate_lists: List[Any] = []
+    # Buckets we've seen in logs
+    for key in ("tts", "places", "alerts", "webcams", "atcsObj", "atcsGomi"):
+        val = payload.get(key)
+        if isinstance(val, list):
+            candidate_lists.append(val)
+        elif isinstance(val, dict):
+            # sometimes nested lists live inside dicts (e.g., places: {items:[...]})
+            for v in val.values():
+                if isinstance(v, list):
+                    candidate_lists.append(v)
 
-    <pre id="out">Loading /data/trains.json …</pre>
+    # Fallback: scan any list values for lat/lng patterns
+    if not candidate_lists:
+        for v in payload.values():
+            if isinstance(v, list):
+                candidate_lists.append(v)
 
-    <script>
-      async function loadSnapshot() {
-        try {
-          const r = await fetch('/data/trains.json', {cache:'no-store'});
-          const t = await r.text();
-          out.textContent = t;
-        } catch (e) {
-          out.textContent = 'Failed to load trains.json: ' + e;
-        }
-      }
-      document.getElementById('btn').onclick = async () => {
-        const lat = document.getElementById('lat').value.trim();
-        const lng = document.getElementById('lng').value.trim();
-        const zm  = document.getElementById('zm').value.trim();
-        const bbox= document.getElementById('bbox').value.trim();
-        const qs  = new URLSearchParams({lat, lng, zm});
-        if (bbox) qs.set('bbox', bbox);
-        out.textContent = 'Fetching /trains…';
-        try {
-          const r = await fetch('/trains?' + qs.toString(), {cache:'no-store'});
-          const t = await r.text();
-          out.textContent = t;
-        } catch (e) {
-          out.textContent = 'Fetch error: ' + e;
-        }
-      };
-      loadSnapshot();
-      // poll snapshot every 30s so you see updates from background refresher
-      setInterval(loadSnapshot, 30000);
-    </script>
-  </body>
-</html>"""
-    return Response(html, mimetype="text/html")
+    def add_marker(obj: Dict[str, Any]):
+        lat = _get_float(obj, "lat", "Lat", "latitude", "Latitude", "iLat", "y")
+        lng = _get_float(obj, "lng", "Lng", "longitude", "Longitude", "iLng", "x")
+        if lat is None or lng is None:
+            return
+        # Try to build a reasonable label
+        title = None
+        for k in ("name", "title", "desc", "Description", "id", "train", "service"):
+            if k in obj and isinstance(obj[k], (str, int, float)):
+                title = str(obj[k]); break
+        marker = {"lat": lat, "lng": lng}
+        if title:
+            marker["title"] = title
+        # Include a few raw fields for debugging
+        for k in ("id", "train", "line", "service", "speed", "dir"):
+            if k in obj:
+                marker[k] = obj[k]
+        results.append(marker)
 
-# Simple route so you can test alternate viewports without the dashboard
-@app.get("/test")
-def test_help():
-    return jsonify({
-        "usage": "/trains?lat=-33.86&lng=151.21&zm=12&bbox=-35.8,138.4,-34.6,139.0",
-        "notes": "bbox is optional; background refresher uses DEFAULT_* envs."
-    })
+    for arr in candidate_lists:
+        if not isinstance(arr, list):
+            continue
+        for item in arr:
+            if isinstance(item, dict):
+                add_marker(item)
 
-# -----------------------------------------------------------------------------
-# Graceful shutdown on Gunicorn stop
-# -----------------------------------------------------------------------------
-@app.before_serving
-def _startup_note():
-    log.info("Service starting; refresher=%s", "on" if not _stop_flag.is_set() else "off")
+    return results
 
-@app.after_serving
-def _shutdown_note():
-    _stop_flag.set()
-    log.info("Service stopping")
+# ──────────────────────────────────────────────
+# API
+# ──────────────────────────────────────────────
+@app.route("/trains", methods=["GET", "OPTIONS"])
+def trains():
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
 
-# -----------------------------------------------------------------------------
-# Local dev
-# -----------------------------------------------------------------------------
+    # Defaults if not provided
+    lat = float(request.args.get("lat", "-33.860000"))
+    lng = float(request.args.get("lng", "151.210000"))
+    zm  = int(request.args.get("zm", "12"))
+
+    # Optional bbox "south,west,north,east"
+    bbox = request.args.get("bbox")
+    j, txt, code = fetch_viewport(lat, lng, zm, bbox)
+
+    if j is None:
+        # Pass through raw error text to help debugging
+        return add_cors(make_response(jsonify({
+            "ok": False, "status": code, "error": "upstream", "detail": txt
+        }), 502))
+
+    markers = extract_trains(j)
+    # Persist to container (for quick inspection)
+    try:
+        with open("/app/trains.json", "w") as f:
+            json.dump({"at": int(time.time()), "lat": lat, "lng": lng, "zm": zm,
+                       "bbox": bbox, "count": len(markers), "markers": markers}, f)
+        log.info("wrote /app/trains.json with %d markers", len(markers))
+    except Exception as e:
+        log.warning("Failed writing trains.json: %s", e)
+
+    return add_cors(make_response(jsonify({
+        "ok": True,
+        "count": len(markers),
+        "markers": markers
+    }), 200))
+
+
+# ──────────────────────────────────────────────
+# LOCAL DEV ENTRY
+# ──────────────────────────────────────────────
 if __name__ == "__main__":
-    # For local testing: python app.py
+    # For local testing only: flask’s built-in server
     port = int(os.getenv("PORT", "10000"))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
