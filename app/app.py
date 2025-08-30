@@ -1,260 +1,300 @@
-# app/app.py
-import os, json, time, logging
-from typing import Any, Dict, List, Tuple, Optional
-from urllib.parse import urlencode
-from flask import Flask, request, jsonify, make_response
+import os, math, re, json
+from flask import Flask, request, jsonify, Response, render_template_string
 import requests
 
-# ──────────────────────────────────────────────
-# CONFIG / ENV
-# ──────────────────────────────────────────────
-TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()
-TF_REFERER  = os.getenv("TF_REFERER", "https://trainfinder.otenko.com/home/nextlevel").strip()
-
-# Use your desktop Chrome UA if TF_UA is not set
-TF_UA = os.getenv(
-    "TF_UA",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/125.0.0.0 Safari/537.36"
-).strip()
-
-SESSION_TIMEOUT = 15  # seconds for outbound requests
-
-# ──────────────────────────────────────────────
-# LOGGING
-# ──────────────────────────────────────────────
-logging.basicConfig(level=logging.INFO, format="%(levelname)s:railops:%(message)s")
-log = logging.getLogger("railops")
-
-# ──────────────────────────────────────────────
-# FLASK
-# ──────────────────────────────────────────────
 app = Flask(__name__)
 
-def add_cors(resp):
-    # very permissive CORS for quick testing; lock down later
-    resp.headers["Access-Control-Allow-Origin"] = "*"
-    resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    return resp
+# ------------------------ Config ------------------------
+TF_BASE = "https://trainfinder.otenko.com"
+WARMUP_PATH = "/home/nextlevel"
+API_VIEWPORT_PATH = "/Home/GetViewPortData"
+API_ISLOGGEDIN_PATH = "/Home/IsLoggedIn"
 
-@app.after_request
-def after(resp):
-    return add_cors(resp)
+# Default view size used to compute bounds
+VIEW_W = 980
+VIEW_H = 740
+TILE_SIZE = 256
 
-@app.route("/healthz")
-def healthz():
-    return add_cors(make_response("ok", 200))
+# --------------------- Map math -------------------------
+def _lnglat_to_pixelxy(lng: float, lat: float, zoom: int):
+    scale = TILE_SIZE * (2 ** zoom)
+    x = (lng + 180.0) / 360.0 * scale
+    siny = math.sin(math.radians(lat))
+    siny = min(max(siny, -0.9999), 0.9999)
+    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * scale
+    return x, y
 
-@app.route("/")
-def root():
-    return add_cors(make_response("ok, true", 200))
+def _pixelxy_to_lnglat(x: float, y: float, zoom: int):
+    scale = TILE_SIZE * (2 ** zoom)
+    lng = x / scale * 360.0 - 180.0
+    n = math.pi - 2.0 * math.pi * y / scale
+    lat = math.degrees(math.atan(math.sinh(n)))
+    return lng, lat
 
-# ──────────────────────────────────────────────
-# HELPERS
-# ──────────────────────────────────────────────
-def new_session() -> requests.Session:
-    s = requests.Session()
-    s.headers.update({
-        "User-Agent": TF_UA,
+def compute_bounds(center_lat: float, center_lng: float, zoom: int, width: int, height: int):
+    cx, cy = _lnglat_to_pixelxy(center_lng, center_lat, zoom)
+    half_w = width / 2.0
+    half_h = height / 2.0
+    tlx, tly = cx - half_w, cy - half_h
+    brx, bry = cx + half_w, cy + half_h
+    west, north = _pixelxy_to_lnglat(tlx, tly, zoom)  # returns (lng, lat)
+    east, south = _pixelxy_to_lnglat(brx, bry, zoom)
+    # Normalize to named fields: north/south are lats, east/west are lngs
+    return {
+        "north": north,
+        "south": south,
+        "east": east,
+        "west": west,
+    }
+
+# ----------------- TrainFinder session ------------------
+def make_session(aspxauth_token: str | None):
+    sess = requests.Session()
+    # Required headers to mimic browser AJAX
+    sess.headers.update({
+        "User-Agent": "Mozilla/5.0 (compatible; RailOpsBot/1.0)",
         "Accept": "application/json, text/plain, */*",
-        "Referer": TF_REFERER if TF_REFERER else "https://trainfinder.otenko.com/",
-        "Origin": "https://trainfinder.otenko.com",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Connection": "keep-alive",
+        "X-Requested-With": "XMLHttpRequest",
+        "Origin": TF_BASE,
+        "Referer": TF_BASE + WARMUP_PATH,
     })
-    # Attach auth cookie if provided
-    if TF_ASPXAUTH:
-        # IMPORTANT: 'httponly' must go via 'rest'
-        s.cookies.set(
-            "TF_ASPXAUTH",
-            TF_ASPXAUTH,
-            domain="trainfinder.otenko.com",
-            secure=True,
-            rest={"HttpOnly": True}
-        )
-    return s
+    if aspxauth_token:
+        sess.cookies.set(".ASPXAUTH", aspxauth_token, domain="trainfinder.otenko.com", path="/")
+    return sess
 
-def warmup(s: requests.Session, lat: float, lng: float, zm: int) -> Tuple[int, str]:
+def extract_request_verification_token(html: str, cookies: requests.cookies.RequestsCookieJar):
     """
-    Prime the server (mimic opening map at a viewport).
+    Try both sources:
+    1) a hidden input named __RequestVerificationToken in the page
+    2) a cookie whose name contains 'RequestVerificationToken'
     """
-    try:
-        params = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
-        url = f"https://trainfinder.otenko.com/home/nextlevel?{urlencode(params)}"
-        r = s.get(url, timeout=SESSION_TIMEOUT)
-        log.info("Warmup GET %s -> %d", url, r.status_code)
-        return r.status_code, r.text
-    except Exception as e:
-        log.warning("Warmup failed: %s", e)
-        return 0, str(e)
+    # hidden input
+    m = re.search(r'name="__RequestVerificationToken"\s+type="hidden"\s+value="([^"]+)"', html, re.I)
+    if m:
+        return m.group(1)
 
-def fetch_viewport(
-    lat: float, lng: float, zm: int,
-    bbox: Optional[str] = None
-) -> Tuple[Optional[Dict[str, Any]], str, int]:
-    """
-    POST to TrainFinder to get viewport data.
-    Returns: (json_dict or None, raw_text, http_status)
-    """
-    s = new_session()
+    # cookie (ASP.NET sometimes places an anti-forgery cookie)
+    for c in cookies:
+        if "RequestVerificationToken" in c.name:
+            return c.value
 
-    # Warmup (best effort)
-    warmup(s, lat, lng, zm)
-
-    url = "https://trainfinder.otenko.com/Home/GetViewPortData"
-
-    # Some deployments expect form data, others accept JSON; form works reliably.
-    form = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
-    if bbox:
-        # If caller passes bbox (south,west,north,east), forward it as-is
-        form["bbox"] = bbox
-
-    try:
-        r = s.post(url, data=form, timeout=SESSION_TIMEOUT)
-        log.info("POST %s (form=%s) -> %d", url, f"lat={form['lat']},lng={form['lng']},zm={form['zm']}" + (f",bbox={bbox}" if bbox else ""), r.status_code)
-        txt = r.text
-        j = None
-        if r.headers.get("content-type", "").startswith("application/json"):
-            try:
-                j = r.json()
-            except Exception:
-                # fall back to manual parse attempt
-                pass
-        if j is None:
-            try:
-                j = json.loads(txt)
-            except Exception:
-                # Not valid JSON; return raw
-                return None, txt, r.status_code
-
-        # Quick sanity check — in prior logs we saw keys but empty content
-        keys = sorted(list(j.keys())) if isinstance(j, dict) else []
-        if keys:
-            log.info("Sample JSON keys: %s", keys[:8])
-
-        # Heuristic: if everything is null/empty, hint about auth/zoom
-        if isinstance(j, dict) and all((v is None or v == [] or v == {}) for v in j.values()):
-            log.warning("TrainFinder payload looks empty/unauthorized.")
-
-        return j, txt, r.status_code
-
-    except Exception as e:
-        log.exception("Viewport fetch failed: %s", e)
-        return None, str(e), 0
-
-def _get_float(d: Dict[str, Any], *names) -> Optional[float]:
-    for n in names:
-        if n in d and isinstance(d[n], (int, float)):
-            return float(d[n])
-        if n in d and isinstance(d[n], str):
-            try:
-                return float(d[n])
-            except Exception:
-                pass
     return None
 
-def extract_trains(payload: Any) -> List[Dict[str, Any]]:
-    """
-    Try to extract marker-like entries (lat/lng + id/title) from whatever
-    structure TrainFinder returns. We scan common buckets and generic lists.
-    """
-    results: List[Dict[str, Any]] = []
+def warmup_and_token(sess: requests.Session, lat: float, lng: float, zm: int):
+    warmup_url = f"{TF_BASE}{WARMUP_PATH}?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
+    r = sess.get(warmup_url, timeout=20)
+    html = r.text
+    token = extract_request_verification_token(html, sess.cookies)
+    return {
+        "status": r.status_code,
+        "bytes": len(r.content),
+        "token": token,
+        "url": warmup_url
+    }
 
-    if not isinstance(payload, dict):
-        return results
+def looks_like_html(resp: requests.Response) -> bool:
+    ct = resp.headers.get("Content-Type", "")
+    if "text/html" in ct.lower():
+        return True
+    t = resp.text.lstrip()
+    return t.startswith("<!DOCTYPE") or t.startswith("<html")
 
-    candidate_lists: List[Any] = []
-    # Buckets we've seen in logs
-    for key in ("tts", "places", "alerts", "webcams", "atcsObj", "atcsGomi"):
-        val = payload.get(key)
-        if isinstance(val, list):
-            candidate_lists.append(val)
-        elif isinstance(val, dict):
-            # sometimes nested lists live inside dicts (e.g., places: {items:[...]})
-            for v in val.values():
-                if isinstance(v, list):
-                    candidate_lists.append(v)
+def tf_post_viewport(sess: requests.Session, bounds: dict, zm: int, token: str | None):
+    url = f"{TF_BASE}{API_VIEWPORT_PATH}"
+    attempts = []
 
-    # Fallback: scan any list values for lat/lng patterns
-    if not candidate_lists:
-        for v in payload.values():
-            if isinstance(v, list):
-                candidate_lists.append(v)
+    def do_post(form):
+        headers = {}
+        if token:
+            # ASP.NET MVC default header name:
+            headers["RequestVerificationToken"] = token
+        r = sess.post(url, data=form, headers=headers, timeout=30)
+        preview = r.text[:160]
+        htmlish = looks_like_html(r)
+        ok_json = (not htmlish) and r.status_code == 200
+        body = r.text
+        # Heuristic: the “empty” response is ~98 bytes and all nulls
+        emptyish = ok_json and len(body) <= 120 and "null" in body
+        return {
+            "form": form,
+            "resp": {
+                "status": r.status_code,
+                "bytes": len(r.content),
+                "looks_like_html": htmlish,
+                "preview": preview
+            },
+            "is_winner": ok_json and not emptyish
+        }
 
-    def add_marker(obj: Dict[str, Any]):
-        lat = _get_float(obj, "lat", "Lat", "latitude", "Latitude", "iLat", "y")
-        lng = _get_float(obj, "lng", "Lng", "longitude", "Longitude", "iLng", "x")
-        if lat is None or lng is None:
-            return
-        # Try to build a reasonable label
-        title = None
-        for k in ("name", "title", "desc", "Description", "id", "train", "service"):
-            if k in obj and isinstance(obj[k], (str, int, float)):
-                title = str(obj[k]); break
-        marker = {"lat": lat, "lng": lng}
-        if title:
-            marker["title"] = title
-        # Include a few raw fields for debugging
-        for k in ("id", "train", "line", "service", "speed", "dir"):
-            if k in obj:
-                marker[k] = obj[k]
-        results.append(marker)
+    # 1) Named bounds + zoomLevel
+    attempts.append(do_post({
+        "north": f"{bounds['north']:.6f}",
+        "south": f"{bounds['south']:.6f}",
+        "east":  f"{bounds['east']:.6f}",
+        "west":  f"{bounds['west']:.6f}",
+        "zoomLevel": str(zm),
+    }))
 
-    for arr in candidate_lists:
-        if not isinstance(arr, list):
-            continue
-        for item in arr:
-            if isinstance(item, dict):
-                add_marker(item)
+    # 2) NE/SW names + zoomLevel
+    attempts.append(do_post({
+        "neLat": f"{bounds['north']:.6f}",
+        "neLng": f"{bounds['east']:.6f}",
+        "swLat": f"{bounds['south']:.6f}",
+        "swLng": f"{bounds['west']:.6f}",
+        "zoomLevel": str(zm),
+    }))
 
-    return results
+    # 3) Center point + zoomLevel
+    center_lat = (bounds["north"] + bounds["south"]) / 2.0
+    center_lng = (bounds["east"] + bounds["west"]) / 2.0
+    attempts.append(do_post({
+        "lat": f"{center_lat:.6f}",
+        "lng": f"{center_lng:.6f}",
+        "zoomLevel": str(zm),
+    }))
 
-# ──────────────────────────────────────────────
-# API
-# ──────────────────────────────────────────────
-@app.route("/trains", methods=["GET", "OPTIONS"])
-def trains():
-    if request.method == "OPTIONS":
-        return add_cors(make_response("", 204))
+    winner = next((i for i, a in enumerate(attempts) if a["is_winner"]), None)
+    return attempts, winner
 
-    # Defaults if not provided
-    lat = float(request.args.get("lat", "-33.860000"))
-    lng = float(request.args.get("lng", "151.210000"))
+def get_cookie_from_request():
+    # 1) Header wins (X-TF-ASPXAUTH)
+    header_val = request.headers.get("X-TF-ASPXAUTH", "").strip()
+    if header_val:
+        return header_val
+    # 2) Query override (for the /try page)
+    q = request.args.get("cookie", "").strip()
+    if q:
+        return q
+    # 3) Environment variable on Render
+    env_val = os.environ.get("TF_AUTH_COOKIE", "").strip()
+    if env_val:
+        return env_val
+    return None
+
+# ---------------------- Routes --------------------------
+@app.get("/")
+def root():
+    return jsonify({
+        "routes": ["/try", "/authcheck", "/debug/viewport?lat=...&lng=...&zm=...", "/scan"]
+    })
+
+TRY_HTML = """
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>TF Tester</title>
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}input,button{font-size:16px;padding:8px} code{background:#f4f4f4;padding:2px 6px;border-radius:6px}</style>
+  </head>
+  <body>
+    <h1>TrainFinder Tester</h1>
+    <form method="get" action="/debug/viewport">
+      <div>
+        <label>.ASPXAUTH cookie value:</label><br/>
+        <input style="width:600px" name="cookie" placeholder="paste ONLY the hex value (no .ASPXAUTH=)" />
+        <div style="color:#555">You can also set env var <code>TF_AUTH_COOKIE</code> on Render, or send header <code>X-TF-ASPXAUTH</code>.</div>
+      </div>
+      <p/>
+      <div>
+        <label>lat</label>
+        <input name="lat" value="-33.8688"/>
+        <label>lng</label>
+        <input name="lng" value="151.2093"/>
+        <label>zm</label>
+        <input name="zm" value="12"/>
+      </div>
+      <p/>
+      <button>Test /debug/viewport</button>
+    </form>
+
+    <p/>
+    <p><a href="/authcheck">/authcheck</a> (will use cookie from the field, header, or env)</p>
+    <p><a href="/scan">/scan</a> (tests five cities × 3 zooms)</p>
+  </body>
+</html>
+"""
+
+@app.get("/try")
+def try_page():
+    return Response(TRY_HTML, mimetype="text/html")
+
+@app.get("/authcheck")
+def authcheck():
+    token = get_cookie_from_request()
+    sess = make_session(token)
+    r = sess.post(f"{TF_BASE}{API_ISLOGGEDIN_PATH}", data={}, timeout=20)
+    out = {
+        "status": r.status_code,
+        "ms": r.elapsed.total_seconds() * 1000.0,
+        "cookie_present": bool(token),
+        "text": r.text,
+        "bytes": len(r.content),
+    }
+    # Try to pick email and value
+    try:
+        j = r.json()
+        out["is_logged_in"] = bool(j.get("is_logged_in"))
+        out["email"] = j.get("email_address", "")
+    except Exception:
+        pass
+    return jsonify(out)
+
+@app.get("/debug/viewport")
+def debug_viewport():
+    lat = float(request.args.get("lat", "-33.8688"))
+    lng = float(request.args.get("lng", "151.2093"))
     zm  = int(request.args.get("zm", "12"))
 
-    # Optional bbox "south,west,north,east"
-    bbox = request.args.get("bbox")
-    j, txt, code = fetch_viewport(lat, lng, zm, bbox)
+    token = get_cookie_from_request()
+    sess = make_session(token)
 
-    if j is None:
-        # Pass through raw error text to help debugging
-        return add_cors(make_response(jsonify({
-            "ok": False, "status": code, "error": "upstream", "detail": txt
-        }), 502))
+    warm = warmup_and_token(sess, lat, lng, zm)
+    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
 
-    markers = extract_trains(j)
-    # Persist to container (for quick inspection)
-    try:
-        with open("/app/trains.json", "w") as f:
-            json.dump({"at": int(time.time()), "lat": lat, "lng": lng, "zm": zm,
-                       "bbox": bbox, "count": len(markers), "markers": markers}, f)
-        log.info("wrote /app/trains.json with %d markers", len(markers))
-    except Exception as e:
-        log.warning("Failed writing trains.json: %s", e)
+    attempts, winner = tf_post_viewport(sess, bounds, zm, warm.get("token"))
 
-    return add_cors(make_response(jsonify({
-        "ok": True,
-        "count": len(markers),
-        "markers": markers
-    }), 200))
+    return jsonify({
+        "input": {"lat": lat, "lng": lng, "zm": zm},
+        "bounds": bounds,
+        "tf": {
+            "used_cookie": bool(token),
+            "warmup": {"status": warm["status"], "bytes": warm["bytes"], "ms": None},
+            "verification_token_present": bool(warm.get("token")),
+            "viewport": {
+                "attempts": attempts,
+                "winner": ("none" if winner is None else winner),
+                "response": (attempts[winner]["resp"] if winner is not None else attempts[-1]["resp"])
+            }
+        }
+    })
 
+@app.get("/scan")
+def scan():
+    token = get_cookie_from_request()
+    sess = make_session(token)
 
-# ──────────────────────────────────────────────
-# LOCAL DEV ENTRY
-# ──────────────────────────────────────────────
-if __name__ == "__main__":
-    # For local testing only: flask’s built-in server
-    port = int(os.getenv("PORT", "10000"))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    cities = [
+        ("Sydney",   -33.8688, 151.2093),
+        ("Melbourne",-37.8136, 144.9631),
+        ("Brisbane", -27.4698, 153.0251),
+        ("Perth",    -31.9523, 115.8613),
+        ("Adelaide", -34.9285, 138.6007),
+    ]
+    zooms = [11, 12, 13]
+    results = []
+
+    for name, lat, lng in cities:
+        # warm up each city once at the middle zoom to harvest token/cookies
+        warm = warmup_and_token(sess, lat, lng, 12)
+        token_v = warm.get("token")
+        for zm in zooms:
+            b = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
+            attempts, winner = tf_post_viewport(sess, b, zm, token_v)
+            last = attempts[-1]["resp"]
+            results.append({
+                "city": name, "lat": lat, "lng": lng, "zm": zm,
+                "viewport_bytes": last["bytes"],
+                "looks_like_html": last["looks_like_html"],
+                "warmup_bytes": warm["bytes"],
+                "winner": ("none" if winner is None else winner)
+            })
+
+    return jsonify({"count": len(results), "results": results})
