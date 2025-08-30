@@ -1,261 +1,300 @@
-import math, os, time, logging, json
-from typing import Dict, Tuple, Any, Optional, List
+import os, math, re, json
+from flask import Flask, request, jsonify, Response, render_template_string
 import requests
-from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-logging.basicConfig(
-    level=os.environ.get("LOGLEVEL", "INFO"),
-    format="[%(asctime)s] %(levelname)s:%(name)s:%(message)s",
-)
-log = logging.getLogger("railops")
-
-# ------------ Config ------------
+# ------------------------ Config ------------------------
 TF_BASE = "https://trainfinder.otenko.com"
-TILE_SIZE = 256.0
-VIEW_W = int(os.environ.get("VIEW_W", 900))
-VIEW_H = int(os.environ.get("VIEW_H", 600))
-DEFAULT_LAT = float(os.environ.get("DEFAULT_LAT", -33.8688))
-DEFAULT_LNG = float(os.environ.get("DEFAULT_LNG", 151.2093))
-DEFAULT_ZM  = int(os.environ.get("DEFAULT_ZM", 12))
-HTTP_TIMEOUT = (10, 20)  # (connect, read)
-UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36")
+WARMUP_PATH = "/home/nextlevel"
+API_VIEWPORT_PATH = "/Home/GetViewPortData"
+API_ISLOGGEDIN_PATH = "/Home/IsLoggedIn"
 
-EMPTY_JSON_PREFIXES = (
-    '{"favs":null,"alerts":null,"places":null,"tts":null,"webcams":null,"atcsGomi":null,"atcsObj":null}',
-    '{"favs":[],"alerts":[],"places":[],"tts":[],"webcams":[],"atcsGomi":[],"atcsObj":[]}',
-)
+# Default view size used to compute bounds
+VIEW_W = 980
+VIEW_H = 740
+TILE_SIZE = 256
 
-# ------------ Helpers ------------
-def to_float(v: Optional[str], default: float) -> float:
-    try:
-        x = float(v)
-        if math.isfinite(x): return x
-    except Exception:
-        pass
-    return default
-
-def to_int(v: Optional[str], default: int) -> int:
-    try:
-        return int(str(v).strip())
-    except Exception:
-        return default
-
-def _latlng_to_world(lat: float, lng: float) -> Tuple[float, float]:
-    x = (lng + 180.0) / 360.0 * TILE_SIZE
+# --------------------- Map math -------------------------
+def _lnglat_to_pixelxy(lng: float, lat: float, zoom: int):
+    scale = TILE_SIZE * (2 ** zoom)
+    x = (lng + 180.0) / 360.0 * scale
     siny = math.sin(math.radians(lat))
     siny = min(max(siny, -0.9999), 0.9999)
-    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * TILE_SIZE
+    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * scale
     return x, y
 
-def _world_to_latlng(px: float, py: float) -> Tuple[float, float]:
-    lng = px / TILE_SIZE * 360.0 - 180.0
-    n = math.pi - 2.0 * math.pi * (py / TILE_SIZE)
+def _pixelxy_to_lnglat(x: float, y: float, zoom: int):
+    scale = TILE_SIZE * (2 ** zoom)
+    lng = x / scale * 360.0 - 180.0
+    n = math.pi - 2.0 * math.pi * y / scale
     lat = math.degrees(math.atan(math.sinh(n)))
-    return lat, lng
+    return lng, lat
 
-def compute_bounds(lat: float, lng: float, zm: int, vw: int, vh: int) -> Dict[str, float]:
-    scale = 2.0 ** zm
-    cx, cy = _latlng_to_world(lat, lng)
-    cx *= scale; cy *= scale
-    tlx, tly = cx - vw/2.0, cy - vh/2.0
-    brx, bry = cx + vw/2.0, cy + vh/2.0
-    north_lat, west_lng = _world_to_latlng(tlx / scale, tly / scale)
-    south_lat, east_lng = _world_to_latlng(brx / scale, bry / scale)
-    return {"north": north_lat, "south": south_lat, "west": west_lng, "east": east_lng}
+def compute_bounds(center_lat: float, center_lng: float, zoom: int, width: int, height: int):
+    cx, cy = _lnglat_to_pixelxy(center_lng, center_lat, zoom)
+    half_w = width / 2.0
+    half_h = height / 2.0
+    tlx, tly = cx - half_w, cy - half_h
+    brx, bry = cx + half_w, cy + half_h
+    west, north = _pixelxy_to_lnglat(tlx, tly, zoom)  # returns (lng, lat)
+    east, south = _pixelxy_to_lnglat(brx, bry, zoom)
+    # Normalize to named fields: north/south are lats, east/west are lngs
+    return {
+        "north": north,
+        "south": south,
+        "east": east,
+        "west": west,
+    }
 
-def _session(auth_cookie: Optional[str]) -> requests.Session:
-    s = requests.Session()
-    s.headers.update({
-        "User-Agent": UA,
-        "Accept": "application/json, */*;q=0.1",
-        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8,en-AU;q=0.7",
-        "Origin": TF_BASE,
-        "Referer": f"{TF_BASE}/home/nextlevel?lat={DEFAULT_LAT}&lng={DEFAULT_LNG}&zm={DEFAULT_ZM}",
+# ----------------- TrainFinder session ------------------
+def make_session(aspxauth_token: str | None):
+    sess = requests.Session()
+    # Required headers to mimic browser AJAX
+    sess.headers.update({
+        "User-Agent": "Mozilla/5.0 (compatible; RailOpsBot/1.0)",
+        "Accept": "application/json, text/plain, */*",
         "X-Requested-With": "XMLHttpRequest",
-        "Cache-Control": "no-cache",
+        "Origin": TF_BASE,
+        "Referer": TF_BASE + WARMUP_PATH,
     })
-    if auth_cookie:
-        s.cookies.set(".ASPXAUTH", auth_cookie, domain="trainfinder.otenko.com", secure=True)
-    return s
+    if aspxauth_token:
+        sess.cookies.set(".ASPXAUTH", aspxauth_token, domain="trainfinder.otenko.com", path="/")
+    return sess
 
-def _get_auth_cookie_from_request() -> Optional[str]:
-    hdr = request.headers.get("X-TF-ASPXAUTH")
-    if hdr and hdr.strip():
-        return hdr.strip()
-    env = os.environ.get("TF_AUTH_COOKIE", "").strip()
-    return env or None
+def extract_request_verification_token(html: str, cookies: requests.cookies.RequestsCookieJar):
+    """
+    Try both sources:
+    1) a hidden input named __RequestVerificationToken in the page
+    2) a cookie whose name contains 'RequestVerificationToken'
+    """
+    # hidden input
+    m = re.search(r'name="__RequestVerificationToken"\s+type="hidden"\s+value="([^"]+)"', html, re.I)
+    if m:
+        return m.group(1)
 
-def looks_empty(text: str) -> bool:
-    t = text.strip()
-    if not t:
+    # cookie (ASP.NET sometimes places an anti-forgery cookie)
+    for c in cookies:
+        if "RequestVerificationToken" in c.name:
+            return c.value
+
+    return None
+
+def warmup_and_token(sess: requests.Session, lat: float, lng: float, zm: int):
+    warmup_url = f"{TF_BASE}{WARMUP_PATH}?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
+    r = sess.get(warmup_url, timeout=20)
+    html = r.text
+    token = extract_request_verification_token(html, sess.cookies)
+    return {
+        "status": r.status_code,
+        "bytes": len(r.content),
+        "token": token,
+        "url": warmup_url
+    }
+
+def looks_like_html(resp: requests.Response) -> bool:
+    ct = resp.headers.get("Content-Type", "")
+    if "text/html" in ct.lower():
         return True
-    for p in EMPTY_JSON_PREFIXES:
-        if t.startswith(p):
-            return True
-    return False
+    t = resp.text.lstrip()
+    return t.startswith("<!DOCTYPE") or t.startswith("<html")
 
-# ------------ Upstream calls ------------
-def warmup(s: requests.Session, lat: float, lng: float, zm: int) -> Dict[str, Any]:
-    url = f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
-    t0 = time.time()
-    r = s.get(url, timeout=HTTP_TIMEOUT)
-    dt = int((time.time()-t0)*1000)
-    log.info(f"Warmup GET {url} -> {r.status_code}; bytes={len(r.content)}")
-    return {"status": r.status_code, "bytes": len(r.content), "ms": dt}
+def tf_post_viewport(sess: requests.Session, bounds: dict, zm: int, token: str | None):
+    url = f"{TF_BASE}{API_VIEWPORT_PATH}"
+    attempts = []
 
-def tf_is_logged_in(s: requests.Session) -> Dict[str, Any]:
-    url = f"{TF_BASE}/Home/IsLoggedIn"
-    t0 = time.time()
-    r = s.post(url, data=b"", timeout=HTTP_TIMEOUT)
-    dt = int((time.time()-t0)*1000)
-    is_logged_in = False; email = ""; j = None; raw = r.text.strip()
-    try:
-        j = r.json()
-        is_logged_in = bool(j.get("is_logged_in", False))
-        email = (j.get("email_address") or "") if isinstance(j, dict) else ""
-    except Exception:
-        pass
-    return {
-        "status": r.status_code,
-        "ms": dt,
-        "bytes": len(r.content),
-        "json": j,
-        "text": (raw[:200]+"…") if len(raw) > 200 else raw,
-        "is_logged_in": is_logged_in,
-        "email": email,
-    }
+    def do_post(form):
+        headers = {}
+        if token:
+            # ASP.NET MVC default header name:
+            headers["RequestVerificationToken"] = token
+        r = sess.post(url, data=form, headers=headers, timeout=30)
+        preview = r.text[:160]
+        htmlish = looks_like_html(r)
+        ok_json = (not htmlish) and r.status_code == 200
+        body = r.text
+        # Heuristic: the “empty” response is ~98 bytes and all nulls
+        emptyish = ok_json and len(body) <= 120 and "null" in body
+        return {
+            "form": form,
+            "resp": {
+                "status": r.status_code,
+                "bytes": len(r.content),
+                "looks_like_html": htmlish,
+                "preview": preview
+            },
+            "is_winner": ok_json and not emptyish
+        }
 
-def _post_viewport(s: requests.Session, form: Dict[str, str]) -> Dict[str, Any]:
-    url = f"{TF_BASE}/Home/GetViewPortData"
-    t0 = time.time()
-    r = s.post(url, data=form, timeout=HTTP_TIMEOUT)
-    dt = int((time.time()-t0)*1000)
-    preview = r.text.strip()
-    looks_html = preview.lstrip().startswith("<!DOCTYPE html") or "<html" in preview[:200].lower()
-    if len(preview) > 200:
-        preview = preview[:200] + "…"
-    log.info(f"POST GetViewPortData {form} -> {r.status_code}; bytes={len(r.content)}")
-    return {
-        "status": r.status_code,
-        "ms": dt,
-        "bytes": len(r.content),
-        "looks_like_html": looks_html,
-        "preview": preview,
-        "raw": r.text,  # keep raw for emptiness check
-    }
-
-def tf_get_viewport_data(s: requests.Session, lat: float, lng: float, zm: int, bounds: Dict[str, float]) -> Dict[str, Any]:
-    attempts: List[Dict[str, Any]] = []
-
-    # Attempt A: lat/lng/zm
-    a_form = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
-    a = _post_viewport(s, a_form); attempts.append({"form": a_form, "resp": {k:v for k,v in a.items() if k!='raw'}})
-    if a["status"] == 200 and not looks_empty(a["raw"]):
-        return {"winner": "latlng", "attempts": attempts, "response": {k:v for k,v in a.items() if k!='raw'}}
-
-    # Attempt B: bounds north/south/west/east (+zm)
-    b_form = {
+    # 1) Named bounds + zoomLevel
+    attempts.append(do_post({
         "north": f"{bounds['north']:.6f}",
         "south": f"{bounds['south']:.6f}",
-        "west":  f"{bounds['west']:.6f}",
         "east":  f"{bounds['east']:.6f}",
-        "zm": str(zm),
-    }
-    b = _post_viewport(s, b_form); attempts.append({"form": b_form, "resp": {k:v for k,v in b.items() if k!='raw'}})
-    if b["status"] == 200 and not looks_empty(b["raw"]):
-        return {"winner": "bounds_nsew", "attempts": attempts, "response": {k:v for k,v in b.items() if k!='raw'}}
+        "west":  f"{bounds['west']:.6f}",
+        "zoomLevel": str(zm),
+    }))
 
-    # Attempt C: alternate names (ne/sw)
-    c_form = {
-        "neLat": f"{bounds['north']:.6f}", "neLng": f"{bounds['east']:.6f}",
-        "swLat": f"{bounds['south']:.6f}", "swLng": f"{bounds['west']:.6f}",
-        "zm": str(zm),
-    }
-    c = _post_viewport(s, c_form); attempts.append({"form": c_form, "resp": {k:v for k,v in c.items() if k!='raw'}})
-    if c["status"] == 200 and not looks_empty(c["raw"]):
-        return {"winner": "bounds_nesw", "attempts": attempts, "response": {k:v for k,v in c.items() if k!='raw'}}
+    # 2) NE/SW names + zoomLevel
+    attempts.append(do_post({
+        "neLat": f"{bounds['north']:.6f}",
+        "neLng": f"{bounds['east']:.6f}",
+        "swLat": f"{bounds['south']:.6f}",
+        "swLng": f"{bounds['west']:.6f}",
+        "zoomLevel": str(zm),
+    }))
 
-    # if still empty, return last attempt info
-    return {"winner": "none", "attempts": attempts, "response": {k:v for k,v in c.items() if k!='raw'}}
+    # 3) Center point + zoomLevel
+    center_lat = (bounds["north"] + bounds["south"]) / 2.0
+    center_lng = (bounds["east"] + bounds["west"]) / 2.0
+    attempts.append(do_post({
+        "lat": f"{center_lat:.6f}",
+        "lng": f"{center_lng:.6f}",
+        "zoomLevel": str(zm),
+    }))
 
-def fetch_viewport(lat: float, lng: float, zm: int) -> Dict[str, Any]:
-    cookie = _get_auth_cookie_from_request()
-    s = _session(cookie)
-    warm = warmup(s, lat, lng, zm)
-    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
-    vp = tf_get_viewport_data(s, lat, lng, zm, bounds)
-    used_cookie = bool(cookie)
-    return {"warmup": warm, "used_cookie": used_cookie, "bounds": bounds, "viewport": vp}
+    winner = next((i for i, a in enumerate(attempts) if a["is_winner"]), None)
+    return attempts, winner
 
-# ------------ Routes ------------
-@app.get("/authcheck")
-def authcheck():
-    cookie = _get_auth_cookie_from_request()
-    info = tf_is_logged_in(_session(cookie))
-    return jsonify({
-        "status": info["status"],
-        "ms": info["ms"],
-        "bytes": info["bytes"],
-        "cookie_present": bool(cookie),
-        "is_logged_in": info["is_logged_in"],
-        "email": info["email"],
-        "text": info["text"],
-    }), 200
+def get_cookie_from_request():
+    # 1) Header wins (X-TF-ASPXAUTH)
+    header_val = request.headers.get("X-TF-ASPXAUTH", "").strip()
+    if header_val:
+        return header_val
+    # 2) Query override (for the /try page)
+    q = request.args.get("cookie", "").strip()
+    if q:
+        return q
+    # 3) Environment variable on Render
+    env_val = os.environ.get("TF_AUTH_COOKIE", "").strip()
+    if env_val:
+        return env_val
+    return None
 
-@app.get("/debug/viewport")
-def debug_viewport():
-    lat = to_float(request.args.get("lat"), DEFAULT_LAT)
-    lng = to_float(request.args.get("lng"), DEFAULT_LNG)
-    zm  = to_int(request.args.get("zm"),  DEFAULT_ZM)
-    zm = max(1, min(22, zm))
-
-    tf = fetch_viewport(lat, lng, zm)
-
-    return jsonify({
-        "input": {"lat": lat, "lng": lng, "zm": zm},
-        "bounds": tf["bounds"],
-        "tf": {k:v for k,v in tf.items() if k != "bounds"}
-    }), 200
-
-@app.get("/scan")
-def scan():
-    cities = [
-        ("Sydney",-33.8688,151.2093),
-        ("Melbourne",-37.8136,144.9631),
-        ("Brisbane",-27.4698,153.0251),
-        ("Perth",-31.9523,115.8613),
-        ("Adelaide",-34.9285,138.6007),
-    ]
-    zooms = [11,12,13]
-    results = []
-    for name, lat, lng in cities:
-        for z in zooms:
-            try:
-                tf = fetch_viewport(lat, lng, z)
-                vp = tf["viewport"]["response"]
-                results.append({
-                    "city": name, "lat": lat, "lng": lng, "zm": z,
-                    "warmup_bytes": tf["warmup"]["bytes"],
-                    "viewport_bytes": vp["bytes"],
-                    "looks_like_html": vp["looks_like_html"],
-                    "winner": tf["viewport"]["winner"],
-                })
-            except Exception as ex:
-                log.exception("scan error")
-                results.append({"city": name, "lat": lat, "lng": lng, "zm": z, "error": str(ex)})
-    return jsonify({"count": len(results), "results": results}), 200
-
+# ---------------------- Routes --------------------------
 @app.get("/")
 def root():
     return jsonify({
-        "ok": True,
-        "message": "Use /try for the tester UI.",
-        "routes": ["/try", "/authcheck", "/debug/viewport?lat=..&lng=..&zm=..", "/scan"]
+        "routes": ["/try", "/authcheck", "/debug/viewport?lat=...&lng=...&zm=...", "/scan"]
     })
 
-# register tester UI
-from .try_ui import bp as try_ui_bp
-app.register_blueprint(try_ui_bp)
+TRY_HTML = """
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>TF Tester</title>
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}input,button{font-size:16px;padding:8px} code{background:#f4f4f4;padding:2px 6px;border-radius:6px}</style>
+  </head>
+  <body>
+    <h1>TrainFinder Tester</h1>
+    <form method="get" action="/debug/viewport">
+      <div>
+        <label>.ASPXAUTH cookie value:</label><br/>
+        <input style="width:600px" name="cookie" placeholder="paste ONLY the hex value (no .ASPXAUTH=)" />
+        <div style="color:#555">You can also set env var <code>TF_AUTH_COOKIE</code> on Render, or send header <code>X-TF-ASPXAUTH</code>.</div>
+      </div>
+      <p/>
+      <div>
+        <label>lat</label>
+        <input name="lat" value="-33.8688"/>
+        <label>lng</label>
+        <input name="lng" value="151.2093"/>
+        <label>zm</label>
+        <input name="zm" value="12"/>
+      </div>
+      <p/>
+      <button>Test /debug/viewport</button>
+    </form>
+
+    <p/>
+    <p><a href="/authcheck">/authcheck</a> (will use cookie from the field, header, or env)</p>
+    <p><a href="/scan">/scan</a> (tests five cities × 3 zooms)</p>
+  </body>
+</html>
+"""
+
+@app.get("/try")
+def try_page():
+    return Response(TRY_HTML, mimetype="text/html")
+
+@app.get("/authcheck")
+def authcheck():
+    token = get_cookie_from_request()
+    sess = make_session(token)
+    r = sess.post(f"{TF_BASE}{API_ISLOGGEDIN_PATH}", data={}, timeout=20)
+    out = {
+        "status": r.status_code,
+        "ms": r.elapsed.total_seconds() * 1000.0,
+        "cookie_present": bool(token),
+        "text": r.text,
+        "bytes": len(r.content),
+    }
+    # Try to pick email and value
+    try:
+        j = r.json()
+        out["is_logged_in"] = bool(j.get("is_logged_in"))
+        out["email"] = j.get("email_address", "")
+    except Exception:
+        pass
+    return jsonify(out)
+
+@app.get("/debug/viewport")
+def debug_viewport():
+    lat = float(request.args.get("lat", "-33.8688"))
+    lng = float(request.args.get("lng", "151.2093"))
+    zm  = int(request.args.get("zm", "12"))
+
+    token = get_cookie_from_request()
+    sess = make_session(token)
+
+    warm = warmup_and_token(sess, lat, lng, zm)
+    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
+
+    attempts, winner = tf_post_viewport(sess, bounds, zm, warm.get("token"))
+
+    return jsonify({
+        "input": {"lat": lat, "lng": lng, "zm": zm},
+        "bounds": bounds,
+        "tf": {
+            "used_cookie": bool(token),
+            "warmup": {"status": warm["status"], "bytes": warm["bytes"], "ms": None},
+            "verification_token_present": bool(warm.get("token")),
+            "viewport": {
+                "attempts": attempts,
+                "winner": ("none" if winner is None else winner),
+                "response": (attempts[winner]["resp"] if winner is not None else attempts[-1]["resp"])
+            }
+        }
+    })
+
+@app.get("/scan")
+def scan():
+    token = get_cookie_from_request()
+    sess = make_session(token)
+
+    cities = [
+        ("Sydney",   -33.8688, 151.2093),
+        ("Melbourne",-37.8136, 144.9631),
+        ("Brisbane", -27.4698, 153.0251),
+        ("Perth",    -31.9523, 115.8613),
+        ("Adelaide", -34.9285, 138.6007),
+    ]
+    zooms = [11, 12, 13]
+    results = []
+
+    for name, lat, lng in cities:
+        # warm up each city once at the middle zoom to harvest token/cookies
+        warm = warmup_and_token(sess, lat, lng, 12)
+        token_v = warm.get("token")
+        for zm in zooms:
+            b = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
+            attempts, winner = tf_post_viewport(sess, b, zm, token_v)
+            last = attempts[-1]["resp"]
+            results.append({
+                "city": name, "lat": lat, "lng": lng, "zm": zm,
+                "viewport_bytes": last["bytes"],
+                "looks_like_html": last["looks_like_html"],
+                "warmup_bytes": warm["bytes"],
+                "winner": ("none" if winner is None else winner)
+            })
+
+    return jsonify({"count": len(results), "results": results})
