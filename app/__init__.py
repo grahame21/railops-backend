@@ -1,1 +1,1 @@
-from .app import app
+# Package marker so gunicorn target 'app.app:app' works.
