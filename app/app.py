@@ -1,315 +1,267 @@
-# app/app.py
-import math, os, re, json, time
-from typing import Tuple, Dict, Any, List, Optional
-
+# app.py
+import os, re, json, math, time
+from typing import Dict, Any, Tuple, Optional, List
 import requests
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 
+# -----------------------------
+# Config
+# -----------------------------
+TF_BASE = "https://trainfinder.otenko.com"
+# viewport size to compute bounds (pixels)
+VIEW_W = 800
+VIEW_H = 600
+TILE_SIZE = 256
+
+# -----------------------------
+# App
+# -----------------------------
 app = Flask(__name__)
 
-# --------------------
-# Config
-# --------------------
-TF_BASE = "https://trainfinder.otenko.com"
-WARMUP_PATH = "/home/nextlevel"
-API_VIEWPORT_PATH = "/Home/GetViewPortData"
+TOKEN_RE = re.compile(
+    r'name="__RequestVerificationToken"[^>]*value="([^"]+)"',
+    re.IGNORECASE
+)
 
-VIEW_W = 1024
-VIEW_H = 768
-TILE_SIZE = 256
-MAX_LAT = 85.05112878  # WebMercator clamp
+# -----------------------------
+# Cookie storage helpers
+# -----------------------------
+def get_aspxauth() -> Optional[str]:
+    v = os.environ.get("ASPXAUTH", "").strip()
+    return v or None
 
-# --------------------
-# Utility
-# --------------------
-def _clamp_lat(lat: float) -> float:
-    return max(-MAX_LAT, min(MAX_LAT, lat))
+def set_aspxauth(v: str) -> None:
+    os.environ["ASPXAUTH"] = v.strip()
 
-def looks_like_html(resp: requests.Response) -> bool:
-    ct = (resp.headers.get("Content-Type") or "").lower()
-    if "text/html" in ct:
-        return True
-    head = resp.text.strip()[:20].lower()
-    return head.startswith("<!") or head.startswith("<html")
+def make_session() -> requests.Session:
+    s = requests.Session()
+    s.headers.update({
+        "User-Agent": "RailOps-JSON/1.0 (+requests)",
+        "Accept": "*/*",
+    })
+    aspx = get_aspxauth()
+    if aspx:
+        # scope the cookie to the TF domain
+        s.cookies.set(".ASPXAUTH", aspx, domain="trainfinder.otenko.com", path="/")
+    return s
 
-def get_cookie_from_request() -> Optional[str]:
-    """
-    Accept the .ASPXAUTH in several ways so it's easy to use:
-      1) as a cookie on THIS service (name: .ASPXAUTH)
-      2) ?cookie=... or ?aspxauth=...
-      3) header X-ASPXAUTH: ...
-    """
-    c = request.cookies.get(".ASPXAUTH")
-    if c: return c
-
-    q = request.args.get("cookie") or request.args.get("aspxauth")
-    if q: return q
-
-    h = request.headers.get("X-ASPXAUTH")
-    if h: return h
-
-    return None
-
-# --------------------
-# Web Mercator math (safe; no overflow)
-# --------------------
-def _latlng_to_pixel(lat: float, lng: float, zoom: int) -> Tuple[float, float]:
-    lat = _clamp_lat(lat)
-    scale = TILE_SIZE * (2 ** zoom)
-    x = (lng + 180.0) / 360.0 * scale
+# -----------------------------
+# Map math (Web Mercator)
+# -----------------------------
+def _latlng_to_world(lat: float, lng: float, scale: float) -> Tuple[float, float]:
+    x = (lng + 180.0) / 360.0 * TILE_SIZE * scale
+    # clamp latitude to avoid overflow in math functions
+    lat = max(min(lat, 85.05112878), -85.05112878)
     siny = math.sin(math.radians(lat))
-    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * scale
+    y = (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)) * TILE_SIZE * scale
     return x, y
 
-def _pixel_to_latlng(x: float, y: float, zoom: int) -> Tuple[float, float]:
-    scale = TILE_SIZE * (2 ** zoom)
-    lng = x / scale * 360.0 - 180.0
-    n = math.pi - 2.0 * math.pi * y / scale
+def _world_to_latlng(x: float, y: float, scale: float) -> Tuple[float, float]:
+    lng = x / (TILE_SIZE * scale) * 360.0 - 180.0
+    n = math.pi - 2.0 * math.pi * y / (TILE_SIZE * scale)
     lat = math.degrees(math.atan(math.sinh(n)))
     return lat, lng
 
-def compute_bounds(lat: float, lng: float, zoom: int, vw: int, vh: int) -> Dict[str, float]:
-    cx, cy = _latlng_to_pixel(lat, lng, zoom)
-    tlx, tly = cx - vw / 2.0, cy - vh / 2.0
-    brx, bry = cx + vw / 2.0, cy + vh / 2.0
-    north, west = _pixel_to_latlng(tlx, tly, zoom)
-    south, east = _pixel_to_latlng(brx, bry, zoom)
-    # return as (compass) bounds
+def compute_bounds(lat: float, lng: float, zm: int) -> Dict[str, float]:
+    scale = 2.0 ** zm
+    cx, cy = _latlng_to_world(lat, lng, scale)
+    half_w = VIEW_W / 2.0
+    half_h = VIEW_H / 2.0
+    tlx, tly = cx - half_w, cy - half_h
+    brx, bry = cx + half_w, cy + half_h
+    north, west = _world_to_latlng(tlx, tly, scale)
+    south, east = _world_to_latlng(brx, bry, scale)
     return {
-        "north": float(north),
-        "south": float(south),
-        "east": float(east),
-        "west": float(west),
+        "north": round(north, 6),
+        "south": round(south, 6),
+        "west":  round(west, 6),
+        "east":  round(east, 6),
     }
 
-# --------------------
-# HTTP session & token harvesting
-# --------------------
-def make_session(aspxauth_token: Optional[str]) -> requests.Session:
-    sess = requests.Session()
-    sess.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0",
-        "Accept": "*/*",
-        "Accept-Language": "en-AU,en;q=0.9",
+# -----------------------------
+# TF fetch (token + viewport)
+# -----------------------------
+def warmup_and_get_token(sess: requests.Session, lat: float, lng: float, zm: int) -> Tuple[Optional[str], Dict[str, Any]]:
+    url = f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
+    r = sess.get(url, headers={
+        "Accept": "text/html, */*;q=0.1",
+        "Referer": f"{TF_BASE}/",
+    }, timeout=15)
+    html = r.text or ""
+    m = TOKEN_RE.search(html)
+    token = m.group(1) if m else None
+    return token, {
+        "status": r.status_code,
+        "bytes": len(r.content or b""),
+        "token_found": bool(token),
+    }
+
+def post_viewport(sess: requests.Session, token: Optional[str], lat: float, lng: float, zm: int) -> Dict[str, Any]:
+    # Common headers for anti-forgery
+    post_headers = {
         "X-Requested-With": "XMLHttpRequest",
         "Origin": TF_BASE,
-        "Referer": TF_BASE + WARMUP_PATH,
-    })
-    if aspxauth_token:
-        # store on TF domain for outbound requests from this server
-        sess.cookies.set(".ASPXAUTH", aspxauth_token, domain="trainfinder.otenko.com", path="/")
-    return sess
+        "Referer": f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}",
+    }
+    if token:
+        # Both header and field—cover both implementations
+        post_headers["RequestVerificationToken"] = token
 
-TOKEN_PAGES = [
-    "/", "/home", "/Home", "/home/index", "/Home/Index", "/home/nextlevel", WARMUP_PATH
-]
+    url = f"{TF_BASE}/Home/GetViewPortData"
 
-def extract_request_verification_token(html: str, cookies: requests.cookies.RequestsCookieJar) -> Optional[str]:
-    # Hidden input (ASP.NET & ASP.NET Core)
-    m = re.search(r'name="__RequestVerificationToken"\s+type="hidden"\s+value="([^"]+)"', html, re.I)
-    if m:
-        return m.group(1)
-    # Meta variants (some SPA shells)
-    m = re.search(r'<meta[^>]+name=["\'](?:csrf-token|xsrf-token)["\'][^>]+content=["\']([^"\']+)["\']', html, re.I)
-    if m:
-        return m.group(1)
-    # Antiforgery cookies
-    for c in cookies:
-        name = c.name or ""
-        if ("RequestVerificationToken" in name) or name.startswith(".AspNetCore.Antiforgery") or name == "XSRF-TOKEN":
-            return c.value
-    return None
+    b = compute_bounds(lat, lng, zm)
+    attempts: List[Dict[str, Any]] = []
 
-def probe_token_pages(sess: requests.Session) -> Tuple[Optional[str], Optional[str]]:
-    where = None
-    token = None
-    for path in TOKEN_PAGES:
-        try:
-            r = sess.get(TF_BASE + path, timeout=20)
-            token = extract_request_verification_token(r.text, sess.cookies)
-            if token:
-                where = path
-                break
-        except Exception:
-            pass
-    if not token:
-        # try warmup with coords as a last resort
-        try:
-            r = sess.get(f"{TF_BASE}{WARMUP_PATH}?lat=-33.8688&lng=151.2093&zm=12", timeout=20)
-            token = extract_request_verification_token(r.text, sess.cookies)
-            if token and not where:
-                where = WARMUP_PATH
-        except Exception:
-            pass
-    return token, where
-
-# --------------------
-# TF POST attempts
-# --------------------
-def tf_post_viewport(sess: requests.Session, bounds: Dict[str, float], zm: int, token: Optional[str]):
-    url = f"{TF_BASE}{API_VIEWPORT_PATH}"
-    attempts = []
-
-    def do_post(form: Dict[str, str]):
-        headers = {}
+    def send(form: Dict[str, Any]) -> Dict[str, Any]:
+        form2 = dict(form)
         if token:
-            # try the common anti-forgery header names
-            headers["RequestVerificationToken"] = token
-            headers["X-RequestVerificationToken"] = token
-            headers["X-XSRF-TOKEN"] = token
-        r = sess.post(url, data=form, headers=headers, timeout=30)
-        body = r.text
-        htmlish = looks_like_html(r)
-        ok_json = (not htmlish) and r.status_code == 200
-        emptyish = ok_json and len(body) <= 120 and "null" in body
+            form2["__RequestVerificationToken"] = token
+
+        r = sess.post(url, data=form2, headers=post_headers, timeout=20)
+        txt = r.text or ""
+        looks_like_html = "<html" in txt.lower() or "<!doctype html" in txt.lower()
         return {
             "form": form,
             "resp": {
                 "status": r.status_code,
-                "bytes": len(r.content),
-                "looks_like_html": htmlish,
-                "preview": body[:200],
-            },
-            "is_winner": ok_json and not emptyish
+                "bytes": len(r.content or b""),
+                "looks_like_html": bool(looks_like_html),
+                "preview": txt[:200],
+            }
         }
 
-    # 1) bounds with cardinal keys
-    attempts.append(do_post({
-        "north": f"{bounds['north']:.6f}",
-        "south": f"{bounds['south']:.6f}",
-        "east":  f"{bounds['east']:.6f}",
-        "west":  f"{bounds['west']:.6f}",
-        "zoomLevel": str(zm),
-    }))
-    # 2) bounds with NE/SW keys
-    attempts.append(do_post({
-        "neLat": f"{bounds['north']:.6f}",
-        "neLng": f"{bounds['east']:.6f}",
-        "swLat": f"{bounds['south']:.6f}",
-        "swLng": f"{bounds['west']:.6f}",
-        "zoomLevel": str(zm),
-    }))
-    # 3) center + zoom
-    center_lat = (bounds["north"] + bounds["south"]) / 2.0
-    center_lng = (bounds["east"] + bounds["west"]) / 2.0
-    attempts.append(do_post({
-        "lat": f"{center_lat:.6f}",
-        "lng": f"{center_lng:.6f}",
-        "zoomLevel": str(zm),
-    }))
+    # Try multiple shapes the site might accept
+    forms = [
+        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)},
+        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zoomLevel": str(zm)},
+        {"east": f"{b['east']:.6f}", "north": f"{b['north']:.6f}", "south": f"{b['south']:.6f}", "west": f"{b['west']:.6f}", "zoomLevel": str(zm)},
+        {"neLat": f"{b['north']:.6f}", "neLng": f"{b['east']:.6f}", "swLat": f"{b['south']:.6f}", "swLng": f"{b['west']:.6f}", "zoomLevel": str(zm)},
+    ]
 
-    winner_idx = next((i for i, a in enumerate(attempts) if a["is_winner"]), None)
-    winner = ("none" if winner_idx is None else winner_idx)
-    response = attempts[winner_idx]["resp"] if winner_idx is not None else attempts[-1]["resp"]
-    return attempts, winner, response
+    for f in forms:
+        attempts.append(send(f))
 
-# --------------------
+    # Heuristic "winner": largest non-HTML body
+    winner_idx = -1
+    best_bytes = -1
+    for i, a in enumerate(attempts):
+        r = a["resp"]
+        if not r["looks_like_html"] and r["status"] == 200 and r["bytes"] > best_bytes:
+            best_bytes = r["bytes"]; winner_idx = i
+
+    winner = attempts[winner_idx] if winner_idx >= 0 else None
+    return {
+        "verification_token_present": bool(token),
+        "attempts": attempts,
+        "response": winner["resp"] if winner else (attempts[0]["resp"] if attempts else None),
+        "winner": winner_idx if winner_idx >= 0 else "none",
+    }
+
+# -----------------------------
 # Routes
-# --------------------
+# -----------------------------
+@app.get("/set-aspxauth")
+def set_cookie_route():
+    val = request.args.get("value", "").strip()
+    if not val:
+        return "Missing ?value=", 400
+    set_aspxauth(val)
+    return "OK"
+
 @app.get("/authcheck")
 def authcheck():
-    token = get_cookie_from_request()
-    email = request.cookies.get("email") or ""  # optional convenience
-    text = json.dumps({"is_logged_in": bool(token), "email_address": email})
-    return jsonify({
-        "status": 200,
-        "ms": None,
-        "cookie_present": bool(token),
-        "email": email or None,
-        "is_logged_in": bool(token),
-        "bytes": len(text),
-        "text": text
-    })
+    sess = make_session()
+    # simple check endpoint
+    url = f"{TF_BASE}/Home/IsLoggedIn"
+    r = sess.post(url, headers={"X-Requested-With": "XMLHttpRequest"}, timeout=15)
+    txt = r.text
+    try:
+        data = json.loads(txt)
+    except Exception:
+        data = {"is_logged_in": False, "email_address": ""}
 
-@app.get("/set-aspxauth")
-def set_aspxauth():
-    """Convenience: call /set-aspxauth?value=PASTE_YOUR_COOKIE to store it as a cookie on THIS service."""
-    value = request.args.get("value", "").strip()
-    if not value:
-        return "Pass ?value=YOUR_.ASPXAUTH", 400
-    resp = make_response("OK")
-    # Store on OUR domain; we'll read it when calling TF
-    resp.set_cookie(".ASPXAUTH", value, httponly=True, secure=True, samesite="Lax", max_age=60*60*24*30)
-    return resp
+    return jsonify({
+        "status": r.status_code,
+        "ms": None,
+        "bytes": len(r.content or b""),
+        "cookie_present": bool(get_aspxauth()),
+        "is_logged_in": bool(data.get("is_logged_in") or data.get("IsLoggedIn")),
+        "email": data.get("email_address") or data.get("EmailAddress") or "",
+        "text": txt,
+    })
 
 @app.get("/debug/viewport")
 def debug_viewport():
-    lat = float(request.args.get("lat", "-33.8688"))
-    lng = float(request.args.get("lng", "151.2093"))
-    zm  = int(request.args.get("zm", "12"))
+    try:
+        lat = float(request.args.get("lat"))
+        lng = float(request.args.get("lng"))
+        zm  = int(request.args.get("zm"))
+    except Exception:
+        return jsonify({"error":"pass ?lat=..&lng=..&zm=.."}), 400
 
-    token_val = get_cookie_from_request()
-    sess = make_session(token_val)
-
-    # Find anti-forgery token
-    antitoken, token_from = probe_token_pages(sess)
-
-    # Optional warmup fetch (helps prime cookies)
-    warm = sess.get(f"{TF_BASE}{WARMUP_PATH}?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", timeout=30)
-    bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
-    attempts, winner, response = tf_post_viewport(sess, bounds, zm, antitoken)
+    bounds = compute_bounds(lat, lng, zm)
+    sess = make_session()
+    token_info = {}
+    token, warm = warmup_and_get_token(sess, lat, lng, zm)
+    token_info = {"verification_token_present": bool(token)}
+    vp = post_viewport(sess, token, lat, lng, zm)
 
     return jsonify({
         "input": {"lat": lat, "lng": lng, "zm": zm},
         "bounds": bounds,
         "tf": {
-            "used_cookie": bool(token_val),
-            "verification_token_present": bool(antitoken),
-            "verification_token_from": token_from or "",
-            "warmup": {"status": warm.status_code, "bytes": len(warm.content)},
-            "viewport": {
-                "attempts": attempts,
-                "winner": winner,
-                "response": response
-            }
+            "used_cookie": bool(get_aspxauth()),
+            "warmup": warm,
+            "viewport": vp
         }
     })
 
-CITIES = [
-    ("Sydney",   -33.8688, 151.2093),
-    ("Melbourne",-37.8136, 144.9631),
-    ("Brisbane", -27.4698, 153.0251),
-    ("Perth",    -31.9523, 115.8613),
-    ("Adelaide", -34.9285, 138.6007),
-]
-ZOOMS = [11, 12, 13]
-
 @app.get("/scan")
 def scan():
-    token_val = get_cookie_from_request()
-    sess = make_session(token_val)
+    cities = [
+        ("Sydney", -33.8688, 151.2093),
+        ("Melbourne", -37.8136, 144.9631),
+        ("Brisbane", -27.4698, 153.0251),
+        ("Perth", -31.9523, 115.8613),
+        ("Adelaide", -34.9285, 138.6007),
+    ]
+    zm_levels = [11, 12, 13]
 
-    antitoken, token_from = probe_token_pages(sess)
-    out = []
-    for city, lat, lng in CITIES:
-        for zm in ZOOMS:
-            warm = sess.get(f"{TF_BASE}{WARMUP_PATH}?lat={lat:.5f}&lng={lng:.5f}&zm={zm}", timeout=30)
-            bounds = compute_bounds(lat, lng, zm, VIEW_W, VIEW_H)
-            attempts, winner, response = tf_post_viewport(sess, bounds, zm, antitoken)
-            out.append({
+    results = []
+    sess = make_session()
+    # Warm once per run (use Sydney for token)
+    token, _ = warmup_and_get_token(sess, cities[0][1], cities[0][2], zm_levels[0])
+
+    for city, lat, lng in cities:
+        for zm in zm_levels:
+            vp = post_viewport(sess, token, lat, lng, zm)
+            resp = vp.get("response") or {}
+            results.append({
                 "city": city, "lat": lat, "lng": lng, "zm": zm,
-                "looks_like_html": response.get("looks_like_html", False),
-                "viewport_bytes": response.get("bytes", 0),
-                "warmup_bytes": len(warm.content),
-                "winner": winner
+                "looks_like_html": bool(resp.get("looks_like_html")),
+                "viewport_bytes": int(resp.get("bytes") or 0),
+                "winner": vp.get("winner"),
             })
 
     return jsonify({
-        "count": len(out),
-        "verification_token_present": bool(antitoken),
-        "verification_token_from": token_from or "",
-        "results": out
+        "count": len(results),
+        "results": results
     })
 
-@app.get("/try")
-def try_page():
-    return (
-        "<h1>RailOps JSON</h1>"
-        "<ol>"
-        "<li>Set your cookie here once: "
-        "<code>/set-aspxauth?value=PASTE_.ASPXAUTH</code></li>"
-        "<li>Check: <code>/authcheck</code></li>"
-        "<li>Test: <code>/debug/viewport?lat=-33.8688&lng=151.2093&zm=12</code></li>"
-        "<li>Scan: <code>/scan</code></li>"
-        "</ol>", 200, {"Content-Type": "text/html"}
-    )
+@app.get("/")
+def root():
+    return jsonify({
+        "name": "RailOps JSON",
+        "routes": [
+            "Set your cookie here once: /set-aspxauth?value=PASTE_.ASPXAUTH",
+            "Check: /authcheck",
+            "Test: /debug/viewport?lat=-33.8688&lng=151.2093&zm=12",
+            "Scan: /scan",
+        ]
+    })
+
+# -----------------------------
+# Entrypoint (local dev)
+# -----------------------------
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
