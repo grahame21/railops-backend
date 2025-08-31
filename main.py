@@ -1,199 +1,222 @@
-# main.py
-import os, re, math, json
-from urllib.parse import urlencode
+import json
+import re
+from typing import Any, Dict, Optional
+
 import requests
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, jsonify, make_response, request
 
 app = Flask(__name__)
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
-BASE = "https://trainfinder.otenko.com"
-TF_NEXTLEVEL = f"{BASE}/home/nextlevel"
-TF_ISLOGGED = f"{BASE}/Home/IsLoggedIn"
-TF_VIEWPORT = f"{BASE}/Home/GetViewPortData"
+TF_BASE = "https://trainfinder.otenko.com"
 
-# Keep a single Session so cookies are reused
-SESSION = requests.Session()
-SESSION.headers.update({"User-Agent": UA})
+# Store the latest .ASPXAUTH here (process memory).
+# You set it once via /set-aspxauth?value=...
+ASPXAUTH_VALUE: Optional[str] = None
 
-# ---- Cookie storage (in-memory) ----
-ASPXAUTH = {"value": None}
+
+# ------------------------ Helpers ------------------------
+
+def _extract_verification_token(html: str) -> Optional[str]:
+    """
+    Pulls __RequestVerificationToken from the warmup HTML.
+    """
+    m = re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"', html)
+    return m.group(1) if m else None
+
+
+def _looks_like_html(s: str) -> bool:
+    t = s.lstrip()
+    return t.startswith("<!DOCTYPE") or t.startswith("<html") or t.startswith("<")
+
+
+def _session_with_cookie() -> requests.Session:
+    """
+    Builds a session carrying the user's .ASPXAUTH cookie.
+    """
+    if not ASPXAUTH_VALUE:
+        raise RuntimeError("No .ASPXAUTH cookie set. Call /set-aspxauth first.")
+    s = requests.Session()
+    # Important: set cookie for the correct domain; secure=True for HTTPS.
+    s.cookies.set(".ASPXAUTH", ASPXAUTH_VALUE, domain="trainfinder.otenko.com", secure=True)
+    return s
+
+
+def fetch_viewport(lat: float, lng: float, zm: int) -> Dict[str, Any]:
+    """
+    Warm up /home/nextlevel to get __RequestVerificationToken, then POST to
+    /home/GetViewPortData with the token in BOTH form and header.
+    Returns a diagnostics dict with the raw body preview.
+    """
+    s = _session_with_cookie()
+
+    # 1) Warmup
+    warmup_url = f"{TF_BASE}/home/nextlevel"
+    warmup = s.get(warmup_url, params={"lat": lat, "lng": lng, "zm": zm}, timeout=15)
+    token = _extract_verification_token(warmup.text)
+
+    diag: Dict[str, Any] = {
+        "used_cookie": True,
+        "verification_token_present": bool(token),
+        "warmup": {
+            "status": warmup.status_code,
+            "bytes": len(warmup.text),
+        },
+        "viewport": {},
+    }
+
+    if not token:
+        # Without the token, TF replies with the 98-byte nulls.
+        diag["viewport"] = {
+            "status": 0,
+            "bytes": 0,
+            "looks_like_html": False,
+            "preview": "",
+            "note": "no_verification_token_in_warmup_html",
+        }
+        return diag
+
+    # 2) POST to GetViewPortData
+    # Either shape works; keep it simple with lat/lng/zoomLevel.
+    form = {
+        "lat": f"{lat:.6f}",
+        "lng": f"{lng:.6f}",
+        "zoomLevel": str(zm),
+        "__RequestVerificationToken": token,  # token in FORM
+    }
+    headers = {
+        "X-Requested-With": "XMLHttpRequest",
+        "Referer": f"{TF_BASE}/home/nextlevel?lat={lat}&lng={lng}&zm={zm}",
+        "RequestVerificationToken": token,     # token in HEADER
+    }
+    vp = s.post(f"{TF_BASE}/home/GetViewPortData", data=form, headers=headers, timeout=20)
+
+    body = vp.text
+    diag["viewport"] = {
+        "status": vp.status_code,
+        "bytes": len(body),
+        "looks_like_html": _looks_like_html(body),
+        "preview": body[:2000],
+    }
+    return diag
+
+
+def try_json_parse(s: str) -> Any:
+    try:
+        return json.loads(s)
+    except Exception:
+        return {"raw": s}
+
+
+# ------------------------ Routes ------------------------
 
 @app.get("/")
 def root():
     return (
-        "RailOps JSON<br>"
-        "1) Set cookie once: /set-aspxauth?value=PASTE_.ASPXAUTH<br>"
-        "2) Check: /authcheck<br>"
-        "3) Debug: /debug/viewport?lat=-33.8688&lng=151.2093&zm=12<br>"
-        "4) Data: /trains?lat=-33.8688&lng=151.2093&zm=12<br>"
-    )
+        "RailOps JSON\n\n"
+        "Set your cookie: /set-aspxauth?value=PASTE_FULL_.ASPXAUTH\n"
+        "Check:          /authcheck\n"
+        "Debug viewport: /debug/viewport?lat=-33.8688&lng=151.2093&zm=12\n"
+        "API (trains):   /trains?lat=-33.8688&lng=151.2093&zm=12\n"
+    ), 200, {"Content-Type": "text/plain; charset=utf-8"}
+
 
 @app.get("/set-aspxauth")
-def set_cookie():
-    v = request.args.get("value", "").strip()
-    ok = v and len(v) > 50
-    if ok:
-        ASPXAUTH["value"] = v
-        # set on session for the TF domain
-        SESSION.cookies.set(".ASPXAUTH", v, domain="trainfinder.otenko.com", path="/")
-    return jsonify({"ok": bool(ok)})
+def set_aspxauth():
+    global ASPXAUTH_VALUE
+    val = request.args.get("value", "").strip()
+    ASPXAUTH_VALUE = val or None
+
+    resp = {
+        "ok": bool(ASPXAUTH_VALUE),
+        "cookie_len": len(ASPXAUTH_VALUE or ""),
+        "hint": "Now call /authcheck",
+    }
+    # also set a browser cookie for your convenience (not required for server->TF)
+    r = make_response(jsonify(resp))
+    if ASPXAUTH_VALUE:
+        r.set_cookie(".ASPXAUTH", ASPXAUTH_VALUE, secure=True, samesite="Lax")
+    return r
+
 
 @app.get("/authcheck")
 def authcheck():
-    cookie_present = ASPXAUTH["value"] is not None
-    email = ""
-    is_logged_in = False
-    text = ""
-    status = 200
-    try:
-        r = SESSION.post(TF_ISLOGGED, headers={
-            "Accept":"*/*",
-            "X-Requested-With":"XMLHttpRequest",
-            "Origin": BASE,
-            "Referer": f"{BASE}/home/nextlevel",
-        }, data=b"")
-        text = r.text
-        status = r.status_code
-        # Expect: {"is_logged_in":true/false,"email_address":"..."}
-        try:
-            j = r.json()
-            is_logged_in = bool(j.get("is_logged_in"))
-            email = j.get("email_address") or ""
-        except Exception:
-            pass
-    except Exception as ex:
-        text = f"error: {ex}"
-        status = 500
-    return jsonify({
-        "cookie_present": cookie_present,
-        "is_logged_in": is_logged_in,
-        "email": email,
-        "status": status,
-        "text": text
-    })
-
-# ----- helpers -----
-
-def extract_verification_token(html: str) -> str | None:
-    # hidden input (most common)
-    m = re.search(r'name="__RequestVerificationToken"\s+type="hidden"\s+value="([^"]+)"', html, re.I)
-    if m: return m.group(1)
-    # meta tag variant
-    m = re.search(r'<meta\s+name="RequestVerificationToken"\s+content="([^"]+)"', html, re.I)
-    if m: return m.group(1)
-    # JS assignment variant
-    m = re.search(r'__RequestVerificationToken\s*[:=]\s*[\'"]([^\'"]+)[\'"]', html, re.I)
-    if m: return m.group(1)
-    return None
-
-TILE_SIZE = 256
-def _latlng_to_world(lat, lng):
-    s = math.sin(lat * math.pi / 180.0)
-    x = (lng + 180.0) / 360.0 * TILE_SIZE
-    y = (0.5 - math.log((1.0 + s) / (1.0 - s)) / (4.0 * math.pi)) * TILE_SIZE
-    return x, y
-
-def _world_to_latlng(x, y):
-    lng = x / TILE_SIZE * 360.0 - 180.0
-    n = math.pi - 2.0 * math.pi * y / TILE_SIZE
-    # clamp to avoid overflow at extreme values
-    n = max(min(n, 20), -20)
-    lat = 180.0 / math.pi * math.atan(0.5 * (math.exp(n) - math.exp(-n)))
-    return lat, lng
-
-def compute_bounds(lat, lng, zm, w=800, h=600):
-    scale = 2 ** zm
-    cx, cy = _latlng_to_world(lat, lng)
-    cx *= scale; cy *= scale
-    half_w = (w / TILE_SIZE) / 2.0
-    half_h = (h / TILE_SIZE) / 2.0
-    tlx = cx - half_w; tly = cy - half_h
-    brx = cx + half_w; bry = cy + half_h
-    west, north = _world_to_latlng(tlx / scale * TILE_SIZE, tly / scale * TILE_SIZE)
-    east, south = _world_to_latlng(brx / scale * TILE_SIZE, bry / scale * TILE_SIZE)
-    # normalize to (N,W,S,E) same as your earlier logs
-    return {
-        "north": round(north, 6),
-        "west": round(west, 6),
-        "south": round(south, 6),
-        "east": round(east, 6),
-    }
-
-def warmup_and_token(lat, lng, zm):
-    # load the page that contains the anti-forgery token, with your auth cookie
-    params = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
-    r = SESSION.get(TF_NEXTLEVEL, params=params, headers={
-        "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Referer": TF_NEXTLEVEL,
-    })
-    html = r.text
-    token = extract_verification_token(html) if r.status_code == 200 else None
-    return {"status": r.status_code, "bytes": len(html), "token": token, "html": html}
-
-def post_viewport(lat, lng, zm, token, bounds):
-    base_headers = {
-        "Accept":"*/*",
-        "X-Requested-With":"XMLHttpRequest",
-        "Origin": BASE,
-        "Referer": TF_NEXTLEVEL,
-        "RequestVerificationToken": token or "",
-    }
-    attempts = []
-
-    def one(form):
-        rr = SESSION.post(TF_VIEWPORT, data=form, headers=base_headers)
-        looks_like_html = rr.headers.get("content-type","").startswith("text/html") or rr.text.strip().startswith("<!")
-        rec = {
-            "form": form,
-            "resp": {
-                "status": rr.status_code,
-                "bytes": len(rr.content),
-                "looks_like_html": bool(looks_like_html),
-                "preview": rr.text[:200]
+    if not ASPXAUTH_VALUE:
+        return jsonify(
+            {
+                "is_logged_in": False,
+                "email_address": "",
+                "cookie_present": False,
+                "bytes": 0,
+                "status": 200,
+                "text": json.dumps({"is_logged_in": False, "email_address": ""}),
             }
+        )
+
+    s = _session_with_cookie()
+    # TF checks login via POST to Home/IsLoggedIn with XHR header
+    resp = s.post(f"{TF_BASE}/Home/IsLoggedIn", headers={"X-Requested-With": "XMLHttpRequest"}, timeout=10)
+    return jsonify(
+        {
+            "is_logged_in": True if '"is_logged_in":true' in resp.text else False,
+            "email_address": re.search(r'"email_address"\s*:\s*"([^"]*)"', resp.text or "") and re.search(r'"email_address"\s*:\s*"([^"]*)"', resp.text).group(1) or "",
+            "cookie_present": True,
+            "bytes": len(resp.text),
+            "status": resp.status_code,
+            "text": resp.text,
         }
-        return rr, rec
+    )
 
-    # 1) lat/lng/zm
-    rr, rec = one({"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)})
-    attempts.append(rec)
-    if rr.ok and len(rr.content) > 200 and not rec["resp"]["looks_like_html"]:
-        return rr, attempts, 0
-
-    # 2) zoomLevel + bounds (W/N/S/E)
-    rr, rec = one({
-        "west": f'{bounds["west"]:.6f}',
-        "north": f'{bounds["north"]:.6f}',
-        "south": f'{bounds["south"]:.6f}',
-        "east": f'{bounds["east"]:.6f}',
-        "zoomLevel": str(zm),
-    })
-    attempts.append(rec)
-    if rr.ok and len(rr.content) > 200 and not rec["resp"]["looks_like_html"]:
-        return rr, attempts, 1
-
-    # 3) ne/sw + zoomLevel
-    rr, rec = one({
-        "neLat": f'{bounds["north"]:.6f}',
-        "neLng": f'{bounds["east"]:.6f}',
-        "swLat": f'{bounds["south"]:.6f}',
-        "swLng": f'{bounds["west"]:.6f}',
-        "zoomLevel": str(zm),
-    })
-    attempts.append(rec)
-    if rr.ok and len(rr.content) > 200 and not rec["resp"]["looks_like_html"]:
-        return rr, attempts, 2
-
-    return rr, attempts, None
-
-# ----- routes -----
 
 @app.get("/debug/viewport")
 def debug_viewport():
+    lat = float(request.args.get("lat", "-33.8688"))
+    lng = float(request.args.get("lng", "151.2093"))
+    zm = int(request.args.get("zm", "12"))
+
     try:
-        lat = float(request.args.get("lat", "-33.8688"))
-        lng = float(request.args.get("lng", "151.2093"))
-        zm  = int(request.args.get("zm", "12"))
-    except:
-        return jsonify({"error":"bad
+        diag = fetch_viewport(lat, lng, zm)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    # Also include the computed bounds TF expects (for reference only)
+    # (Not strictly needed when using lat/lng/zoomLevel)
+    return jsonify(
+        {
+            "input": {"lat": lat, "lng": lng, "zm": zm},
+            "tf": diag,
+        }
+    )
+
+
+@app.get("/trains")
+def trains():
+    """
+    Simple API your frontend can hit.
+    Returns the parsed JSON TF gives from GetViewPortData.
+    """
+    lat = float(request.args.get("lat", "-33.8688"))
+    lng = float(request.args.get("lng", "151.2093"))
+    zm = int(request.args.get("zm", "12"))
+
+    try:
+        diag = fetch_viewport(lat, lng, zm)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    vp = diag.get("viewport", {})
+    if not diag.get("verification_token_present"):
+        return jsonify({"error": "no_verification_token", "diag": diag}), 502
+
+    if vp.get("status") != 200:
+        return jsonify({"error": "upstream_error", "diag": diag}), 502
+
+    body = vp.get("preview", "")
+    data = try_json_parse(body)
+    return jsonify(data)
+
+
+# ------------------------ Run local (optional) ------------------------
+
+if __name__ == "__main__":
+    # Local dev only; Render uses gunicorn.
+    app.run(host="0.0.0.0", port=10000, debug=True)
