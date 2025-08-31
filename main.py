@@ -1,326 +1,187 @@
-import os
-import re
-import time
-from urllib.parse import urlencode
-
+import os, re, json, threading
+from flask import Flask, request, jsonify, make_response
 import requests
-from flask import Flask, request, jsonify, Response
 
-# =========================================
-# Config
-# =========================================
-TRAINFINDER_BASE = "https://trainfinder.otenko.com"
-
-# Pages to visit to pick up cookies / tokens automatically (best-effort)
-WARMUP_PATHS = [
-    "/", "/Home", "/home",
-    "/Home/Index", "/home/index",
-    "/Home/NextLevel", "/home/nextlevel",
-]
-
-# Endpoints that (in your logs) handled the viewport POST
-POST_ENDPOINTS = [
-    "/Home/GetViewPortData",
-    "/home/GetViewPortData",
-]
-
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/139.0.0.0 Safari/537.36"
-)
-
-# =========================================
-# In-memory “settings” (you set these via routes)
-# =========================================
+# ----------------------------
+# Config / globals
+# ----------------------------
+UP = "https://trainfinder.otenko.com"
+ASPX_LOCK = threading.Lock()
+# Read from environment first; you can also set it at runtime via /set-aspxauth
 ASPXAUTH_VALUE = os.environ.get("ASPXAUTH", "").strip()
-VTOKEN_COOKIE = ""  # __RequestVerificationToken cookie token
-VTOKEN_FORM   = ""  # __RequestVerificationToken hidden form token
+
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
 
 app = Flask(__name__)
 
-# =========================================
-# Helpers
-# =========================================
-def _session_with_auth():
+def set_aspxauth(val: str):
+    global ASPXAUTH_VALUE
+    with ASPX_LOCK:
+        ASPXAUTH_VALUE = val.strip()
+
+def has_cookie() -> bool:
+    return bool(ASPXAUTH_VALUE)
+
+def new_session() -> requests.Session:
+    """Create a session preloaded with .ASPXAUTH cookie for trainfinder."""
     s = requests.Session()
-    s.headers.update({"User-Agent": USER_AGENT, "Accept": "*/*"})
+    s.headers.update({"User-Agent": UA})
     if ASPXAUTH_VALUE:
-        s.cookies.set(".ASPXAUTH", ASPXAUTH_VALUE, domain="trainfinder.otenko.com", path="/")
-    if VTOKEN_COOKIE:
-        s.cookies.set("__RequestVerificationToken", VTOKEN_COOKIE, domain="trainfinder.otenko.com", path="/")
+        # cookie must be for upstream domain
+        s.cookies.set(".ASPXAUTH", ASPXAUTH_VALUE, domain="trainfinder.otenko.com", secure=True)
     return s
 
-def _extract_verification_token_from_html(html: str) -> str:
-    if not html:
-        return ""
-    # Hidden input
-    m = re.search(
-        r'<input[^>]*name=["\']__RequestVerificationToken["\'][^>]*value=["\']([^"\']+)["\']',
-        html, re.IGNORECASE)
-    if m: return m.group(1)
-    # Meta tag
-    m = re.search(
-        r'<meta[^>]*name=["\']__RequestVerificationToken["\'][^>]*content=["\']([^"\']+)["\']',
-        html, re.IGNORECASE)
-    if m: return m.group(1)
-    # JS assignment
-    m = re.search(
-        r'__RequestVerificationToken\s*=\s*[\'"]([^\'"]+)[\'"]',
-        html, re.IGNORECASE)
-    if m: return m.group(1)
-    return ""
+def get_tokens(s: requests.Session, lat: float, lng: float, zm: int):
+    """
+    Load /Home/NextLevel to get both the __RequestVerificationToken cookie and
+    the hidden input token from the HTML.
+    """
+    url = f"{UP}/Home/NextLevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
+    r = s.get(url, timeout=20)
+    r.raise_for_status()
 
-def _token_header_candidates(session: requests.Session, form_token: str):
-    cookie_token = session.cookies.get("__RequestVerificationToken", domain="trainfinder.otenko.com")
-    headers_list = []
-    if cookie_token and form_token:
-        headers_list.append({"RequestVerificationToken": f"{cookie_token}:{form_token}"})
-    if form_token:
-        headers_list.append({"RequestVerificationToken": form_token})
-        headers_list.append({"__RequestVerificationToken": form_token})
-    headers_list.append({})  # last resort
-    return headers_list
+    # cookie token comes from Set-Cookie -> session cookies
+    cookie_tok = s.cookies.get("__RequestVerificationToken")
 
-def _warmup_and_try_get_tokens(session: requests.Session, lat=None, lng=None, zm=None):
-    warm = []
-    got_form = ""
-    for path in WARMUP_PATHS:
-        url = TRAINFINDER_BASE + path
-        if path.lower().endswith("nextlevel") and lat is not None:
-            url += "?" + urlencode({"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm or 12)})
-        try:
-            r = session.get(url, timeout=15)
-            warm.append({"url": url, "status": r.status_code, "bytes": len(r.content)})
-            if r.ok and not got_form:
-                got_form = _extract_verification_token_from_html(r.text)
-            # if we saw a token, we can stop early
-            if got_form:
-                break
-        except Exception as ex:
-            warm.append({"url": url, "error": str(ex)})
-    cookie_token = session.cookies.get("__RequestVerificationToken", domain="trainfinder.otenko.com") or ""
-    return got_form, cookie_token, warm
-
-def _post_viewport(session: requests.Session, form: dict, token_headers: dict, referer_url: str):
-    headers = {
-        "X-Requested-With": "XMLHttpRequest",
-        "Origin": TRAINFINDER_BASE,
-        "Referer": referer_url,
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "User-Agent": USER_AGENT,
-    }
-    headers.update(token_headers)
-
-    attempts = []
-    for ep in POST_ENDPOINTS:
-        url = TRAINFINDER_BASE + ep
-        t0 = time.time()
-        try:
-            resp = session.post(url, data=form, headers=headers, timeout=20)
-            ms = int((time.time() - t0) * 1000)
-            preview = resp.text[:200]
-            looks_like_html = "<!DOCTYPE html" in preview or "<html" in preview.lower()
-            attempts.append({
-                "url": url,
-                "status": resp.status_code,
-                "ms": ms,
-                "bytes": len(resp.content),
-                "looks_like_html": looks_like_html,
-                "preview": preview,
-            })
-            if resp.ok and resp.text.strip():
-                return resp, attempts
-        except Exception as ex:
-            attempts.append({"url": url, "error": str(ex)})
-    return None, attempts
-
-def fetch_viewport(lat: float, lng: float, zm: int):
-    session = _session_with_auth()
-
-    # 1) Try to auto-pick up tokens (won’t overwrite manual ones)
-    auto_form = auto_cookie = ""
-    if not VTOKEN_FORM or not VTOKEN_COOKIE:
-        auto_form, auto_cookie, warm = _warmup_and_try_get_tokens(session, lat, lng, zm)
-    else:
-        warm = []
-
-    # decide which tokens to use
-    form_token   = VTOKEN_FORM or auto_form or ""
-    cookie_token = VTOKEN_COOKIE or auto_cookie or session.cookies.get("__RequestVerificationToken", domain="trainfinder.otenko.com") or ""
-
-    token_headers_list = _token_header_candidates(session, form_token)
-
-    # 2) Try several form shapes
-    forms = [
-        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)},
-        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zoomLevel": str(zm)},
-        # If the site actually wants bounds, your old logs showed these names:
-        # (we compute ~2km bounds just to test; TrainFinder ignores if not needed)
-    ]
-
-    referer_url = f"{TRAINFINDER_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}"
-    diag_attempts = []
-    for form in forms:
-        for th in token_headers_list:
-            resp, attempts = _post_viewport(session, form, th, referer_url)
-            diag_attempts.append({"form": form, "token_headers": th, "attempts": attempts})
-            if resp and resp.ok and resp.text.strip():
-                try:
-                    data = resp.json()
-                except Exception:
-                    data = {"raw": resp.text}
-                return {
-                    "used_cookie": bool(ASPXAUTH_VALUE),
-                    "verification_token_present": bool(form_token),
-                    "tokens": {
-                        "cookie_token": bool(cookie_token),
-                        "form_token": bool(form_token)
-                    },
-                    "viewport": {
-                        "status": resp.status_code,
-                        "bytes": len(resp.content),
-                        "looks_like_html": False,
-                        "preview": resp.text[:200],
-                        "data": data,
-                    },
-                    "warmup": {"items": warm},
-                    "diag": diag_attempts
-                }
+    # form token appears as hidden input
+    m = re.search(r'name="__RequestVerificationToken"\s+value="([^"]+)"', r.text)
+    form_tok = m.group(1) if m else ""
 
     return {
-        "used_cookie": bool(ASPXAUTH_VALUE),
-        "verification_token_present": bool(form_token),
-        "tokens": {
-            "cookie_token": bool(cookie_token),
-            "form_token": bool(form_token)
-        },
-        "viewport": {"status": 0, "bytes": 0, "looks_like_html": False, "preview": "", "data": None, "note": "no_successful_post"},
-        "warmup": {"items": warm},
-        "diag": diag_attempts
+        "cookie": cookie_tok or "",
+        "form": form_tok or "",
+        "warmup_bytes": len(r.content),
+        "warmup_url": url,
+        "warmup_status": r.status_code,
+        "warmup_preview": r.text[:800]
     }
 
-# =========================================
+def get_viewport(s: requests.Session, lat: float, lng: float, zm: int, cookie_tok: str, form_tok: str):
+    """
+    POST /Home/GetViewPortData with both tokens. Returns (status, text, bytes).
+    """
+    headers = {
+        "Origin": "https://trainfinder.otenko.com",
+        "Referer": f"{UP}/Home/NextLevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}",
+        "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        # ASP.NET anti-forgery combined header:
+        "RequestVerificationToken": f"{cookie_tok}:{form_tok}",
+    }
+    data = {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}
+
+    r = s.post(f"{UP}/Home/GetViewPortData", headers=headers, data=data, timeout=20)
+    return r.status_code, r.text, len(r.content)
+
+# ----------------------------
 # Routes
-# =========================================
+# ----------------------------
+
 @app.get("/")
-def home():
-    html = f"""
-<!doctype html>
-<html><head><meta charset="utf-8"><title>RailOps JSON</title></head>
-<body style="font-family:system-ui,Segoe UI,Arial;max-width:800px;margin:24px auto;line-height:1.4">
-  <h1>RailOps JSON</h1>
-  <p>Quick setup:</p>
-  <ol>
-    <li>Set your TrainFinder login cookie (.ASPXAUTH) once:<br>
-      <code>/set-aspxauth?value=PASTE_FULL_.ASPXAUTH</code>
-    </li>
-    <li>Check you’re logged in:<br>
-      <code>/authcheck</code>
-    </li>
-    <li><b>Set anti-forgery verification tokens</b> (one time):<br>
-      Open TrainFinder, log in, then:
-      <ul>
-        <li>DevTools → Application → Cookies → <code>https://trainfinder.otenko.com</code> → copy value of <code>__RequestVerificationToken</code> (this is the <i>cookie token</i>).</li>
-        <li>On any page, View Source and find <code>&lt;input name="__RequestVerificationToken" value="..."></code> — copy that value (the <i>form token</i>).</li>
-      </ul>
-      Then visit:<br>
-      <code>/set-vtokens?cookie=PASTE_COOKIE_TOKEN&amp;form=PASTE_FORM_TOKEN</code>
-    </li>
-    <li>Test viewport:<br>
-      <code>/debug/viewport?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code>
-    </li>
-    <li>Frontend JSON (what your app should call):<br>
-      <code>/trains?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code>
-    </li>
-    <li>Scan sample cities:<br>
-      <code>/scan</code>
-    </li>
-  </ol>
-  <p style="color:#666">.ASPXAUTH set: <b>{'yes' if ASPXAUTH_VALUE else 'no'}</b> &nbsp; | &nbsp;
-     vtoken(cookie): <b>{'yes' if VTOKEN_COOKIE else 'no'}</b> &nbsp; | &nbsp;
-     vtoken(form): <b>{'yes' if VTOKEN_FORM else 'no'}</b></p>
-</body></html>
-"""
-    return Response(html, mimetype="text/html")
+def root():
+    return """
+    <h1>RailOps JSON</h1>
+    <p>Set your cookie once: <code>/set-aspxauth?value=PASTE_.ASPXAUTH</code></p>
+    <p>Check: <code>/authcheck</code></p>
+    <p>Test one view: <code>/debug/viewport?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code></p>
+    <p>Scan many: <code>/scan</code></p>
+    <p>Simple trains proxy: <code>/trains?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code></p>
+    """, 200, {"Content-Type": "text/html; charset=utf-8"}
 
 @app.get("/set-aspxauth")
-def set_aspxauth():
-    global ASPXAUTH_VALUE
+def set_cookie():
     val = request.args.get("value", "").strip()
     if not val:
-        return jsonify({"ok": False, "message": "Provide ?value=<FULL_.ASPXAUTH>"}), 400
-    ASPXAUTH_VALUE = val
-    os.environ["ASPXAUTH"] = val  # best-effort for restarts
-    return jsonify({"ok": True, "message": ".ASPXAUTH stored"})
-
-@app.get("/set-vtokens")
-def set_vtokens():
-    global VTOKEN_COOKIE, VTOKEN_FORM
-    c = request.args.get("cookie", "").strip()
-    f = request.args.get("form", "").strip()
-    if not c or not f:
-        return jsonify({"ok": False, "message": "Need both ?cookie=...&form=..."}), 400
-    VTOKEN_COOKIE = c
-    VTOKEN_FORM = f
-    return jsonify({"ok": True, "message": "verification tokens stored"})
+        return jsonify({"ok": False, "message": "Provide ?value=PASTE_FULL_.ASPXAUTH"}), 400
+    set_aspxauth(val)
+    return jsonify({"ok": True, "cookie_present": True, "length": len(val)})
 
 @app.get("/authcheck")
 def authcheck():
-    s = _session_with_auth()
-    url = f"{TRAINFINDER_BASE}/Home/IsLoggedIn"
+    s = new_session()
+    used = has_cookie()
     try:
-        r = s.post(url, headers={
+        # This endpoint doesn’t need tokens
+        r = s.post(f"{UP}/Home/IsLoggedIn", headers={
             "X-Requested-With": "XMLHttpRequest",
-            "Origin": TRAINFINDER_BASE,
-            "Referer": f"{TRAINFINDER_BASE}/home/nextlevel"
-        }, timeout=15)
-        text = r.text.strip()
+            "Origin": "https://trainfinder.otenko.com",
+            "Referer": f"{UP}/",
+            "Accept": "*/*",
+        }, timeout=20)
+        txt = r.text
+        email = ""
         try:
-            data = r.json()
+            obj = r.json()
+            email = obj.get("email_address") or ""
+            is_logged_in = bool(obj.get("is_logged_in"))
         except Exception:
-            data = {"raw": text}
+            is_logged_in, email = False, ""
         return jsonify({
             "status": r.status_code,
             "bytes": len(r.content),
-            "cookie_present": bool(ASPXAUTH_VALUE),
-            "email": data.get("email_address") or "",
-            "is_logged_in": bool(data.get("is_logged_in")),
-            "text": text
+            "cookie_present": used,
+            "is_logged_in": is_logged_in,
+            "email": email,
+            "text": txt
         })
-    except Exception as ex:
-        return jsonify({"status": 0, "cookie_present": bool(ASPXAUTH_VALUE), "error": str(ex)}), 500
+    except Exception as e:
+        return jsonify({"cookie_present": used, "error": str(e)}), 502
 
 @app.get("/debug/viewport")
 def debug_viewport():
     try:
-        lat = float(request.args.get("lat"))
-        lng = float(request.args.get("lng"))
+        lat = float(request.args.get("lat", "-33.8688"))
+        lng = float(request.args.get("lng", "151.2093"))
         zm  = int(request.args.get("zm", "12"))
     except Exception:
-        return jsonify({"error": "Provide lat,lng,zm"}), 400
-    return jsonify(fetch_viewport(lat, lng, zm))
+        return jsonify({"error": "bad lat/lng/zm"}), 400
 
-@app.get("/trains")
-def trains():
-    lat = float(request.args.get("lat", "-33.8688"))
-    lng = float(request.args.get("lng", "151.2093"))
-    zm  = int(request.args.get("zm", "12"))
-    out = fetch_viewport(lat, lng, zm)
-    data = out.get("viewport", {}).get("data")
-    if data is not None:
-        return jsonify(data)
-    return jsonify({
-        "error": "upstream_failed",
-        "diag": {
-            "logged_in": out.get("used_cookie"),
-            "vtoken_present": out.get("verification_token_present"),
-            "note": out.get("viewport", {}).get("note", "")
+    s = new_session()
+    used = has_cookie()
+    diag = {"used_cookie": used}
+
+    try:
+        toks = get_tokens(s, lat, lng, zm)
+        cookie_tok, form_tok = toks["cookie"], toks["form"]
+        diag["verification_token_present"] = bool(cookie_tok and form_tok)
+        diag["warmup"] = {
+            "status": toks["warmup_status"],
+            "bytes": toks["warmup_bytes"],
         }
-    }), 502
+        if not diag["verification_token_present"]:
+            diag["viewport"] = {"status": 0, "bytes": 0, "note": "no_verification_token"}
+            return jsonify({"input": {"lat": lat, "lng": lng, "zm": zm}, "tf": diag, "error": "verification token not found"}), 502
+
+        status, text, nbytes = get_viewport(s, lat, lng, zm, cookie_tok, form_tok)
+
+        looks_like_html = text.strip().startswith("<!DOCTYPE") or text.strip().startswith("<html")
+        preview = text if len(text) < 800 else text[:800]
+        parsed = None
+        if not looks_like_html:
+            try:
+                parsed = json.loads(text)
+            except Exception:
+                parsed = None
+
+        diag["viewport"] = {
+            "status": status,
+            "bytes": nbytes,
+            "looks_like_html": looks_like_html,
+            "preview": preview
+        }
+
+        return jsonify({
+            "input": {"lat": lat, "lng": lng, "zm": zm},
+            "tf": diag,
+            "data": parsed if parsed is not None else text
+        })
+    except Exception as e:
+        diag["error"] = str(e)
+        return jsonify({"input": {"lat": lat, "lng": lng, "zm": zm}, "tf": diag, "error": str(e)}), 502
 
 @app.get("/scan")
 def scan():
+    # A few AU metros at three zooms
     cities = [
         ("Sydney",    -33.8688, 151.2093),
         ("Melbourne", -37.8136, 144.9631),
@@ -328,20 +189,56 @@ def scan():
         ("Perth",     -31.9523, 115.8613),
         ("Adelaide",  -34.9285, 138.6007),
     ]
-    zooms = [11, 12, 13]
-    items = []
-    for (name, lat, lng) in cities:
-        for zm in zooms:
-            r = fetch_viewport(lat, lng, zm)
-            vp = r.get("viewport", {})
-            items.append({
-                "city": name, "lat": lat, "lng": lng, "zm": zm,
-                "verification_token_present": r.get("verification_token_present", False),
-                "viewport_bytes": vp.get("bytes", 0),
-                "looks_like_html": vp.get("looks_like_html", False),
-                "note": vp.get("note", "")
-            })
-    return jsonify({"count": len(items), "results": items})
+    zms = [11, 12, 13]
+    out = []
+    for name, lat, lng in cities:
+        for zm in zms:
+            resp = app.test_client().get(f"/debug/viewport?lat={lat}&lng={lng}&zm={zm}")
+            try:
+                js = json.loads(resp.get_data(as_text=True))
+                vp = js.get("tf", {}).get("viewport", {})
+                out.append({
+                    "city": name, "lat": lat, "lng": lng, "zm": zm,
+                    "verification_token_present": js.get("tf", {}).get("verification_token_present", False),
+                    "looks_like_html": vp.get("looks_like_html", False),
+                    "viewport_bytes": vp.get("bytes", 0),
+                    "note": vp.get("note", "")
+                })
+            except Exception:
+                out.append({"city": name, "lat": lat, "lng": lng, "zm": zm, "error": "parse_failed"})
+    return jsonify({"count": len(out), "results": out})
+
+@app.get("/trains")
+def trains():
+    """Simple proxy that returns upstream JSON for a given lat/lng/zm."""
+    try:
+        lat = float(request.args.get("lat", "-33.8688"))
+        lng = float(request.args.get("lng", "151.2093"))
+        zm  = int(request.args.get("zm", "12"))
+    except Exception:
+        return jsonify({"error": "bad lat/lng/zm"}), 400
+
+    s = new_session()
+    toks = get_tokens(s, lat, lng, zm)
+    cookie_tok, form_tok = toks["cookie"], toks["form"]
+    if not (cookie_tok and form_tok):
+        return jsonify({"error": "verification token not found"}), 502
+
+    status, text, _ = get_viewport(s, lat, lng, zm, cookie_tok, form_tok)
+    if status != 200:
+        return jsonify({"error": "upstream error", "status": status}), 502
+
+    # Return JSON if possible, otherwise raw text
+    try:
+        return jsonify(json.loads(text))
+    except Exception:
+        return make_response(text, 200, {"Content-Type": "application/json; charset=utf-8"})
+
+# For Render health checks if needed
+@app.get("/healthz")
+def healthz():
+    return "ok", 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "10000")), debug=True)
+    # local run: python main.py
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5000")))
