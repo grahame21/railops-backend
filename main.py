@@ -1,5 +1,5 @@
-import os, re, json, threading
-from typing import Tuple, Optional
+import os, math, json, time
+from typing import Any, Dict, List, Tuple, Optional
 from flask import Flask, request, jsonify, make_response
 import requests
 
@@ -7,186 +7,198 @@ UP = "https://trainfinder.otenko.com"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
 
 app = Flask(__name__)
-
-# -------------------------------
-# In-memory state (thread-safe)
-# -------------------------------
-STATE_LOCK = threading.Lock()
 ASPXAUTH = os.environ.get("ASPXAUTH", "").strip()
-VTOKEN_COOKIE = os.environ.get("VTOKEN_COOKIE", "").strip()   # left side (cookie token)
-VTOKEN_FORM   = os.environ.get("VTOKEN_FORM", "").strip()     # right side (form token)
-
-def set_aspxauth(value: str):
-    global ASPXAUTH
-    with STATE_LOCK:
-        ASPXAUTH = value.strip()
-
-def set_vtokens(cookie_tok: str, form_tok: str):
-    global VTOKEN_COOKIE, VTOKEN_FORM
-    with STATE_LOCK:
-        VTOKEN_COOKIE = (cookie_tok or "").strip()
-        VTOKEN_FORM   = (form_tok or "").strip()
-
-def have_vtokens() -> bool:
-    with STATE_LOCK:
-        return bool(VTOKEN_COOKIE and VTOKEN_FORM)
 
 def new_session() -> requests.Session:
     s = requests.Session()
     s.headers.update({
         "User-Agent": UA,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8",
-        "Upgrade-Insecure-Requests": "1",
+        "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8,en-AU;q=0.7",
     })
     if ASPXAUTH:
         s.cookies.set(".ASPXAUTH", ASPXAUTH, domain="trainfinder.otenko.com", secure=True)
     return s
 
-# -------------------------------
-# Token harvesting helpers
-# -------------------------------
-TOKEN_INPUT_RE = re.compile(
-    r'name=["\']__RequestVerificationToken["\']\s+value=["\']([^"\']+)["\']',
-    re.I
-)
+def set_cookie(val: str):
+    global ASPXAUTH
+    ASPXAUTH = (val or "").strip()
 
-def _cookie_token_from_jar(jar) -> str:
-    for c in jar:
-        if c.name.startswith("__RequestVerificationToken"):
-            return c.value
-    return ""
+# ---------- viewport helpers (in case bounds are required) ----------
+TILE_SIZE = 256.0
 
-def _warm_headers(navigate: bool = True) -> dict:
-    if navigate:
-        return {
-            "Sec-Fetch-Site": "none",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-User": "?1",
-            "Sec-Fetch-Dest": "document",
-        }
-    else:
-        return {
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Dest": "empty",
-            "X-Requested-With": "XMLHttpRequest",
-        }
+def _lat_to_merc_y(lat: float) -> float:
+    lat = max(min(lat, 85.05112878), -85.05112878)  # clamp Mercator
+    siny = math.sin(lat * math.pi / 180.0)
+    y = 0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)
+    return y
 
-def harvest_tokens(s: requests.Session, lat: float, lng: float, zm: int):
-    """
-    Try to load a full HTML page that renders both the anti-forgery cookie
-    and the hidden form token. If a JS challenge blocks us, this may fail.
-    """
-    pages = [
-        f"{UP}/Home/NextLevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}",
-        f"{UP}/Home/Index",
-        f"{UP}/Home",
-        f"{UP}/",
-    ]
-    last = {"url": "", "status": 0, "bytes": 0, "looks_like_html": False, "preview": ""}
-    cookie_tok, form_tok = "", ""
+def _lng_to_merc_x(lng: float) -> float:
+    x = (lng + 180.0) / 360.0
+    return x
 
-    for url in pages:
-        r = s.get(url, headers=_warm_headers(True), timeout=20)
-        last = {
-            "url": r.url,
-            "status": r.status_code,
-            "bytes": len(r.content),
-            "looks_like_html": r.text.strip().startswith("<!DOCTYPE") or r.text.strip().startswith("<html"),
-            "preview": (r.text[:800] if r.text else "")
-        }
-        if not cookie_tok:
-            cookie_tok = _cookie_token_from_jar(s.cookies)
+def compute_bounds(lat: float, lng: float, zm: int, px_w: int = 640, px_h: int = 640):
+    """Approximate bounds of a viewport around center lat/lng at zoom zm."""
+    scale = 2 ** zm
+    cx, cy = _lng_to_merc_x(lng), _lat_to_merc_y(lat)
+    w_frac = (px_w / TILE_SIZE) / scale
+    h_frac = (px_h / TILE_SIZE) / scale
+    west_x  = cx - w_frac / 2
+    east_x  = cx + w_frac / 2
+    north_y = cy - h_frac / 2
+    south_y = cy + h_frac / 2
 
-        if not form_tok and last["looks_like_html"]:
-            m = TOKEN_INPUT_RE.search(r.text)
-            if m:
-                form_tok = m.group(1)
+    west_lng = west_x * 360.0 - 180.0
+    east_lng = east_x * 360.0 - 180.0
 
-        if cookie_tok and form_tok:
-            break
+    def y_to_lat(y):
+        n = math.pi - 2.0 * math.pi * y
+        return 180.0 / math.pi * math.atan(0.5 * (math.exp(n) - math.exp(-n)))
 
-    return cookie_tok, form_tok, last
+    north_lat = y_to_lat(north_y)
+    south_lat = y_to_lat(south_y)
+    return {
+        "west": round(west_lng, 6),
+        "east": round(east_lng, 6),
+        "north": round(north_lat, 6),
+        "south": round(south_lat, 6),
+    }
 
-def post_viewport(s: requests.Session, lat: float, lng: float, zm: int,
-                  cookie_tok: str, form_tok: str) -> Tuple[int, str, int]:
-    """
-    POST /Home/GetViewPortData with tokens in:
-      - header RequestVerificationToken: "<cookie>:<form>"
-      - header X-RequestVerificationToken: "<form>"
-      - form field __RequestVerificationToken: "<form>"
-    """
-    headers = {
-        **_warm_headers(False),
+# ---------- probing logic ----------
+def looks_trainy(obj: Any) -> bool:
+    """Heuristic: does JSON look like it contains trains/markers/features?"""
+    try:
+        if isinstance(obj, dict):
+            # common keys to try
+            for key in ("trains", "items", "features", "markers", "results", "data"):
+                v = obj.get(key)
+                if isinstance(v, list) and len(v) > 0:
+                    return True
+                if isinstance(v, dict):
+                    # nested lists?
+                    for vv in v.values():
+                        if isinstance(vv, list) and len(vv) > 0:
+                            return True
+            # any non-empty list anywhere?
+            for v in obj.values():
+                if isinstance(v, list) and len(v) > 0:
+                    return True
+        if isinstance(obj, list) and len(obj) > 0:
+            return True
+    except Exception:
+        pass
+    return False
+
+def _headers_ajax(lat: float, lng: float, zm: int) -> Dict[str, str]:
+    return {
         "Origin": UP,
         "Referer": f"{UP}/Home/NextLevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}",
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "X-Requested-With": "XMLHttpRequest",
         "Accept": "*/*",
-        "RequestVerificationToken": f"{cookie_tok}:{form_tok}",
-        "X-RequestVerificationToken": form_tok,
     }
-    data = {
-        "__RequestVerificationToken": form_tok,
-        "lat": f"{lat:.6f}",
-        "lng": f"{lng:.6f}",
-        "zm": str(zm),
-    }
-    r = s.post(f"{UP}/Home/GetViewPortData", headers=headers, data=data, timeout=20)
-    return r.status_code, r.text, len(r.content)
 
-# -------------------------------
-# Routes
-# -------------------------------
+def try_call(s: requests.Session, url: str, method: str, data: Any, as_json: bool) -> Tuple[int, str, Dict[str, Any]]:
+    hdrs = _headers_ajax(data.get("lat", -33.8688), data.get("lng", 151.2093), int(data.get("zm", 12)))
+    if method == "GET":
+        r = s.get(url, headers=hdrs, timeout=20, params=data)
+    else:
+        if as_json:
+            r = s.post(url, headers={**hdrs, "Content-Type": "application/json"}, json=data, timeout=20)
+        else:
+            r = s.post(url, headers={**hdrs, "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}, data=data, timeout=20)
+    info = {"status": r.status_code, "bytes": len(r.content)}
+    text = r.text
+    return r.status_code, text, info
+
+def smart_probe(lat: float, lng: float, zm: int) -> Dict[str, Any]:
+    s = new_session()
+
+    # hit a page first so cookies feel "real"
+    try:
+        s.get(f"{UP}/Home/NextLevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", timeout=20)
+    except Exception:
+        pass
+
+    b = compute_bounds(lat, lng, zm)
+    attempts: List[Dict[str, Any]] = []
+
+    # candidates to try (order matters)
+    candidates: List[Tuple[str, str, Dict[str, Any], bool]] = [
+        (f"{UP}/Home/GetViewPortData", "POST", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}, False),
+        (f"{UP}/Home/GetViewPortData", "POST", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zoomLevel": str(zm)}, False),
+        (f"{UP}/Home/GetViewPortData", "POST", {"neLat": f"{b['north']}", "neLng": f"{b['east']}", "swLat": f"{b['south']}", "swLng": f"{b['west']}", "zoomLevel": str(zm)}, False),
+
+        # plausible alternates
+        (f"{UP}/Home/GetTrains", "POST", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}, False),
+        (f"{UP}/Home/Trains", "GET",  {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}, False),
+        (f"{UP}/Home/GetMarkers", "POST", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}, False),
+        (f"{UP}/Home/GetMapData", "POST", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}, False),
+        (f"{UP}/api/trains", "GET",  {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}, False),
+        (f"{UP}/api/viewport", "POST", {"lat": lat, "lng": lng, "zm": zm}, True),
+    ]
+
+    best: Optional[Dict[str, Any]] = None
+
+    for url, method, data, as_json in candidates:
+        try:
+            status, text, meta = try_call(s, url, method, data, as_json)
+        except Exception as e:
+            attempts.append({"url": url, "method": method, "error": str(e)})
+            continue
+
+        parsed = None
+        looks_html = text.strip().startswith("<!DOCTYPE") or text.strip().startswith("<html")
+        if not looks_html and text.strip().startswith("{"):
+            try:
+                parsed = json.loads(text)
+            except Exception:
+                parsed = None
+
+        attempt_rec = {
+            "url": url,
+            "method": method,
+            "status": status,
+            "bytes": meta["bytes"],
+            "looks_like_html": looks_html,
+        }
+        if parsed is not None:
+            attempt_rec["keys"] = list(parsed.keys()) if isinstance(parsed, dict) else None
+            attempt_rec["trainy"] = looks_trainy(parsed)
+        else:
+            attempt_rec["preview"] = text[:160]
+
+        attempts.append(attempt_rec)
+
+        if status == 200 and parsed is not None and looks_trainy(parsed):
+            best = {"url": url, "method": method, "data": parsed}
+            break
+
+    return {"attempts": attempts, "best": best}
+
+# ---------- routes ----------
 @app.get("/")
 def root():
     return """
     <h1>RailOps JSON</h1>
-    <p>1) Set cookie once: <code>/set-aspxauth?value=PASTE_.ASPXAUTH</code></p>
-    <p>2) (If needed) Set verification token captured in your browser:<br>
-       <code>/set-vtoken?cookie=COOKIE_TOKEN&form=FORM_TOKEN</code></p>
-    <p>Check: <code>/authcheck</code></p>
-    <p>Debug: <code>/debug/viewport?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code></p>
-    <p>Scan: <code>/scan</code></p>
-    <p>Data: <code>/trains?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code></p>
+    <p>Set cookie once: <code>/set-aspxauth?value=PASTE_FULL_.ASPXAUTH</code></p>
+    <p>Check login: <code>/authcheck</code></p>
+    <p>Probe endpoints: <code>/probe?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code></p>
+    <p>Trains (auto-picks working endpoint): <code>/trains?lat=-33.8688&amp;lng=151.2093&amp;zm=12</code></p>
     """, 200, {"Content-Type": "text/html; charset=utf-8"}
 
 @app.get("/set-aspxauth")
 def set_aspx():
-    val = request.args.get("value", "").strip()
-    if not val:
+    v = request.args.get("value", "").strip()
+    if not v:
         return jsonify({"ok": False, "message": "Provide ?value=PASTE_FULL_.ASPXAUTH"}), 400
-    set_aspxauth(val)
-    return jsonify({"ok": True, "cookie_present": True, "length": len(val)})
-
-@app.get("/set-vtoken")
-def set_vtoken():
-    """
-    Easiest path: paste the tokens your browser used:
-    - cookie token (left side): from header RequestVerificationToken before the colon
-    - form token (right side): from header X-RequestVerificationToken (or after the colon)
-    """
-    ck = request.args.get("cookie", "").strip()
-    fm = request.args.get("form", "").strip()
-    if not ck or not fm:
-        return jsonify({"ok": False, "message": "Provide ?cookie=...&form=..."}), 400
-    set_vtokens(ck, fm)
-    return jsonify({"ok": True, "cookie_len": len(ck), "form_len": len(fm)})
-
-@app.get("/clear-vtoken")
-def clear_vtoken():
-    set_vtokens("", "")
-    return jsonify({"ok": True, "cleared": True})
+    set_cookie(v)
+    return jsonify({"ok": True, "cookie_len": len(v)})
 
 @app.get("/authcheck")
 def authcheck():
     s = new_session()
     try:
         r = s.post(f"{UP}/Home/IsLoggedIn", headers={
-            **_warm_headers(False),
-            "Origin": UP,
-            "Referer": f"{UP}/",
-            "Accept": "*/*",
+            "Origin": UP, "Referer": f"{UP}/", "X-Requested-With": "XMLHttpRequest", "Accept": "*/*"
         }, timeout=20)
         email = ""
         logged = False
@@ -196,21 +208,18 @@ def authcheck():
             logged = bool(j.get("is_logged_in"))
         except Exception:
             pass
-        with STATE_LOCK:
-            token_ready = bool(VTOKEN_COOKIE and VTOKEN_FORM)
         return jsonify({
             "status": r.status_code,
             "bytes": len(r.content),
             "cookie_present": bool(ASPXAUTH),
             "is_logged_in": logged,
-            "email": email,
-            "verification_token_ready": token_ready,
+            "email": email
         })
     except Exception as e:
         return jsonify({"cookie_present": bool(ASPXAUTH), "error": str(e)}), 502
 
-@app.get("/debug/viewport")
-def debug_viewport():
+@app.get("/probe")
+def probe():
     try:
         lat = float(request.args.get("lat", "-33.8688"))
         lng = float(request.args.get("lng", "151.2093"))
@@ -218,117 +227,15 @@ def debug_viewport():
     except Exception:
         return jsonify({"error": "bad lat/lng/zm"}), 400
 
-    s = new_session()
+    if not ASPXAUTH:
+        return jsonify({"error": ".ASPXAUTH not set. Call /set-aspxauth?value=... first."}), 400
 
-    # Try manual tokens first (if you set them)
-    with STATE_LOCK:
-        ck, fm = VTOKEN_COOKIE, VTOKEN_FORM
-
-    diag = {"used_cookie": bool(ASPXAUTH)}
-
-    if ck and fm:
-        status, text, n = post_viewport(s, lat, lng, zm, ck, fm)
-        diag["used_manual_tokens"] = True
-        looks_like_html = text.strip().startswith("<!DOCTYPE") or text.strip().startswith("<html")
-        return jsonify({
-            "input": {"lat": lat, "lng": lng, "zm": zm},
-            "tf": {
-                **diag,
-                "viewport": {"status": status, "bytes": n, "looks_like_html": looks_like_html},
-            },
-            "data": (json.loads(text) if (not looks_like_html and text.strip().startswith("{")) else text)
-        })
-
-    # Otherwise try to harvest automatically
-    cookie_tok, form_tok, last = harvest_tokens(s, lat, lng, zm)
-    diag.update({
-        "token_lengths": {"cookie": len(cookie_tok or ""), "form": len(form_tok or "")},
-        "verification_token_present": bool(cookie_tok and form_tok),
-        "warmup": {"url": last.get("url",""), "status": last.get("status",0), "bytes": last.get("bytes",0)},
-    })
-
-    if not (cookie_tok and form_tok):
-        return jsonify({"error": "verification token not found", "input": {"lat": lat, "lng": lng, "zm": zm}, "tf": diag}), 502
-
-    status, text, n = post_viewport(s, lat, lng, zm, cookie_tok, form_tok)
-    looks_like_html = text.strip().startswith("<!DOCTYPE") or text.strip().startswith("<html")
-    preview = text if len(text) <= 800 else text[:800]
-    parsed = None
-    if not looks_like_html:
-        try:
-            parsed = json.loads(text)
-        except Exception:
-            parsed = None
-
-    return jsonify({
-        "input": {"lat": lat, "lng": lng, "zm": zm},
-        "tf": {
-            **diag,
-            "viewport": {"status": status, "bytes": n, "looks_like_html": looks_like_html, "preview": preview},
-        },
-        "data": parsed if parsed is not None else text
-    })
-
-@app.get("/scan")
-def scan():
-    cities = [
-        ("Sydney",    -33.8688, 151.2093),
-        ("Melbourne", -37.8136, 144.9631),
-        ("Brisbane",  -27.4698, 153.0251),
-        ("Perth",     -31.9523, 115.8613),
-        ("Adelaide",  -34.9285, 138.6007),
-    ]
-    zms = [11, 12, 13]
-    out = []
-    for name, lat, lng in cities:
-        for zm in zms:
-            resp = app.test_client().get(f"/debug/viewport?lat={lat}&lng={lng}&zm={zm}")
-            try:
-                js = json.loads(resp.get_data(as_text=True))
-                vp = js.get("tf", {}).get("viewport", {})
-                out.append({
-                    "city": name, "lat": lat, "lng": lng, "zm": zm,
-                    "verification_token_present": js.get("tf", {}).get("verification_token_present", True),
-                    "viewport_bytes": vp.get("bytes", 0),
-                    "looks_like_html": vp.get("looks_like_html", False),
-                })
-            except Exception:
-                out.append({"city": name, "lat": lat, "lng": lng, "zm": zm, "error": "parse_failed"})
-    return jsonify({"count": len(out), "results": out})
+    res = smart_probe(lat, lng, zm)
+    return jsonify(res)
 
 @app.get("/trains")
 def trains():
     try:
         lat = float(request.args.get("lat", "-33.8688"))
         lng = float(request.args.get("lng", "151.2093"))
-        zm  = int(request.args.get("zm", "12"))
-    except Exception:
-        return jsonify({"error": "bad lat/lng/zm"}), 400
-
-    s = new_session()
-
-    # prefer manual tokens if available
-    with STATE_LOCK:
-        ck, fm = VTOKEN_COOKIE, VTOKEN_FORM
-
-    if not (ck and fm):
-        ck, fm, _ = harvest_tokens(s, lat, lng, zm)
-
-    if not (ck and fm):
-        return jsonify({"error": "verification token not found"}), 502
-
-    status, text, _ = post_viewport(s, lat, lng, zm, ck, fm)
-    if status != 200:
-        return jsonify({"error": "upstream error", "status": status}), 502
-
-    try:
-        return jsonify(json.loads(text))
-    except Exception:
-        return make_response(text, 200, {"Content-Type": "application/json; charset=utf-8"})
-
-@app.get("/healthz")
-def healthz():
-    return "ok", 200
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "5000")))
+        zm 
