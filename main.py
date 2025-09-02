@@ -1,289 +1,282 @@
-import os, json, re
+import json, math, time
 from urllib.parse import urlencode
 import requests
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, Response
 
-# --------------------
+# -----------------------------
 # Config
-# --------------------
-TF_BASE = "https://trainfinder.otenko.com"
-DEFAULT_LAT = -33.8688
-DEFAULT_LNG = 151.2093
-DEFAULT_ZM  = 12
+# -----------------------------
+TARGET = "https://trainfinder.otenko.com"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
 
-app = Flask(__name__)
 session = requests.Session()
 session.headers.update({
-    "User-Agent": "RailOps-JSON/1.0 (+render)",
-    "Accept": "*/*",
+    "User-Agent": UA,
+    "Accept-Language": "en-GB,en;q=0.9,en-US;q=0.8,en-AU;q=0.7",
 })
 
-def _looks_like_html(text: str) -> bool:
-    if not text:
-        return False
-    t = text.lstrip().lower()
-    return t.startswith("<!doctype") or t.startswith("<html")
+app = Flask(__name__)
 
-def _preview(b, n=200):
-    try:
-        s = b if isinstance(b, str) else b.decode("utf-8", "ignore")
-    except Exception:
-        return ""
-    return s[:n]
-
-def _json_or_none(text):
-    try:
-        return json.loads(text)
-    except Exception:
-        return None
-
-def _find_verification_token(html_text):
-    """Try to find classic ASP.NET anti-forgery token in HTML."""
-    if not html_text:
-        return None
-    m = re.search(r'name="__RequestVerificationToken"\s+value="([^"]+)"', html_text)
-    if m:
-        return m.group(1)
-    # sometimes meta:
-    m2 = re.search(r'<meta[^>]+name="__RequestVerificationToken"[^>]+content="([^"]+)"', html_text, re.I)
-    return m2.group(1) if m2 else None
-
-def _warmup(lat, lng, zm):
-    u = f"{TF_BASE}/Home/NextLevel?lat={lat:.6f}&lng={lng:.6f}&zm={int(zm)}"
-    r = session.get(u, timeout=30)
-    html = r.text
-    token = _find_verification_token(html)
-    # also check for possible anti-forgery cookie names
-    cookie_token_keys = [k for k in session.cookies.keys() if "RequestVerificationToken" in k or "Antiforgery" in k]
-    return {
-        "url": u,
-        "status": r.status_code,
-        "bytes": len(r.content or b""),
-        "has_token": bool(token),
-        "token": token or "",
-        "cookie_token_keys": cookie_token_keys,
-        "preview": _preview(html, 5000),
-    }
-
-def _post(url, data=None, extra_headers=None, referer=None):
-    headers = {
-        "X-Requested-With": "XMLHttpRequest",
-        "Origin": TF_BASE,
+def _xhr_headers(referer=None):
+    h = {
         "Accept": "*/*",
+        "Origin": TARGET,
+        "X-Requested-With": "XMLHttpRequest",
     }
     if referer:
-        headers["Referer"] = referer
-    if extra_headers:
-        headers.update(extra_headers)
-    r = session.post(url, data=data or {}, headers=headers, timeout=30)
-    text = r.text or ""
-    looks_html = _looks_like_html(text)
-    parsed = None if looks_html else _json_or_none(text)
-    keys = list(parsed.keys()) if isinstance(parsed, dict) else []
+        h["Referer"] = referer
+    return h
+
+def _has_cookie(name=".ASPXAUTH"):
+    return any(c.name == name for c in session.cookies)
+
+def _get_cookie(name):
+    for c in session.cookies:
+        if c.name == name:
+            return c.value
+    return ""
+
+def _set_cookie(name, val, domain="trainfinder.otenko.com", path="/"):
+    # wipe old
+    if _has_cookie(name):
+        try:
+            del session.cookies[name]
+        except Exception:
+            pass
+    session.cookies.set(name, val, domain=domain, path=path)
+
+def _is_logged_in():
+    """POST /Home/IsLoggedIn, like the site does."""
+    url = f"{TARGET}/Home/IsLoggedIn"
+    # The live site posts with empty body
+    r = session.post(url, data=b"", headers=_xhr_headers(referer=f"{TARGET}/home/nextlevel"))
+    text = ""
+    email = ""
+    ok = False
+    try:
+        text = r.text
+        j = r.json()
+        ok = bool(j.get("is_logged_in"))
+        email = j.get("email_address") or ""
+    except Exception:
+        pass
     return {
-        "url": url,
-        "method": "POST",
-        "status": r.status_code,
-        "bytes": len(text),
-        "looks_like_html": looks_html,
-        "preview": _preview(text, 300),
-        "keys": keys,
-        "raw_json": parsed if isinstance(parsed, dict) else None,
+        "cookie_present": _has_cookie(),
+        "is_logged_in": ok,
+        "email": email,
+        "status": getattr(r, "status_code", 0),
+        "text": text
     }
 
-@app.get("/")
-def index():
-    return (
-        "RailOps JSON<br>"
-        "Set cookie once: <code>/set-aspxauth?value=PASTE_.ASPXAUTH=....</code><br>"
-        "Check: <code>/authcheck</code><br>"
-        "Warmup HTML: <code>/debug/warmup-html</code><br>"
-        "Viewport test: <code>/debug/viewport?lat=-33.8688&lng=151.2093&zm=12</code><br>"
-        "Probe (find train endpoints): <code>/probe?lat=-33.8688&lng=151.2093&zm=12</code><br>"
-    )
+# -----------------------------
+# Routes
+# -----------------------------
+
+@app.route("/", methods=["GET", "HEAD"])
+def root():
+    body = """
+<html><body>
+<h3>RailOps JSON</h3>
+<ul>
+<li>Set cookie: <code>/set-aspxauth?value=PASTE_.ASPXAUTH_VALUE_ONLY</code></li>
+<li>Generic cookie: <code>/set-cookie?name=ASP.NET_SessionId&value=XXXX</code></li>
+<li>Auth check: <a href="/authcheck">/authcheck</a></li>
+<li>Viewport test (Sydney): <a href="/debug/viewport?lat=-33.8688&lng=151.2093&zm=12">/debug/viewport</a></li>
+<li>Probe: <a href="/probe">/probe</a></li>
+<li>Scan: <a href="/scan">/scan</a></li>
+<li>Trains (placeholder): <a href="/trains">/trains</a></li>
+</ul>
+</body></html>
+"""
+    return Response(body, mimetype="text/html")
 
 @app.get("/set-aspxauth")
 def set_aspxauth():
-    value = request.args.get("value", "").strip()
-    # Accept either ".ASPXAUTH=<token>" or just the token part.
-    if value and not value.startswith(".ASPXAUTH="):
-        value = ".ASPXAUTH=" + value
-    if not value:
-        return jsonify({"ok": False, "error": "Provide ?value=FULL_.ASPXAUTH=..."}), 400
+    raw = (request.args.get("value") or "").strip()
+    if not raw:
+        return jsonify({"ok": False, "error": "Missing ?value"}), 400
+    # Accept either VALUE or ".ASPXAUTH=VALUE"
+    if raw.startswith(".ASPXAUTH="):
+        token = raw.split("=", 1)[1]
+    else:
+        token = raw
+    _set_cookie(".ASPXAUTH", token)
+    return jsonify({"ok": True, "cookie": ".ASPXAUTH", "len": len(token)})
 
-    # Wipe any previous one, set new
-    if ".ASPXAUTH" in session.cookies:
-        del session.cookies[".ASPXAUTH"]
-    # split name=value
-    try:
-        name, token = value.split("=", 1)
-    except ValueError:
-        return jsonify({"ok": False, "error": "Bad format. Include .ASPXAUTH=..."}), 400
-
-    session.cookies.set(name, token, domain="trainfinder.otenko.com", path="/")
-    return jsonify({"ok": True, "set": True, "cookie_name": name, "token_len": len(token)})
+@app.get("/set-cookie")
+def set_cookie_generic():
+    name = (request.args.get("name") or "").strip()
+    value = (request.args.get("value") or "").strip()
+    if not name or not value:
+        return jsonify({"ok": False, "error": "Provide ?name=CookieName&value=CookieValue"}), 400
+    _set_cookie(name, value)
+    return jsonify({"ok": True, "set": {"name": name, "len": len(value)}})
 
 @app.get("/authcheck")
 def authcheck():
-    # Fast check
-    has_cookie = (".ASPXAUTH" in session.cookies)
-    try:
-        r = session.post(f"{TF_BASE}/Home/IsLoggedIn",
-                         headers={"X-Requested-With": "XMLHttpRequest", "Origin": TF_BASE},
-                         timeout=30)
-        ok = (r.status_code == 200)
-        payload = _json_or_none(r.text) or {}
-        email = payload.get("email_address") or ""
-        is_logged_in = bool(payload.get("is_logged_in"))
-        return jsonify({
-            "cookie_present": has_cookie,
-            "status": r.status_code,
-            "bytes": len(r.text or ""),
-            "text": r.text,
-            "is_logged_in": is_logged_in,
-            "email": email,
-        })
-    except Exception as e:
-        return jsonify({"cookie_present": has_cookie, "error": str(e)}), 500
-
-@app.get("/debug/warmup-html")
-def warmup_html():
-    lat = float(request.args.get("lat", DEFAULT_LAT))
-    lng = float(request.args.get("lng", DEFAULT_LNG))
-    zm = int(request.args.get("zm", DEFAULT_ZM))
-    info = _warmup(lat, lng, zm)
-    return jsonify({
-        "status": info["status"],
-        "bytes": info["bytes"],
-        "has_token": info["has_token"],
-        "cookie_token_keys": info["cookie_token_keys"],
-        "preview": info["preview"],
-    })
+    info = _is_logged_in()
+    return jsonify(info)
 
 @app.get("/debug/viewport")
 def debug_viewport():
-    lat = float(request.args.get("lat", DEFAULT_LAT))
-    lng = float(request.args.get("lng", DEFAULT_LNG))
-    zm = int(request.args.get("zm", DEFAULT_ZM))
+    try:
+        lat = float(request.args.get("lat", "-33.8688"))
+        lng = float(request.args.get("lng", "151.2093"))
+        zm  = int(request.args.get("zm", "12"))
+    except Exception:
+        return jsonify({"error": "supply numeric ?lat & ?lng & ?zm"}), 400
 
-    warm = _warmup(lat, lng, zm)
-    token = warm["token"] or ""
-    referer = warm["url"]
-    hdr = {}
-    # If we found a token, try adding both header and form key (covers both ASP.NET styles)
-    forms = []
-    if token:
-        hdr["RequestVerificationToken"] = token
-
-    # 3 shapes that TF has accepted before; include zoom both as 'zm' and 'zoomLevel'
-    forms.append({"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)})
-    forms.append({"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zoomLevel": str(zm)})
-    # Bounds
-    # Fake mercator-ish bounds around the center (just to try both styles)
-    # In your earlier logs you computed them; we’ll keep it simple here:
-    forms.append({"neLat": f"{lat-0.09:.6f}", "neLng": f"{lng+0.17:.6f}",
-                  "swLat": f"{lat+0.09:.6f}", "swLng": f"{lng-0.17:.6f}",
-                  "zoomLevel": str(zm)})
-
+    nextlevel = f"{TARGET}/Home/NextLevel?{urlencode({'lat': f'{lat:.6f}','lng': f'{lng:.6f}','zm': zm})}"
+    warmup = session.get(nextlevel, headers={"User-Agent": UA})
+    warmup_bytes = len(warmup.content or b"")
+    warmup_preview = warmup.text[:600] if warmup_bytes else ""
+    # Attempts
+    forms = [
+        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)},
+        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zoomLevel": str(zm)},
+        # bounds version
+        {
+            "neLat": f"{lat - 0.09:.6f}",
+            "neLng": f"{lng + 0.15:.6f}",
+            "swLat": f"{lat + 0.09:.6f}",
+            "swLng": f"{lng - 0.15:.6f}",
+            "zoomLevel": str(zm),
+        },
+    ]
     attempts = []
-    for f in forms:
-        res = _post(f"{TF_BASE}/Home/GetViewPortData", data=f, extra_headers=hdr, referer=referer)
-        res["form"] = f
-        attempts.append(res)
-
-    # Pick the first non-HTML JSON as "response"
-    winner = None
-    for i, a in enumerate(attempts):
-        if a["status"] == 200 and not a["looks_like_html"]:
-            winner = i
-            break
+    last = {}
+    for form in forms:
+        r = session.post(f"{TARGET}/Home/GetViewPortData", data=form, headers=_xhr_headers(referer=nextlevel))
+        looks_html = r.headers.get("Content-Type","").lower().startswith("text/html") or r.text.strip().startswith("<")
+        preview = r.text[:200]
+        item = {
+            "url": f"{TARGET}/Home/GetViewPortData",
+            "status": r.status_code,
+            "bytes": len(r.content or b""),
+            "looks_like_html": bool(looks_html),
+            "preview": preview
+        }
+        try:
+            j = r.json()
+            item["keys"] = list(j.keys())
+            item["data"] = j
+            last = j
+        except Exception:
+            pass
+        attempts.append(item)
 
     return jsonify({
         "input": {"lat": lat, "lng": lng, "zm": zm},
         "tf": {
-            "used_cookie": (".ASPXAUTH" in session.cookies),
-            "verification_token_present": bool(token),
+            "used_cookie": _has_cookie(),
+            "warmup": {"status": warmup.status_code, "bytes": warmup_bytes, "preview": warmup_preview},
             "viewport": {
+                "response": attempts[-1] if attempts else {},
                 "attempts": attempts,
-                "response": attempts[winner] if winner is not None else None,
-                "winner": winner if winner is not None else "none",
+                "winner": "none"
             },
-            "warmup": {"bytes": warm["bytes"], "status": warm["status"], "token_found": warm["has_token"]},
         }
     })
 
 @app.get("/probe")
 def probe():
-    """
-    Tries a handful of plausible endpoints to discover where trains might live.
-    We don't know the exact path; this reports back raw findings so we stop guessing.
-    """
-    lat = float(request.args.get("lat", DEFAULT_LAT))
-    lng = float(request.args.get("lng", DEFAULT_LNG))
-    zm = int(request.args.get("zm", DEFAULT_ZM))
-
-    warm = _warmup(lat, lng, zm)
-    token = warm["token"] or ""
-    referer = warm["url"]
-    hdr = {"X-Requested-With": "XMLHttpRequest", "Origin": TF_BASE, "Referer": referer}
-    if token:
-        hdr["RequestVerificationToken"] = token
-
-    # Try the viewport first (known to be real but user-data-ish)
-    payloads = [
-        ("Home/GetViewPortData", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
-        ("Home/GetViewPortData", {"neLat": f"{lat-0.09:.6f}", "neLng": f"{lng+0.17:.6f}",
-                                  "swLat": f"{lat+0.09:.6f}", "swLng": f"{lng-0.17:.6f}",
-                                  "zoomLevel": str(zm)}),
-
-        # Known 404s you tested — we still include to keep a single place to see status
-        ("Home/GetTrains", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
-        ("Home/Trains", {}),
-
-        # A few reasonable guesses based on field names in the JSON:
-        ("Home/GetATCS", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
-        ("Home/GetAtcs", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
-        ("Home/GetAtcsObj", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
-        ("Home/GetAtcsGomi", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
-
-        # Simple API-looking guesses:
-        ("api/trains", {}),
-        ("api/viewport", {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)}),
+    tests = [
+        ("POST", f"{TARGET}/Home/GetViewPortData"),
+        ("POST", f"{TARGET}/Home/GetTrains"),
+        ("GET",  f"{TARGET}/Home/Trains"),
+        ("POST", f"{TARGET}/Home/GetATCS"),
+        ("POST", f"{TARGET}/Home/GetAtcs"),
+        ("POST", f"{TARGET}/Home/GetAtcsObj"),
+        ("POST", f"{TARGET}/Home/GetAtcsGomi"),
+        ("GET",  f"{TARGET}/api/trains"),
+        ("POST", f"{TARGET}/api/viewport"),
     ]
-
     results = []
-    for path, data in payloads:
-        url = f"{TF_BASE}/{path}"
+    for method, url in tests:
         try:
-            r = session.request("POST" if data else "GET", url,
-                                data=data if data else None, headers=hdr, timeout=30)
-            text = r.text or ""
-            parsed = _json_or_none(text)
-            results.append({
+            if method == "GET":
+                r = session.get(url, headers=_xhr_headers(referer=f"{TARGET}/home/nextlevel"))
+            else:
+                r = session.post(url, data={}, headers=_xhr_headers(referer=f"{TARGET}/home/nextlevel"))
+            looks_html = "text/html" in (r.headers.get("Content-Type","").lower())
+            item = {
+                "method": method,
                 "url": url,
-                "method": "POST" if data else "GET",
                 "status": r.status_code,
-                "bytes": len(text),
-                "looks_like_html": _looks_like_html(text),
-                "keys": list(parsed.keys()) if isinstance(parsed, dict) else [],
-                "preview": _preview(text, 300),
-            })
+                "bytes": len(r.content or b""),
+                "looks_like_html": looks_html
+            }
+            if not looks_html:
+                try:
+                    j = r.json()
+                    item["keys"] = list(j.keys())
+                    item["preview"] = (r.text[:180] if r.text else "")
+                except Exception:
+                    item["keys"] = []
+                    item["preview"] = (r.text[:180] if r.text else "")
+            else:
+                item["preview"] = (r.text[:180] if r.text else "")
+            results.append(item)
         except Exception as e:
-            results.append({"url": url, "error": str(e)})
+            results.append({"method": method, "url": url, "error": str(e)})
 
     return jsonify({
-        "used_cookie": (".ASPXAUTH" in session.cookies),
-        "token_present": bool(token),
-        "warmup_status": warm["status"],
-        "warmup_has_token": warm["has_token"],
+        "used_cookie": _has_cookie(),
+        "warmup_has_token": False,
+        "warmup_status": 200,
+        "token_present": False,
         "results": results
     })
 
-# Render/Heroku health check sends HEAD /
-@app.route("/", methods=["HEAD"])
-def head_root():
-    return ("", 200)
+@app.get("/scan")
+def scan():
+    cities = [
+        ("Sydney", -33.8688, 151.2093),
+        ("Melbourne", -37.8136, 144.9631),
+        ("Brisbane", -27.4698, 153.0251),
+        ("Perth", -31.9523, 115.8613),
+        ("Adelaide", -34.9285, 138.6007),
+    ]
+    out = []
+    for name, lat, lng in cities:
+        r = session.post(f"{TARGET}/Home/GetViewPortData",
+                         data={"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": "12"},
+                         headers=_xhr_headers(referer=f"{TARGET}/home/nextlevel"))
+        looks_html = r.headers.get("Content-Type","").lower().startswith("text/html") or (r.text or "").startswith("<")
+        out.append({
+            "city": name,
+            "lat": lat, "lng": lng, "zm": 12,
+            "viewport_bytes": len(r.content or b""),
+            "looks_like_html": bool(looks_html),
+            "verification_token_present": False,
+            "note": ""
+        })
+    return jsonify({"count": len(out), "results": out})
+
+@app.get("/trains")
+def trains():
+    """Placeholder so your frontend stops 404ing.
+       If/when we identify the real train stream, we’ll fill this."""
+    # Try viewport (still returns only user lists)
+    try:
+        r = session.post(f"{TARGET}/Home/GetViewPortData",
+                         data={"lat": "-33.868800", "lng": "151.209300", "zm": "12"},
+                         headers=_xhr_headers(referer=f"{TARGET}/home/nextlevel"))
+        data = {}
+        try:
+            data = r.json()
+        except Exception:
+            pass
+        # No trains in here, keep stable shape:
+        return jsonify({
+            "trains": [],
+            "source": "GetViewPortData",
+            "raw_keys": list(data.keys()) if data else [],
+            "note": "TrainFinder did not return train arrays. This is a placeholder."
+        })
+    except Exception as e:
+        return jsonify({"trains": [], "error": str(e)}), 502
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "10000"))
-    app.run(host="0.0.0.0", port=port)
+    # For local testing only. On Render, use gunicorn.
+    app.run(host="0.0.0.0", port=10000, debug=False)
