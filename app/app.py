@@ -1,160 +1,190 @@
-import os, re, requests
-from flask import Flask, request, jsonify, make_response
+import os
+import json
+import logging
+from datetime import datetime
+from flask import Flask, request, jsonify
+import requests
 
-ORIGIN = "https://trainfinder.otenko.com"
+# -------------------------------
+# Config & Logging
+# -------------------------------
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:railops:%(message)s"
+)
+log = logging.getLogger("railops")
+
+TF_HOST = "trainfinder.otenko.com"
+TF_BASE = f"https://{TF_HOST}"
+TF_POST = f"{TF_BASE}/Home/GetViewPortData"
+
+# ENV VARS (set these in Render)
+TF_ASPXAUTH = os.getenv("TF_ASPXAUTH", "").strip()   # required
+TF_UA       = os.getenv("TF_UA", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
+DEFAULT_REF = os.getenv("TF_REFERER", "https://trainfinder.otenko.com/home/nextlevel?lat=-33.8688&lng=151.2093&zm=12")
+
+PORT = int(os.getenv("PORT", "10000"))
+
 app = Flask(__name__)
 
-def get_cookie():
-    return (request.cookies.get(".ASPXAUTH")
-            or request.cookies.get("ASPXAUTH")
-            or os.getenv("ASPXAUTH")
-            or "").strip()
+# -------------------------------
+# Helpers
+# -------------------------------
+def mask_token(s: str) -> str:
+    if not s:
+        return ""
+    if len(s) <= 8:
+        return "***"
+    return s[:4] + "..." + s[-4:]
 
-def is_html(t: str) -> bool:
-    s = t.strip().lower()
-    return s.startswith("<!doctype html") or s.startswith("<html")
+def build_session():
+    s = requests.Session()
+    s.headers.update({
+        "User-Agent": TF_UA,
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Origin": TF_BASE,
+        "Referer": DEFAULT_REF,  # can be overridden
+        "X-Requested-With": "XMLHttpRequest",
+        "Connection": "keep-alive",
+    })
+    # Set BOTH cookie names to the same token (some apps check one or the other)
+    if TF_ASPXAUTH:
+        for name in (".ASPXAUTH", "ASPXAUTH"):
+            s.cookies.set(name, TF_ASPXAUTH, domain=TF_HOST, secure=True)
+    return s
 
-def extract_token(html: str) -> str:
-    m = re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"', html, re.I)
-    return m.group(1) if m else ""
+def is_json_response(resp: requests.Response) -> bool:
+    ct = (resp.headers.get("Content-Type") or "").lower()
+    if "application/json" in ct:
+        return True
+    # Some ASP.NET apps return JSON with text/html; try to parse
+    try:
+        _ = resp.json()
+        return True
+    except Exception:
+        return False
 
-def warmup(s: requests.Session, cookie: str, lat: float, lng: float, zm: int):
-    h = {
-        "cookie": f".ASPXAUTH={cookie}" if cookie else "",
-        "accept": "text/html,*/*",
-        "referer": f"{ORIGIN}/",
-        "user-agent": "Mozilla/5.0",
+def parse_json(resp: requests.Response):
+    try:
+        return resp.json()
+    except Exception:
+        return None
+
+def make_referer(lat, lng, zm):
+    return f"{TF_BASE}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={int(round(zm))}"
+
+def viewport_payload(lat, lng, zm, bbox=None):
+    # TrainFinder typically accepts these form fields
+    data = {
+        "lat": f"{lat:.6f}",
+        "lng": f"{lng:.6f}",
+        "zm": str(int(round(zm))),
     }
-    r = s.get(f"{ORIGIN}/home/nextlevel?lat={lat:.6f}&lng={lng:.6f}&zm={zm}", headers=h, timeout=15)
-    return {"status": r.status_code, "bytes": len(r.text), "token": extract_token(r.text)}
+    # Optional bbox string "-35.8,138.4,-34.6,139.0"
+    if bbox:
+        data["bbox"] = bbox
+    return data
 
-def post_viewport(s: requests.Session, cookie: str, token: str, form: dict):
-    h = {
-        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "x-requested-with": "XMLHttpRequest",
-        "origin": ORIGIN,
-        "referer": f"{ORIGIN}/",
-        "cookie": f".ASPXAUTH={cookie}" if cookie else "",
-        "user-agent": "Mozilla/5.0",
-    }
-    if token: h["RequestVerificationToken"] = token
-    r = s.post(f"{ORIGIN}/Home/GetViewPortData", data=form, headers=h, timeout=15)
-    return {
-        "status": r.status_code,
-        "bytes": len(r.text),
-        "looks_like_html": is_html(r.text),
-        "preview": r.text[:200],
-    }, r.text
+def fetch_viewport(lat, lng, zm, bbox=None, referer=None):
+    s = build_session()
+    ref_url = referer or make_referer(lat, lng, zm)
+    # Refresh headers to use per-request referer
+    s.headers["Referer"] = ref_url
 
+    # Warmup GET to referer (some servers require)
+    warm = s.get(ref_url, timeout=10)
+    log.info("Warmup GET %s -> %s", ref_url, warm.status_code)
+
+    # POST viewport
+    form = viewport_payload(lat, lng, zm, bbox)
+    resp = s.post(TF_POST, data=form, timeout=15)
+    log.info("POST %s (form=%s) -> %s", TF_POST, ",".join([f"{k}={v}" for k,v in form.items()]), resp.status_code)
+
+    if not is_json_response(resp):
+        # Not JSON — very likely login page or HTML (unauthorized)
+        sample = resp.text[:300]
+        return None, {
+            "http_status": resp.status_code,
+            "referer": ref_url,
+            "sample": sample
+        }, False
+
+    data = parse_json(resp)
+    # Check for keys usually present (tts etc.) — when unauthorized they’re often null
+    ok = bool(data) and isinstance(data, dict)
+    return data, {"http_status": resp.status_code, "referer": ref_url}, ok
+
+# -------------------------------
+# Routes
+# -------------------------------
 @app.get("/")
 def root():
-    return (
-        "RailOps JSON\n\n"
-        "Set cookie once: /set-aspxauth?value=PASTE_TOKEN\n"
-        "Check:           /authcheck\n"
-        "Debug:           /debug/viewport?lat=-33.8688&lng=151.2093&zm=12\n"
-        "Scan:            /scan\n"
-    ), 200, {"content-type":"text/plain; charset=utf-8"}
+    return jsonify({"ok": True, "message": "ok", "time": datetime.utcnow().isoformat() + "Z"})
 
-@app.get("/set-aspxauth")
-def set_cookie():
-    val = (request.args.get("value") or "").strip()
-    if not val:
-        return jsonify({"ok": False, "reason": "provide ?value=YOUR_.ASPXAUTH_value"}), 400
-    resp = make_response(jsonify({"ok": True, "cookie_len": len(val)}))
-    for name in (".ASPXAUTH", "ASPXAUTH"):
-        resp.set_cookie(name, val, max_age=60*60*24*30, httponly=True, secure=True, samesite="Lax")
-    return resp
+@app.get("/health")
+def health():
+    return "ok, true"
 
-@app.get("/authcheck")
-def authcheck():
-    cookie = get_cookie()
-    if not cookie:
-        return jsonify({"is_logged_in": False, "cookie_present": False, "email_address": ""})
-    s = requests.Session()
-    # include token just in case that endpoint cares on their side
-    w = warmup(s, cookie, -33.8688, 151.2093, 12)
-    h = {
-        "accept": "*/*",
-        "x-requested-with": "XMLHttpRequest",
-        "origin": ORIGIN,
-        "referer": f"{ORIGIN}/",
-        "cookie": f".ASPXAUTH={cookie}",
-        "user-agent": "Mozilla/5.0",
-    }
-    if w.get("token"):
-        h["RequestVerificationToken"] = w["token"]
-    r = s.post(f"{ORIGIN}/Home/IsLoggedIn", headers=h, timeout=15)
-    email = ""
-    is_logged_in = False
+@app.get("/debug/env")
+def debug_env():
+    return jsonify({
+        "ok": True,
+        "TF_ASPXAUTH_present": bool(TF_ASPXAUTH),
+        "TF_ASPXAUTH_masked": mask_token(TF_ASPXAUTH),
+        "TF_UA": TF_UA[:80] + ("..." if len(TF_UA) > 80 else ""),
+        "DEFAULT_REFERER": DEFAULT_REF
+    })
+
+@app.get("/debug/test")
+def debug_test():
+    # Quick manual test from the browser:
+    # /debug/test?lat=-33.8688&lng=151.2093&zm=12
     try:
-        data = r.json()
-        email = data.get("email_address") or ""
-        is_logged_in = bool(data.get("is_logged_in"))
+        lat = float(request.args.get("lat", "-33.8688"))
+        lng = float(request.args.get("lng", "151.2093"))
+        zm  = float(request.args.get("zm", "12"))
     except Exception:
-        pass
-    return jsonify({
-        "status": r.status_code,
-        "bytes": len(r.text),
-        "text": r.text,
-        "is_logged_in": is_logged_in,
-        "email": email,
-        "cookie_present": True
-    })
+        return jsonify({"ok": False, "message": "Invalid lat/lng/zm"}), 400
 
-@app.get("/debug/viewport")
-def debug_viewport():
-    lat = float(request.args.get("lat", "-33.8688"))
-    lng = float(request.args.get("lng", "151.2093"))
-    zm = int(request.args.get("zm", "12"))
-    cookie = get_cookie()
-    s = requests.Session()
-    w = warmup(s, cookie, lat, lng, zm)
-    attempts, winner, last = [], "none", {}
-    for form in [
-        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)},
-        {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zoomLevel": str(zm)},
-        {"neLat": f"{lat+0.085563:.6f}", "neLng": f"{lng+0.154495:.6f}",
-         "swLat": f"{lat-0.085477:.6f}", "swLng": f"{lng-0.154496:.6f}",
-         "zoomLevel": str(zm)},
-    ]:
-        meta, _ = post_viewport(s, cookie, w.get("token",""), form)
-        attempts.append({"form": form, "resp": meta})
-        last = meta
-        if meta["status"] == 200 and not meta["looks_like_html"]:
-            winner = "found"; break
-    return jsonify({
-        "input": {"lat": lat, "lng": lng, "zm": zm},
-        "tf": {
-            "used_cookie": bool(cookie),
-            "verification_token_present": bool(w.get("token")),
-            "warmup": {"status": w["status"], "bytes": w["bytes"]},
-            "viewport": {"attempts": attempts, "winner": winner, "response": last}
-        }
-    })
+    bbox = request.args.get("bbox")
+    ref  = request.args.get("referer")
+    data, meta, ok = fetch_viewport(lat, lng, zm, bbox=bbox, referer=ref)
+    if not ok:
+        return jsonify({"ok": False, "message": "TrainFinder payload looks empty/unauthorized.", "meta": meta}), 200
+    return jsonify({"ok": True, "meta": meta, "data_keys": list(data.keys())})
 
-@app.get("/scan")
-def scan():
-    cookie = get_cookie()
-    s = requests.Session()
-    cities = [
-        ("Sydney", -33.8688, 151.2093),
-        ("Melbourne", -37.8136, 144.9631),
-        ("Brisbane", -27.4698, 153.0251),
-        ("Perth", -31.9523, 115.8613),
-        ("Adelaide", -34.9285, 138.6007),
-    ]
-    zms = [11, 12, 13]
-    out = []
-    for city, lat, lng in cities:
-        for zm in zms:
-            w = warmup(s, cookie, lat, lng, zm)
-            meta, _ = post_viewport(s, cookie, w.get("token",""),
-                                    {"lat": f"{lat:.6f}", "lng": f"{lng:.6f}", "zm": str(zm)})
-            out.append({
-                "city": city, "lat": lat, "lng": lng, "zm": zm,
-                "warmup_bytes": w["bytes"],
-                "viewport_bytes": meta["bytes"],
-                "looks_like_html": meta["looks_like_html"],
-            })
-    return jsonify({"count": len(out), "results": out})
+@app.get("/trains")
+def trains():
+    # Called by your dashboard front-end
+    try:
+        lat = float(request.args.get("lat", "-33.8688"))
+        lng = float(request.args.get("lng", "151.2093"))
+        zm  = float(request.args.get("zm", "10"))
+    except Exception:
+        return jsonify({"ok": False, "message": "Invalid lat/lng/zm"}), 400
+
+    bbox = request.args.get("bbox")
+    ref  = request.args.get("referer")
+
+    data, meta, ok = fetch_viewport(lat, lng, zm, bbox=bbox, referer=ref)
+    if not ok or not data:
+        # Return helpful diagnostics to the UI
+        # The front-end will display a message and show zero markers.
+        # You can see details in the browser console / Network tab.
+        meta = meta or {}
+        # include a small HTML sample to prove it's a login/HTML page if any:
+        if "sample" not in meta:
+            meta["sample"] = "(no sample)"
+        return jsonify({"ok": False, "message": "TrainFinder payload looks empty/unauthorized.", "meta": meta}), 200
+
+    # Normalize to a consistent shape for the front-end
+    # Expect data.get("tts") to be list of trains (if authorized)
+    tts = data.get("tts") if isinstance(data, dict) else None
+    return jsonify({"ok": True, "count": len(tts) if isinstance(tts, list) else 0, "data": data})
+
+# -------------------------------
+# Entrypoint (for local dev)
+# -------------------------------
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=PORT)
