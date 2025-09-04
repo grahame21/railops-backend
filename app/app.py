@@ -1,197 +1,248 @@
-import os, json, time, logging
-from typing import Tuple, Dict, Any, List, Optional
+import os, json, logging, re, time
+from typing import Any, Dict, Optional, Tuple, List
 
 import requests
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, request, jsonify, Response
 
-app = Flask(__name__)
-CORS(app)
-
+# -------------------------
+# Logging
+# -------------------------
+logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 log = logging.getLogger("railops")
-logging.basicConfig(level=logging.INFO, format="%(levelname)s:railops:%(message)s")
 
-# ------------------ Config (env) ------------------
-TRAINFINDER_BASE = "https://trainfinder.otenko.com"
-VIEW_URL = f"{TRAINFINDER_BASE}/home/nextlevel"
-API_URL  = f"{TRAINFINDER_BASE}/Home/GetViewPortData"
+# -------------------------
+# Config from env
+# -------------------------
+DEFAULT_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/127.0.0.0 Safari/537.36"
+)
 
-TF_ASPXAUTH   = os.getenv("TF_ASPXAUTH", "").strip()  # REQUIRED
-TF_SESSION    = os.getenv("TF_SESSION", "").strip()   # optional: ASP.NET_SessionId
-TF_AUTH2      = os.getenv("TF_AUTH2", "").strip()     # optional: any extra cookie name=value
-TF_EXTRA_COOKIES = os.getenv("TF_EXTRA_COOKIES", "").strip()  # optional: "k=v; k2=v2"
+TF_HOST = "https://trainfinder.otenko.com"
 
-TF_UA      = os.getenv("TF_UA", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36")
-TF_REFERER = os.getenv("TF_REFERER", "")  # if blank, built from lat/lng/zm
+def env(name: str, default: str = "") -> str:
+    return os.getenv(name, default).strip()
 
-DEFAULT_LAT = float(os.getenv("TF_DEFAULT_LAT", "-33.8688"))
-DEFAULT_LNG = float(os.getenv("TF_DEFAULT_LNG", "151.2093"))
-DEFAULT_ZM  = int(float(os.getenv("TF_DEFAULT_ZM", "10")))
-
-# ------------------ Helpers ------------------
 def build_referer(lat: float, lng: float, zm: int) -> str:
-    return TF_REFERER or f"{VIEW_URL}?lat={lat:.4f}&lng={lng:.4f}&zm={zm}"
+    return f"{TF_HOST}/home/nextlevel?lat={lat}&lng={lng}&zm={zm}"
 
-def extract_markers(payload: Dict[str, Any]) -> List[Dict[str, Any]]:
-    out: List[Dict[str, Any]] = []
+# -------------------------
+# Anti-forgery token helpers
+# -------------------------
 
-    def add(lat, lng, name=""):
-        try:
-            lat = float(lat); lng = float(lng)
-            if -90 <= lat <= 90 and -180 <= lng <= 180:
-                out.append({"lat": lat, "lng": lng, "name": str(name or "")})
-        except Exception:
-            pass
+TOKEN_COOKIE_NAME = "__RequestVerificationToken"
+TOKEN_HEADER_NAME = "RequestVerificationToken"   # typical ASP.NET AJAX header
+TOKEN_INPUT_RE = re.compile(
+    r'name=[\'"]__RequestVerificationToken[\'"]\s+value=[\'"]([^\'"]+)[\'"]',
+    re.IGNORECASE
+)
 
-    if not isinstance(payload, dict):
-        return out
+def extract_token_from_html(html: str) -> Optional[str]:
+    m = TOKEN_INPUT_RE.search(html or "")
+    if m:
+        return m.group(1)
+    return None
 
-    # Common shapes encountered:
-    atcs = payload.get("atcsObj")
-    if isinstance(atcs, dict):
-        for k, v in atcs.items():
-            if isinstance(v, dict):
-                lat = v.get("Lat") or v.get("lat")
-                lng = v.get("Lng") or v.get("lng")
-                name = v.get("Name") or v.get("name") or k
-                if lat is not None and lng is not None:
-                    add(lat, lng, name)
+def find_anti_forgery_token(resp: requests.Response, session: requests.Session) -> Optional[str]:
+    """
+    Try to locate the anti-forgery token in either:
+      - cookies named __RequestVerificationToken, OR
+      - hidden input __RequestVerificationToken in HTML.
+    """
+    # 1) Cookie on response or session
+    if TOKEN_COOKIE_NAME in resp.cookies:
+        return resp.cookies.get(TOKEN_COOKIE_NAME)
 
-    tts = payload.get("tts")
-    if isinstance(tts, list):
-        for v in tts:
-            if isinstance(v, dict):
-                lat = v.get("lat") or v.get("Lat")
-                lng = v.get("lng") or v.get("Lng")
-                name = v.get("name") or v.get("Name") or v.get("id") or ""
-                if lat is not None and lng is not None:
-                    add(lat, lng, name)
+    for c in session.cookies:
+        if c.name == TOKEN_COOKIE_NAME and c.domain.endswith("otenko.com"):
+            return c.value
 
-    places = payload.get("places")
-    if isinstance(places, list):
-        for v in places:
-            if isinstance(v, dict):
-                lat = v.get("lat") or v.get("Lat")
-                lng = v.get("lng") or v.get("Lng")
-                name = v.get("name") or v.get("Name") or ""
-                if lat is not None and lng is not None:
-                    add(lat, lng, name)
+    # 2) Hidden input in HTML
+    token_html = extract_token_from_html(resp.text)
+    if token_html:
+        return token_html
 
-    return out
+    return None
 
-def _apply_cookies(session: requests.Session):
-    # Minimal required cookie:
-    if TF_ASPXAUTH:
-        session.cookies.set("TF_ASPXAUTH", TF_ASPXAUTH, domain="trainfinder.otenko.com", path="/", secure=True)
-    # Optional cookies that sometimes matter:
-    if TF_SESSION:
-        session.cookies.set("ASP.NET_SessionId", TF_SESSION, domain="trainfinder.otenko.com", path="/", secure=True)
-    if TF_AUTH2:
-        # Expect TF_AUTH2 like "SomeCookie=abc123"
-        try:
-            name, val = TF_AUTH2.split("=", 1)
-            session.cookies.set(name.strip(), val.strip(), domain="trainfinder.otenko.com", path="/", secure=True)
-        except Exception:
-            pass
-    if TF_EXTRA_COOKIES:
-        # Format: "k1=v1; k2=v2"
-        for pair in TF_EXTRA_COOKIES.split(";"):
-            if "=" in pair:
-                name, val = pair.split("=", 1)
-                session.cookies.set(name.strip(), val.strip(), domain="trainfinder.otenko.com", path="/", secure=True)
+# -------------------------
+# TrainFinder fetch
+# -------------------------
 
-def fetch_viewport(lat: float, lng: float, zm: int, bbox: Optional[str]) -> Tuple[Optional[Dict[str, Any]], str, int, Dict[str, Any]]:
-    if not TF_ASPXAUTH:
-        return None, "TF_ASPXAUTH not set", 401, {"reason":"missing_cookie"}
-
+def new_session() -> requests.Session:
     s = requests.Session()
-    _apply_cookies(s)
-
-    referer = build_referer(lat, lng, zm)
-    # Headers that mimic browser XHR
-    headers = {
-        "User-Agent": TF_UA,
-        "Accept": "*/*",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Origin": TRAINFINDER_BASE,
-        "Referer": referer,
+    ua = env("TF_UA", DEFAULT_UA)
+    s.headers.update({
+        "User-Agent": ua,
+        "Accept": "application/json, text/javascript, */*; q=0.01",
         "X-Requested-With": "XMLHttpRequest",
-    }
+        "Origin": TF_HOST,
+    })
 
-    warm_status = None
-    try:
-        warm = s.get(referer, headers={"User-Agent": TF_UA, "Referer": TRAINFINDER_BASE}, timeout=12)
-        warm_status = warm.status_code
-        log.info("Warmup GET %s -> %s", warm.url, warm.status_code)
-    except Exception as e:
-        log.warning("Warmup failed: %s", e)
+    # Core cookies
+    auth = env("TF_ASPXAUTH")
+    sess = env("TF_SESSION")
+    extra = env("TF_EXTRA_COOKIES")  # "k1=v1; k2=v2"
 
-    form = {"lat": f"{lat:.5f}", "lng": f"{lng:.5f}", "zm": str(zm)}
+    jar = requests.cookies.RequestsCookieJar()
+    if auth:
+        jar.set("TF_ASPXAUTH", auth)
+    if sess:
+        jar.set("ASP.NET_SessionId", sess)
+
+    if extra:
+        for pair in [p.strip() for p in extra.split(";") if p.strip()]:
+            if "=" in pair:
+                k, v = pair.split("=", 1)
+                jar.set(k.strip(), v.strip())
+
+    s.cookies.update(jar)
+    return s
+
+def fetch_viewport(lat: float, lng: float, zm: int,
+                   bbox: Optional[str] = None) -> Tuple[Optional[Dict[str, Any]], str, int]:
+    """
+    Returns (json_or_none, raw_text, http_status)
+    """
+    s = new_session()
+    referer = build_referer(lat, lng, zm)
+    s.headers["Referer"] = referer
+
+    # Warmup: load the map page to get cookies + anti-forgery token
+    warm = s.get(referer, timeout=20)
+    log.info("Warmup GET %s -> %s (ctype=%s final=%s)",
+             referer, warm.status_code, warm.headers.get("Content-Type"), warm.url)
+
+    token = find_anti_forgery_token(warm, s)
+    if token:
+        s.headers[TOKEN_HEADER_NAME] = token
+        log.info("Found anti-forgery token (header set).")
+    else:
+        log.warning("No anti-forgery token found in cookies or HTML.")
+
+    # Build POST body
+    form = {"lat": f"{lat}", "lng": f"{lng}", "zm": f"{zm}"}
     if bbox:
         form["bbox"] = bbox
 
-    try:
-        r = s.post(API_URL, data=form, headers=headers, timeout=15)
-        log.info("POST %s -> %s", API_URL, r.status_code)
-        text = r.text
-        if r.status_code != 200:
-            return None, text, r.status_code, {"warmup_status": warm_status, "referer": referer}
+    r = s.post(f"{TF_HOST}/Home/GetViewPortData", data=form, timeout=25)
+    ctype = (r.headers.get("Content-Type") or "").lower()
+    log.info("POST GetViewPortData -> %s (ctype=%s) cookies_sent=%s",
+             r.status_code, ctype, {c.name: (c.value[:16] + "…") for c in s.cookies})
 
+    # Expect JSON; otherwise we likely got logged-out HTML
+    if "application/json" in ctype:
         try:
-            j = r.json()
+            return r.json(), r.text, r.status_code
         except Exception:
-            j = None
+            pass
 
-        return j, text, r.status_code, {"warmup_status": warm_status, "referer": referer}
-    except Exception as e:
-        return None, f"request error: {e}", 502, {"warmup_status": warm_status, "referer": referer}
+    # Not JSON -> return sample HTML so caller can display helpful error
+    return None, r.text[:512], r.status_code
 
-# ------------------ Routes ------------------
+# -------------------------
+# Data shaping
+# -------------------------
+
+def build_markers(tf_json: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """
+    Given TrainFinder JSON payload, extract points we can plot.
+    The TF payload often includes keys like 'places', 'tts' (trains?), etc.
+    This function is defensive and only emits markers if lat/lng exist.
+    """
+    markers: List[Dict[str, Any]] = []
+
+    # Common places bucket
+    places = tf_json.get("places") or []
+    for p in places:
+        lat = p.get("Lat") or p.get("lat")
+        lng = p.get("Lng") or p.get("lng")
+        if lat is None or lng is None:
+            continue
+        title = p.get("Name") or p.get("name") or "Place"
+        markers.append({
+            "type": "place",
+            "lat": float(lat),
+            "lng": float(lng),
+            "title": title,
+            "raw": p,
+        })
+
+    # Trains / tts? (depends on site naming)
+    tts = tf_json.get("tts") or []
+    for t in tts:
+        lat = t.get("Lat") or t.get("lat")
+        lng = t.get("Lng") or t.get("lng")
+        if lat is None or lng is None:
+            continue
+        label = t.get("TrainNo") or t.get("service") or "Train"
+        markers.append({
+            "type": "train",
+            "lat": float(lat),
+            "lng": float(lng),
+            "title": str(label),
+            "raw": t,
+        })
+
+    return markers
+
+# -------------------------
+# Flask app
+# -------------------------
+
+app = Flask(__name__)
+
 @app.get("/")
 def root():
-    return jsonify(ok=True, service="railops-json", time=int(time.time()))
+    return jsonify(ok=True, service="railops-json", message="ok")
 
 @app.get("/healthz")
 def healthz():
-    return "ok", 200
+    return Response("ok", mimetype="text/plain")
+
+@app.get("/debug")
+def debug():
+    info = {
+        "TF_ASPXAUTH_set": bool(env("TF_ASPXAUTH")),
+        "TF_SESSION_set": bool(env("TF_SESSION")),
+        "TF_EXTRA_COOKIES_present": bool(env("TF_EXTRA_COOKIES")),
+        "TF_UA_prefix": env("TF_UA", DEFAULT_UA)[:42],
+    }
+    return jsonify(info)
 
 @app.get("/trains")
 def trains():
     """
-    Query: lat,lng,zm,bbox
-    Response: { ok, markers:[{lat,lng,name}], meta:{...} }
+    Query string:
+      lat, lng, zm (required)
+      bbox (optional)
     """
     try:
-        lat = float(request.args.get("lat", DEFAULT_LAT))
-        lng = float(request.args.get("lng", DEFAULT_LNG))
-        zm  = int(float(request.args.get("zm", DEFAULT_ZM)))
+        lat = float(request.args.get("lat", ""))
+        lng = float(request.args.get("lng", ""))
+        zm  = int(request.args.get("zm", ""))
     except Exception:
-        lat, lng, zm = DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZM
+        return jsonify(ok=False, message="lat,lng,zm are required numeric query params"), 400
+
     bbox = request.args.get("bbox")
 
-    j, txt, code, meta = fetch_viewport(lat, lng, zm, bbox)
+    tf_json, raw, code = fetch_viewport(lat, lng, zm, bbox=bbox)
 
-    if code != 200 or j is None or not isinstance(j, dict):
-        sample = (txt or "")[:400]
-        log.warning("TrainFinder payload looks empty/unauthorized.")
-        return jsonify(ok=False,
-                       message="TrainFinder payload looks empty/unauthorized.",
-                       meta={"http_status": code, "sample": sample, **(meta or {})}), 200
+    if tf_json is None:
+        # Not JSON -> user probably not authenticated
+        return jsonify(
+            ok=False,
+            message="TrainFinder payload looks empty/unauthorized.",
+            meta={
+                "http_status": code,
+                "referer": build_referer(lat, lng, zm),
+                "sample": raw[:300],
+            },
+        ), 200
 
-    markers = extract_markers(j)
+    markers = build_markers(tf_json)
+    return jsonify(ok=True, count=len(markers), markers=markers)
 
-    try:
-        with open("/app/trains.json", "w") as f:
-            json.dump({"ts": int(time.time()), "markers": markers}, f)
-    except Exception:
-        pass
-
-    return jsonify({
-        "ok": True,
-        "markers": markers,
-        "meta": {
-            "count": len(markers),
-            "source_keys": list(j.keys()),
-            **(meta or {})
-        }
-    }), 200
+if __name__ == "__main__":
+    # Local debug
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "10000")))
