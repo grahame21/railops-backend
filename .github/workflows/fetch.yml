@@ -1,37 +1,27 @@
-name: TrainFinder Auto Fetch
-
+name: TrainFinder Fetch
 on:
   schedule:
-    - cron: "*/1 * * * *"   # every minute
-  workflow_dispatch:        # allows manual trigger
+    - cron: "*/2 * * * *"   # every 2 minutes (change later if you want)
+  workflow_dispatch:
 
 jobs:
-  update-trains:
+  fetch:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4 lxml
-
-      - name: Fetch live TrainFinder data
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Fetch live trains
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: python trainfinder_fetch.py
-
-      - name: Commit and push trains.json
+      - name: Commit trains.json
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
           git add trains.json
-          git commit -m "Auto-update trains.json [skip ci]" || echo "No changes"
-          git push
+          git commit -m "Auto-update trains.json [skip ci]" || true
+          git push || true
