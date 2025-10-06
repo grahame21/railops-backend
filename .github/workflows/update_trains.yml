@@ -1,0 +1,53 @@
+name: Update TrainFinder Feed
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"   # every 1 minute
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run TrainFinder update
+        env:
+          TRAINFINDER_COOKIE: ${{ secrets.TRAINFINDER_COOKIE }}
+        run: |
+          python3 - <<'PY'
+          import requests, json, time
+
+          cookie = "${{ secrets.TRAINFINDER_COOKIE }}"
+          url = "https://trainfinder.otenko.com/Home/GetViewPortData"
+          headers = {
+              "accept": "*/*",
+              "x-requested-with": "XMLHttpRequest",
+              "cookie": f".ASPXAUTH={cookie}"
+          }
+
+          payload = {}
+          r = requests.post(url, headers=headers, data=payload)
+          data = r.json() if r.ok else {"error": r.text}
+
+          with open("trains.json", "w") as f:
+              json.dump(data, f, indent=2)
+
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add trains.json
+          git commit -m "Auto update TrainFinder data" || echo "No changes"
+          git push
