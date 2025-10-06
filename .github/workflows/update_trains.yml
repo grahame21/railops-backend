@@ -1,15 +1,16 @@
-name: Update TrainFinder Feed
+name: Auto Login & Fetch TrainFinder Data
 
 on:
   schedule:
-    - cron: "*/1 * * * *"   # every 1 minute
+    - cron: "*/2 * * * *"   # every 2 minutes
   workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -18,36 +19,53 @@ jobs:
           python-version: 3.11
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests beautifulsoup4 lxml
 
-      - name: Run TrainFinder update
+      - name: Login & fetch data
         env:
-          TRAINFINDER_COOKIE: ${{ secrets.TRAINFINDER_COOKIE }}
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
           python3 - <<'PY'
-          import requests, json, time
+          import requests, json
+          from bs4 import BeautifulSoup
 
-          cookie = "${{ secrets.TRAINFINDER_COOKIE }}"
-          url = "https://trainfinder.otenko.com/Home/GetViewPortData"
-          headers = {
-              "accept": "*/*",
-              "x-requested-with": "XMLHttpRequest",
-              "cookie": f".ASPXAUTH={cookie}"
+          s = requests.Session()
+          login_url = "https://trainfinder.otenko.com/Home/NextLevel"
+          resp = s.get(login_url)
+          soup = BeautifulSoup(resp.text, "lxml")
+
+          # Prepare login form data
+          payload = {
+              "UserName": "${{ secrets.TRAINFINDER_USERNAME }}",
+              "Password": "${{ secrets.TRAINFINDER_PASSWORD }}",
+              "__RequestVerificationToken": soup.find('input', {'name': '__RequestVerificationToken'})['value']
           }
 
-          payload = {}
-          r = requests.post(url, headers=headers, data=payload)
-          data = r.json() if r.ok else {"error": r.text}
+          # Attempt login
+          r = s.post(login_url, data=payload)
+          if "Logout" not in r.text:
+              print("Login failed. Check credentials.")
+              exit(1)
 
+          print("✅ Logged in successfully")
+
+          # Now fetch live viewport data
+          fetch_url = "https://trainfinder.otenko.com/Home/GetViewPortData"
+          headers = {"x-requested-with": "XMLHttpRequest"}
+          res = s.post(fetch_url, headers=headers)
+
+          data = res.json() if res.ok else {"error": res.text}
           with open("trains.json", "w") as f:
               json.dump(data, f, indent=2)
 
+          print("✅ trains.json updated")
           PY
 
-      - name: Commit and push
+      - name: Commit and push trains.json
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add trains.json
-          git commit -m "Auto update TrainFinder data" || echo "No changes"
+          git commit -m "Auto update TrainFinder feed" || echo "No new data"
           git push
