@@ -2,7 +2,7 @@ name: TrainFinder Fetch (Headless Browser)
 
 on:
   schedule:
-    - cron: "*/1 * * * *"   # every minute
+    - cron: "*/1 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Python deps
+      - name: Install Python deps and browser
         run: |
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium
