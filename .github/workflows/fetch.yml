@@ -1,35 +1,37 @@
-name: Update Train Data
+name: TrainFinder Auto Fetch
+
 on:
   schedule:
-    - cron: "*/10 * * * *"  # every 10 minutes
-  workflow_dispatch:
+    - cron: "*/1 * * * *"   # every minute
+  workflow_dispatch:        # allows manual trigger
 
 jobs:
-  update:
+  update-trains:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 lxml
+        run: |
+          pip install requests beautifulsoup4 lxml
 
-      - name: Fetch TrainFinder data
-        run: python trainfinder_fetch.py
+      - name: Fetch live TrainFinder data
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+        run: python trainfinder_fetch.py
 
-      - name: Commit updated trains.json
+      - name: Commit and push trains.json
         run: |
-          git config user.name "RailOpsBot"
-          git config user.email "actions@github.com"
-          git add trains.json || true
-          git add login_debug.html || true
-          git commit -m "Auto update trains.json" || echo "No changes"
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add trains.json
+          git commit -m "Auto-update trains.json [skip ci]" || echo "No changes"
           git push
