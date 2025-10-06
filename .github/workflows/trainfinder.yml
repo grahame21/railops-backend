@@ -3,7 +3,7 @@ name: TrainFinder Auto Fetch
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/2 * * * *"  # every 2 minutes for testing (later set to */30 * * * *)
+    - cron: "*/2 * * * *"  # every 2 minutes for testing
 
 jobs:
   fetch:
@@ -21,68 +21,100 @@ jobs:
       - name: Install deps
         run: pip install requests beautifulsoup4 lxml
 
-      - name: Login & fetch data
+      - name: Login & fetch data (resilient)
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
           python3 - <<'PY'
-          import json, sys, re
+          import os, json, sys
           from urllib.parse import urljoin
           import requests
           from bs4 import BeautifulSoup
 
           BASE = "https://trainfinder.otenko.com/"
+          LOGIN_PATHS = ["Home/NextLevel", "Account/Login", "Home/Login"]
+          VIEW_URL = urljoin(BASE, "Home/GetViewPortData")
+
+          def get_token(session, html):
+            """Try multiple ways to obtain anti-forgery token."""
+            soup = BeautifulSoup(html, "lxml")
+            # 1) Hidden input
+            inp = soup.select_one('input[name="__RequestVerificationToken"]')
+            if inp and inp.get("value"): 
+              return inp["value"], "form"
+            # 2) Meta tag variant
+            meta = soup.select_one('meta[name="__RequestVerificationToken"]')
+            if meta and meta.get("content"):
+              return meta["content"], "meta"
+            # 3) Cookie name variants
+            for name in ["__RequestVerificationToken", "RequestVerificationToken"]:
+              if name in session.cookies:
+                return session.cookies.get(name), "cookie"
+            return None, None
+
+          def find_form_payload(html):
+            soup = BeautifulSoup(html, "lxml")
+            form = soup.find("form") or soup
+            payload = {}
+            for i in form.find_all("input"):
+              n = i.get("name")
+              if not n: continue
+              payload[n] = i.get("value", "")
+            uname_key = next((k for k in payload if "user" in k.lower() or "email" in k.lower()), "UserName")
+            pwd_key   = next((k for k in payload if "pass" in k.lower()), "Password")
+            action    = form.get("action") or "Home/NextLevel"
+            return payload, uname_key, pwd_key, action
+
           s = requests.Session()
-          s.headers.update({
-              "User-Agent": "Mozilla/5.0 (X11; Linux x86_64)"
-          })
+          s.headers.update({"User-Agent": "Mozilla/5.0", "Accept": "text/html,application/xhtml+xml"})
+          username = os.environ.get("TRAINFINDER_USERNAME","")
+          password = os.environ.get("TRAINFINDER_PASSWORD","")
 
-          # --- Step 1: Try login page
-          resp = s.get(urljoin(BASE, "Home/NextLevel"), allow_redirects=True)
-          soup = BeautifulSoup(resp.text, "lxml")
-          form = soup.find("form") or soup
+          # --- Try each known login path until one works
+          logged_in = False
+          last_error = ""
+          for path in LOGIN_PATHS:
+            url = urljoin(BASE, path)
+            r = s.get(url, allow_redirects=True, timeout=20)
+            payload, uname_key, pwd_key, action = find_form_payload(r.text)
+            token, source = get_token(s, r.text)
+            if token:
+              payload["__RequestVerificationToken"] = token
 
-          action = form.get("action") or "Home/NextLevel"
-          login_url = urljoin(BASE, action)
+            payload[uname_key] = username
+            payload[pwd_key]   = password
 
-          payload = {}
-          for i in form.find_all("input"):
-              n, v = i.get("name"), i.get("value", "")
-              if n: payload[n] = v
+            post_url = urljoin(BASE, action)
+            headers  = {
+              "Referer": url,
+              "Origin": BASE.rstrip("/"),
+            }
+            if token:
+              headers["RequestVerificationToken"] = token
 
-          # find username/password fields
-          uname = next((k for k in payload if "user" in k.lower() or "email" in k.lower()), "UserName")
-          pwd = next((k for k in payload if "pass" in k.lower()), "Password")
+            pr = s.post(post_url, data=payload, headers=headers, allow_redirects=True, timeout=20)
+            if any(x in pr.text for x in ["Logout", "Sign out"]):
+              print(f"✅ Logged in via {path} (token source: {source or 'none'})")
+              logged_in = True
+              break
+            last_error = f"Login via {path} didn’t show Logout/Sign out."
 
-          payload[uname] = "${{ secrets.TRAINFINDER_USERNAME }}"
-          payload[pwd] = "${{ secrets.TRAINFINDER_PASSWORD }}"
+          if not logged_in:
+            print("❌ Login failed. " + last_error)
+            open("login_debug.html", "w", encoding="utf-8").write(pr.text if 'pr' in locals() else r.text)
+            sys.exit(1)
 
-          token = soup.find("input", {"name": "__RequestVerificationToken"})
-          if token:
-              payload["__RequestVerificationToken"] = token.get("value", "")
-
-          # --- Step 2: Login
-          r = s.post(login_url, data=payload)
-          if "Logout" not in r.text and "Sign out" not in r.text:
-              print("❌ Login failed. Check credentials or page layout.")
-              sys.exit(1)
-          print("✅ Logged in")
-
-          # --- Step 3: Fetch live trains
-          url = urljoin(BASE, "Home/GetViewPortData")
-          headers = {"X-Requested-With": "XMLHttpRequest"}
-          res = s.post(url, headers=headers)
+          # --- Fetch live data
+          headers = {"X-Requested-With": "XMLHttpRequest", "Referer": BASE}
+          res = s.post(VIEW_URL, headers=headers, timeout=30)
           try:
-              data = res.json()
-          except:
-              print("❌ Response not JSON:", res.status_code)
-              data = {"error": res.text[:200]}
-
-          with open("trains.json", "w") as f:
-              json.dump(data, f, indent=2)
+            data = res.json()
+          except Exception:
+            data = {"status": res.status_code, "preview": res.text[:400]}
+          with open("trains.json", "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
           print("✅ trains.json saved")
-
           PY
 
       - name: Commit & push trains.json
@@ -92,3 +124,10 @@ jobs:
           git add trains.json
           git commit -m "Update trains.json" || echo "No changes"
           git push
+
+      - name: Upload login_debug.html (if exists)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: login-debug
+          path: login_debug.html
