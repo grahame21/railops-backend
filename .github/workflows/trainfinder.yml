@@ -1,0 +1,51 @@
+name: TrainFinder → trains.json (scheduled)
+
+on:
+  schedule:
+    # Every ~6 hours at a slightly odd minute to look human,
+    # change if you prefer (UTC times).
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  fetch-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # allow pushing the trains.json branch
+    steps:
+      - name: Check out (shallow)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Random jitter (0–7 min)
+        run: sleep $(( RANDOM % 420 ))
+
+      - name: Fetch TrainFinder data
+        env:
+          COOKIE: ${{ secrets.TRAINFINDER_COOKIE }}
+          GET_URL: ${{ secrets.TRAINFINDER_GET_URL }}
+        run: |
+          set -e
+          mkdir -p _data
+          if [ -z "$COOKIE" ] || [ -z "$GET_URL" ]; then
+            echo "Missing COOKIE or GET_URL secret; writing placeholder."
+            echo '{"error":"missing_secrets","items":[]}' > _data/trains.json
+          else
+            # Fetch; add a timestamp. jq is preinstalled on ubuntu-latest.
+            curl -fsS -H "Cookie: ${COOKIE}" "$GET_URL" -o _data/trains_raw.json || echo '{}' > _data/trains_raw.json
+            TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            jq --arg ts "$TS" '.timestamp=$ts' _data/trains_raw.json > _data/trains.json || echo '{"items":[]}' > _data/trains.json
+          fi
+          jq -r .timestamp _data/trains.json || true
+
+      - name: Publish trains.json to branch "trains-data"
+        run: |
+          set -e
+          cp -f _data/trains.json trains.json
+          git config user.name  "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -B trains-data
+          git add trains.json
+          git commit -m "chore(data): update trains.json [skip ci]" || echo "No changes to commit"
+          git push -f origin trains-data
