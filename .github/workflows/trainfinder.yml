@@ -1,51 +1,94 @@
-name: TrainFinder → trains.json (scheduled)
+name: TrainFinder Auto Fetch
 
 on:
-  schedule:
-    # Every ~6 hours at a slightly odd minute to look human,
-    # change if you prefer (UTC times).
-    - cron: "17 */6 * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "*/2 * * * *"  # every 2 minutes for testing (later set to */30 * * * *)
 
 jobs:
-  fetch-and-publish:
+  fetch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # allow pushing the trains.json branch
+
     steps:
-      - name: Check out (shallow)
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          fetch-depth: 0
+          python-version: "3.11"
 
-      - name: Random jitter (0–7 min)
-        run: sleep $(( RANDOM % 420 ))
+      - name: Install deps
+        run: pip install requests beautifulsoup4 lxml
 
-      - name: Fetch TrainFinder data
+      - name: Login & fetch data
         env:
-          COOKIE: ${{ secrets.TRAINFINDER_COOKIE }}
-          GET_URL: ${{ secrets.TRAINFINDER_GET_URL }}
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
-          set -e
-          mkdir -p _data
-          if [ -z "$COOKIE" ] || [ -z "$GET_URL" ]; then
-            echo "Missing COOKIE or GET_URL secret; writing placeholder."
-            echo '{"error":"missing_secrets","items":[]}' > _data/trains.json
-          else
-            # Fetch; add a timestamp. jq is preinstalled on ubuntu-latest.
-            curl -fsS -H "Cookie: ${COOKIE}" "$GET_URL" -o _data/trains_raw.json || echo '{}' > _data/trains_raw.json
-            TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-            jq --arg ts "$TS" '.timestamp=$ts' _data/trains_raw.json > _data/trains.json || echo '{"items":[]}' > _data/trains.json
-          fi
-          jq -r .timestamp _data/trains.json || true
+          python3 - <<'PY'
+          import json, sys, re
+          from urllib.parse import urljoin
+          import requests
+          from bs4 import BeautifulSoup
 
-      - name: Publish trains.json to branch "trains-data"
+          BASE = "https://trainfinder.otenko.com/"
+          s = requests.Session()
+          s.headers.update({
+              "User-Agent": "Mozilla/5.0 (X11; Linux x86_64)"
+          })
+
+          # --- Step 1: Try login page
+          resp = s.get(urljoin(BASE, "Home/NextLevel"), allow_redirects=True)
+          soup = BeautifulSoup(resp.text, "lxml")
+          form = soup.find("form") or soup
+
+          action = form.get("action") or "Home/NextLevel"
+          login_url = urljoin(BASE, action)
+
+          payload = {}
+          for i in form.find_all("input"):
+              n, v = i.get("name"), i.get("value", "")
+              if n: payload[n] = v
+
+          # find username/password fields
+          uname = next((k for k in payload if "user" in k.lower() or "email" in k.lower()), "UserName")
+          pwd = next((k for k in payload if "pass" in k.lower()), "Password")
+
+          payload[uname] = "${{ secrets.TRAINFINDER_USERNAME }}"
+          payload[pwd] = "${{ secrets.TRAINFINDER_PASSWORD }}"
+
+          token = soup.find("input", {"name": "__RequestVerificationToken"})
+          if token:
+              payload["__RequestVerificationToken"] = token.get("value", "")
+
+          # --- Step 2: Login
+          r = s.post(login_url, data=payload)
+          if "Logout" not in r.text and "Sign out" not in r.text:
+              print("❌ Login failed. Check credentials or page layout.")
+              sys.exit(1)
+          print("✅ Logged in")
+
+          # --- Step 3: Fetch live trains
+          url = urljoin(BASE, "Home/GetViewPortData")
+          headers = {"X-Requested-With": "XMLHttpRequest"}
+          res = s.post(url, headers=headers)
+          try:
+              data = res.json()
+          except:
+              print("❌ Response not JSON:", res.status_code)
+              data = {"error": res.text[:200]}
+
+          with open("trains.json", "w") as f:
+              json.dump(data, f, indent=2)
+          print("✅ trains.json saved")
+
+          PY
+
+      - name: Commit & push trains.json
         run: |
-          set -e
-          cp -f _data/trains.json trains.json
-          git config user.name  "github-actions"
-          git config user.email "actions@users.noreply.github.com"
-          git checkout -B trains-data
+          git config user.name "RailOps Bot"
+          git config user.email "bot@railops.local"
           git add trains.json
-          git commit -m "chore(data): update trains.json [skip ci]" || echo "No changes to commit"
-          git push -f origin trains-data
+          git commit -m "Update trains.json" || echo "No changes"
+          git push
