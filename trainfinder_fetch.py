@@ -1,52 +1,86 @@
 # trainfinder_fetch.py
-import requests, json
+import os, sys, json, requests
 from bs4 import BeautifulSoup
-import os
 
-username = os.getenv("TRAINFINDER_USERNAME")
-password = os.getenv("TRAINFINDER_PASSWORD")
+BASE = "https://trainfinder.otenko.com"
+LOGIN = f"{BASE}/Home/NextLevel"
+ALT_LOGIN = f"{BASE}/Account/Login"
+VIEWPORT = f"{BASE}/Home/GetViewPortData"
+
+U = os.environ.get("TRAINFINDER_USERNAME", "").strip()
+P = os.environ.get("TRAINFINDER_PASSWORD", "").strip()
+if not U or not P:
+    print("❌ Missing TRAINFINDER_USERNAME or TRAINFINDER_PASSWORD")
+    sys.exit(1)
 
 s = requests.Session()
-login_url = "https://trainfinder.otenko.com/Home/NextLevel"
+s.headers.update({
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": BASE,
+})
 
-# Get login page
-resp = s.get(login_url)
-soup = BeautifulSoup(resp.text, "lxml")
+def token_from(html, cookies):
+    soup = BeautifulSoup(html, "lxml")
+    inp = soup.find("input", attrs={"name": "__RequestVerificationToken"})
+    if inp and inp.get("value"): return inp["value"]
+    meta = soup.find("meta", attrs={"name": "__RequestVerificationToken"})
+    if meta and meta.get("content"): return meta["content"]
+    for k in cookies.keys():
+        if "__RequestVerificationToken" in k:
+            return cookies.get(k)
+    return None
 
-token_input = soup.find("input", {"name": "__RequestVerificationToken"})
-if not token_input:
-    print("❌ Could not find verification token — login page may have changed.")
-    exit(1)
+def try_login(url):
+    r1 = s.get(url, allow_redirects=True, timeout=30)
+    tok = token_from(r1.text, s.cookies)
+    if not tok: return False, "no-token"
+    hdrs = {
+        "Origin": BASE, "Referer": url,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "XMLHttpRequest",
+        "RequestVerificationToken": tok,
+    }
+    for payload in (
+        {"UserName": U, "Password": P, "__RequestVerificationToken": tok},
+        {"Email": U, "Password": P, "__RequestVerificationToken": tok},
+    ):
+        r2 = s.post(url, data=payload, headers=hdrs, allow_redirects=True, timeout=30)
+        if ("Logout" in r2.text) or ("Sign out" in r2.text) or ("/Login" not in r2.url):
+            return True, "ok"
+    return False, "bad-creds"
 
-token = token_input["value"]
+ok, why = try_login(LOGIN)
+if not ok: ok, why = try_login(ALT_LOGIN)
+if not ok:
+    print("❌ Could not log in:", why)
+    sys.exit(1)
 
-# Prepare login payload
-payload = {
-    "UserName": username,
-    "Password": password,
-    "__RequestVerificationToken": token
-}
+print("✅ Logged in")
 
-# Login
-r = s.post(login_url, data=payload)
-if "Logout" not in r.text:
-    print("❌ Login failed — check username/password.")
-    exit(1)
+# fresh token for AJAX, if they rotate
+r_home = s.get(BASE, timeout=30)
+ajax_tok = token_from(r_home.text, s.cookies)
+headers = {"X-Requested-With": "XMLHttpRequest", "Referer": BASE + "/"}
+if ajax_tok: headers["RequestVerificationToken"] = ajax_tok
 
-print("✅ Logged in successfully")
+# Try POST then GET
+for m in ("post","get"):
+    try:
+        r = getattr(s, m)(VIEWPORT, headers=headers, timeout=30)
+        if r.ok:
+            try:
+                data = r.json()
+                with open("trains.json","w",encoding="utf-8") as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+                print("✅ trains.json updated")
+                sys.exit(0)
+            except ValueError:
+                pass
+    except requests.RequestException:
+        pass
 
-# Fetch live data
-fetch_url = "https://trainfinder.otenko.com/Home/GetViewPortData"
-headers = {"x-requested-with": "XMLHttpRequest"}
-
-res = s.post(fetch_url, headers=headers)
-if not res.ok:
-    print("❌ Failed to fetch data:", res.status_code)
-    print(res.text)
-    exit(1)
-
-data = res.json()
-with open("trains.json", "w") as f:
-    json.dump(data, f, indent=2)
-
-print("✅ trains.json updated successfully")
+print("❌ Failed to fetch viewport data.", r.status_code if 'r' in locals() else "no response")
+print((r.text[:400]+"...") if 'r' in locals() else "")
+sys.exit(1)
