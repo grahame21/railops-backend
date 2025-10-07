@@ -1,88 +1,50 @@
 name: TrainFinder Fetch (Playwright)
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
   schedule:
-    - cron: "17 */12 * * *"
-
-permissions:
-  contents: write
+    - cron: "17 */6 * * *"  # every 6 hours at :17 (jitter-friendly)
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    permissions:
+      contents: write
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Playwright
+      - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install playwright==1.46.0
-          python -m playwright install --with-deps chromium
+          pip install playwright==1.45.0
+          playwright install --with-deps chromium
 
-      # If this step errors we still continue so later steps can upload artifacts.
-      - name: Fetch live trains (headless)
-        continue-on-error: true
+      - name: Run headless fetch
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
-          python trainfinder_fetch_pw.py || echo "fetch step returned non-zero"
-          test -f trains.json && echo "✅ trains.json generated" || echo "no trains.json"
+          python trainfinder_fetch_pw.py
+          test -f trains.json && echo "✅ trains.json generated"
 
-      - name: Commit trains.json (and debug if present)
+      - name: Commit trains.json
+        if: success()
         run: |
-          git config user.name  "railops-bot"
-          git config user.email "railops-bot@users.noreply.github.com"
-          git add trains.json debug_artifacts || true
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: update trains.json (auto)"
-            git push
-          else
-            echo "No changes to commit."
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add trains.json
+          git commit -m "chore(data): update trains.json [skip ci]" || echo "No changes"
+          git push
 
-      - name: Ensure artifact folder exists (always)
-        if: always()
-        run: |
-          mkdir -p debug_artifacts
-          if ! ls debug_artifacts/* >/dev/null 2>&1; then
-            echo "No screenshots/HTML were produced in this run." > debug_artifacts/README.txt
-          fi
-          echo "Listing:" && ls -lah debug_artifacts || true
-
-      - name: Add debug preview to summary
-        if: always()
-        run: |
-          echo "## Debug artifacts" >> $GITHUB_STEP_SUMMARY
-          if ls debug_artifacts/*.png >/dev/null 2>&1; then
-            for f in debug_artifacts/*.png; do
-              echo "### ${f}" >> $GITHUB_STEP_SUMMARY
-              echo "![](${f})" >> $GITHUB_STEP_SUMMARY
-            done
-          else
-            echo "_No PNG screenshots found in ./debug_artifacts_" >> $GITHUB_STEP_SUMMARY
-          fi
-          if ls debug_artifacts/*.html >/dev/null 2>&1; then
-            echo "## Debug HTML (first 120 lines)" >> $GITHUB_STEP_SUMMARY
-            for f in debug_artifacts/*.html; do
-              echo "### ${f}" >> $GITHUB_STEP_SUMMARY
-              echo '<details><summary>show</summary>' >> $GITHUB_STEP_SUMMARY
-              head -n 120 "$f" >> $GITHUB_STEP_SUMMARY
-              echo '</details>' >> $GITHUB_STEP_SUMMARY
-            done
-          fi
-
-      - name: Upload debug artifacts (ZIP)
+      - name: Upload debug artifacts (screenshots & HTML)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-trainfinder
-          path: debug_artifacts/
+          name: debug_artifacts
+          path: debug_artifacts
           if-no-files-found: warn
