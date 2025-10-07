@@ -1,18 +1,20 @@
-name: TrainFinder Fetch (Headless Browser)
+name: TrainFinder Fetch (Playwright)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
   schedule:
-    - cron: "*/5 * * * *"
+    # every ~13 hours at :17 to look less "robotic"
+    - cron: "17 */13 * * *"
+
+permissions:
+  contents: write
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -20,54 +22,28 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Playwright
+      - name: Install Python deps (Playwright)
         run: |
+          python -m pip install --upgrade pip
           pip install playwright
           python -m playwright install --with-deps chromium
 
-      - name: Fetch TrainFinder data
+      - name: Fetch trains.json via Playwright
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
-        run: python trainfinder_fetch_pw.py
-
-      - name: Commit and push trains.json
-        if: success()
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add trains.json
-          git commit -m "Auto update trains.json" || echo "No changes"
-          git push
+          python trainfinder_fetch_pw.py
+          test -f trains.json && echo "trains.json size: $(wc -c < trains.json) bytes"
 
-      # 👇 Show screenshots inline in the job summary if we failed
-      - name: Add debug preview to summary
-        if: failure()
+      - name: Commit if trains.json changed
         run: |
-          echo "## Debug screenshots" >> $GITHUB_STEP_SUMMARY
-          if ls debug/*.png >/dev/null 2>&1; then
-            for f in debug/*.png; do
-              echo "### $f" >> $GITHUB_STEP_SUMMARY
-              echo "![]($f)" >> $GITHUB_STEP_SUMMARY
-            done
+          git config user.name  "railops-bot"
+          git config user.email "railops-bot@users.noreply.github.com"
+          git add trains.json debug.png debug.html || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update trains.json (auto)"
+            git push
           else
-            echo "_No PNG screenshots found in ./debug_" >> $GITHUB_STEP_SUMMARY
+            echo "No changes; nothing to commit."
           fi
-          if ls debug/*.html >/dev/null 2>&1; then
-            echo "## Debug HTML (first 100 lines)" >> $GITHUB_STEP_SUMMARY
-            for f in debug/*.html; do
-              echo "### $f" >> $GITHUB_STEP_SUMMARY
-              echo '<details><summary>show</summary>' >> $GITHUB_STEP_SUMMARY
-              head -n 100 "$f" >> $GITHUB_STEP_SUMMARY
-              echo '</details>' >> $GITHUB_STEP_SUMMARY
-            done
-          fi
-
-      # Still upload files as an artifact so you can download everything
-      - name: Upload debug artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-trainfinder
-          path: debug/
-          if-no-files-found: ignore
