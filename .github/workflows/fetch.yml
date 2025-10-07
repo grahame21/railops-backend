@@ -3,7 +3,7 @@ name: TrainFinder Fetch (Playwright)
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "17 */12 * * *"   # every 12 hours at :17
+    - cron: "17 */12 * * *"
 
 permissions:
   contents: write
@@ -11,7 +11,6 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,13 +26,15 @@ jobs:
           pip install playwright==1.46.0
           python -m playwright install --with-deps chromium
 
+      # If this step errors we still continue so later steps can upload artifacts.
       - name: Fetch live trains (headless)
+        continue-on-error: true
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
-          python trainfinder_fetch_pw.py
-          test -f trains.json && echo "✅ trains.json generated"
+          python trainfinder_fetch_pw.py || echo "fetch step returned non-zero"
+          test -f trains.json && echo "✅ trains.json generated" || echo "no trains.json"
 
       - name: Commit trains.json (and debug if present)
         run: |
@@ -47,11 +48,19 @@ jobs:
             echo "No changes to commit."
           fi
 
-      # Inline preview of screenshots/HTML if anything failed
-      - name: Add debug preview to summary
-        if: failure()
+      - name: Ensure artifact folder exists (always)
+        if: always()
         run: |
-          echo "## Debug screenshots" >> $GITHUB_STEP_SUMMARY
+          mkdir -p debug_artifacts
+          if ! ls debug_artifacts/* >/dev/null 2>&1; then
+            echo "No screenshots/HTML were produced in this run." > debug_artifacts/README.txt
+          fi
+          echo "Listing:" && ls -lah debug_artifacts || true
+
+      - name: Add debug preview to summary
+        if: always()
+        run: |
+          echo "## Debug artifacts" >> $GITHUB_STEP_SUMMARY
           if ls debug_artifacts/*.png >/dev/null 2>&1; then
             for f in debug_artifacts/*.png; do
               echo "### ${f}" >> $GITHUB_STEP_SUMMARY
@@ -70,10 +79,10 @@ jobs:
             done
           fi
 
-      - name: Upload debug artifacts
+      - name: Upload debug artifacts (ZIP)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: debug-trainfinder
           path: debug_artifacts/
-          if-no-files-found: ignore
+          if-no-files-found: warn
