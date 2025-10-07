@@ -1,31 +1,28 @@
 name: TrainFinder Fetch (Headless Browser)
 
 on:
-  schedule:
-    - cron: "*/1 * * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"   # every 5 minutes
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Python deps and browser
+      - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install playwright
           python -m playwright install --with-deps chromium
 
-      - name: Fetch live TrainFinder data (headless)
+      - name: Fetch TrainFinder data
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
@@ -33,8 +30,8 @@ jobs:
 
       - name: Commit and push trains.json
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
           git add trains.json
-          git commit -m "Auto-update trains.json [skip ci]" || echo "No changes"
-          git push || true
+          git commit -m "Auto update trains.json" || echo "No changes"
+          git push
