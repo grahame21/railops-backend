@@ -3,7 +3,7 @@ name: TrainFinder Fetch (Playwright)
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "17 */12 * * *"  # every 12 hours
+    - cron: "17 */12 * * *"   # every 12 hours at :17
 
 permissions:
   contents: write
@@ -11,6 +11,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,12 +21,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install Playwright
         run: |
-          pip install playwright
-          playwright install --with-deps chromium
+          python -m pip install --upgrade pip
+          pip install playwright==1.46.0
+          python -m playwright install --with-deps chromium
 
-      - name: Fetch live trains
+      - name: Fetch live trains (headless)
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
@@ -33,10 +35,45 @@ jobs:
           python trainfinder_fetch_pw.py
           test -f trains.json && echo "✅ trains.json generated"
 
-      - name: Commit update
+      - name: Commit trains.json (and debug if present)
         run: |
-          git config user.name "railops-bot"
+          git config user.name  "railops-bot"
           git config user.email "railops-bot@users.noreply.github.com"
           git add trains.json debug_artifacts || true
-          git commit -m "auto: update trains.json" || echo "no changes"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update trains.json (auto)"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
+      # Inline preview of screenshots/HTML if anything failed
+      - name: Add debug preview to summary
+        if: failure()
+        run: |
+          echo "## Debug screenshots" >> $GITHUB_STEP_SUMMARY
+          if ls debug_artifacts/*.png >/dev/null 2>&1; then
+            for f in debug_artifacts/*.png; do
+              echo "### ${f}" >> $GITHUB_STEP_SUMMARY
+              echo "![](${f})" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "_No PNG screenshots found in ./debug_artifacts_" >> $GITHUB_STEP_SUMMARY
+          fi
+          if ls debug_artifacts/*.html >/dev/null 2>&1; then
+            echo "## Debug HTML (first 120 lines)" >> $GITHUB_STEP_SUMMARY
+            for f in debug_artifacts/*.html; do
+              echo "### ${f}" >> $GITHUB_STEP_SUMMARY
+              echo '<details><summary>show</summary>' >> $GITHUB_STEP_SUMMARY
+              head -n 120 "$f" >> $GITHUB_STEP_SUMMARY
+              echo '</details>' >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-trainfinder
+          path: debug_artifacts/
+          if-no-files-found: ignore
