@@ -8,6 +8,9 @@ on:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -37,6 +40,30 @@ jobs:
           git commit -m "Auto update trains.json" || echo "No changes"
           git push
 
+      # 👇 Show screenshots inline in the job summary if we failed
+      - name: Add debug preview to summary
+        if: failure()
+        run: |
+          echo "## Debug screenshots" >> $GITHUB_STEP_SUMMARY
+          if ls debug/*.png >/dev/null 2>&1; then
+            for f in debug/*.png; do
+              echo "### $f" >> $GITHUB_STEP_SUMMARY
+              echo "![]($f)" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "_No PNG screenshots found in ./debug_" >> $GITHUB_STEP_SUMMARY
+          fi
+          if ls debug/*.html >/dev/null 2>&1; then
+            echo "## Debug HTML (first 100 lines)" >> $GITHUB_STEP_SUMMARY
+            for f in debug/*.html; do
+              echo "### $f" >> $GITHUB_STEP_SUMMARY
+              echo '<details><summary>show</summary>' >> $GITHUB_STEP_SUMMARY
+              head -n 100 "$f" >> $GITHUB_STEP_SUMMARY
+              echo '</details>' >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+
+      # Still upload files as an artifact so you can download everything
       - name: Upload debug artifacts
         if: failure()
         uses: actions/upload-artifact@v4
