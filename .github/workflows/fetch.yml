@@ -1,53 +1,47 @@
-name: TrainFinder Fetch
+name: TrainFinder Fetch (every 5 min)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes (GitHub minimum)
+    - cron: "*/5 * * * *"   # GitHub Actions won't run more frequently than every 5 minutes
+
+permissions:
+  contents: write
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
-            python -m pip install --upgrade pip
-            pip install requests playwright
-            python -m playwright install --with-deps chromium
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
 
-      - name: Login + AU sweep → trains.json
+      - name: Login + fetch
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
           python login_and_sweep.py
-          echo "trains.json size: $(wc -c < trains.json) bytes"
+          test -f trains.json && echo "✅ trains.json generated"
 
-      - name: Commit & push trains.json
+      - name: Commit trains.json if changed
         run: |
-          git config user.name  "github-actions"
-          git config user.email "github-actions@github.com"
-          git add trains.json
-          git commit -m "Auto-update trains.json [skip ci]" || echo "No changes"
-          git push
-
-      - name: Upload debug artifacts (if any)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-artifacts
-          path: |
-            debug_after_submit.png
-            debug_after_submit.html
-            debug_artifacts/*
-            trains.json
-          if-no-files-found: warn
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          if ! git diff --quiet -- trains.json; then
+            git add trains.json
+            git commit -m "Auto-update trains.json [skip ci]" || true
+            git push
+          else
+            echo "No changes in trains.json"
+          fi
