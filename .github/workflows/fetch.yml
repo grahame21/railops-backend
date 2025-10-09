@@ -1,57 +1,35 @@
-name: fetch
+name: TrainFinder Fetch (Actions)
 
 on:
   workflow_dispatch:
   schedule:
-    # runs every hour (you can change it)
-    - cron: "0 * * * *"
+    - cron: "*/5 * * * *"   # every 5 minutes (GitHub minimum)
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install deps (requests + Playwright)
         run: |
-          python -m pip install --upgrade pip
-          pip install playwright requests
-          playwright install --with-deps chromium
+          pip install requests playwright
+          python -m playwright install --with-deps chromium
 
-      - name: Log in to TrainFinder (Playwright)
+      - name: Run login + sweep (one pass)
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
-          python trainfinder_fetch_pw.py
+          python login_and_sweep.py
+          test -f trains.json && echo "trains.json size: $(wc -c < trains.json) bytes"
 
-      - name: Fetch live TrainFinder data
-        run: |
-          python fetch_trains.py
-
-      - name: Commit & push trains.json
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add trains.json cookie.txt
-          git commit -m "Auto-update trains.json [skip ci]" || echo "No changes"
-          git push
-
-      - name: Upload debug artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Commit trains.json
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          name: debug-artifacts
-          path: |
-            debug_artifacts/*.png
-            debug_artifacts/*.html
-            cookie.txt
-            trains.json
-          if-no-files-found: warn
+          commit_message: "Auto-update trains.json [skip ci]"
+          file_pattern: trains.json
