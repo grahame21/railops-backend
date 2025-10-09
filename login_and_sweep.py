@@ -5,9 +5,6 @@ login_and_sweep.py
 - Extracts the auth cookie
 - Sweeps Australia in tiles via GetViewPortData
 - Writes trains.json (one pass)
-
-GitHub Actions can run this every 5 minutes. For 30–90s continuous updates,
-run the sweep variant on a VPS/Raspberry Pi instead.
 """
 
 import os, json, time, random
@@ -43,56 +40,88 @@ HEADERS_BASE = {
 def robust_login_and_get_cookie(user: str, pwd: str) -> str:
     """
     Use Playwright (Chromium) to load the NextLevel page, click LOGIN tab,
-    fill creds, submit, then return the .ASPXAUTH (or equivalent) cookie value.
+    fill creds, submit, then return the auth cookie value.
     """
     print("🌐 Opening TrainFinder…")
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
         ctx = browser.new_context()
         page = ctx.new_page()
-        page.goto(f"{BASE}/Home/NextLevel", timeout=60000)
+        page.goto(f"{BASE}/Home/NextLevel", timeout=60000, wait_until="domcontentloaded")
+        page.wait_for_timeout(1200)
 
-        # If the login modal isn't open, click the LOGIN button in the top bar.
+        # If the login modal isn't open, click the LOGIN item in the top bar.
         try:
-            # the top-left bar usually contains text 'LOGIN'
-            login_btn = page.locator("text=LOGIN").first
+            login_btn = page.locator("text=/^\\s*LOGIN\\s*$/i").first
             if login_btn.is_visible():
-                login_btn.click()
-                time.sleep(0.5)
+                print("🔘 Clicking LOGIN tab…")
+                login_btn.click(timeout=10000)
+                page.wait_for_timeout(600)
         except Exception:
             pass
 
         print("✏️ Filling credentials…")
-        # Try robust selectors for username/password boxes
-        # 1) First text input, then password input inside the auth modal
+        # Try robust selectors for username/password boxes inside the dialog
         auth = page.locator("div:has-text('Authentication')").first
-        if not auth.is_visible():
-            # fall back to whole page scan
+        if not auth or not auth.is_visible():
             auth = page
 
         # Username
-        try:
-            auth.locator("input[type='text']").first.fill(user, timeout=15000)
-        except PWTimeout:
-            # some builds may have id=UserName
-            auth.locator("input#UserName").fill(user, timeout=5000)
+        filled_user = False
+        for sel in ["input#UserName", "input[name='UserName']", "input[type='text']"]:
+            try:
+                auth.locator(sel).first.fill(user, timeout=8000)
+                filled_user = True
+                break
+            except PWTimeout:
+                continue
+        if not filled_user:
+            raise RuntimeError("Username input not found")
 
         # Password
-        try:
-            auth.locator("input[type='password']").first.fill(pwd, timeout=15000)
-        except PWTimeout:
-            auth.locator("input#Password").fill(pwd, timeout=5000)
+        filled_pass = False
+        for sel in ["input#Password", "input[name='Password']", "input[type='password']"]:
+            try:
+                auth.locator(sel).first.fill(pwd, timeout=8000)
+                pass_locator = auth.locator(sel).first
+                filled_pass = True
+                break
+            except PWTimeout:
+                continue
+        if not filled_pass:
+            raise RuntimeError("Password input not found")
 
-        # Click Log In button (text match)
         print("🚪 Submitting…")
-        page.locator("button:has-text('Log In'), input[type='submit'][value='Log In']").first.click()
-        # wait for any map activity or cookie to appear
-        page.wait_for_timeout(2000)
+        # Submit chain (several fallbacks)
+        submitted = False
+        submit_selectors = [
+            "button:has-text('Log In')",
+            "input[type='submit'][value='Log In']",
+            "text=/^\\s*Log\\s*In\\s*$/i",
+            "button:has-text('Login')",
+            "text=/^\\s*Login\\s*$/i",
+        ]
+        for sel in submit_selectors:
+            try:
+                page.locator(sel).first.click(timeout=5000)
+                submitted = True
+                break
+            except Exception:
+                continue
+
+        if not submitted:
+            # Last resort: focus password and press Enter
+            try:
+                pass_locator.press("Enter", timeout=2000)
+                submitted = True
+            except Exception:
+                pass
+
+        page.wait_for_timeout(1800)
 
         # Grab auth cookie
         cookies = ctx.cookies()
         token = None
-        # try common cookie names
         for c in cookies:
             name = c.get("name", "")
             if name.upper().startswith(".ASPXAUTH") or "AUTH" in name.upper():
@@ -100,17 +129,22 @@ def robust_login_and_get_cookie(user: str, pwd: str) -> str:
                 break
 
         if not token:
-            # try to detect login by absence of login button
+            # Secondary signal: LOGIN button disappears after success
             try:
-                if not page.locator("text=LOGIN").first.is_visible():
-                    # still accept if no explicit cookie name matched
-                    # dump any cookie as last resort
+                still_login = page.locator("text=/^\\s*LOGIN\\s*$/i").first.is_visible()
+                if not still_login:
                     if cookies:
                         token = cookies[0].get("value")
             except Exception:
                 pass
 
         if not token:
+            # Capture a quick screenshot for debugging (stored in runner workspace)
+            try:
+                page.screenshot(path="debug_after_submit.png", full_page=True)
+                print("⚠️ Saved debug screenshot: debug_after_submit.png")
+            except Exception:
+                pass
             raise RuntimeError("Could not obtain auth cookie after login")
 
         print("✅ Logged in & cookie captured")
@@ -119,7 +153,7 @@ def robust_login_and_get_cookie(user: str, pwd: str) -> str:
 
 def session_with_cookie(token: str) -> requests.Session:
     s = requests.Session()
-    # most deployments use .ASPXAUTH, but accept any name via header cookie if needed
+    # Most deployments use .ASPXAUTH; set to domain path root.
     s.cookies.set(".ASPXAUTH", token, domain="trainfinder.otenko.com", path="/")
     return s
 
@@ -152,7 +186,7 @@ def merge(master, part):
     if not isinstance(part, dict):
         return
     for k, v in part.items():
-        if v is None: 
+        if v is None:
             continue
         if isinstance(v, list):
             if k not in master or master[k] is None:
@@ -191,10 +225,10 @@ def main():
     user = os.environ.get("TRAINFINDER_USERNAME")
     pwd  = os.environ.get("TRAINFINDER_PASSWORD")
     if not user or not pwd:
-        raise SystemExit("Set TRAINFINDER_USERNAME and TRAINFINDER_PASSWORD env vars / repo secrets.")
+        raise SystemExit("Set TRAINFINDER_USERNAME and TRAINFINDER_PASSWORD repo secrets.")
 
     token = robust_login_and_get_cookie(user, pwd)
-    sess = session_with_cookie(token)
+    sess  = session_with_cookie(token)
     sweep_once(sess)
 
 if __name__ == "__main__":
