@@ -1,10 +1,9 @@
-import os
-import time
+import os, time
+from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 def snap(page, name):
-    """Take debug screenshots"""
-    os.makedirs("debug_artifacts", exist_ok=True)
+    Path("debug_artifacts").mkdir(exist_ok=True)
     page.screenshot(path=f"debug_artifacts/{name}.png")
 
 def run():
@@ -19,54 +18,41 @@ def run():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page(viewport={"width": 1280, "height": 900})
 
-        # Step 1: open the map page
         page.goto("https://trainfinder.otenko.com/Home/NextLevel", timeout=60000)
         time.sleep(5)
         snap(page, "1_loaded")
 
-        # Step 2: Click the LOGIN button in the top nav
+        print("🔘 Clicking LOGIN...")
         try:
-            print("🔘 Clicking LOGIN tab...")
-            btns = page.locator("div.nav_btn", has_text="LOGIN")
-            if btns.count() > 0:
-                btns.first.click()
-                time.sleep(3)
-                snap(page, "2_login_clicked")
-            else:
-                print("⚠️ No LOGIN tab found in topnav.")
+            page.locator("div.nav_btn", has_text="LOGIN").first.click()
+            time.sleep(4)
+            snap(page, "2_login_clicked")
         except Exception as e:
-            print("⚠️ Could not click LOGIN tab:", e)
+            print(f"⚠️ Could not click LOGIN: {e}")
 
-        # Step 3: Wait for login form to appear
+        # --- Wait until form loads ---
         try:
-            page.wait_for_selector("input#UserName", timeout=15000)
+            print("⌛ Waiting for form...")
+            page.wait_for_selector("input#UserName", timeout=25000)
             snap(page, "3_form_ready")
         except Exception:
-            print("❌ Login form did not appear!")
+            print("❌ Login form did not appear")
             browser.close()
             raise
 
-        # Step 4: Fill credentials
         print("✏️ Filling credentials...")
         page.fill("input#UserName", username)
         page.fill("input#Password", password)
         snap(page, "4_filled")
 
-        # Step 5: Click the Log In button
-        print("🚪 Submitting login...")
+        print("🚪 Clicking Log In...")
         page.click("input[value='Log In']")
         time.sleep(6)
         snap(page, "5_after_login")
 
-        # Step 6: Wait for map load and cookie
-        page.wait_for_load_state("networkidle", timeout=20000)
+        # --- Check for cookie ---
         cookies = page.context.cookies()
-        aspxauth = None
-        for c in cookies:
-            if c.get("name") == ".ASPXAUTH":
-                aspxauth = c.get("value")
-                break
-
+        aspxauth = next((c["value"] for c in cookies if c["name"] == ".ASPXAUTH"), None)
         if not aspxauth:
             raise Exception("❌ No .ASPXAUTH cookie found after login")
 
