@@ -1,50 +1,57 @@
-name: TrainFinder Fetch (Playwright)
+name: fetch
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 */6 * * *"  # every 6 hours at :17 (jitter-friendly)
+    # runs every hour (you can change it)
+    - cron: "0 * * * *"
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install playwright==1.45.0
+          pip install playwright requests
           playwright install --with-deps chromium
 
-      - name: Run headless fetch
+      - name: Log in to TrainFinder (Playwright)
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
           python trainfinder_fetch_pw.py
-          test -f trains.json && echo "✅ trains.json generated"
 
-      - name: Commit trains.json
-        if: success()
+      - name: Fetch live TrainFinder data
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add trains.json
-          git commit -m "chore(data): update trains.json [skip ci]" || echo "No changes"
+          python fetch_trains.py
+
+      - name: Commit & push trains.json
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add trains.json cookie.txt
+          git commit -m "Auto-update trains.json [skip ci]" || echo "No changes"
           git push
 
-      - name: Upload debug artifacts (screenshots & HTML)
+      - name: Upload debug artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug_artifacts
-          path: debug_artifacts
+          name: debug-artifacts
+          path: |
+            debug_artifacts/*.png
+            debug_artifacts/*.html
+            cookie.txt
+            trains.json
           if-no-files-found: warn
