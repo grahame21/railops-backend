@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-login_and_collect.py — TrainFinder backend collector
-Logs in with Playwright, sweeps multiple AU viewports,
-and writes a flat JSON array of trains to trains.json.
-
-Fully compatible with frontend dashboard.js / trains.js
+login_and_collect.py — TrainFinder collector (cookie-safe)
+- Logs in with Playwright
+- For each AU viewport: loads /Home/NextLevel to set server session
+- Then, from inside that page, runs window.fetch('/Home/GetViewPortData')
+  so cookies/headers are correctly attached by the browser
+- Writes a flat array to trains.json
 """
 
 import json, os, random, time
@@ -12,15 +13,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
-# --- Paths ---
 BASE = Path(__file__).resolve().parent.parent
-OUT = BASE / "trains.json"
-COOKIE_TXT = BASE / "cookie.txt"
+OUT  = BASE / "trains.json"
 
 LOGIN_URL = "https://trainfinder.otenko.com/Home/NextLevel"
-VIEW_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
+VIEW_URL  = "https://trainfinder.otenko.com/Home/GetViewPortData"
 
-# --- Viewports across Australia ---
+# Viewports across AU (lon, lat, zoom)
 SWEEP = [
     (144.9631, -37.8136, 12),  # Melbourne
     (151.2093, -33.8688, 12),  # Sydney
@@ -32,7 +31,6 @@ SWEEP = [
     (133.7751, -25.2744, 5),   # AU-wide
 ]
 
-# --- Helpers ---
 def now_iso():
     return datetime.now(timezone.utc).isoformat()
 
@@ -47,37 +45,6 @@ def first(d, *keys):
         if isinstance(d, dict) and k in d:
             return d[k]
     return None
-
-def normalize(r, i):
-    if isinstance(r, dict) and r.get("type") == "Feature":
-        g = r.get("geometry", {})
-        p = r.get("properties", {})
-        if g.get("type") == "Point" and isinstance(g.get("coordinates"), list):
-            lo, la = g["coordinates"][:2]
-            return {
-                "id": first(p, "id","ID","Name","Unit","Service","ServiceNumber") or f"train_{i}",
-                "lat": pf(la),
-                "lon": pf(lo),
-                "heading": pf(first(p, "heading","Heading","bearing")) or 0,
-                "speed": pf(first(p, "speed","Speed","velocity")),
-                "label": first(p, "label","Label","loco","Loco","Service") or "",
-                "operator": first(p, "operator","Operator","company","Company") or "",
-                "updatedAt": first(p, "updated","Updated","Timestamp") or now_iso()
-            }
-    lat = pf(first(r,"lat","Lat","latitude"))
-    lon = pf(first(r,"lon","Lon","longitude"))
-    if lat is None or lon is None:
-        return None
-    return {
-        "id": first(r, "id","ID","Name","Service") or f"train_{i}",
-        "lat": lat,
-        "lon": lon,
-        "heading": pf(first(r, "heading","Heading","bearing")) or 0,
-        "speed": pf(first(r, "speed","Speed","velocity")),
-        "label": first(r, "label","Label","loco","Loco","Service") or "",
-        "operator": first(r, "operator","Operator","company") or "",
-        "updatedAt": first(r, "updated","Updated","Timestamp") or now_iso()
-    }
 
 def extract(payload):
     if not payload:
@@ -98,74 +65,123 @@ def extract(payload):
                 return v
     return []
 
-# --- Main ---
+def normalize(r, i):
+    # GeoJSON feature
+    if isinstance(r, dict) and r.get("type") == "Feature":
+        g = r.get("geometry", {})
+        p = r.get("properties", {})
+        if g.get("type") == "Point" and isinstance(g.get("coordinates"), (list, tuple)) and len(g["coordinates"]) >= 2:
+            lo, la = g["coordinates"][:2]
+            return {
+                "id": first(p,"id","ID","Name","Unit","Service","ServiceNumber") or f"train_{i}",
+                "lat": pf(la), "lon": pf(lo),
+                "heading": pf(first(p,"heading","Heading","bearing","Bearing","course","Course")) or 0.0,
+                "speed": pf(first(p,"speed","Speed","velocity","Velocity")),
+                "label": first(p,"label","Label","title","Title","loco","Loco","Locomotive","Service","ServiceNumber","Operator") or "",
+                "operator": first(p,"operator","Operator","company","Company") or "",
+                "updatedAt": first(p,"timestamp","Timestamp","updated","Updated","LastSeen","lastSeen") or now_iso(),
+            }
+    # Plain record
+    lat = pf(first(r,"lat","Lat","latitude","Latitude","y","Y"))
+    lon = pf(first(r,"lon","Lon","longitude","Longitude","x","X"))
+    if lat is None or lon is None:
+        return None
+    return {
+        "id": first(r,"id","ID","Id","Name","Unit","Service","ServiceNumber","locoId","LocoId","LocomotiveId") or f"train_{i}",
+        "lat": lat, "lon": lon,
+        "heading": pf(first(r,"heading","Heading","bearing","Bearing","course","Course")) or 0.0,
+        "speed": pf(first(r,"speed","Speed","velocity","Velocity")),
+        "label": first(r,"label","Label","title","Title","loco","Loco","Locomotive","Service","ServiceNumber","Operator") or "",
+        "operator": first(r,"operator","Operator","company","Company") or "",
+        "updatedAt": first(r,"timestamp","Timestamp","updated","Updated","LastSeen","lastSeen") or now_iso(),
+    }
+
 def main():
     user = os.getenv("TRAINFINDER_USERNAME")
-    pwd = os.getenv("TRAINFINDER_PASSWORD")
+    pwd  = os.getenv("TRAINFINDER_PASSWORD")
     if not user or not pwd:
         raise SystemExit("❌ Missing credentials: set TRAINFINDER_USERNAME and TRAINFINDER_PASSWORD")
 
     with sync_playwright() as p:
-        print("🌐 Logging into TrainFinder...")
+        print("🌐 Logging in…")
         browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
         ctx = browser.new_context()
         page = ctx.new_page()
 
+        # Login
         page.goto(LOGIN_URL, wait_until="load", timeout=60_000)
         page.wait_for_selector("input#UserName", timeout=30_000)
         page.fill("input#UserName", user)
         page.fill("input#Password", pwd)
         page.locator("button:has-text('Log In'), input[type='submit'][value='Log In']").first.click()
-
         ctx.wait_for_event("requestfinished", timeout=30_000)
         cookies = {c["name"]: c["value"] for c in ctx.cookies()}
         if ".ASPXAUTH" not in cookies:
             raise RuntimeError("Login failed: .ASPXAUTH cookie not found")
-        print("✅ Login OK, sweeping viewports...")
+        print("✅ Login OK")
 
         collected, seen = [], set()
 
+        print("🚉 Sweeping AU viewports…")
         for lo, la, zm in SWEEP:
             try:
+                # 1) Load the map page to set server-side session for that viewport
                 ref_url = f"{LOGIN_URL}?lat={la}&lng={lo}&zm={zm}"
                 page.goto(ref_url, wait_until="load", timeout=45_000)
+                # give the page JS time to initialize and set session
                 time.sleep(1.2)
 
-                headers = {
-                    "x-requested-with": "XMLHttpRequest",
-                    "origin": "https://trainfinder.otenko.com",
-                    "referer": ref_url
-                }
+                # 2) From inside the page, call fetch() so browser attaches cookies correctly
+                js = f"""
+                    (async () => {{
+                      const res = await fetch("{VIEW_URL}", {{
+                        method: "POST",
+                        headers: {{
+                          "x-requested-with": "XMLHttpRequest"
+                        }}
+                      }});
+                      const text = await res.text();
+                      return {{status: res.status, text}};
+                    }})();
+                """
+                resp = page.evaluate(js)
+                status = resp["status"]
+                text   = (resp["text"] or "").strip()
 
-                res = ctx.request.post(VIEW_URL, headers=headers, data={})
-                if res.status != 200:
-                    print(f"⚠️ HTTP {res.status} at {lo},{la}")
+                if status != 200:
+                    print(f"⚠️ HTTP {status} at {lo},{la} z{zm}")
+                    continue
+                if not text or text.startswith("<") or text == '["cookie"]':
+                    # HTML or cookie sentinel -> skip
+                    print(f"⚠️ Non-JSON (HTML or cookie) at {lo},{la} z{zm}")
                     continue
 
-                text = res.text().strip()
-                if text.startswith("<") or text.startswith("[\"cookie\"]"):
-                    print(f"⚠️ HTML or cookie reply at {lo},{la}")
+                try:
+                    data = json.loads(text)
+                except Exception:
+                    print(f"⚠️ Parse error at {lo},{la} z{zm}: not JSON")
                     continue
 
-                data = res.json()
                 arr = extract(data)
+                got = 0
                 for i, raw in enumerate(arr):
                     n = normalize(raw, i)
                     if not n or n["lat"] is None or n["lon"] is None:
                         continue
-                    key = (n["id"], round(n["lat"], 5), round(n["lon"], 5))
+                    key = (n["id"], round(n["lat"],5), round(n["lon"],5))
                     if key in seen:
                         continue
                     seen.add(key)
                     collected.append(n)
-                print(f"🛰️ {len(arr)} objects from {lo},{la}")
+                    got += 1
+
+                print(f"🛰️ {got} trains from {lo},{la} z{zm}")
                 time.sleep(random.uniform(1.0, 2.0))
             except Exception as e:
                 print(f"❌ viewport {lo},{la} z{zm}: {e}")
 
         OUT.write_text(json.dumps(collected, ensure_ascii=False, indent=2))
         print(f"✅ Wrote {OUT} with {len(collected)} trains")
-
         browser.close()
 
 if __name__ == "__main__":
