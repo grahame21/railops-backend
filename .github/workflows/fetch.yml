@@ -49,3 +49,13 @@ jobs:
             git commit -m "Auto-update trains.json [skip ci]"
             git push
           fi
+
+      - name: Upload debug artifacts (screenshots/HTML) if any
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trainfinder-debug
+          path: |
+            debug/**
+            cookie.txt
+          if-no-files-found: ignore
