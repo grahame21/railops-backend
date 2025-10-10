@@ -1,7 +1,8 @@
-import os, json, time, random
-import requests
+# login_and_sweep.py
+# Auto-login TrainFinder → fetch trains.json
+import os, json, time, random, requests
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, TimeoutError
 
 BASE = "https://trainfinder.otenko.com"
 LOGIN = f"{BASE}/Home/NextLevel"
@@ -14,7 +15,6 @@ def cookie_header_from_context(context):
     cookies = context.cookies()
     jar = []
     for c in cookies:
-        # keep only site cookies
         if "otenko.com" in c.get("domain", ""):
             jar.append(f"{c['name']}={c['value']}")
     return "; ".join(jar)
@@ -24,50 +24,64 @@ def login_and_get_cookie(play):
     browser = play.chromium.launch(headless=True, args=["--disable-gpu"])
     ctx = browser.new_context()
     page = ctx.new_page()
-    page.set_default_timeout(20000)
+    page.set_default_timeout(25000)
 
-    # Go to login page
     page.goto(LOGIN, wait_until="domcontentloaded")
+    time.sleep(2)
 
-    # If the login popup isn’t visible, click the LOGIN tab
+    # If login tab must be clicked first
     try:
-        page.locator("text=LOGIN").first.click(timeout=2000)
+        page.locator("text=LOGIN, text=Log in, text=Sign in").first.click(timeout=3000)
+        print("🔘 Clicking LOGIN tab…")
     except:
-        pass  # already open
+        pass
 
-    # Fill username/password – pick the first visible text/password inputs
+    # Fill credentials
     print("✏️ Filling credentials…")
-    page.locator("input[type='text']").nth(0).fill(USERNAME)
-    page.locator("input[type='password']").nth(0).fill(PASSWORD)
+    try:
+        page.locator("input#useR_name").fill(USERNAME)
+        page.locator("input#pasS_word").fill(PASSWORD)
+    except:
+        # fallback to first visible inputs
+        page.locator("input[type='text']").first.fill(USERNAME)
+        page.locator("input[type='password']").first.fill(PASSWORD)
 
     print("🚪 Submitting…")
-    # Click “Log In” button inside the dialog
-    # Accept either <button> or <input type=submit value='Log In'>
-    login_btn = page.locator("button:has-text('Log In'), input[type='submit'][value='Log In']").first
-    login_btn.click()
-    # wait a moment for cookies to be set
+    clicked = False
+    for sel in [
+        "button:has-text('Log In')",
+        "input[type='submit'][value='Log In']",
+        "div.button.button-green",
+        "text=Log In",
+    ]:
+        try:
+            page.locator(sel).first.click(timeout=5000)
+            clicked = True
+            break
+        except Exception:
+            continue
+    if not clicked:
+        page.keyboard.press("Enter")
+
+    # Wait until either rules or home content shows (successful login)
+    try:
+        page.wait_for_selector("text=Rules", timeout=10000)
+    except TimeoutError:
+        pass  # sometimes it goes straight to map
+
     page.wait_for_timeout(1500)
+    page.screenshot(path="debug_after_submit.png", full_page=True)
 
     cookie_header = cookie_header_from_context(ctx)
     if not cookie_header:
-        # Try a small wait + reload once
-        page.wait_for_timeout(1500)
-        cookie_header = cookie_header_from_context(ctx)
-
-    if not cookie_header:
-        # Save a debug screenshot to help diagnose (visible in Actions logs as base64 if needed)
-        page.screenshot(path="debug_after_submit.png", full_page=True)
-        browser.close()
         raise RuntimeError("Could not obtain auth cookie after login")
 
-    # persist cookie locally (optional)
     Path("cookie.txt").write_text(cookie_header)
     print("✅ Cookie saved to cookie.txt")
     browser.close()
     return cookie_header
 
 def fetch_viewport(cookie_header):
-    # The site accepts an XHR POST without payload for current viewport data.
     headers = {
         "cookie": cookie_header,
         "x-requested-with": "XMLHttpRequest",
@@ -78,14 +92,13 @@ def fetch_viewport(cookie_header):
     r = requests.post(FETCH, headers=headers, timeout=30)
     if r.ok:
         return r.json()
-    else:
-        raise RuntimeError(f"Fetch failed: {r.status_code} {r.text[:200]}")
+    raise RuntimeError(f"Fetch failed {r.status_code}: {r.text[:300]}")
 
 def main():
     if not USERNAME or not PASSWORD:
-        raise SystemExit("Missing TRAINFINDER_USERNAME / TRAINFINDER_PASSWORD secrets.")
+        raise SystemExit("❌ Missing TRAINFINDER_USERNAME / TRAINFINDER_PASSWORD")
 
-    # Try login → fetch. If cookie already exists, try it first to be gentle.
+    # Reuse cookie if possible
     cookie_header = ""
     if Path("cookie.txt").exists():
         cookie_header = Path("cookie.txt").read_text().strip()
@@ -99,7 +112,6 @@ def main():
 
     with sync_playwright() as p:
         cookie_header = login_and_get_cookie(p)
-        # wait a short random time before fetching (be polite)
         time.sleep(random.uniform(0.8, 1.8))
         data = fetch_viewport(cookie_header)
         Path("trains.json").write_text(json.dumps(data, indent=2))
