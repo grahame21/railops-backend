@@ -5,18 +5,12 @@ on:
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
-concurrency:
-  group: trainfinder-fetch
-  cancel-in-progress: false
-
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -26,36 +20,22 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install playwright requests_html
           python -m playwright install --with-deps chromium
 
-      - name: Login + fetch
+      - name: Run login_and_collect.py
         env:
           TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
           TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
         run: |
-          echo "🚆 Running TrainFinder login_and_sweep.py"
-          python scripts/login_and_sweep.py
-          test -f trains.json && echo "✅ trains.json generated"
+          echo "🚆 Running login_and_collect.py"
+          python scripts/login_and_collect.py
+          test -s trains.json && echo "✅ trains.json generated"
 
       - name: Commit trains.json if changed
         run: |
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
-          git add trains.json cookie.txt
-          if git diff --cached --quiet; then
-            echo "No changes in trains.json"
-          else
-            git commit -m "Auto-update trains.json [skip ci]"
-            git push
-          fi
-
-      - name: Upload debug artifacts (screenshots/HTML) if any
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: trainfinder-debug
-          path: |
-            debug/**
-            cookie.txt
-          if-no-files-found: ignore
+          git add trains.json
+          git diff --staged --quiet && echo "No changes in trains.json" || git commit -m "Auto-update trains.json [skip ci]"
+          git push
