@@ -1,52 +1,52 @@
-# fetch_trains.py
-import json, requests, sys
-from pathlib import Path
+name: TrainFinder Fetch (every 5 min)
 
-COOKIE_FILE = Path("cookie.txt")
-OUT_FILE = Path("trains.json")
-BASE = "https://trainfinder.otenko.com"
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
 
-if not COOKIE_FILE.exists():
-    print("❌ cookie.txt not found. Run trainfinder_fetch_pw.py first.")
-    sys.exit(1)
+permissions:
+  contents: write
 
-aspx = COOKIE_FILE.read_text().strip()
-s = requests.Session()
-s.cookies.set(".ASPXAUTH", aspx, domain="trainfinder.otenko.com", path="/")
+concurrency:
+  group: trainfinder-fetch
+  cancel-in-progress: false
 
-headers = {
-    "Accept": "*/*",
-    "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
-    "Origin": BASE,
-    "Referer": f"{BASE}/Home/NextLevel",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-    "X-Requested-With": "XMLHttpRequest",
-}
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
 
-# Melbourne viewport (adjust as needed)
-payload = {
-    "nwLat": -37.5,
-    "nwLng": 144.5,
-    "seLat": -38.2,
-    "seLng": 145.5,
-    "zm": 7
-}
+    steps:
+      - uses: actions/checkout@v4
 
-print("🌍 Fetching trains in viewport:", payload)
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-r = s.post(f"{BASE}/Home/GetViewPortData", headers=headers, data=payload)
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
 
-if not r.ok:
-    print(f"❌ HTTP {r.status_code}")
-    print(r.text[:300])
-    sys.exit(1)
+      - name: Login + fetch
+        env:
+          TRAINFINDER_USERNAME: ${{ secrets.TRAINFINDER_USERNAME }}
+          TRAINFINDER_PASSWORD: ${{ secrets.TRAINFINDER_PASSWORD }}
+        run: |
+          echo "🚆 Running TrainFinder login_and_sweep.py"
+          python scripts/login_and_sweep.py
+          test -f trains.json && echo "✅ trains.json generated"
 
-try:
-    data = r.json()
-except Exception as e:
-    print("❌ JSON decode failed:", e)
-    print(r.text[:300])
-    sys.exit(1)
-
-OUT_FILE.write_text(json.dumps(data, indent=2))
-print(f"✅ Saved {OUT_FILE} ({OUT_FILE.stat().st_size} bytes)")
+      - name: Commit trains.json if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add trains.json
+          if git diff --cached --quiet; then
+            echo "No changes in trains.json"
+          else
+            git commit -m "Auto-update trains.json [skip ci]"
+            git push
+          fi
