@@ -1,118 +1,172 @@
 #!/usr/bin/env python3
-import os, json, time, random
+"""
+login_and_collect.py — TrainFinder backend collector
+Logs in with Playwright, sweeps multiple AU viewports,
+and writes a flat JSON array of trains to trains.json.
+
+Fully compatible with frontend dashboard.js / trains.js
+"""
+
+import json, os, random, time
+from datetime import datetime, timezone
 from pathlib import Path
-import requests
 from playwright.sync_api import sync_playwright
 
-BASE = "https://trainfinder.otenko.com"
-LOGIN_URL = f"{BASE}/home/nextlevel"
-FETCH_URL = f"{BASE}/Home/GetViewPortData"
+# --- Paths ---
+BASE = Path(__file__).resolve().parent.parent
+OUT = BASE / "trains.json"
+COOKIE_TXT = BASE / "cookie.txt"
 
-USERNAME = os.environ.get("TRAINFINDER_USERNAME", "").strip()
-PASSWORD = os.environ.get("TRAINFINDER_PASSWORD", "").strip()
+LOGIN_URL = "https://trainfinder.otenko.com/Home/NextLevel"
+VIEW_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
 
-HEADERS_TEMPLATE = {
-    "accept": "*/*",
-    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
-    "origin": BASE,
-    "priority": "u=1, i",
-    "referer": f"{BASE}/home/nextlevel?lat=-34.7406336&lng=138.5889792&zm=12",
-    "sec-ch-ua": '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    "user-agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/139.0.0.0 Safari/537.36"
-    ),
-    "x-requested-with": "XMLHttpRequest",
-}
+# --- Viewports across Australia ---
+SWEEP = [
+    (144.9631, -37.8136, 12),  # Melbourne
+    (151.2093, -33.8688, 12),  # Sydney
+    (153.0260, -27.4705, 11),  # Brisbane
+    (138.6007, -34.9285, 11),  # Adelaide
+    (115.8605, -31.9505, 11),  # Perth
+    (147.3240, -42.8821, 11),  # Hobart
+    (149.1287, -35.2820, 12),  # Canberra
+    (133.7751, -25.2744, 5),   # AU-wide
+]
 
-def msg(s): print(s, flush=True)
+# --- Helpers ---
+def now_iso():
+    return datetime.now(timezone.utc).isoformat()
 
-def cookie_header_from_context(ctx):
-    cookies = ctx.cookies()
-    parts = []
-    for c in cookies:
-        if "otenko.com" in c.get("domain", ""):
-            parts.append(f"{c['name']}={c['value']}")
-    return "; ".join(parts)
+def pf(v):
+    try:
+        return float(v)
+    except Exception:
+        return None
 
-def playwright_login_and_get_cookie():
+def first(d, *keys):
+    for k in keys:
+        if isinstance(d, dict) and k in d:
+            return d[k]
+    return None
+
+def normalize(r, i):
+    if isinstance(r, dict) and r.get("type") == "Feature":
+        g = r.get("geometry", {})
+        p = r.get("properties", {})
+        if g.get("type") == "Point" and isinstance(g.get("coordinates"), list):
+            lo, la = g["coordinates"][:2]
+            return {
+                "id": first(p, "id","ID","Name","Unit","Service","ServiceNumber") or f"train_{i}",
+                "lat": pf(la),
+                "lon": pf(lo),
+                "heading": pf(first(p, "heading","Heading","bearing")) or 0,
+                "speed": pf(first(p, "speed","Speed","velocity")),
+                "label": first(p, "label","Label","loco","Loco","Service") or "",
+                "operator": first(p, "operator","Operator","company","Company") or "",
+                "updatedAt": first(p, "updated","Updated","Timestamp") or now_iso()
+            }
+    lat = pf(first(r,"lat","Lat","latitude"))
+    lon = pf(first(r,"lon","Lon","longitude"))
+    if lat is None or lon is None:
+        return None
+    return {
+        "id": first(r, "id","ID","Name","Service") or f"train_{i}",
+        "lat": lat,
+        "lon": lon,
+        "heading": pf(first(r, "heading","Heading","bearing")) or 0,
+        "speed": pf(first(r, "speed","Speed","velocity")),
+        "label": first(r, "label","Label","loco","Loco","Service") or "",
+        "operator": first(r, "operator","Operator","company") or "",
+        "updatedAt": first(r, "updated","Updated","Timestamp") or now_iso()
+    }
+
+def extract(payload):
+    if not payload:
+        return []
+    if isinstance(payload, list):
+        return payload
+    for k in ["trains","Trains","markers","Markers","items","Items","results","Results","features","data","payload"]:
+        v = payload.get(k) if isinstance(payload, dict) else None
+        if isinstance(v, list):
+            return v
+        if isinstance(v, dict):
+            sub = extract(v)
+            if sub:
+                return sub
+    if isinstance(payload, dict):
+        for v in payload.values():
+            if isinstance(v, list) and v and isinstance(v[0], dict):
+                return v
+    return []
+
+# --- Main ---
+def main():
+    user = os.getenv("TRAINFINDER_USERNAME")
+    pwd = os.getenv("TRAINFINDER_PASSWORD")
+    if not user or not pwd:
+        raise SystemExit("❌ Missing credentials: set TRAINFINDER_USERNAME and TRAINFINDER_PASSWORD")
+
     with sync_playwright() as p:
-        msg("🌐 Opening TrainFinder login page…")
-        browser = p.chromium.launch(headless=True, args=["--disable-gpu"])
+        print("🌐 Logging into TrainFinder...")
+        browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
         ctx = browser.new_context()
         page = ctx.new_page()
-        page.goto(LOGIN_URL, wait_until="domcontentloaded")
-        try: page.locator("text=LOGIN, text=Log in").first.click(timeout=1500)
-        except: pass
 
-        msg("✏️ Filling credentials…")
-        try:
-            page.locator("#useR_name").fill(USERNAME, timeout=3000)
-            page.locator("#pasS_word").fill(PASSWORD, timeout=3000)
-        except:
-            page.locator("input[type='text']").first.fill(USERNAME)
-            page.locator("input[type='password']").first.fill(PASSWORD)
+        page.goto(LOGIN_URL, wait_until="load", timeout=60_000)
+        page.wait_for_selector("input#UserName", timeout=30_000)
+        page.fill("input#UserName", user)
+        page.fill("input#Password", pwd)
+        page.locator("button:has-text('Log In'), input[type='submit'][value='Log In']").first.click()
 
-        msg("🚪 Submitting login…")
-        try:
-            page.locator("button:has-text('Log In'), input[value='Log In']").first.click(timeout=2000)
-        except:
-            page.keyboard.press("Enter")
+        ctx.wait_for_event("requestfinished", timeout=30_000)
+        cookies = {c["name"]: c["value"] for c in ctx.cookies()}
+        if ".ASPXAUTH" not in cookies:
+            raise RuntimeError("Login failed: .ASPXAUTH cookie not found")
+        print("✅ Login OK, sweeping viewports...")
 
-        page.wait_for_timeout(2000)
-        cookie = cookie_header_from_context(ctx)
-        Path("cookie.txt").write_text(cookie)
-        msg("✅ Cookie saved")
+        collected, seen = [], set()
+
+        for lo, la, zm in SWEEP:
+            try:
+                ref_url = f"{LOGIN_URL}?lat={la}&lng={lo}&zm={zm}"
+                page.goto(ref_url, wait_until="load", timeout=45_000)
+                time.sleep(1.2)
+
+                headers = {
+                    "x-requested-with": "XMLHttpRequest",
+                    "origin": "https://trainfinder.otenko.com",
+                    "referer": ref_url
+                }
+
+                res = ctx.request.post(VIEW_URL, headers=headers, data={})
+                if res.status != 200:
+                    print(f"⚠️ HTTP {res.status} at {lo},{la}")
+                    continue
+
+                text = res.text().strip()
+                if text.startswith("<") or text.startswith("[\"cookie\"]"):
+                    print(f"⚠️ HTML or cookie reply at {lo},{la}")
+                    continue
+
+                data = res.json()
+                arr = extract(data)
+                for i, raw in enumerate(arr):
+                    n = normalize(raw, i)
+                    if not n or n["lat"] is None or n["lon"] is None:
+                        continue
+                    key = (n["id"], round(n["lat"], 5), round(n["lon"], 5))
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    collected.append(n)
+                print(f"🛰️ {len(arr)} objects from {lo},{la}")
+                time.sleep(random.uniform(1.0, 2.0))
+            except Exception as e:
+                print(f"❌ viewport {lo},{la} z{zm}: {e}")
+
+        OUT.write_text(json.dumps(collected, ensure_ascii=False, indent=2))
+        print(f"✅ Wrote {OUT} with {len(collected)} trains")
+
         browser.close()
-        return cookie
-
-def fetch_data(cookie):
-    headers = HEADERS_TEMPLATE.copy()
-    headers["cookie"] = cookie
-    r = requests.post(FETCH_URL, headers=headers, timeout=40)
-    msg(f"HTTP {r.status_code}")
-    try:
-        data = r.json()
-    except Exception:
-        data = {"_raw": r.text[:500]}
-    return data
-
-def looks_empty(data):
-    return (
-        isinstance(data, dict)
-        and all(v is None for v in data.values() if not v)
-    )
-
-def main():
-    if not USERNAME or not PASSWORD:
-        raise SystemExit("❌ Missing TRAINFINDER_USERNAME or TRAINFINDER_PASSWORD")
-
-    # try reuse
-    cookie = Path("cookie.txt").read_text().strip() if Path("cookie.txt").exists() else ""
-    if not cookie:
-        cookie = playwright_login_and_get_cookie()
-
-    while True:
-        msg("🚉 Requesting viewport data…")
-        data = fetch_data(cookie)
-        Path("last_response.json").write_text(json.dumps(data, indent=2))
-        Path("trains.json").write_text(json.dumps(data, indent=2))
-        if looks_empty(data) or "_raw" in data:
-            msg("⚠️ Empty or HTML response — refreshing cookie…")
-            cookie = playwright_login_and_get_cookie()
-        else:
-            msg("✅ TrainFinder fetch successful and saved to trains.json")
-
-        # wait 30–90 s before next sweep
-        delay = random.randint(30, 90)
-        msg(f"⏳ Sleeping {delay}s to mimic normal use…\n")
-        time.sleep(delay)
 
 if __name__ == "__main__":
     main()
