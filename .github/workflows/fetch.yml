@@ -2,8 +2,8 @@ name: TrainFinder Fetch (every 5 min)
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # every 5 minutes
-  workflow_dispatch:       # allow manual run
+    - cron: "*/5 * * * *"      # every 5 minutes
+  workflow_dispatch:
 
 jobs:
   fetch:
@@ -31,15 +31,34 @@ jobs:
         run: |
           echo "🚆 Running TrainFinder login_and_sweep.py"
           python login_and_sweep.py
+          test -f trains.json && echo "trains.json present"
 
       - name: Commit trains.json if changed
+        id: commit
         run: |
-          git config user.name "github-actions"
+          git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          if [[ `git status --porcelain trains.json` ]]; then
+
+          if [[ -n "$(git status --porcelain trains.json)" ]]; then
             git add trains.json last_response.json cookie.txt || true
             git commit -m "Auto-update trains.json [skip ci]" || true
             git push || true
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "No changes in trains.json"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
+
+      # ✅ only ping Netlify when the JSON actually changed
+      - name: Trigger Netlify build
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
+        run: |
+          if [ -z "$BUILD_HOOK" ]; then
+            echo "No NETLIFY_BUILD_HOOK_URL secret set — skipping."
+            exit 0
+          fi
+          echo "🔔 Triggering Netlify build hook…"
+          curl -sS -X POST "$BUILD_HOOK"
+          echo "✅ Netlify build triggered"
