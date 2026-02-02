@@ -2,9 +2,17 @@ import os, json, datetime
 import requests
 
 OUT_FILE = "trains.json"
-
-# TrainFinder endpoint you previously confirmed works in your browser XHR:
 TF_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
+
+def write_output(trains, note=""):
+    payload = {
+        "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+        "note": note,
+        "trains": trains
+    }
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False)
+    print(f"Wrote {len(trains)} trains to {OUT_FILE}")
 
 def main():
     cookie = os.environ.get("TRAINFINDER_COOKIE", "").strip()
@@ -17,15 +25,30 @@ def main():
         "Accept": "application/json, text/javascript, */*; q=0.01",
         "X-Requested-With": "XMLHttpRequest",
         "Referer": "https://trainfinder.otenko.com/home/nextlevel",
-        "Cookie": cookie,
     })
 
-    r = s.get(TF_URL, timeout=30)
-    r.raise_for_status()
+    # Put cookie in the correct place
+    s.headers["Cookie"] = cookie
+
+    r = s.get(TF_URL, timeout=30, allow_redirects=True)
+
+    ct = (r.headers.get("content-type") or "").lower()
+    print("HTTP:", r.status_code)
+    print("Final URL:", r.url)
+    print("Content-Type:", ct)
+
+    # If it isn't JSON, save a snippet to help diagnose (login page / block page etc)
+    if "application/json" not in ct:
+        snippet = (r.text or "")[:400].replace("\n", "\\n")
+        print("Non-JSON response snippet:", snippet)
+        # Still write an output so your site doesn't break
+        write_output([], note=f"TrainFinder returned non-JSON (HTTP {r.status_code}). Likely login/block.")
+        return
+
+    # Try parse JSON
     data = r.json()
 
-    # TrainFinder response format can vary; this tries common shapes.
-    # We'll output only what your map needs: id, lat, lon (+ optional extras).
+    # Try common list shapes
     trains_raw = None
     for key in ["trains", "Trains", "markers", "Markers", "items", "Items", "results", "Results", "data"]:
         if isinstance(data, dict) and isinstance(data.get(key), list):
@@ -59,20 +82,10 @@ def main():
             "id": str(tid),
             "lat": lat,
             "lon": lon,
-            "operator": t.get("Operator") or t.get("operator") or "",
-            "heading": t.get("Heading") or t.get("heading") or 0,
-            "timestamp": t.get("Timestamp") or t.get("timestamp") or None,
+            "operator": t.get("Operator") or t.get("operator") or ""
         })
 
-    payload = {
-        "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
-        "trains": trains
-    }
-
-    with open(OUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False)
-
-    print(f"Wrote {len(trains)} trains to {OUT_FILE}")
+    write_output(trains, note="ok")
 
 if __name__ == "__main__":
     main()
