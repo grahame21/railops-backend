@@ -2,7 +2,7 @@ name: Update trains.json
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes
+    - cron: "*/5 * * * *"   # every 5 minutes (GitHub minimum)
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,12 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install deps
+        run: pip install -r requirements.txt
+
       - name: Run updater
+        env:
+          TRAINFINDER_COOKIE: ${{ secrets.TRAINFINDER_COOKIE }}
         run: python update_trains.py
 
       - name: Commit and push if changed
