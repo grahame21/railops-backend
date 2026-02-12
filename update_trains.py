@@ -11,7 +11,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
 OUT_FILE = "trains.json"
-TF_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
@@ -50,11 +49,11 @@ def norm_item(item, i):
         "heading": to_float(item.get("heading") or 0)
     }
 
-def login_and_get_trains():
-    """Complete login flow - FINAL WORKING VERSION"""
+def find_api_endpoint():
+    """Login and capture the real API endpoint from network traffic"""
     
     print("=" * 60)
-    print("🚂 FINAL VERSION - Login button found!")
+    print("🔍 FINDING THE REAL API ENDPOINT")
     print("=" * 60)
     
     chrome_options = Options()
@@ -62,6 +61,9 @@ def login_and_get_trains():
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
+    
+    # Enable performance logging to capture network requests
+    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     
     driver = None
     try:
@@ -96,49 +98,32 @@ def login_and_get_trains():
         except:
             pass
         
-        # Step 5: FIND AND CLICK THE LOGIN BUTTON (NOT a <button> element!)
-        print("\n🔍 Looking for login button inside table...")
-        
+        # Step 5: Click login button (we know this works!)
+        print("\n🔍 Clicking login button...")
         login_script = """
-        // Find the table with class containing 'login'
         var tables = document.getElementsByClassName('popup_table');
         for(var i = 0; i < tables.length; i++) {
             if(tables[i].className.includes('login')) {
-                // Look for any element that says "Log" or "Login" or "Log In"
                 var elements = tables[i].getElementsByTagName('*');
                 for(var j = 0; j < elements.length; j++) {
                     var text = elements[j].textContent || '';
-                    if(text.trim() === 'Log' || text.trim() === 'Log In' || text.trim() === 'Login') {
+                    if(text.trim() === 'Log In' || text.trim() === 'Log' || text.trim() === 'Login') {
                         elements[j].click();
-                        return 'Clicked login button with text: ' + text.trim();
+                        return 'Clicked: ' + text.trim();
                     }
                 }
                 break;
             }
         }
-        
-        // Alternative: Find by class containing 'login_pa'
-        var loginElements = document.querySelectorAll('.login_pa, .login_pa *');
-        for(var i = 0; i < loginElements.length; i++) {
-            var text = loginElements[i].textContent || '';
-            if(text.trim() === 'Log' || text.trim() === 'Log In' || text.trim() === 'Login') {
-                loginElements[i].click();
-                return 'Clicked login button via class: ' + text.trim();
-            }
-        }
-        
-        return 'Login button not found';
+        return 'Button not found';
         """
-        
         result = driver.execute_script(login_script)
         print(f"✅ {result}")
         
         # Step 6: Wait for login and warning page
-        print("\n⏳ Waiting for login and warning page...")
         time.sleep(8)
         
-        # Step 7: Close warning page (we know this works)
-        print("🔍 Closing warning page...")
+        # Step 7: Close warning page
         close_script = """
         var paths = document.getElementsByTagName('path');
         for(var i = 0; i < paths.length; i++) {
@@ -150,61 +135,76 @@ def login_and_get_trains():
                 }
                 if(parent) {
                     parent.click();
-                    return 'Warning page closed';
+                    return 'Warning closed';
                 }
             }
         }
-        return 'No close button found';
+        return 'No close button';
         """
         close_result = driver.execute_script(close_script)
         print(f"✅ {close_result}")
         
-        # Step 8: Wait for map
-        print("\n⏳ Waiting for map to load...")
+        # Step 8: Wait for map to load
         time.sleep(5)
         
-        # Step 9: Fetch train data
-        print("\n📡 Fetching train data...")
-        driver.get(TF_URL)
-        time.sleep(3)
+        # Step 9: Capture all network requests from the performance logs
+        print("\n📡 Capturing network requests...")
+        logs = driver.get_log('performance')
         
-        response = driver.page_source
-        print(f"📄 Response length: {len(response)} characters")
-        
-        if response.strip().startswith(("{", "[")):
-            print("✅ SUCCESS! Received JSON data")
-            
+        api_endpoints = []
+        for log in logs:
             try:
-                data = json.loads(response)
-                raw_list = extract_list(data)
+                import json
+                message = json.loads(log['message'])['message']
                 
-                trains = []
-                for i, item in enumerate(raw_list):
-                    train = norm_item(item, i)
-                    if train and train.get("lat") and train.get("lon"):
-                        trains.append(train)
-                
-                print(f"✅ Extracted {len(trains)} trains")
-                driver.save_screenshot("success.png")
-                print("📸 Success screenshot saved")
-                
-                return trains, "ok"
-                
-            except json.JSONDecodeError as e:
-                print(f"❌ JSON parse error: {e}")
-                return [], "JSON parse error"
-        else:
-            print("❌ Response is not JSON - still not authenticated")
-            print(f"Preview: {response[:200]}")
-            return [], "Not authenticated"
+                # Look for XHR/fetch requests
+                if message['method'] == 'Network.responseReceived':
+                    url = message['params']['response']['url']
+                    # Look for train data endpoints
+                    if 'GetViewPortData' in url or 'trains' in url.lower() or 'markers' in url.lower():
+                        api_endpoints.append(url)
+                        print(f"   🔗 Found: {url}")
+            except:
+                pass
+        
+        # Step 10: Try each found endpoint
+        print("\n🔍 Testing found endpoints...")
+        for endpoint in api_endpoints[:5]:  # Test first 5
+            print(f"\n   Testing: {endpoint}")
+            driver.get(endpoint)
+            time.sleep(2)
+            response = driver.page_source
+            if response.strip().startswith(("{", "[")):
+                print(f"   ✅ SUCCESS! JSON data found at: {endpoint}")
+                try:
+                    data = json.loads(response)
+                    raw_list = extract_list(data)
+                    trains = []
+                    for i, item in enumerate(raw_list):
+                        train = norm_item(item, i)
+                        if train and train.get("lat") and train.get("lon"):
+                            trains.append(train)
+                    print(f"   ✅ Extracted {len(trains)} trains")
+                    return trains, endpoint
+                except:
+                    pass
+            else:
+                print(f"   ❌ Not JSON")
+        
+        # Step 11: If no endpoints found, try to get the current page URL
+        current_url = driver.current_url
+        print(f"\n📍 Current page URL: {current_url}")
+        
+        # Step 12: Save the page source for inspection
+        page_source = driver.page_source
+        with open("debug_page_after_login.html", "w") as f:
+            f.write(page_source[:10000])
+        print("\n📄 Saved page source to debug_page_after_login.html")
+        
+        return [], "No API endpoint found"
         
     except Exception as e:
-        print(f"❌ Error: {type(e).__name__}: {str(e)}")
-        try:
-            driver.save_screenshot("error.png")
-            print("📸 Error screenshot saved")
-        except:
-            pass
+        print(f"\n❌ Error: {type(e).__name__}: {str(e)}")
         return [], f"Error: {type(e).__name__}"
     finally:
         if driver:
@@ -213,7 +213,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 TRAIN TRACKER - FINAL WORKING VERSION 🚂🚂🚂")
+    print("🚂🚂🚂 FINDING THE REAL API ENDPOINT 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -222,12 +222,12 @@ def main():
         write_output([], "Missing credentials")
         return
     
-    trains, note = login_and_get_trains()
+    trains, note = find_api_endpoint()
     write_output(trains, note)
     
     print("\n" + "=" * 60)
     print(f"🏁 Complete: {len(trains)} trains")
-    print(f"📝 Status: {note}")
+    print(f"📝 API Endpoint: {note}")
     print("=" * 60)
 
 if __name__ == "__main__":
