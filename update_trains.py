@@ -50,10 +50,10 @@ def norm_item(item, i):
         "heading": to_float(item.get("heading") or 0)
     }
 
-def login_and_get_trains():
-    """Complete login flow with fixed SVG click handling"""
+def debug_page_structure():
+    """Debug function to print all buttons and their text"""
     
-    print("🔄 Starting login flow...")
+    print("🔄 Starting debug investigation...")
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
@@ -66,148 +66,84 @@ def login_and_get_trains():
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        # Step 1: Load the page
         print(f"🔄 Loading page: {TF_LOGIN_URL}")
         driver.get(TF_LOGIN_URL)
         time.sleep(5)
         
-        # Step 2: Find and fill username
-        username = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "useR_name"))
-        )
-        username.clear()
-        username.send_keys(TF_USERNAME)
-        print("✅ Username entered")
+        # Print page title and URL
+        print(f"📌 Page title: {driver.title}")
+        print(f"📌 Current URL: {driver.current_url}")
         
-        # Step 3: Find and fill password
-        password = driver.find_element(By.ID, "pasS_word")
-        password.clear()
-        password.send_keys(TF_PASSWORD)
-        print("✅ Password entered")
+        # Find ALL buttons and print their text
+        print("\n🔍 ALL BUTTONS ON PAGE:")
+        buttons = driver.find_elements(By.TAG_NAME, "button")
+        for i, btn in enumerate(buttons):
+            btn_text = btn.text.strip()
+            btn_id = btn.get_attribute("id") or "no-id"
+            btn_class = btn.get_attribute("class") or "no-class"
+            btn_type = btn.get_attribute("type") or "no-type"
+            print(f"   Button {i}: text='{btn_text}', id='{btn_id}', class='{btn_class[:30]}...', type='{btn_type}'")
         
-        # Step 4: Check Remember Me
+        # Find ALL input elements
+        print("\n🔍 ALL INPUT ELEMENTS:")
+        inputs = driver.find_elements(By.TAG_NAME, "input")
+        for i, inp in enumerate(inputs):
+            inp_type = inp.get_attribute("type") or "text"
+            inp_id = inp.get_attribute("id") or "no-id"
+            inp_name = inp.get_attribute("name") or "no-name"
+            inp_value = inp.get_attribute("value") or ""
+            print(f"   Input {i}: type='{inp_type}', id='{inp_id}', name='{inp_name}', value='{inp_value}'")
+        
+        # Find ALL form elements
+        print("\n🔍 ALL FORM ELEMENTS:")
+        forms = driver.find_elements(By.TAG_NAME, "form")
+        print(f"   Found {len(forms)} forms")
+        
+        # Look specifically for login-related elements
+        print("\n🔍 SEARCHING FOR LOGIN BUTTON:")
+        
+        # Method 1: By text containing common login words
+        login_keywords = ["log in", "login", "sign in", "submit", "enter", "go"]
+        for btn in buttons:
+            btn_text_lower = btn.text.strip().lower()
+            for keyword in login_keywords:
+                if keyword in btn_text_lower:
+                    print(f"   ✅ Found potential login button: '{btn.text}' (matches '{keyword}')")
+        
+        # Method 2: By input type submit
+        for inp in inputs:
+            if inp.get_attribute("type") == "submit":
+                print(f"   ✅ Found submit input: value='{inp.get_attribute('value')}'")
+        
+        # Method 3: By common class names
+        login_classes = ["btn-login", "login-btn", "submit-btn", "btn-primary"]
+        for btn in buttons:
+            btn_class = btn.get_attribute("class") or ""
+            for login_class in login_classes:
+                if login_class in btn_class:
+                    print(f"   ✅ Found button with login class: '{btn.text}' (class: {login_class})")
+        
+        # Try to find the form that contains the username field
+        print("\n🔍 FINDING FORM CONTAINING USERNAME:")
         try:
-            remember = driver.find_element(By.ID, "rem_ME")
-            if not remember.is_selected():
-                remember.click()
-                print("✅ Checked Remember Me")
+            username = driver.find_element(By.ID, "useR_name")
+            # Find parent form
+            parent_form = username.find_element(By.XPATH, "./ancestor::form")
+            print(f"   ✅ Found parent form: {parent_form.get_attribute('id') or 'no-id'}")
+            print(f"   Form action: {parent_form.get_attribute('action') or 'no-action'}")
+            print(f"   Form method: {parent_form.get_attribute('method') or 'no-method'}")
         except:
-            print("⚠️ Remember Me checkbox not found")
+            print("   ❌ Could not find parent form for username")
         
-        # Step 5: Trigger login via JavaScript
-        print("🔍 Triggering login...")
+        # Save screenshot for visual debugging
+        driver.save_screenshot("debug_page.png")
+        print("\n📸 Screenshot saved: debug_page.png")
         
-        login_script = """
-        // Find and click the login button
-        var loginButton = null;
-        
-        // Try to find by text
-        var buttons = document.getElementsByTagName('button');
-        for(var i = 0; i < buttons.length; i++) {
-            if(buttons[i].textContent.trim().toLowerCase().includes('log in')) {
-                loginButton = buttons[i];
-                break;
-            }
-        }
-        
-        if(loginButton) {
-            loginButton.click();
-            return 'Login button clicked';
-        }
-        
-        return 'No login button found';
-        """
-        
-        result = driver.execute_script(login_script)
-        print(f"✅ {result}")
-        
-        # Wait for login and warning page
-        print("⏳ Waiting for login to process...")
-        time.sleep(8)
-        
-        # Step 6: Close warning page - FIXED VERSION
-        print("🔍 Looking for warning page close button...")
-        
-        # METHOD 1: Find the parent element of the SVG and click it
-        close_script = """
-        // Find the close button (parent of the SVG path)
-        var closeButton = null;
-        
-        // Look for SVG path with the close icon
-        var paths = document.getElementsByTagName('path');
-        for(var i = 0; i < paths.length; i++) {
-            var d = paths[i].getAttribute('d') || '';
-            if(d.includes('M13.7,11l6.1-6.1')) {
-                // Click the parent element (usually a button or div)
-                var parent = paths[i].parentElement;
-                while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
-                    parent = parent.parentElement;
-                }
-                if(parent) {
-                    parent.click();
-                    return 'Close button clicked via parent';
-                }
-            }
-        }
-        
-        // METHOD 2: Look for any element with class containing 'close'
-        var closeElements = document.querySelectorAll('.close, .btn-close, [aria-label="Close"]');
-        if(closeElements.length > 0) {
-            closeElements[0].click();
-            return 'Close button clicked via class';
-        }
-        
-        return 'No close button found';
-        """
-        
-        close_result = driver.execute_script(close_script)
-        print(f"✅ {close_result}")
-        
-        # Wait for map to load
-        print("⏳ Waiting for map to load...")
-        time.sleep(5)
-        
-        # Step 7: Fetch train data directly
-        print(f"🔄 Fetching train data from API...")
-        driver.get(TF_URL)
-        time.sleep(3)
-        
-        # Get the response
-        page_source = driver.page_source
-        print(f"📄 Response length: {len(page_source)} characters")
-        
-        # Check if we got JSON
-        if page_source.strip().startswith(("{", "[")):
-            print("✅ Successfully received JSON data!")
-            
-            try:
-                data = json.loads(page_source)
-                raw_list = extract_list(data)
-                
-                trains = []
-                for i, item in enumerate(raw_list):
-                    train = norm_item(item, i)
-                    if train and train.get("lat") and train.get("lon"):
-                        trains.append(train)
-                
-                print(f"✅ Extracted {len(trains)} trains")
-                return trains, "ok"
-                
-            except json.JSONDecodeError as e:
-                print(f"❌ JSON parse error: {str(e)}")
-                return [], "JSON parse error"
-        else:
-            print("⚠️ Response is not JSON")
-            return [], "Non-JSON response"
+        return "Debug completed"
         
     except Exception as e:
         print(f"❌ Error: {type(e).__name__}: {str(e)}")
-        try:
-            driver.save_screenshot("error.png")
-            print("📸 Error screenshot saved")
-        except:
-            pass
-        return [], f"Error: {type(e).__name__}"
+        return f"Error: {type(e).__name__}"
     finally:
         if driver:
             driver.quit()
@@ -215,20 +151,15 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print(f"🚂 FINAL FIXED VERSION - SVG Click Fixed")
+    print(f"🚂 DEBUG MODE - Finding Login Button")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
-    if not TF_USERNAME or not TF_PASSWORD:
-        print("❌ Missing credentials")
-        write_output([], "Missing credentials")
-        return
+    result = debug_page_structure()
+    write_output([], result)
     
-    trains, note = login_and_get_trains()
-    write_output(trains, note)
-    
-    print(f"\n🏁 Complete: {len(trains)} trains")
-    print(f"📝 Status: {note}")
+    print("\n" + "=" * 60)
+    print("🏁 Debug complete")
     print("=" * 60)
 
 if __name__ == "__main__":
