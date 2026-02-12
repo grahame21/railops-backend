@@ -52,7 +52,7 @@ def norm_item(item, i):
     }
 
 def login_and_get_cookies():
-    """Targeted login using the exact element IDs we now know exist"""
+    """Targeted login with improved button detection"""
     
     print("🔄 Starting targeted login...")
     
@@ -73,7 +73,7 @@ def login_and_get_cookies():
         # Wait for JavaScript to render the form
         time.sleep(5)
         
-        # Find username field - we KNOW the ID is useR_name
+        # Find username field - ID: useR_name
         try:
             username = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
@@ -87,7 +87,7 @@ def login_and_get_cookies():
             driver.save_screenshot("debug_no_username.png")
             return None
         
-        # Find password field - we KNOW the ID is pasS_word
+        # Find password field - ID: pasS_word
         try:
             password = driver.find_element(By.ID, "pasS_word")
             print("✅ Found password field")
@@ -99,60 +99,93 @@ def login_and_get_cookies():
             driver.save_screenshot("debug_no_password.png")
             return None
         
-        # Find and click the Log In button
-        # The button text is exactly "Log In"
-        try:
-            # Look for button with exact text "Log In"
-            buttons = driver.find_elements(By.TAG_NAME, "button")
-            login_button = None
-            for btn in buttons:
-                if btn.text.strip() == "Log In":
-                    login_button = btn
+        # IMPROVED BUTTON DETECTION
+        print("🔍 Looking for login button...")
+        login_button = None
+        
+        # Method 1: Find by text containing "Log In" or "Login" (case insensitive)
+        buttons = driver.find_elements(By.TAG_NAME, "button")
+        for btn in buttons:
+            btn_text = btn.text.strip()
+            print(f"   Button text: '{btn_text}'")
+            if "log in" in btn_text.lower() or "login" in btn_text.lower() or "sign in" in btn_text.lower():
+                login_button = btn
+                print(f"✅ Found login button with text: '{btn_text}'")
+                break
+        
+        # Method 2: Find by input type submit
+        if not login_button:
+            inputs = driver.find_elements(By.TAG_NAME, "input")
+            for inp in inputs:
+                if inp.get_attribute("type") == "submit":
+                    login_button = inp
+                    print("✅ Found submit input button")
                     break
-            
-            if login_button:
-                driver.execute_script("arguments[0].click();", login_button)
-                print("✅ Log In button clicked")
-            else:
-                print("❌ Could not find Log In button")
-                driver.save_screenshot("debug_no_button.png")
-                return None
-        except Exception as e:
-            print(f"❌ Error clicking button: {str(e)}")
+        
+        # Method 3: Find by CSS selector
+        if not login_button:
+            try:
+                login_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+                print("✅ Found button[type='submit']")
+            except:
+                pass
+        
+        # Method 4: Find by class containing btn or button
+        if not login_button:
+            for btn in buttons:
+                btn_class = btn.get_attribute("class") or ""
+                if "btn" in btn_class.lower() or "button" in btn_class.lower():
+                    login_button = btn
+                    print(f"✅ Found button with class: '{btn_class}'")
+                    break
+        
+        if not login_button:
+            print("❌ Could not find login button")
+            driver.save_screenshot("debug_no_button.png")
             return None
         
-        # Wait for login to process
-        time.sleep(5)
+        # Click using JavaScript for reliability
+        driver.execute_script("arguments[0].click();", login_button)
+        print("✅ Login button clicked via JavaScript")
         
-        # Check if we got redirected away from login page
+        # Wait for login to process and redirect
+        time.sleep(8)
+        
+        # Check current URL to see if we're still on login page
         current_url = driver.current_url
+        print(f"📌 Current URL after login: {current_url}")
+        
         if "nextlevel" not in current_url:
-            print(f"✅ Redirected to: {current_url}")
+            print("✅ Successfully redirected - login likely successful!")
         else:
-            print("⚠️ Still on login page - may have failed")
+            print("⚠️ Still on login page - login may have failed")
         
         # Get cookies
         cookies = driver.get_cookies()
         print(f"✅ Got {len(cookies)} cookies")
         
-        if len(cookies) == 0:
-            print("⚠️ No cookies - checking localStorage...")
-            # Some sites use localStorage instead of cookies
+        # Also check localStorage (some sites use this instead)
+        try:
             localStorage = driver.execute_script("return Object.keys(localStorage).map(key => ({key, value: localStorage.getItem(key)}));")
             print(f"📦 Found {len(localStorage)} localStorage items")
-            
-            if localStorage:
-                # If we have localStorage, we might still be authenticated
-                print("✅ Authentication may be in localStorage")
+        except:
+            pass
         
         # Convert cookies to string
         cookie_str = "; ".join([f"{c['name']}={c['value']}" for c in cookies])
-        return cookie_str
+        
+        # If we have cookies or we've been redirected, consider it a success
+        if len(cookies) > 0 or "nextlevel" not in current_url:
+            return cookie_str
+        else:
+            print("⚠️ No cookies and still on login page - login failed")
+            return None
         
     except Exception as e:
         print(f"❌ Error: {type(e).__name__}: {str(e)}")
         try:
             driver.save_screenshot("error.png")
+            print("📸 Error screenshot saved")
         except:
             pass
         return None
@@ -206,7 +239,7 @@ def fetch_train_data(cookie_str):
 
 def main():
     print("=" * 60)
-    print(f"🚂 TARGETED LOGIN - Using exact element IDs")
+    print(f"🚂 TARGETED LOGIN - Improved Button Detection")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
