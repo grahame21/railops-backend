@@ -51,29 +51,29 @@ def norm_item(item, i):
         "heading": to_float(item.get("heading") or 0)
     }
 
-def login_and_get_cookies():
-    """Targeted login with improved button detection"""
+def login_and_get_session():
+    """Complete login flow with warning page handling"""
     
-    print("🔄 Starting targeted login...")
+    print("🔄 Starting complete login flow...")
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
+    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
     
     driver = None
     try:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        print(f"🔄 Loading login page: {TF_LOGIN_URL}")
+        # Step 1: Load the login/map page
+        print(f"🔄 Loading page: {TF_LOGIN_URL}")
         driver.get(TF_LOGIN_URL)
+        time.sleep(5)  # Wait for JavaScript to render
         
-        # Wait for JavaScript to render the form
-        time.sleep(5)
-        
-        # Find username field - ID: useR_name
+        # Step 2: Find and fill username field
         try:
             username = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
@@ -82,104 +82,146 @@ def login_and_get_cookies():
             username.clear()
             username.send_keys(TF_USERNAME)
             print("✅ Username entered")
-        except:
-            print("❌ Could not find username field")
+        except Exception as e:
+            print(f"❌ Could not find username field: {str(e)}")
             driver.save_screenshot("debug_no_username.png")
             return None
         
-        # Find password field - ID: pasS_word
+        # Step 3: Find and fill password field
         try:
             password = driver.find_element(By.ID, "pasS_word")
             print("✅ Found password field")
             password.clear()
             password.send_keys(TF_PASSWORD)
             print("✅ Password entered")
-        except:
-            print("❌ Could not find password field")
+        except Exception as e:
+            print(f"❌ Could not find password field: {str(e)}")
             driver.save_screenshot("debug_no_password.png")
             return None
         
-        # IMPROVED BUTTON DETECTION
+        # Step 4: Find the "Remember Me" checkbox and check it (optional)
+        try:
+            remember = driver.find_element(By.ID, "rem_ME")
+            if not remember.is_selected():
+                remember.click()
+                print("✅ Checked Remember Me")
+        except:
+            print("⚠️ Could not find Remember Me checkbox")
+        
+        # Step 5: Find and click the LOGIN BUTTON
+        # IMPORTANT: The login button is NOT a button element!
+        # It might be an input type="submit" or a styled div
         print("🔍 Looking for login button...")
+        
         login_button = None
         
-        # Method 1: Find by text containing "Log In" or "Login" (case insensitive)
-        buttons = driver.find_elements(By.TAG_NAME, "button")
-        for btn in buttons:
-            btn_text = btn.text.strip()
-            print(f"   Button text: '{btn_text}'")
-            if "log in" in btn_text.lower() or "login" in btn_text.lower() or "sign in" in btn_text.lower():
-                login_button = btn
-                print(f"✅ Found login button with text: '{btn_text}'")
+        # Method 1: Look for input type="submit"
+        submit_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='submit']")
+        for inp in submit_inputs:
+            value = inp.get_attribute("value") or ""
+            if "log in" in value.lower() or "login" in value.lower():
+                login_button = inp
+                print(f"✅ Found submit button with value: '{value}'")
                 break
         
-        # Method 2: Find by input type submit
+        # Method 2: Look for button with text
         if not login_button:
-            inputs = driver.find_elements(By.TAG_NAME, "input")
-            for inp in inputs:
-                if inp.get_attribute("type") == "submit":
-                    login_button = inp
-                    print("✅ Found submit input button")
-                    break
-        
-        # Method 3: Find by CSS selector
-        if not login_button:
-            try:
-                login_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-                print("✅ Found button[type='submit']")
-            except:
-                pass
-        
-        # Method 4: Find by class containing btn or button
-        if not login_button:
+            buttons = driver.find_elements(By.TAG_NAME, "button")
             for btn in buttons:
-                btn_class = btn.get_attribute("class") or ""
-                if "btn" in btn_class.lower() or "button" in btn_class.lower():
+                btn_text = btn.text.strip()
+                if "log in" in btn_text.lower() or "login" in btn_text.lower():
                     login_button = btn
-                    print(f"✅ Found button with class: '{btn_class}'")
+                    print(f"✅ Found button with text: '{btn_text}'")
                     break
         
+        # Method 3: Look for any element with onclick or submit functionality
         if not login_button:
-            print("❌ Could not find login button")
-            driver.save_screenshot("debug_no_button.png")
-            return None
+            # Try to find the form and submit it directly
+            forms = driver.find_elements(By.TAG_NAME, "form")
+            if forms:
+                print(f"✅ Found {len(forms)} form(s), submitting the first one")
+                driver.execute_script("arguments[0].submit();", forms[0])
+                login_button = "form_submit"
+                print("✅ Form submitted via JavaScript")
         
-        # Click using JavaScript for reliability
-        driver.execute_script("arguments[0].click();", login_button)
-        print("✅ Login button clicked via JavaScript")
+        if login_button and login_button != "form_submit":
+            try:
+                login_button.click()
+                print("✅ Login button clicked")
+            except:
+                driver.execute_script("arguments[0].click();", login_button)
+                print("✅ Login button clicked via JavaScript")
         
-        # Wait for login to process and redirect
-        time.sleep(8)
+        # Wait for login to process and warning page to appear
+        print("⏳ Waiting for warning page...")
+        time.sleep(5)
         
-        # Check current URL to see if we're still on login page
-        current_url = driver.current_url
-        print(f"📌 Current URL after login: {current_url}")
+        # Step 6: Handle the warning page - click the X/Close button
+        print("🔍 Looking for warning page close button...")
         
-        if "nextlevel" not in current_url:
-            print("✅ Successfully redirected - login likely successful!")
-        else:
-            print("⚠️ Still on login page - login may have failed")
+        # Method 1: Look for SVG path with the specific d attribute
+        svg_paths = driver.find_elements(By.TAG_NAME, "path")
+        for path in svg_paths:
+            d_attr = path.get_attribute("d") or ""
+            if "M13.7,11l6.1-6.1" in d_attr or "close" in d_attr.lower():
+                try:
+                    path.click()
+                    print("✅ Clicked warning page close button (SVG path)")
+                    break
+                except:
+                    try:
+                        driver.execute_script("arguments[0].click();", path)
+                        print("✅ Clicked warning page close button via JavaScript")
+                        break
+                    except:
+                        pass
         
-        # Get cookies
+        # Method 2: Look for any close/dismiss button
+        if not svg_paths:
+            close_buttons = driver.find_elements(By.CSS_SELECTOR, ".close, .dismiss, .btn-close, [aria-label='Close']")
+            for btn in close_buttons:
+                btn.click()
+                print("✅ Clicked close button")
+                break
+        
+        # Wait for map to load
+        print("⏳ Waiting for map to load...")
+        time.sleep(5)
+        
+        # Step 7: Get cookies and session data
         cookies = driver.get_cookies()
         print(f"✅ Got {len(cookies)} cookies")
-        
-        # Also check localStorage (some sites use this instead)
-        try:
-            localStorage = driver.execute_script("return Object.keys(localStorage).map(key => ({key, value: localStorage.getItem(key)}));")
-            print(f"📦 Found {len(localStorage)} localStorage items")
-        except:
-            pass
         
         # Convert cookies to string
         cookie_str = "; ".join([f"{c['name']}={c['value']}" for c in cookies])
         
-        # If we have cookies or we've been redirected, consider it a success
-        if len(cookies) > 0 or "nextlevel" not in current_url:
-            return cookie_str
-        else:
-            print("⚠️ No cookies and still on login page - login failed")
-            return None
+        # Step 8: Try to access the API directly
+        print(f"🔄 Attempting to fetch train data...")
+        driver.get(TF_URL)
+        time.sleep(2)
+        
+        page_source = driver.page_source
+        if page_source.strip().startswith(("{", "[")):
+            print("✅ Successfully accessed train data API!")
+            try:
+                import json
+                data = json.loads(page_source)
+                raw_list = extract_list(data)
+                trains = []
+                for i, item in enumerate(raw_list):
+                    train = norm_item(item, i)
+                    if train and train.get("lat") and train.get("lon"):
+                        trains.append(train)
+                
+                # Save screenshot of success
+                driver.save_screenshot("login_success.png")
+                print("📸 Success screenshot saved")
+                
+                return trains, "ok"
+            except:
+                pass
+        
+        return [], "Login flow completed but no train data"
         
     except Exception as e:
         print(f"❌ Error: {type(e).__name__}: {str(e)}")
@@ -188,58 +230,15 @@ def login_and_get_cookies():
             print("📸 Error screenshot saved")
         except:
             pass
-        return None
+        return [], f"Error: {type(e).__name__}"
     finally:
         if driver:
             driver.quit()
             print("✅ Browser closed")
 
-def fetch_train_data(cookie_str):
-    if not cookie_str:
-        return [], "No cookies"
-    
-    session = requests.Session()
-    session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "Accept": "application/json, text/javascript, */*; q=0.01",
-        "X-Requested-With": "XMLHttpRequest",
-        "Referer": TF_LOGIN_URL,
-        "Cookie": cookie_str
-    })
-    
-    try:
-        print(f"🔄 Fetching train data...")
-        r = session.get(TF_URL, timeout=30, allow_redirects=False)
-        print(f"✅ Response: {r.status_code}")
-        
-        if r.status_code in (301, 302, 303, 307, 308):
-            location = r.headers.get("Location", "unknown")
-            print(f"⚠️ Redirected to: {location}")
-            return [], f"Redirected"
-        
-        if r.status_code != 200:
-            return [], f"HTTP {r.status_code}"
-        
-        if "application/json" not in r.headers.get("content-type", "").lower():
-            return [], "Non-JSON response"
-        
-        data = r.json()
-        raw_list = extract_list(data)
-        
-        trains = []
-        for i, item in enumerate(raw_list):
-            train = norm_item(item, i)
-            if train and train.get("lat") and train.get("lon"):
-                trains.append(train)
-        
-        return trains, "ok"
-        
-    except Exception as e:
-        return [], f"Error: {type(e).__name__}"
-
 def main():
     print("=" * 60)
-    print(f"🚂 TARGETED LOGIN - Improved Button Detection")
+    print(f"🚂 COMPLETE LOGIN FLOW - With Warning Page Handling")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -248,19 +247,11 @@ def main():
         write_output([], "Missing credentials")
         return
     
-    cookie = login_and_get_cookies()
-    
-    if not cookie:
-        print("❌ Login failed - no cookie")
-        write_output([], "Login failed")
-        return
-    
-    print(f"✅ Cookie obtained (length: {len(cookie)})")
-    
-    trains, note = fetch_train_data(cookie)
+    trains, note = login_and_get_session()
     write_output(trains, note)
     
-    print(f"🏁 Complete: {len(trains)} trains")
+    print(f"\n🏁 Complete: {len(trains)} trains")
+    print(f"📝 Status: {note}")
     print("=" * 60)
 
 if __name__ == "__main__":
