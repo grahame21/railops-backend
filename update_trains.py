@@ -1,8 +1,15 @@
 import os
 import json
 import datetime
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 import requests
-from urllib.parse import urlparse
 
 OUT_FILE = "trains.json"
 TF_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
@@ -25,7 +32,7 @@ def extract_list(data):
     if not data: return []
     if isinstance(data, list): return data
     if isinstance(data, dict):
-        for k in ["trains", "Trains", "markers", "Markers", "features", "data"]:
+        for k in ["trains", "Trains", "markers", "Markers", "features"]:
             if isinstance(data.get(k), list):
                 return data[k]
     return []
@@ -44,117 +51,162 @@ def norm_item(item, i):
         "heading": to_float(item.get("heading") or 0)
     }
 
-def investigate_login():
-    """Investigate the login page to find the correct form action"""
+def login_and_get_cookies():
+    """Targeted login using the exact element IDs we now know exist"""
     
-    print("=" * 60)
-    print("🔍 INVESTIGATION MODE - Finding Login Endpoint")
-    print("=" * 60)
+    print("🔄 Starting targeted login...")
+    
+    chrome_options = Options()
+    chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--window-size=1920,1080')
+    
+    driver = None
+    try:
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+        
+        print(f"🔄 Loading login page: {TF_LOGIN_URL}")
+        driver.get(TF_LOGIN_URL)
+        
+        # Wait for JavaScript to render the form
+        time.sleep(5)
+        
+        # Find username field - we KNOW the ID is useR_name
+        try:
+            username = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "useR_name"))
+            )
+            print("✅ Found username field")
+            username.clear()
+            username.send_keys(TF_USERNAME)
+            print("✅ Username entered")
+        except:
+            print("❌ Could not find username field")
+            driver.save_screenshot("debug_no_username.png")
+            return None
+        
+        # Find password field - we KNOW the ID is pasS_word
+        try:
+            password = driver.find_element(By.ID, "pasS_word")
+            print("✅ Found password field")
+            password.clear()
+            password.send_keys(TF_PASSWORD)
+            print("✅ Password entered")
+        except:
+            print("❌ Could not find password field")
+            driver.save_screenshot("debug_no_password.png")
+            return None
+        
+        # Find and click the Log In button
+        # The button text is exactly "Log In"
+        try:
+            # Look for button with exact text "Log In"
+            buttons = driver.find_elements(By.TAG_NAME, "button")
+            login_button = None
+            for btn in buttons:
+                if btn.text.strip() == "Log In":
+                    login_button = btn
+                    break
+            
+            if login_button:
+                driver.execute_script("arguments[0].click();", login_button)
+                print("✅ Log In button clicked")
+            else:
+                print("❌ Could not find Log In button")
+                driver.save_screenshot("debug_no_button.png")
+                return None
+        except Exception as e:
+            print(f"❌ Error clicking button: {str(e)}")
+            return None
+        
+        # Wait for login to process
+        time.sleep(5)
+        
+        # Check if we got redirected away from login page
+        current_url = driver.current_url
+        if "nextlevel" not in current_url:
+            print(f"✅ Redirected to: {current_url}")
+        else:
+            print("⚠️ Still on login page - may have failed")
+        
+        # Get cookies
+        cookies = driver.get_cookies()
+        print(f"✅ Got {len(cookies)} cookies")
+        
+        if len(cookies) == 0:
+            print("⚠️ No cookies - checking localStorage...")
+            # Some sites use localStorage instead of cookies
+            localStorage = driver.execute_script("return Object.keys(localStorage).map(key => ({key, value: localStorage.getItem(key)}));")
+            print(f"📦 Found {len(localStorage)} localStorage items")
+            
+            if localStorage:
+                # If we have localStorage, we might still be authenticated
+                print("✅ Authentication may be in localStorage")
+        
+        # Convert cookies to string
+        cookie_str = "; ".join([f"{c['name']}={c['value']}" for c in cookies])
+        return cookie_str
+        
+    except Exception as e:
+        print(f"❌ Error: {type(e).__name__}: {str(e)}")
+        try:
+            driver.save_screenshot("error.png")
+        except:
+            pass
+        return None
+    finally:
+        if driver:
+            driver.quit()
+            print("✅ Browser closed")
+
+def fetch_train_data(cookie_str):
+    if not cookie_str:
+        return [], "No cookies"
     
     session = requests.Session()
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
+        "Accept": "application/json, text/javascript, */*; q=0.01",
+        "X-Requested-With": "XMLHttpRequest",
+        "Referer": TF_LOGIN_URL,
+        "Cookie": cookie_str
     })
     
-    # Step 1: Get the login page and analyze it
-    print(f"\n1️⃣ Fetching login page: {TF_LOGIN_URL}")
     try:
-        response = session.get(TF_LOGIN_URL, timeout=30)
-        print(f"   Status: {response.status_code}")
-        print(f"   Content-Type: {response.headers.get('content-type', 'unknown')}")
-        print(f"   Response length: {len(response.text)} characters")
+        print(f"🔄 Fetching train data...")
+        r = session.get(TF_URL, timeout=30, allow_redirects=False)
+        print(f"✅ Response: {r.status_code}")
         
-        # Look for form tags in the response
-        html = response.text.lower()
+        if r.status_code in (301, 302, 303, 307, 308):
+            location = r.headers.get("Location", "unknown")
+            print(f"⚠️ Redirected to: {location}")
+            return [], f"Redirected"
         
-        # Find all form actions
-        import re
-        form_actions = re.findall(r'<form[^>]*action=[\'"]([^\'"]*)[\'"]', html)
-        print(f"\n2️⃣ Found {len(form_actions)} form actions:")
-        for i, action in enumerate(form_actions[:5]):  # Show first 5
-            # Convert relative URLs to absolute
-            if action.startswith('/'):
-                action = 'https://trainfinder.otenko.com' + action
-            print(f"   Form {i+1}: {action}")
+        if r.status_code != 200:
+            return [], f"HTTP {r.status_code}"
         
-        # Find input field names
-        input_names = re.findall(r'<input[^>]*name=[\'"]([^\'"]*)[\'"]', html)
-        print(f"\n3️⃣ Found {len(input_names)} input field names:")
-        unique_names = set(input_names)
-        for name in unique_names:
-            print(f"   - {name}")
+        if "application/json" not in r.headers.get("content-type", "").lower():
+            return [], "Non-JSON response"
         
-        # Look for password fields specifically
-        password_fields = re.findall(r'<input[^>]*type=[\'"]password[\'"][^>]*name=[\'"]([^\'"]*)[\'"]', html)
-        print(f"\n4️⃣ Password field names: {set(password_fields) if password_fields else 'None found'}")
+        data = r.json()
+        raw_list = extract_list(data)
         
-        # Look for the actual login form
-        if 'login' in html or 'signin' in html:
-            print("\n5️⃣ Page contains 'login' or 'signin' keywords")
+        trains = []
+        for i, item in enumerate(raw_list):
+            train = norm_item(item, i)
+            if train and train.get("lat") and train.get("lon"):
+                trains.append(train)
         
-        # Try to find the most likely login endpoint
-        if form_actions:
-            # Try the first form action
-            test_action = form_actions[0]
-            if test_action.startswith('/'):
-                test_action = 'https://trainfinder.otenko.com' + test_action
-            
-            print(f"\n6️⃣ Testing form action: {test_action}")
-            
-            # Try different credential combinations
-            test_data = {}
-            if 'username' in unique_names or 'user' in unique_names:
-                test_data['username'] = TF_USERNAME
-                test_data['password'] = TF_PASSWORD
-            elif 'email' in unique_names:
-                test_data['email'] = TF_USERNAME
-                test_data['password'] = TF_PASSWORD
-            elif 'UserName' in unique_names:
-                test_data['UserName'] = TF_USERNAME
-                test_data['Password'] = TF_PASSWORD
-            
-            if test_data:
-                print(f"   Testing with fields: {list(test_data.keys())}")
-                try:
-                    login_resp = session.post(test_action, data=test_data, timeout=30, allow_redirects=False)
-                    print(f"   Response status: {login_resp.status_code}")
-                    if login_resp.status_code in (302, 303, 307):
-                        location = login_resp.headers.get('Location', '')
-                        print(f"   Redirect to: {location}")
-                        
-                        # Follow the redirect and try to get train data
-                        if 'login' not in location.lower() and 'signin' not in location.lower():
-                            print("   ✅ Possible successful login!")
-                            
-                            # Try to get train data
-                            train_resp = session.get(TF_URL, timeout=30, allow_redirects=False)
-                            print(f"   Train data response: {train_resp.status_code}")
-                            
-                            if train_resp.status_code == 200:
-                                try:
-                                    data = train_resp.json()
-                                    raw_list = extract_list(data)
-                                    trains = []
-                                    for i, item in enumerate(raw_list):
-                                        train = norm_item(item, i)
-                                        if train and train.get("lat") and train.get("lon"):
-                                            trains.append(train)
-                                    return trains, "ok"
-                                except:
-                                    pass
-                except Exception as e:
-                    print(f"   Error: {type(e).__name__}")
+        return trains, "ok"
         
     except Exception as e:
-        print(f"❌ Investigation error: {type(e).__name__}: {str(e)}")
-    
-    return [], "Login endpoint not found"
+        return [], f"Error: {type(e).__name__}"
 
 def main():
     print("=" * 60)
-    print(f"🚂 TRAINFINDER LOGIN INVESTIGATION")
+    print(f"🚂 TARGETED LOGIN - Using exact element IDs")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -163,12 +215,19 @@ def main():
         write_output([], "Missing credentials")
         return
     
-    trains, note = investigate_login()
+    cookie = login_and_get_cookies()
+    
+    if not cookie:
+        print("❌ Login failed - no cookie")
+        write_output([], "Login failed")
+        return
+    
+    print(f"✅ Cookie obtained (length: {len(cookie)})")
+    
+    trains, note = fetch_train_data(cookie)
     write_output(trains, note)
     
-    print("\n" + "=" * 60)
     print(f"🏁 Complete: {len(trains)} trains")
-    print(f"📝 Status: {note}")
     print("=" * 60)
 
 if __name__ == "__main__":
