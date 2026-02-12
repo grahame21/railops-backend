@@ -9,7 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 OUT_FILE = "trains.json"
 TF_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
@@ -52,15 +51,11 @@ def norm_item(item, i):
     }
 
 def login_and_get_trains():
-    """Complete login flow with proper AJAX request"""
+    """Complete login flow with proper AJAX request - FIXED"""
     
     print("=" * 60)
-    print("🚂 FINAL VERSION - Direct AJAX Request")
+    print("🚂 FINAL VERSION - Direct AJAX Request (FIXED)")
     print("=" * 60)
-    
-    # Enable browser logging
-    caps = DesiredCapabilities.CHROME
-    caps['goog:loggingPrefs'] = {'performance': 'ALL', 'browser': 'ALL'}
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
@@ -68,10 +63,13 @@ def login_and_get_trains():
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
     
+    # Set up logging preferences
+    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+    
     driver = None
     try:
         service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options, desired_capabilities=caps)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
         
         # Step 1: Load the page
         print("\n📌 Loading login page...")
@@ -149,7 +147,7 @@ def login_and_get_trains():
         # Step 7: Wait for map
         time.sleep(5)
         
-        # Step 8: NOW THE KEY PART - Execute the API request with proper headers
+        # Step 8: Make AJAX request for train data
         print("\n📡 Making AJAX request for train data...")
         
         ajax_script = """
@@ -161,16 +159,16 @@ def login_and_get_trains():
                 'X-Requested-With': 'XMLHttpRequest',
                 'Referer': 'https://trainfinder.otenko.com/home/nextlevel'
             },
-            credentials: 'include'  // This sends cookies
+            credentials: 'include'
         })
         .then(response => response.text())
         .then(text => {
             // Check if it's JSON
             try {
                 JSON.parse(text);
-                return {success: true, data: text};
+                return {success: true, data: text, length: text.length};
             } catch(e) {
-                return {success: false, data: text.substring(0, 200)};
+                return {success: false, data: text.substring(0, 200), length: text.length};
             }
         })
         .catch(error => {
@@ -181,7 +179,7 @@ def login_and_get_trains():
         result = driver.execute_script(ajax_script)
         
         if result.get('success'):
-            print("✅ SUCCESS! Received JSON data")
+            print(f"✅ SUCCESS! Received JSON data ({result.get('length', 0)} bytes)")
             try:
                 data = json.loads(result['data'])
                 raw_list = extract_list(data)
@@ -210,7 +208,15 @@ def login_and_get_trains():
                 print(f"❌ JSON parse error: {e}")
                 return [], "JSON parse error"
         else:
-            print(f"❌ Request failed: {result.get('data', result.get('error', 'Unknown error'))}")
+            print(f"❌ Request failed - received {result.get('length', 0)} bytes")
+            print(f"   Preview: {result.get('data', result.get('error', 'Unknown'))[:200]}")
+            
+            # If we got HTML, save it for debugging
+            if result.get('data', '').strip().startswith('<'):
+                with open('debug_response.html', 'w') as f:
+                    f.write(result['data'])
+                print("📄 Saved HTML response to debug_response.html")
+            
             return [], "API request failed"
         
     except Exception as e:
@@ -228,7 +234,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 TRAIN TRACKER - FINAL AJAX VERSION 🚂🚂🚂")
+    print("🚂🚂🚂 TRAIN TRACKER - FINAL FIXED VERSION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
