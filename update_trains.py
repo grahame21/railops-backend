@@ -51,50 +51,39 @@ def norm_item(item, i):
     }
 
 def login_and_get_trains():
-    """Complete login flow and fetch train data directly"""
+    """AJAX login - trigger login via JavaScript events"""
     
-    print("🔄 Starting complete login flow...")
+    print("🔄 Starting AJAX login flow...")
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
-    chrome_options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
     
     driver = None
     try:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        # Step 1: Load the login/map page
+        # Step 1: Load the page
         print(f"🔄 Loading page: {TF_LOGIN_URL}")
         driver.get(TF_LOGIN_URL)
         time.sleep(5)
         
-        # Step 2: Find and fill username field
-        try:
-            username = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "useR_name"))
-            )
-            print("✅ Found username field")
-            username.clear()
-            username.send_keys(TF_USERNAME)
-            print("✅ Username entered")
-        except Exception as e:
-            print(f"❌ Could not find username field: {str(e)}")
-            return [], "Username field not found"
+        # Step 2: Find and fill username
+        username = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "useR_name"))
+        )
+        username.clear()
+        username.send_keys(TF_USERNAME)
+        print("✅ Username entered")
         
-        # Step 3: Find and fill password field
-        try:
-            password = driver.find_element(By.ID, "pasS_word")
-            print("✅ Found password field")
-            password.clear()
-            password.send_keys(TF_PASSWORD)
-            print("✅ Password entered")
-        except Exception as e:
-            print(f"❌ Could not find password field: {str(e)}")
-            return [], "Password field not found"
+        # Step 3: Find and fill password
+        password = driver.find_element(By.ID, "pasS_word")
+        password.clear()
+        password.send_keys(TF_PASSWORD)
+        print("✅ Password entered")
         
         # Step 4: Check Remember Me
         try:
@@ -103,65 +92,104 @@ def login_and_get_trains():
                 remember.click()
                 print("✅ Checked Remember Me")
         except:
-            print("⚠️ Could not find Remember Me checkbox")
+            print("⚠️ Remember Me checkbox not found")
         
-        # Step 5: Find and click the form submit button
-        print("🔍 Looking for login form...")
+        # Step 5: TRIGGER LOGIN VIA JAVASCRIPT
+        # The login button likely triggers an AJAX call
+        print("🔍 Triggering login via JavaScript...")
         
-        # Look for any form and submit it
-        forms = driver.find_elements(By.TAG_NAME, "form")
-        if forms:
-            print(f"✅ Found {len(forms)} form(s), submitting the first one")
-            driver.execute_script("arguments[0].submit();", forms[0])
-            print("✅ Form submitted via JavaScript")
-        else:
-            print("❌ No forms found")
-            return [], "No login form found"
+        login_script = """
+        // Find the login button or trigger the login event
+        var usernameField = document.getElementById('useR_name');
+        var passwordField = document.getElementById('pasS_word');
         
-        # Wait for login to process and warning page to appear
-        print("⏳ Waiting for warning page...")
+        // Trigger change events
+        usernameField.dispatchEvent(new Event('change', { bubbles: true }));
+        passwordField.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        // Find and click the login element
+        var loginButton = null;
+        
+        // Try to find by text
+        var buttons = document.getElementsByTagName('button');
+        for(var i = 0; i < buttons.length; i++) {
+            if(buttons[i].textContent.trim().toLowerCase().includes('log in')) {
+                loginButton = buttons[i];
+                break;
+            }
+        }
+        
+        // If no button found, try to find by class or role
+        if(!loginButton) {
+            loginButton = document.querySelector('[type="submit"], .btn-login, .login-button');
+        }
+        
+        // If found, click it
+        if(loginButton) {
+            loginButton.click();
+            return 'Login button clicked';
+        } else {
+            // Last resort: try to submit the login via AJAX
+            // You may need to adjust this based on the actual API endpoint
+            fetch('https://trainfinder.otenko.com/Account/Login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: arguments[0],
+                    password: arguments[1]
+                })
+            });
+            return 'AJAX login attempted';
+        }
+        """
+        
+        result = driver.execute_script(login_script, TF_USERNAME, TF_PASSWORD)
+        print(f"✅ {result}")
+        
+        # Wait for login and warning page
+        print("⏳ Waiting for login to process...")
         time.sleep(8)
         
-        # Step 6: Handle the warning page - click the X/Close button
+        # Step 6: Close warning page
         print("🔍 Looking for warning page close button...")
         
-        # Look for SVG path with the close icon
-        svg_paths = driver.find_elements(By.TAG_NAME, "path")
-        close_clicked = False
-        for path in svg_paths:
-            d_attr = path.get_attribute("d") or ""
-            if "M13.7,11l6.1-6.1" in d_attr:
-                try:
-                    driver.execute_script("arguments[0].click();", path)
-                    print("✅ Clicked warning page close button (SVG path)")
-                    close_clicked = True
-                    break
-                except:
-                    pass
+        close_script = """
+        // Find and click the close button
+        var closeButton = null;
         
-        if not close_clicked:
-            # Try alternative close buttons
-            close_selectors = [".close", ".btn-close", "[aria-label='Close']", "button:contains('×')"]
-            for selector in close_selectors:
-                try:
-                    btn = driver.find_element(By.CSS_SELECTOR, selector)
-                    btn.click()
-                    print(f"✅ Clicked close button with selector: {selector}")
-                    close_clicked = True
-                    break
-                except:
-                    pass
+        // Look for SVG path with the close icon
+        var paths = document.getElementsByTagName('path');
+        for(var i = 0; i < paths.length; i++) {
+            var d = paths[i].getAttribute('d') || '';
+            if(d.includes('M13.7,11l6.1-6.1')) {
+                paths[i].click();
+                return 'Close button clicked via path';
+            }
+        }
         
-        # Wait for map to load
+        // Look for close buttons by class
+        closeButton = document.querySelector('.close, .btn-close, [aria-label="Close"]');
+        if(closeButton) {
+            closeButton.click();
+            return 'Close button clicked via selector';
+        }
+        
+        return 'No close button found';
+        """
+        
+        close_result = driver.execute_script(close_script)
+        print(f"✅ {close_result}")
+        
+        # Wait for map
         print("⏳ Waiting for map to load...")
         time.sleep(5)
         
-        # Step 7: DIRECTLY FETCH THE TRAIN DATA
-        print(f"🔄 Fetching train data directly from API...")
+        # Step 7: Fetch train data
+        print(f"🔄 Fetching train data from API...")
         driver.get(TF_URL)
         time.sleep(3)
         
-        # Get the JSON response
+        # Get the response
         page_source = driver.page_source
         print(f"📄 Response length: {len(page_source)} characters")
         
@@ -170,7 +198,6 @@ def login_and_get_trains():
             print("✅ Successfully received JSON data!")
             
             try:
-                import json
                 data = json.loads(page_source)
                 raw_list = extract_list(data)
                 
@@ -181,21 +208,16 @@ def login_and_get_trains():
                         trains.append(train)
                 
                 print(f"✅ Extracted {len(trains)} trains")
-                
-                # Save screenshot of success
-                driver.save_screenshot("login_success.png")
-                print("📸 Success screenshot saved")
-                
                 return trains, "ok"
                 
             except json.JSONDecodeError as e:
                 print(f"❌ JSON parse error: {str(e)}")
+                # Save the response for debugging
+                with open("debug_response.json", "w") as f:
+                    f.write(page_source[:5000])
                 return [], "JSON parse error"
         else:
-            # If not JSON, save the response for debugging
-            with open("debug_response.html", "w") as f:
-                f.write(page_source[:5000])
-            print("⚠️ Response is not JSON - saved first 5000 chars to debug_response.html")
+            print("⚠️ Response is not JSON")
             return [], "Non-JSON response"
         
     except Exception as e:
@@ -213,7 +235,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print(f"🚂 FINAL VERSION - Direct Train Data Fetch")
+    print(f"🚂 AJAX LOGIN - Final Version")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
