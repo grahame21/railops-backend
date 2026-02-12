@@ -2,6 +2,7 @@ import os
 import json
 import datetime
 import time
+import re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -12,7 +13,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 OUT_FILE = "trains.json"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
-TF_API_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"  # THIS IS THE REAL ONE!
 
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
@@ -27,35 +27,67 @@ def write_output(trains, note=""):
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
-def extract_list(data):
-    if not data: return []
-    if isinstance(data, list): return data
-    if isinstance(data, dict):
-        for k in ["trains", "Trains", "markers", "Markers", "features", "data", "Data"]:
-            if isinstance(data.get(k), list):
-                return data[k]
-    return []
-
 def to_float(x):
     try: return float(x) if x is not None else None
     except: return None
 
-def norm_item(item, i):
-    if not isinstance(item, dict): return None
-    return {
-        "id": str(item.get("id") or item.get("ID") or item.get("trainId") or f"train_{i}"),
-        "lat": to_float(item.get("lat") or item.get("latitude") or item.get("Lat")),
-        "lon": to_float(item.get("lon") or item.get("longitude") or item.get("Lon")),
-        "operator": item.get("operator") or item.get("Operator") or "",
-        "heading": to_float(item.get("heading") or item.get("Heading") or 0),
-        "speed": to_float(item.get("speed") or item.get("Speed") or 0)
-    }
+def extract_trains_from_page_source(html):
+    """Extract train data from the page HTML using regex patterns"""
+    trains = []
+    
+    # Pattern 1: Look for JavaScript array of trains
+    patterns = [
+        r'trains\s*=\s*(\[.*?\]);',
+        r'markers\s*=\s*(\[.*?\]);',
+        r'var\s+trainData\s*=\s*(\[.*?\]);',
+        r'var\s+data\s*=\s*({.*?"trains".*?});',
+        r'JSON\.parse\([\'"](.+?)[\'"]\)',
+    ]
+    
+    for pattern in patterns:
+        matches = re.findall(pattern, html, re.DOTALL)
+        for match in matches:
+            try:
+                # Clean up the match
+                clean_match = match.replace('\\"', '"').replace("\\'", "'")
+                data = json.loads(clean_match)
+                
+                # Handle different data structures
+                if isinstance(data, list):
+                    for i, item in enumerate(data):
+                        train = {
+                            "id": str(item.get("id") or item.get("ID") or item.get("trainId") or f"train_{i}"),
+                            "lat": to_float(item.get("lat") or item.get("latitude") or item.get("Lat")),
+                            "lon": to_float(item.get("lon") or item.get("longitude") or item.get("Lon")),
+                            "operator": item.get("operator") or item.get("Operator") or "",
+                            "heading": to_float(item.get("heading") or item.get("Heading") or 0),
+                            "speed": to_float(item.get("speed") or item.get("Speed") or 0)
+                        }
+                        if train["lat"] and train["lon"]:
+                            trains.append(train)
+                elif isinstance(data, dict):
+                    train_list = data.get("trains") or data.get("Trains") or data.get("markers") or data.get("Markers") or []
+                    for i, item in enumerate(train_list):
+                        train = {
+                            "id": str(item.get("id") or item.get("ID") or f"train_{i}"),
+                            "lat": to_float(item.get("lat") or item.get("latitude") or item.get("Lat")),
+                            "lon": to_float(item.get("lon") or item.get("longitude") or item.get("Lon")),
+                            "operator": item.get("operator") or item.get("Operator") or "",
+                            "heading": to_float(item.get("heading") or item.get("Heading") or 0),
+                            "speed": to_float(item.get("speed") or item.get("Speed") or 0)
+                        }
+                        if train["lat"] and train["lon"]:
+                            trains.append(train)
+            except:
+                continue
+    
+    return trains
 
-def login_and_get_trains():
-    """Production version using the REAL API endpoint"""
+def login_and_extract_trains():
+    """Login and extract train data directly from the page"""
     
     print("=" * 60)
-    print("🚂 PRODUCTION SCRAPER - REAL ENDPOINT")
+    print("🚂 EXTRACTING TRAINS FROM PAGE SOURCE")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -135,74 +167,127 @@ def login_and_get_trains():
         """)
         print("✅ Warning page closed")
         
-        # Wait for map
-        time.sleep(5)
+        # Wait for map to load completely
+        print("\n⏳ Waiting for map to load and trains to appear...")
+        time.sleep(15)
         
-        # STEP 2: FETCH TRAIN DATA
-        print(f"\n📡 Fetching train data from: {TF_API_URL}")
+        # STEP 2: EXTRACT TRAIN DATA FROM PAGE
+        print("\n🔍 Extracting train data from page source...")
         
-        script = f"""
-        return fetch('{TF_API_URL}', {{
-            method: 'GET',
-            headers: {{
-                'Accept': 'application/json, text/javascript, */*; q=0.01',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Referer': '{TF_LOGIN_URL}'
-            }},
-            credentials: 'include'
-        }})
-        .then(response => response.text())
-        .then(text => {{
-            try {{
-                var data = JSON.parse(text);
-                // Check if data has trains array
-                var trains = data.trains || data.Trains || data.markers || data.Markers || data.features || data;
-                var count = Array.isArray(trains) ? trains.length : 
-                           (trains ? Object.keys(trains).length : 0);
-                return {{success: true, data: text, count: count}};
-            }} catch(e) {{
-                return {{success: false, data: text.substring(0, 200)}};
-            }}
-        }})
-        .catch(error => {{
-            return {{success: false, error: error.toString()}};
-        }});
-        """
+        # Method 1: Look for JavaScript variables
+        page_source = driver.page_source
+        trains = extract_trains_from_page_source(page_source)
         
-        result = driver.execute_script(script)
-        
-        if result.get('success'):
-            count = result.get('count', 0)
-            print(f"✅ SUCCESS! Received JSON with {count} train records")
-            
-            try:
-                data = json.loads(result['data'])
-                raw_list = extract_list(data)
-                
-                trains = []
-                for i, item in enumerate(raw_list):
-                    train = norm_item(item, i)
-                    if train and train.get("lat") and train.get("lon"):
-                        trains.append(train)
-                
-                print(f"✅ Extracted {len(trains)} valid train positions")
-                
-                if trains:
-                    print(f"\n📊 Sample train:")
-                    sample = trains[0]
-                    print(f"   ID: {sample.get('id')}")
-                    print(f"   Location: {sample.get('lat')}, {sample.get('lon')}")
-                    print(f"   Heading: {sample.get('heading')}")
-                    print(f"   Speed: {sample.get('speed')}")
-                
-                return trains, f"ok - {count} trains"
-                
-            except json.JSONDecodeError as e:
-                print(f"❌ JSON parse error: {e}")
-                return [], "JSON parse error"
+        if trains:
+            print(f"✅ Found {len(trains)} trains in page source!")
         else:
-            print(f"❌ API request failed")
-            return [], "API request failed"
+            print("⚠️ No trains found in page source, trying JavaScript execution...")
+            
+            # Method 2: Execute JavaScript to get train data
+            script = """
+            // Try to find train data in various global variables
+            var trainData = null;
+            
+            if (window.trainData) trainData = window.trainData;
+            else if (window.trains) trainData = window.trains;
+            else if (window.markers) trainData = window.markers;
+            else if (window.TrainTracker) trainData = window.TrainTracker;
+            
+            // Try to find by searching through all global variables
+            if (!trainData) {
+                for (var key in window) {
+                    try {
+                        if (key.toLowerCase().includes('train') || key.toLowerCase().includes('marker')) {
+                            var val = window[key];
+                            if (val && typeof val === 'object') {
+                                trainData = val;
+                                break;
+                            }
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            return trainData ? JSON.stringify(trainData) : null;
+            """
+            
+            result = driver.execute_script(script)
+            if result:
+                try:
+                    data = json.loads(result)
+                    if isinstance(data, list):
+                        for i, item in enumerate(data):
+                            train = {
+                                "id": str(item.get("id") or item.get("ID") or f"train_{i}"),
+                                "lat": to_float(item.get("lat") or item.get("latitude")),
+                                "lon": to_float(item.get("lon") or item.get("longitude")),
+                                "operator": item.get("operator") or "",
+                                "heading": to_float(item.get("heading") or 0),
+                                "speed": to_float(item.get("speed") or 0)
+                            }
+                            if train["lat"] and train["lon"]:
+                                trains.append(train)
+                except:
+                    pass
+        
+        # Method 3: Check if there's a map and get features
+        if not trains:
+            print("⚠️ Still no trains, checking OpenLayers map...")
+            script = """
+            if (map) {
+                var features = [];
+                map.getLayers().forEach(function(layer) {
+                    if (layer.getSource && layer.getSource().getFeatures) {
+                        var source = layer.getSource();
+                        if (source.getFeatures) {
+                            features = features.concat(source.getFeatures());
+                        }
+                    }
+                });
+                return features.map(function(f) {
+                    var props = f.getProperties();
+                    var geom = f.getGeometry();
+                    var coords = geom ? geom.getCoordinates() : null;
+                    return {
+                        id: props.id || props.name || 'unknown',
+                        lat: coords ? coords[1] : null,
+                        lon: coords ? coords[0] : null,
+                        heading: props.heading || 0,
+                        speed: props.speed || 0,
+                        operator: props.operator || ''
+                    };
+                });
+            }
+            return [];
+            """
+            features = driver.execute_script(script)
+            for i, feature in enumerate(features):
+                train = {
+                    "id": str(feature.get("id") or f"train_{i}"),
+                    "lat": to_float(feature.get("lat")),
+                    "lon": to_float(feature.get("lon")),
+                    "operator": feature.get("operator") or "",
+                    "heading": to_float(feature.get("heading") or 0),
+                    "speed": to_float(feature.get("speed") or 0)
+                }
+                if train["lat"] and train["lon"]:
+                    trains.append(train)
+        
+        print(f"\n📊 Found {len(trains)} trains on the map!")
+        
+        if trains:
+            print("\n📋 Sample train:")
+            sample = trains[0]
+            print(f"   ID: {sample['id']}")
+            print(f"   Location: {sample['lat']}, {sample['lon']}")
+            print(f"   Heading: {sample['heading']}")
+            print(f"   Speed: {sample['speed']}")
+        
+        # Save screenshot
+        driver.save_screenshot("map_with_trains.png")
+        print("\n📸 Map screenshot saved")
+        
+        return trains, f"ok - {len(trains)} trains extracted from page"
         
     except Exception as e:
         print(f"\n❌ Error: {type(e).__name__}: {str(e)}")
@@ -219,7 +304,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - FINAL PRODUCTION VERSION 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - PAGE EXTRACTION METHOD 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -228,7 +313,7 @@ def main():
         write_output([], "Missing credentials")
         return
     
-    trains, note = login_and_get_trains()
+    trains, note = login_and_extract_trains()
     write_output(trains, note)
     
     print("\n" + "=" * 60)
