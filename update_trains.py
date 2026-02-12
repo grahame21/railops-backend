@@ -51,9 +51,9 @@ def norm_item(item, i):
     }
 
 def login_and_get_trains():
-    """AJAX login - trigger login via JavaScript events"""
+    """Complete login flow with fixed SVG click handling"""
     
-    print("🔄 Starting AJAX login flow...")
+    print("🔄 Starting login flow...")
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
@@ -94,20 +94,11 @@ def login_and_get_trains():
         except:
             print("⚠️ Remember Me checkbox not found")
         
-        # Step 5: TRIGGER LOGIN VIA JAVASCRIPT
-        # The login button likely triggers an AJAX call
-        print("🔍 Triggering login via JavaScript...")
+        # Step 5: Trigger login via JavaScript
+        print("🔍 Triggering login...")
         
         login_script = """
-        // Find the login button or trigger the login event
-        var usernameField = document.getElementById('useR_name');
-        var passwordField = document.getElementById('pasS_word');
-        
-        // Trigger change events
-        usernameField.dispatchEvent(new Event('change', { bubbles: true }));
-        passwordField.dispatchEvent(new Event('change', { bubbles: true }));
-        
-        // Find and click the login element
+        // Find and click the login button
         var loginButton = null;
         
         // Try to find by text
@@ -119,42 +110,27 @@ def login_and_get_trains():
             }
         }
         
-        // If no button found, try to find by class or role
-        if(!loginButton) {
-            loginButton = document.querySelector('[type="submit"], .btn-login, .login-button');
-        }
-        
-        // If found, click it
         if(loginButton) {
             loginButton.click();
             return 'Login button clicked';
-        } else {
-            // Last resort: try to submit the login via AJAX
-            // You may need to adjust this based on the actual API endpoint
-            fetch('https://trainfinder.otenko.com/Account/Login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: arguments[0],
-                    password: arguments[1]
-                })
-            });
-            return 'AJAX login attempted';
         }
+        
+        return 'No login button found';
         """
         
-        result = driver.execute_script(login_script, TF_USERNAME, TF_PASSWORD)
+        result = driver.execute_script(login_script)
         print(f"✅ {result}")
         
         # Wait for login and warning page
         print("⏳ Waiting for login to process...")
         time.sleep(8)
         
-        # Step 6: Close warning page
+        # Step 6: Close warning page - FIXED VERSION
         print("🔍 Looking for warning page close button...")
         
+        # METHOD 1: Find the parent element of the SVG and click it
         close_script = """
-        // Find and click the close button
+        // Find the close button (parent of the SVG path)
         var closeButton = null;
         
         // Look for SVG path with the close icon
@@ -162,16 +138,23 @@ def login_and_get_trains():
         for(var i = 0; i < paths.length; i++) {
             var d = paths[i].getAttribute('d') || '';
             if(d.includes('M13.7,11l6.1-6.1')) {
-                paths[i].click();
-                return 'Close button clicked via path';
+                // Click the parent element (usually a button or div)
+                var parent = paths[i].parentElement;
+                while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                    parent = parent.parentElement;
+                }
+                if(parent) {
+                    parent.click();
+                    return 'Close button clicked via parent';
+                }
             }
         }
         
-        // Look for close buttons by class
-        closeButton = document.querySelector('.close, .btn-close, [aria-label="Close"]');
-        if(closeButton) {
-            closeButton.click();
-            return 'Close button clicked via selector';
+        // METHOD 2: Look for any element with class containing 'close'
+        var closeElements = document.querySelectorAll('.close, .btn-close, [aria-label="Close"]');
+        if(closeElements.length > 0) {
+            closeElements[0].click();
+            return 'Close button clicked via class';
         }
         
         return 'No close button found';
@@ -180,11 +163,11 @@ def login_and_get_trains():
         close_result = driver.execute_script(close_script)
         print(f"✅ {close_result}")
         
-        # Wait for map
+        # Wait for map to load
         print("⏳ Waiting for map to load...")
         time.sleep(5)
         
-        # Step 7: Fetch train data
+        # Step 7: Fetch train data directly
         print(f"🔄 Fetching train data from API...")
         driver.get(TF_URL)
         time.sleep(3)
@@ -212,9 +195,6 @@ def login_and_get_trains():
                 
             except json.JSONDecodeError as e:
                 print(f"❌ JSON parse error: {str(e)}")
-                # Save the response for debugging
-                with open("debug_response.json", "w") as f:
-                    f.write(page_source[:5000])
                 return [], "JSON parse error"
         else:
             print("⚠️ Response is not JSON")
@@ -235,7 +215,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print(f"🚂 AJAX LOGIN - Final Version")
+    print(f"🚂 FINAL FIXED VERSION - SVG Click Fixed")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
