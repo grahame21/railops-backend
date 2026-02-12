@@ -27,33 +27,12 @@ def write_output(trains, note=""):
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
-def extract_list(data):
-    if not data: return []
-    if isinstance(data, list): return data
-    if isinstance(data, dict):
-        for k in ["trains", "Trains", "markers", "Markers", "features"]:
-            if isinstance(data.get(k), list):
-                return data[k]
-    return []
-
-def to_float(x):
-    try: return float(x) if x is not None else None
-    except: return None
-
-def norm_item(item, i):
-    if not isinstance(item, dict): return None
-    return {
-        "id": str(item.get("id") or item.get("ID") or f"train_{i}"),
-        "lat": to_float(item.get("lat") or item.get("latitude")),
-        "lon": to_float(item.get("lon") or item.get("longitude")),
-        "operator": item.get("operator") or "",
-        "heading": to_float(item.get("heading") or 0)
-    }
-
-def debug_page_structure():
-    """Debug function to print all buttons and their text"""
+def debug_complete_flow():
+    """Complete debug of login flow including warning page"""
     
-    print("🔄 Starting debug investigation...")
+    print("=" * 60)
+    print("🔍 COMPLETE LOGIN FLOW DEBUG")
+    print("=" * 60)
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
@@ -66,100 +45,209 @@ def debug_page_structure():
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        print(f"🔄 Loading page: {TF_LOGIN_URL}")
+        # STEP 1: Initial page load
+        print("\n📌 STEP 1: Loading login page")
+        print(f"   URL: {TF_LOGIN_URL}")
         driver.get(TF_LOGIN_URL)
         time.sleep(5)
+        print(f"   Page title: {driver.title}")
+        print(f"   Current URL: {driver.current_url}")
         
-        # Print page title and URL
-        print(f"📌 Page title: {driver.title}")
-        print(f"📌 Current URL: {driver.current_url}")
+        # STEP 2: Find username and password fields
+        print("\n📌 STEP 2: Looking for login form")
+        try:
+            username = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "useR_name"))
+            )
+            print("   ✅ Found username field (ID: useR_name)")
+            username.clear()
+            username.send_keys(TF_USERNAME)
+            print("   ✅ Username entered")
+        except Exception as e:
+            print(f"   ❌ Could not find username field: {e}")
         
-        # Find ALL buttons and print their text
-        print("\n🔍 ALL BUTTONS ON PAGE:")
+        try:
+            password = driver.find_element(By.ID, "pasS_word")
+            print("   ✅ Found password field (ID: pasS_word)")
+            password.clear()
+            password.send_keys(TF_PASSWORD)
+            print("   ✅ Password entered")
+        except Exception as e:
+            print(f"   ❌ Could not find password field: {e}")
+        
+        try:
+            remember = driver.find_element(By.ID, "rem_ME")
+            if not remember.is_selected():
+                remember.click()
+                print("   ✅ Checked Remember Me")
+        except:
+            print("   ⚠️ Remember Me checkbox not found")
+        
+        # STEP 3: Find ALL possible login triggers
+        print("\n📌 STEP 3: Searching for login button/trigger")
+        
+        # Check all buttons
+        print("\n   --- ALL BUTTONS ON PAGE ---")
         buttons = driver.find_elements(By.TAG_NAME, "button")
         for i, btn in enumerate(buttons):
             btn_text = btn.text.strip()
             btn_id = btn.get_attribute("id") or "no-id"
             btn_class = btn.get_attribute("class") or "no-class"
             btn_type = btn.get_attribute("type") or "no-type"
-            print(f"   Button {i}: text='{btn_text}', id='{btn_id}', class='{btn_class[:30]}...', type='{btn_type}'")
+            btn_onclick = btn.get_attribute("onclick") or ""
+            print(f"   Button {i}:")
+            print(f"     Text: '{btn_text}'")
+            print(f"     ID: '{btn_id}'")
+            print(f"     Class: '{btn_class[:50]}'")
+            print(f"     Type: '{btn_type}'")
+            print(f"     Onclick: '{btn_onclick[:50]}'")
         
-        # Find ALL input elements
-        print("\n🔍 ALL INPUT ELEMENTS:")
-        inputs = driver.find_elements(By.TAG_NAME, "input")
-        for i, inp in enumerate(inputs):
-            inp_type = inp.get_attribute("type") or "text"
-            inp_id = inp.get_attribute("id") or "no-id"
-            inp_name = inp.get_attribute("name") or "no-name"
+        # Check all input type submit
+        print("\n   --- SUBMIT INPUTS ---")
+        submit_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='submit']")
+        for i, inp in enumerate(submit_inputs):
             inp_value = inp.get_attribute("value") or ""
-            print(f"   Input {i}: type='{inp_type}', id='{inp_id}', name='{inp_name}', value='{inp_value}'")
+            inp_id = inp.get_attribute("id") or "no-id"
+            print(f"   Submit input {i}: value='{inp_value}', id='{inp_id}'")
         
-        # Find ALL form elements
-        print("\n🔍 ALL FORM ELEMENTS:")
-        forms = driver.find_elements(By.TAG_NAME, "form")
-        print(f"   Found {len(forms)} forms")
+        # Check for any element with login-related attributes
+        print("\n   --- ELEMENTS WITH LOGIN ATTRIBUTES ---")
+        login_elements = driver.find_elements(By.XPATH, "//*[contains(@class, 'login') or contains(@class, 'Login') or contains(@id, 'login') or contains(@id, 'Login')]")
+        for i, elem in enumerate(login_elements[:10]):  # Limit to first 10
+            elem_tag = elem.tag_name
+            elem_text = elem.text.strip()[:50]
+            elem_id = elem.get_attribute("id") or "no-id"
+            elem_class = elem.get_attribute("class") or "no-class"
+            print(f"   Element {i}: <{elem_tag}> id='{elem_id}', class='{elem_class[:30]}', text='{elem_text}'")
         
-        # Look specifically for login-related elements
-        print("\n🔍 SEARCHING FOR LOGIN BUTTON:")
-        
-        # Method 1: By text containing common login words
-        login_keywords = ["log in", "login", "sign in", "submit", "enter", "go"]
-        for btn in buttons:
-            btn_text_lower = btn.text.strip().lower()
-            for keyword in login_keywords:
-                if keyword in btn_text_lower:
-                    print(f"   ✅ Found potential login button: '{btn.text}' (matches '{keyword}')")
-        
-        # Method 2: By input type submit
-        for inp in inputs:
-            if inp.get_attribute("type") == "submit":
-                print(f"   ✅ Found submit input: value='{inp.get_attribute('value')}'")
-        
-        # Method 3: By common class names
-        login_classes = ["btn-login", "login-btn", "submit-btn", "btn-primary"]
-        for btn in buttons:
-            btn_class = btn.get_attribute("class") or ""
-            for login_class in login_classes:
-                if login_class in btn_class:
-                    print(f"   ✅ Found button with login class: '{btn.text}' (class: {login_class})")
-        
-        # Try to find the form that contains the username field
-        print("\n🔍 FINDING FORM CONTAINING USERNAME:")
+        # STEP 4: Try to find the form containing username
+        print("\n📌 STEP 4: Looking for form containing username")
         try:
             username = driver.find_element(By.ID, "useR_name")
-            # Find parent form
-            parent_form = username.find_element(By.XPATH, "./ancestor::form")
-            print(f"   ✅ Found parent form: {parent_form.get_attribute('id') or 'no-id'}")
-            print(f"   Form action: {parent_form.get_attribute('action') or 'no-action'}")
-            print(f"   Form method: {parent_form.get_attribute('method') or 'no-method'}")
-        except:
-            print("   ❌ Could not find parent form for username")
+            form = username.find_element(By.XPATH, "./ancestor::form")
+            print(f"   ✅ Found form:")
+            print(f"     Action: {form.get_attribute('action') or 'none'}")
+            print(f"     Method: {form.get_attribute('method') or 'none'}")
+            print(f"     ID: {form.get_attribute('id') or 'none'}")
+            print(f"     Class: {form.get_attribute('class') or 'none'}")
+            
+            # Try to submit the form directly
+            print("\n   🔄 Attempting form submission...")
+            driver.execute_script("arguments[0].submit();", form)
+            print("   ✅ Form submitted via JavaScript")
+            time.sleep(5)
+        except Exception as e:
+            print(f"   ❌ Could not find form: {e}")
+            
+            # If no form, try to find any login button by common text
+            print("\n   🔄 Attempting to find login button by common text...")
+            login_texts = ["log in", "login", "sign in", "submit", "enter", "continue", "go"]
+            for btn in buttons:
+                btn_text_lower = btn.text.strip().lower()
+                for login_text in login_texts:
+                    if login_text in btn_text_lower:
+                        print(f"   ✅ Found button with text '{btn.text}'")
+                        btn.click()
+                        print("   ✅ Button clicked")
+                        time.sleep(5)
+                        break
+                else:
+                    continue
+                break
         
-        # Save screenshot for visual debugging
-        driver.save_screenshot("debug_page.png")
-        print("\n📸 Screenshot saved: debug_page.png")
+        # STEP 5: Check for warning page
+        print("\n📌 STEP 5: Looking for warning page")
+        current_url = driver.current_url
+        print(f"   Current URL: {current_url}")
         
-        return "Debug completed"
+        page_source = driver.page_source.lower()
+        warning_indicators = ["warning", "confirm", "acknowledge", "proceed", "continue", "accept"]
+        for indicator in warning_indicators:
+            if indicator in page_source:
+                print(f"   ⚠️ Warning page detected (contains '{indicator}')")
+                
+                # Try to close warning page
+                print("\n   🔄 Attempting to close warning page...")
+                
+                # Method 1: Click SVG close button
+                close_script = """
+                var paths = document.getElementsByTagName('path');
+                for(var i = 0; i < paths.length; i++) {
+                    var d = paths[i].getAttribute('d') || '';
+                    if(d.includes('M13.7,11l6.1-6.1')) {
+                        var parent = paths[i].parentElement;
+                        while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                            parent = parent.parentElement;
+                        }
+                        if(parent) {
+                            parent.click();
+                            return 'Clicked SVG close button';
+                        }
+                    }
+                }
+                return 'No close button found';
+                """
+                result = driver.execute_script(close_script)
+                print(f"   ✅ {result}")
+                time.sleep(3)
+                break
+        
+        # STEP 6: Check if we're logged in by trying to access the API
+        print("\n📌 STEP 6: Testing API access")
+        print(f"   🔄 Fetching: {TF_URL}")
+        driver.get(TF_URL)
+        time.sleep(3)
+        
+        response = driver.page_source
+        print(f"   Response length: {len(response)} characters")
+        
+        if response.strip().startswith(("{", "[")):
+            print("   ✅ SUCCESS! Received JSON data")
+            try:
+                import json
+                data = json.loads(response)
+                print(f"   📊 Data preview: {str(data)[:200]}...")
+            except:
+                print("   ❌ Could not parse JSON")
+        else:
+            print("   ❌ Response is not JSON")
+            print(f"   Response preview: {response[:200]}")
+        
+        # STEP 7: Save screenshot
+        driver.save_screenshot("debug_final_state.png")
+        print("\n📸 Final screenshot saved: debug_final_state.png")
+        
+        return "Debug complete - check logs above"
         
     except Exception as e:
-        print(f"❌ Error: {type(e).__name__}: {str(e)}")
+        print(f"\n❌ ERROR: {type(e).__name__}: {str(e)}")
+        try:
+            driver.save_screenshot("debug_error.png")
+            print("📸 Error screenshot saved")
+        except:
+            pass
         return f"Error: {type(e).__name__}"
     finally:
         if driver:
             driver.quit()
-            print("✅ Browser closed")
+            print("\n✅ Browser closed")
 
 def main():
     print("=" * 60)
-    print(f"🚂 DEBUG MODE - Finding Login Button")
+    print("🚂 COMPLETE DEBUG - Login + Warning + API")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
-    result = debug_page_structure()
+    if not TF_USERNAME or not TF_PASSWORD:
+        print("❌ Missing credentials")
+        write_output([], "Missing credentials")
+        return
+    
+    result = debug_complete_flow()
     write_output([], result)
     
     print("\n" + "=" * 60)
-    print("🏁 Debug complete")
+    print("🏁 Debug complete - check the logs above!")
     print("=" * 60)
 
 if __name__ == "__main__":
