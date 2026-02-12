@@ -2,7 +2,7 @@ name: Update trains.json
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -17,16 +17,31 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install Chrome
+    - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+        pip install requests
     
-    - name: Install Python dependencies
+    - name: Debug - Show if secrets are set
+      env:
+        CHECK_USER: ${{ secrets.TF_USERNAME }}
+        CHECK_PASS: ${{ secrets.TF_PASSWORD }}
       run: |
-        pip install selenium webdriver-manager requests
+        echo "Checking if secrets are available..."
+        if [ -z "$CHECK_USER" ]; then
+          echo "❌ TF_USERNAME is NOT set"
+        else
+          echo "✅ TF_USERNAME is set (length: ${#CHECK_USER})"
+        fi
+        if [ -z "$CHECK_PASS" ]; then
+          echo "❌ TF_PASSWORD is NOT set"
+        else
+          echo "✅ TF_PASSWORD is set (length: ${#CHECK_PASS})"
+        fi
     
-    - name: Run scraper
+    - name: Run train scraper
+      env:
+        TF_USERNAME: ${{ secrets.TF_USERNAME }}
+        TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
       run: |
         python update_trains.py
     
