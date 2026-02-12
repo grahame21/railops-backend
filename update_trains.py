@@ -12,6 +12,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 OUT_FILE = "trains.json"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
+TF_API_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"  # THIS IS THE REAL ONE!
 
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
@@ -50,41 +51,52 @@ def norm_item(item, i):
         "speed": to_float(item.get("speed") or item.get("Speed") or 0)
     }
 
-def capture_real_api_endpoint():
-    """Capture the ACTUAL API endpoint the website uses"""
+def login_and_get_trains():
+    """Production version using the REAL API endpoint"""
     
     print("=" * 60)
-    print("🔍 CAPTURING REAL API ENDPOINT")
+    print("🚂 PRODUCTION SCRAPER - REAL ENDPOINT")
+    print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
-    # Enable performance logging
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
-    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     
     driver = None
     try:
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        # Login
+        # STEP 1: LOGIN
         print("\n📌 Logging in...")
         driver.get(TF_LOGIN_URL)
         time.sleep(5)
         
-        # Fill credentials
+        # Fill username
         username = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "useR_name"))
         )
         username.send_keys(TF_USERNAME)
+        print("✅ Username entered")
         
+        # Fill password
         password = driver.find_element(By.ID, "pasS_word")
         password.send_keys(TF_PASSWORD)
+        print("✅ Password entered")
         
-        # Click login
+        # Remember Me
+        try:
+            remember = driver.find_element(By.ID, "rem_ME")
+            if not remember.is_selected():
+                remember.click()
+                print("✅ Remember Me checked")
+        except:
+            pass
+        
+        # Click login button
         driver.execute_script("""
             var tables = document.getElementsByClassName('popup_table');
             for(var i = 0; i < tables.length; i++) {
@@ -99,10 +111,12 @@ def capture_real_api_endpoint():
                 }
             }
         """)
+        print("✅ Login button clicked")
         
+        # Wait for login and warning
         time.sleep(8)
         
-        # Close warning
+        # Close warning page
         driver.execute_script("""
             var paths = document.getElementsByTagName('path');
             for(var i = 0; i < paths.length; i++) {
@@ -112,114 +126,91 @@ def capture_real_api_endpoint():
                     while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
                         parent = parent.parentElement;
                     }
-                    if(parent) parent.click();
+                    if(parent) {
+                        parent.click();
+                        return;
+                    }
                 }
             }
         """)
+        print("✅ Warning page closed")
         
+        # Wait for map
         time.sleep(5)
         
-        # Clear logs before capturing
-        driver.get_log('performance')
+        # STEP 2: FETCH TRAIN DATA
+        print(f"\n📡 Fetching train data from: {TF_API_URL}")
         
-        # Refresh the page to trigger all network requests
-        print("\n🔄 Refreshing page to capture network requests...")
-        driver.refresh()
-        time.sleep(10)
+        script = f"""
+        return fetch('{TF_API_URL}', {{
+            method: 'GET',
+            headers: {{
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Referer': '{TF_LOGIN_URL}'
+            }},
+            credentials: 'include'
+        }})
+        .then(response => response.text())
+        .then(text => {{
+            try {{
+                var data = JSON.parse(text);
+                // Check if data has trains array
+                var trains = data.trains || data.Trains || data.markers || data.Markers || data.features || data;
+                var count = Array.isArray(trains) ? trains.length : 
+                           (trains ? Object.keys(trains).length : 0);
+                return {{success: true, data: text, count: count}};
+            }} catch(e) {{
+                return {{success: false, data: text.substring(0, 200)}};
+            }}
+        }})
+        .catch(error => {{
+            return {{success: false, error: error.toString()}};
+        }});
+        """
         
-        # Get all network logs
-        print("\n📡 Capturing network requests...")
-        logs = driver.get_log('performance')
+        result = driver.execute_script(script)
         
-        api_calls = []
-        json_calls = []
-        
-        for log in logs:
+        if result.get('success'):
+            count = result.get('count', 0)
+            print(f"✅ SUCCESS! Received JSON with {count} train records")
+            
             try:
-                message = json.loads(log['message'])['message']
+                data = json.loads(result['data'])
+                raw_list = extract_list(data)
                 
-                # Look for XHR/fetch requests
-                if message['method'] == 'Network.responseReceived':
-                    url = message['params']['response']['url']
-                    
-                    # Filter for relevant endpoints
-                    if 'train' in url.lower() or 'marker' in url.lower() or 'get' in url.lower():
-                        api_calls.append(url)
-                        print(f"\n   🔗 Found: {url}")
-                        
-                    # Check if it returned JSON
-                    content_type = message['params']['response'].get('mimeType', '')
-                    if 'json' in content_type.lower():
-                        json_calls.append(url)
-                        print(f"   ✅ JSON endpoint: {url}")
-                        
-            except:
-                continue
-        
-        # Try all found endpoints
-        print("\n🔍 Testing found endpoints...")
-        
-        for endpoint in list(dict.fromkeys(api_calls))[:10]:  # Unique URLs, limit to 10
-            print(f"\n   Testing: {endpoint}")
-            
-            script = f"""
-            return fetch('{endpoint}', {{
-                method: 'GET',
-                headers: {{
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }},
-                credentials: 'include'
-            }})
-            .then(response => response.text())
-            .then(text => {{
-                try {{
-                    var data = JSON.parse(text);
-                    var count = Array.isArray(data) ? data.length : 
-                               (data.trains ? data.trains.length : 
-                               (data.features ? data.features.length : 0));
-                    return {{success: true, url: '{endpoint}', count: count, preview: text.substring(0, 100)}};
-                }} catch(e) {{
-                    return {{success: false, url: '{endpoint}'}};
-                }}
-            }})
-            .catch(error => {{
-                return {{success: false, url: '{endpoint}', error: error.toString()}};
-            }});
-            """
-            
-            result = driver.execute_script(script)
-            
-            if result.get('success'):
-                print(f"   ✅ WORKS! Found {result.get('count', 0)} items")
-                print(f"   📊 Preview: {result.get('preview', '')}")
+                trains = []
+                for i, item in enumerate(raw_list):
+                    train = norm_item(item, i)
+                    if train and train.get("lat") and train.get("lon"):
+                        trains.append(train)
                 
-                # If this endpoint has trains, save them!
-                if result.get('count', 0) > 0:
-                    print(f"\n🎉 SUCCESS! Found endpoint with {result['count']} trains!")
-                    try:
-                        data = json.loads(result['preview']) if result['count'] > 0 else {}
-                        # Actually fetch the full data
-                        full_data = driver.execute_script(f"""
-                            return fetch('{endpoint}').then(r => r.text());
-                        """)
-                        data = json.loads(full_data)
-                        raw_list = extract_list(data)
-                        trains = []
-                        for i, item in enumerate(raw_list):
-                            train = norm_item(item, i)
-                            if train and train.get("lat") and train.get("lon"):
-                                trains.append(train)
-                        return trains, f"ok - {endpoint}"
-                    except:
-                        pass
-            else:
-                print(f"   ❌ Failed")
-        
-        return [], "No working endpoint found"
+                print(f"✅ Extracted {len(trains)} valid train positions")
+                
+                if trains:
+                    print(f"\n📊 Sample train:")
+                    sample = trains[0]
+                    print(f"   ID: {sample.get('id')}")
+                    print(f"   Location: {sample.get('lat')}, {sample.get('lon')}")
+                    print(f"   Heading: {sample.get('heading')}")
+                    print(f"   Speed: {sample.get('speed')}")
+                
+                return trains, f"ok - {count} trains"
+                
+            except json.JSONDecodeError as e:
+                print(f"❌ JSON parse error: {e}")
+                return [], "JSON parse error"
+        else:
+            print(f"❌ API request failed")
+            return [], "API request failed"
         
     except Exception as e:
         print(f"\n❌ Error: {type(e).__name__}: {str(e)}")
+        try:
+            driver.save_screenshot("error.png")
+            print("📸 Error screenshot saved")
+        except:
+            pass
         return [], f"Error: {type(e).__name__}"
     finally:
         if driver:
@@ -228,7 +219,7 @@ def capture_real_api_endpoint():
 
 def main():
     print("=" * 60)
-    print("🚂 FINDING THE REAL TRAIN API")
+    print("🚂🚂🚂 RAILOPS - FINAL PRODUCTION VERSION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -237,12 +228,12 @@ def main():
         write_output([], "Missing credentials")
         return
     
-    trains, note = capture_real_api_endpoint()
+    trains, note = login_and_get_trains()
     write_output(trains, note)
     
     print("\n" + "=" * 60)
     print(f"🏁 Complete: {len(trains)} trains")
-    print(f"📝 API Endpoint: {note}")
+    print(f"📝 Status: {note}")
     print("=" * 60)
 
 if __name__ == "__main__":
