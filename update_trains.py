@@ -51,10 +51,10 @@ def norm_item(item, i):
         "heading": to_float(item.get("heading") or 0)
     }
 
-def login_and_get_cookies():
-    """Target the specific field IDs we saw in the debug log"""
+def login_and_get_session():
+    """Login and capture FULL browser session state (cookies + localStorage + sessionStorage)"""
     
-    print("🔄 Starting login with specific field IDs...")
+    print("🔄 Starting login with full session capture...")
     
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
@@ -74,10 +74,7 @@ def login_and_get_cookies():
         driver.get(TF_LOGIN_URL)
         time.sleep(3)
         
-        # TRY 1: Look for the specific IDs we saw
-        print("🔍 Trying field IDs from debug log...")
-        
-        # Try username field - use the exact ID from debug log
+        # Find username field - use the exact ID from debug
         try:
             username = driver.find_element(By.ID, "useR_name")
             print("✅ Found username field with ID: useR_name")
@@ -87,13 +84,14 @@ def login_and_get_cookies():
                 print("✅ Found username field with ID: un")
             except:
                 print("❌ Could not find username field")
+                driver.save_screenshot("no_username.png")
                 return None
         
         username.clear()
         username.send_keys(TF_USERNAME)
         print("✅ Username entered")
         
-        # Try password field - use the exact ID from debug log
+        # Find password field - use the exact ID from debug
         try:
             password = driver.find_element(By.ID, "pasS_word")
             print("✅ Found password field with ID: pasS_word")
@@ -103,28 +101,30 @@ def login_and_get_cookies():
                 print("✅ Found password field with ID: pw")
             except:
                 print("❌ Could not find password field")
+                driver.save_screenshot("no_password.png")
                 return None
         
         password.clear()
         password.send_keys(TF_PASSWORD)
         print("✅ Password entered")
         
-        # Look for ANY button that might be a login button
-        print("🔍 Looking for login/submit button...")
+        # Look for ANY button that might submit
+        print("🔍 Looking for submit button...")
         
-        # Try to find any button or submit input
+        # Try to find the actual login button - it might be hidden or have specific text
         login_button = None
         
-        # Method 1: Look for button with "Login" or "Sign" text
+        # Check all buttons
         buttons = driver.find_elements(By.TAG_NAME, "button")
         for btn in buttons:
-            btn_text = btn.text.lower()
-            if "login" in btn_text or "sign" in btn_text or "submit" in btn_text:
+            btn_text = btn.text.lower().strip()
+            btn_html = btn.get_attribute("outerHTML").lower()
+            if "login" in btn_text or "sign in" in btn_text or "submit" in btn_text:
                 login_button = btn
-                print(f"✅ Found button with text: '{btn.text}'")
+                print(f"✅ Found login button with text: '{btn.text}'")
                 break
         
-        # Method 2: Look for any submit input
+        # Check input type submit
         if not login_button:
             inputs = driver.find_elements(By.TAG_NAME, "input")
             for inp in inputs:
@@ -133,10 +133,23 @@ def login_and_get_cookies():
                     print("✅ Found submit input button")
                     break
         
-        # Method 3: Just click the first button if nothing else found
-        if not login_button and buttons:
-            login_button = buttons[0]
-            print("⚠️ Using first available button")
+        # Try to find by common class names
+        if not login_button:
+            for btn in buttons:
+                btn_class = btn.get_attribute("class") or ""
+                if "btn" in btn_class.lower() and "primary" in btn_class.lower():
+                    login_button = btn
+                    print("✅ Found button with btn-primary class")
+                    break
+        
+        # Last resort - click the first button that's not zoom control
+        if not login_button:
+            for btn in buttons:
+                btn_text = btn.text.strip()
+                if btn_text not in ["+", "−", "i"]:  # Not zoom buttons
+                    login_button = btn
+                    print("⚠️ Using first non-control button")
+                    break
         
         if not login_button:
             print("❌ Could not find any button to click")
@@ -144,8 +157,8 @@ def login_and_get_cookies():
             return None
         
         # Click the button
-        login_button.click()
-        print("✅ Login button clicked")
+        driver.execute_script("arguments[0].click();", login_button)
+        print("✅ Login button clicked via JavaScript")
         time.sleep(5)
         
         # Check for warning/continue page
@@ -162,21 +175,77 @@ def login_and_get_cookies():
                     break
             
             if continue_btn:
-                continue_btn.click()
+                driver.execute_script("arguments[0].click();", continue_btn)
                 print("✅ Continue button clicked")
                 time.sleep(3)
         
-        # Get cookies
+        # Now try to access the train data page directly
+        print(f"🔄 Navigating to train data endpoint...")
+        driver.get(TF_URL)
+        time.sleep(3)
+        
+        # Check what we got
+        page_text = driver.page_source
+        content_type = None
+        
+        # Try to determine if we got JSON or HTML
+        if page_text.strip().startswith(("{", "[")):
+            print("✅ Successfully accessed JSON endpoint!")
+            content_type = "application/json"
+        else:
+            print("⚠️ Got HTML response, not JSON")
+            content_type = "text/html"
+        
+        # CAPTURE EVERYTHING - cookies, localStorage, sessionStorage
+        print("📦 Capturing full session state...")
+        
+        # 1. Cookies
         cookies = driver.get_cookies()
-        print(f"✅ Got {len(cookies)} cookies")
+        cookie_dict = {c['name']: c['value'] for c in cookies}
+        print(f"✅ Captured {len(cookies)} cookies")
         
-        if len(cookies) == 0:
-            print("⚠️ No cookies received - login may have failed")
-            return None
+        # 2. localStorage
+        localStorage = driver.execute_script("""
+            var items = {};
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                items[key] = localStorage.getItem(key);
+            }
+            return items;
+        """) or {}
+        print(f"✅ Captured {len(localStorage)} localStorage items")
         
-        # Convert to cookie string
-        cookie_str = "; ".join([f"{c['name']}={c['value']}" for c in cookies])
-        return cookie_str
+        # 3. sessionStorage
+        sessionStorage = driver.execute_script("""
+            var items = {};
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                items[key] = sessionStorage.getItem(key);
+            }
+            return items;
+        """) or {}
+        print(f"✅ Captured {len(sessionStorage)} sessionStorage items")
+        
+        # 4. Current URL and page title
+        current_url = driver.current_url
+        page_title = driver.title
+        
+        # Save screenshot of successful login
+        driver.save_screenshot("login_success.png")
+        print("📸 Login success screenshot saved")
+        
+        # Return COMPLETE session state
+        session_state = {
+            "cookies": cookie_dict,
+            "localStorage": localStorage,
+            "sessionStorage": sessionStorage,
+            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "referer": TF_LOGIN_URL,
+            "current_url": current_url,
+            "page_title": page_title
+        }
+        
+        return session_state
         
     except Exception as e:
         print(f"❌ Error: {type(e).__name__}: {str(e)}")
@@ -191,21 +260,36 @@ def login_and_get_cookies():
             driver.quit()
             print("✅ Browser closed")
 
-def fetch_train_data(cookie_str):
-    if not cookie_str:
-        return [], "No cookies"
+def fetch_train_data_with_session(session_state):
+    """Fetch train data using captured session state"""
+    
+    if not session_state:
+        return [], "No session state"
     
     session = requests.Session()
+    
+    # Set cookies
+    if session_state.get("cookies"):
+        session.cookies.update(session_state["cookies"])
+    
+    # Set headers
     session.headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "User-Agent": session_state.get("user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"),
         "Accept": "application/json, text/javascript, */*; q=0.01",
         "X-Requested-With": "XMLHttpRequest",
-        "Referer": TF_LOGIN_URL,
-        "Cookie": cookie_str
+        "Referer": session_state.get("referer", TF_LOGIN_URL)
     })
     
+    # If there's localStorage, we might need to send it as headers or in the request body
+    # Some sites use X-* headers for auth tokens
+    if session_state.get("localStorage"):
+        for key, value in session_state["localStorage"].items():
+            if "token" in key.lower() or "auth" in key.lower() or "session" in key.lower():
+                session.headers[f"X-{key}"] = value
+                print(f"✅ Added auth header: X-{key}")
+    
     try:
-        print(f"🔄 Fetching train data...")
+        print(f"🔄 Fetching train data with full session...")
         r = session.get(TF_URL, timeout=30, allow_redirects=False)
         print(f"✅ Response: {r.status_code}")
         
@@ -218,6 +302,8 @@ def fetch_train_data(cookie_str):
             return [], f"HTTP {r.status_code}"
         
         if "application/json" not in r.headers.get("content-type", "").lower():
+            preview = r.text[:200] if r.text else "empty"
+            print(f"⚠️ Non-JSON response: {preview}")
             return [], "Non-JSON response"
         
         data = r.json()
@@ -232,23 +318,29 @@ def fetch_train_data(cookie_str):
         return trains, "ok"
         
     except Exception as e:
+        print(f"❌ Fetch error: {type(e).__name__}: {str(e)}")
         return [], f"Error: {type(e).__name__}"
 
 def main():
     print("=" * 60)
-    print(f"🚂 LOGIN ATTEMPT - {datetime.datetime.utcnow().isoformat()}")
+    print(f"🚂 FULL SESSION CAPTURE - {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
-    cookie = login_and_get_cookies()
+    # Login and capture full session state
+    session_state = login_and_get_session()
     
-    if not cookie:
-        print("❌ Login failed - no cookie")
+    if not session_state:
+        print("❌ Login failed - no session state")
         write_output([], "Login failed")
         return
     
-    print(f"✅ Cookie obtained (length: {len(cookie)})")
+    print(f"✅ Session captured successfully")
+    print(f"   - Cookies: {len(session_state.get('cookies', {}))}")
+    print(f"   - localStorage: {len(session_state.get('localStorage', {}))}")
+    print(f"   - sessionStorage: {len(session_state.get('sessionStorage', {}))}")
     
-    trains, note = fetch_train_data(cookie)
+    # Fetch train data using captured session
+    trains, note = fetch_train_data_with_session(session_state)
     write_output(trains, note)
     
     print(f"🏁 Complete: {len(trains)} trains")
