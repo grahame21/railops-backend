@@ -1,31 +1,154 @@
-# In your update_trains.py, replace the extraction section with this:
+import os
+import json
+import datetime
+import time
+import math
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
+OUT_FILE = "trains.json"
+TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
+
+TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
+TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
+
+def write_output(trains, note=""):
+    payload = {
+        "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+        "note": note,
+        "trains": trains or []
+    }
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+    print(f"📝 Output: {len(trains or [])} trains")
+
+def webmercator_to_latlon(x, y):
+    try:
+        x = float(x)
+        y = float(y)
+        lon = (x / 20037508.34) * 180
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        return lat, lon
+    except:
+        return None, None
 
 def login_and_get_trains():
-    # ... [your existing login code stays the same] ...
+    print("=" * 60)
+    print("🚂 RAILOPS - GETTING REAL TRAIN IDs")
+    print("=" * 60)
     
-    # STEP 3: ZOOM TO AUSTRALIA
-    print("\n🌏 Zooming to Australia...")
-    driver.execute_script("""
-        if (window.map) {
-            var australia = [112, -44, 154, -10];
-            var proj = window.map.getView().getProjection();
-            var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-            window.map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
-        }
-    """)
-    time.sleep(10)  # Wait for trains to load
+    chrome_options = Options()
+    chrome_options.add_argument('--headless=new')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--window-size=1920,1080')
     
-    # STEP 4: EXTRACT REAL TRAIN DATA
-    print("\n🔍 Extracting REAL train data...")
-    
-    extract_script = """
-    var allTrains = [];
-    var seenIds = new Set();
-    
-    function extractFromSource(source, sourceName) {
-        if (!source || !source.getFeatures) return;
+    driver = None
+    try:
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        try {
+        # LOGIN
+        print("\n📌 Logging in...")
+        driver.get(TF_LOGIN_URL)
+        time.sleep(5)
+        
+        username = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "useR_name"))
+        )
+        username.send_keys(TF_USERNAME)
+        
+        password = driver.find_element(By.ID, "pasS_word")
+        password.send_keys(TF_PASSWORD)
+        
+        try:
+            remember = driver.find_element(By.ID, "rem_ME")
+            if not remember.is_selected():
+                remember.click()
+        except:
+            pass
+        
+        # Click login
+        driver.execute_script("""
+            var tables = document.getElementsByClassName('popup_table');
+            for(var i = 0; i < tables.length; i++) {
+                if(tables[i].className.includes('login')) {
+                    var elements = tables[i].getElementsByTagName('*');
+                    for(var j = 0; j < elements.length; j++) {
+                        if(elements[j].textContent.trim() === 'Log In') {
+                            elements[j].click();
+                            return;
+                        }
+                    }
+                }
+            }
+        """)
+        print("✅ Login clicked")
+        time.sleep(8)
+        
+        # Close warning
+        driver.execute_script("""
+            var paths = document.getElementsByTagName('path');
+            for(var i = 0; i < paths.length; i++) {
+                var d = paths[i].getAttribute('d') || '';
+                if(d.includes('M13.7,11l6.1-6.1')) {
+                    var parent = paths[i].parentElement;
+                    while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                        parent = parent.parentElement;
+                    }
+                    if(parent) parent.click();
+                }
+            }
+        """)
+        print("✅ Warning closed")
+        
+        # ZOOM TO AUSTRALIA
+        print("\n🌏 Zooming to Australia...")
+        driver.execute_script("""
+            if (window.map) {
+                var australia = [112, -44, 154, -10];
+                var proj = window.map.getView().getProjection();
+                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                window.map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
+            }
+        """)
+        time.sleep(12)  # Wait for trains to load
+        
+        # EXTRACT TRAINS
+        print("\n🔍 Extracting REAL train data...")
+        
+        script = """
+        var trains = [];
+        var seen = new Set();
+        
+        function getLoco(props, f) {
+            // Try every possible field name
+            var loco = props.loco || props.Loco || 
+                      props.unit || props.Unit ||
+                      props.id || props.ID ||
+                      props.name || props.Name ||
+                      props.trainId || props.TrainId ||
+                      props.locomotive || props.Locomotive ||
+                      '';
+            
+            // If still not found, try feature ID
+            if (!loco || loco.includes('Source') || loco.includes('Layer')) {
+                loco = f.getId ? f.getId() : (f.id_ || f.id || '');
+                loco = String(loco).replace(/^[^_]+[._]/, ''); // Remove prefix
+            }
+            
+            return String(loco).trim();
+        }
+        
+        function extractFromSource(source) {
+            if (!source || !source.getFeatures) return;
+            
             var features = source.getFeatures();
             features.forEach(function(f) {
                 try {
@@ -37,78 +160,28 @@ def login_and_get_trains():
                         var lon = coords[0];
                         var lat = coords[1];
                         
-                        // Only Australian trains
+                        // Australia only
                         if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
                             
-                            // 🔥 CRITICAL: Get the REAL locomotive number
-                            // Try every possible field name for train ID
-                            var loco = props.loco || props.Loco || 
-                                      props.unit || props.Unit ||
-                                      props.id || props.ID ||
-                                      props.name || props.Name ||
-                                      props.trainId || props.TrainId ||
-                                      props.vehicle || props.Vehicle ||
-                                      props.locomotive || props.Locomotive ||
-                                      '';
+                            var loco = getLoco(props, f);
                             
-                            // If we still don't have a real ID, try to get it from the feature ID
-                            if (!loco || loco.includes('Source') || loco.includes('Layer')) {
-                                loco = f.getId() || f.id_ || f.id || '';
-                                // Clean up OpenLayers internal IDs
-                                loco = String(loco).replace(/^(regTrainsSource|unregTrainsSource|markerSource|arrowMarkersSource)[._]/, '');
-                                loco = loco.replace(/[._]source$/, '');
-                            }
-                            
-                            // Get heading/direction
-                            var heading = props.heading || props.Heading || 
-                                         props.rotation || props.Rotation ||
-                                         props.bearing || props.Bearing || 0;
-                            
-                            // Get speed
-                            var speed = props.speed || props.Speed ||
-                                       props.velocity || props.Velocity || 0;
-                            
-                            // Get operator
-                            var operator = props.operator || props.Operator ||
-                                          props.railway || props.Railway || '';
-                            
-                            // Get service/train number
-                            var service = props.service || props.Service ||
-                                         props.trainNumber || props.TrainNumber ||
-                                         props.run || props.Run || '';
-                            
-                            // Get destination
-                            var destination = props.destination || props.Destination ||
-                                             props.to || props.To || props.headsign || '';
-                            
-                            // Get line/route
-                            var line = props.line || props.Line ||
-                                      props.route || props.Route || '';
-                            
-                            // Get timestamp
-                            var timestamp = props.timestamp || props.Timestamp ||
-                                           props.lastSeen || props.LastSeen ||
-                                           props.updated || props.Updated || '';
-                            
-                            // Only add if we have a valid loco number (not empty and not a source name)
-                            if (loco && !loco.includes('Source') && !loco.includes('Layer')) {
-                                var id = loco.toString();
+                            // Only add if we have a valid loco number
+                            if (loco && !loco.includes('Source') && !loco.includes('Layer') && loco.length > 0) {
                                 
-                                if (!seenIds.has(id)) {
-                                    seenIds.add(id);
-                                    allTrains.push({
-                                        'id': id,
-                                        'loco': loco.toString(),
+                                if (!seen.has(loco)) {
+                                    seen.add(loco);
+                                    trains.push({
+                                        'id': loco,
+                                        'loco': loco,
                                         'lat': lat,
                                         'lon': lon,
-                                        'heading': Number(heading),
-                                        'speed': Number(speed),
-                                        'operator': String(operator),
-                                        'service': String(service),
-                                        'destination': String(destination),
-                                        'line': String(line),
-                                        'timestamp': String(timestamp),
-                                        'source': sourceName
+                                        'heading': Number(props.heading || props.Heading || props.rotation || 0),
+                                        'speed': Number(props.speed || props.Speed || 0),
+                                        'operator': String(props.operator || props.Operator || props.railway || ''),
+                                        'service': String(props.service || props.Service || props.trainNumber || ''),
+                                        'destination': String(props.destination || props.Destination || props.to || ''),
+                                        'line': String(props.line || props.Line || props.route || ''),
+                                        'timestamp': String(props.timestamp || props.Timestamp || props.lastSeen || '')
                                     });
                                 }
                             }
@@ -116,37 +189,50 @@ def login_and_get_trains():
                     }
                 } catch(e) {}
             });
-        } catch(e) {}
-    }
-    
-    // Extract from ALL train sources
-    var sources = [
-        { name: 'regTrainsSource', obj: window.regTrainsSource },
-        { name: 'unregTrainsSource', obj: window.unregTrainsSource }
-    ];
-    
-    sources.forEach(function(s) {
-        if (s.obj) {
-            extractFromSource(s.obj, s.name);
-            if (s.obj.getSource) {
-                extractFromSource(s.obj.getSource(), s.name);
-            }
         }
-    });
+        
+        // Extract from all sources
+        var sources = [
+            window.regTrainsSource,
+            window.unregTrainsSource,
+            window.regTrainsLayer ? window.regTrainsLayer.getSource() : null,
+            window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null
+        ];
+        
+        sources.forEach(extractFromSource);
+        
+        return trains;
+        """
+        
+        trains = driver.execute_script(script)
+        print(f"\n✅ Found {len(trains)} Australian trains with real IDs")
+        
+        if trains:
+            print("\n📋 Sample train:")
+            sample = trains[0]
+            print(f"   Loco: {sample.get('loco')}")
+            print(f"   Heading: {sample.get('heading')}°")
+            print(f"   Speed: {sample.get('speed')} km/h")
+            print(f"   Operator: {sample.get('operator')}")
+            print(f"   Service: {sample.get('service')}")
+        
+        return trains, f"ok - {len(trains)} trains"
+        
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        return [], f"error: {type(e).__name__}"
+    finally:
+        if driver:
+            driver.quit()
+
+def main():
+    if not TF_USERNAME or not TF_PASSWORD:
+        print("❌ Missing credentials")
+        write_output([], "Missing credentials")
+        return
     
-    return allTrains;
-    """
-    
-    train_features = driver.execute_script(extract_script)
-    print(f"\n✅ Found {len(train_features)} Australian trains with REAL IDs")
-    
-    # Show sample of what we found
-    if train_features:
-        print("\n📋 Sample train data:")
-        sample = train_features[0]
-        print(f"   Loco: {sample.get('loco', 'N/A')}")
-        print(f"   Heading: {sample.get('heading', 0)}°")
-        print(f"   Speed: {sample.get('speed', 0)} km/h")
-        print(f"   Operator: {sample.get('operator', 'N/A')}")
-        print(f"   Service: {sample.get('service', 'N/A')}")
-        print(f"   Destination: {sample.get('destination', 'N/A')}")
+    trains, note = login_and_get_trains()
+    write_output(trains, note)
+
+if __name__ == "__main__":
+    main()
