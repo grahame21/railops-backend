@@ -17,18 +17,25 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install Chrome and ChromeDriver
+    - name: Install Chrome
       run: |
         sudo apt-get update
         sudo apt-get install -y wget gnupg unzip
-        # Install Chrome
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
-        # Install ChromeDriver matching Chrome version
+        google-chrome --version
+    
+    - name: Install ChromeDriver
+      run: |
         CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
-        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROME_VERSION}.0.7559.132/linux64/chromedriver-linux64.zip"
+        echo "Chrome version: $CHROME_VERSION"
+        # Get latest ChromeDriver version for this Chrome major version
+        wget -q "https://storage.googleapis.com/chrome-for-testing-public/LATEST_RELEASE_$CHROME_VERSION" -O latest_version.txt
+        CHROMEDRIVER_VERSION=$(cat latest_version.txt)
+        echo "ChromeDriver version: $CHROMEDRIVER_VERSION"
+        wget -q "https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip"
         unzip -q chromedriver-linux64.zip
         sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
@@ -36,7 +43,7 @@ jobs:
     
     - name: Install Python dependencies
       run: |
-        pip install selenium webdriver-manager requests
+        pip install selenium requests
     
     - name: Run train scraper
       env:
