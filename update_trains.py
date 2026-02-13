@@ -28,6 +28,7 @@ def write_output(trains, note=""):
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
 def webmercator_to_latlon(x, y):
+    """Convert Web Mercator (EPSG:3857) to latitude/longitude (EPSG:4326)"""
     try:
         x = float(x)
         y = float(y)
@@ -40,7 +41,7 @@ def webmercator_to_latlon(x, y):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 DEBUG MODE - SHOW ALL PROPERTIES")
+    print("🚂 RAILOPS - SIMPLE EXTRACTION")
     print("=" * 60)
     
     chrome_options = Options()
@@ -63,14 +64,17 @@ def login_and_get_trains():
             EC.presence_of_element_located((By.ID, "useR_name"))
         )
         username.send_keys(TF_USERNAME)
+        print("✅ Username entered")
         
         password = driver.find_element(By.ID, "pasS_word")
         password.send_keys(TF_PASSWORD)
+        print("✅ Password entered")
         
         try:
             remember = driver.find_element(By.ID, "rem_ME")
             if not remember.is_selected():
                 remember.click()
+                print("✅ Remember Me checked")
         except:
             pass
         
@@ -89,7 +93,7 @@ def login_and_get_trains():
                 }
             }
         """)
-        print("✅ Login clicked")
+        print("✅ Login button clicked")
         time.sleep(8)
         
         # Close warning
@@ -106,111 +110,25 @@ def login_and_get_trains():
                 }
             }
         """)
-        print("✅ Warning closed")
+        print("✅ Warning page closed")
         
-        # ZOOM TO AUSTRALIA
-        print("\n🌏 Zooming to Australia...")
-        driver.execute_script("""
-            if (window.map) {
-                var australia = [112, -44, 154, -10];
-                var proj = window.map.getView().getProjection();
-                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
-            }
-        """)
-        time.sleep(12)
+        # Wait for map to load
+        print("\n⏳ Waiting for map to load...")
+        time.sleep(15)
         
-        # DEBUG: DUMP ALL PROPERTIES
-        print("\n🔍 DEBUG: Dumping properties of first 5 Australian trains...")
+        # EXTRACT ALL TRAINS
+        print("\n🔍 Extracting ALL trains...")
         
         script = """
-        var debug = [];
-        var count = 0;
+        var allTrains = [];
         
-        function dumpProperties(source) {
+        function extractFeatures(source, sourceName) {
             if (!source || !source.getFeatures) return;
             
-            var features = source.getFeatures();
-            features.forEach(function(f) {
-                if (count >= 5) return;
-                
-                try {
-                    var props = f.getProperties();
-                    var geom = f.getGeometry();
-                    
-                    if (geom) {
-                        var coords = geom.getCoordinates();
-                        var lon = coords[0];
-                        var lat = coords[1];
-                        
-                        // Australia only
-                        if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
-                            
-                            var propNames = [];
-                            for (var key in props) {
-                                if (props.hasOwnProperty(key) && typeof props[key] !== 'function') {
-                                    propNames.push(key + ': ' + typeof props[key] + ' = ' + JSON.stringify(props[key]).slice(0, 50));
-                                }
-                            }
-                            
-                            debug.push({
-                                'id': f.getId ? f.getId() : 'no-id',
-                                'lat': lat,
-                                'lon': lon,
-                                'properties': propNames,
-                                'raw_props': JSON.stringify(props).slice(0, 500)
-                            });
-                            count++;
-                        }
-                    }
-                } catch(e) {}
-            });
-        }
-        
-        // Check all sources
-        var sources = [
-            window.regTrainsSource,
-            window.unregTrainsSource,
-            window.regTrainsLayer ? window.regTrainsLayer.getSource() : null,
-            window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null,
-            window.markerSource,
-            window.arrowMarkersSource
-        ];
-        
-        sources.forEach(dumpProperties);
-        
-        return debug;
-        """
-        
-        debug_data = driver.execute_script(script)
-        
-        print(f"\n✅ Found {len(debug_data)} Australian trains for debugging")
-        
-        if debug_data:
-            print("\n" + "="*60)
-            print("🔬 DEBUG: FIRST TRAIN PROPERTIES")
-            print("="*60)
-            train = debug_data[0]
-            print(f"\n📌 Train ID from feature: {train['id']}")
-            print(f"📍 Location: {train['lat']}, {train['lon']}")
-            print("\n📋 ALL PROPERTIES AVAILABLE:")
-            for prop in train['properties']:
-                print(f"   • {prop}")
-            print("\n📦 RAW JSON:")
-            print(train['raw_props'])
-            print("="*60)
-            
-            # NOW extract ALL Australian trains with whatever ID we can get
-            print("\n🔄 Extracting ALL Australian trains...")
-            
-            extract_script = """
-            var trains = [];
-            var seen = new Set();
-            
-            function extractAll(source) {
-                if (!source || !source.getFeatures) return;
-                
+            try {
                 var features = source.getFeatures();
+                console.log(sourceName + ': ' + features.length + ' features');
+                
                 features.forEach(function(f) {
                     try {
                         var props = f.getProperties();
@@ -218,67 +136,83 @@ def login_and_get_trains():
                         
                         if (geom) {
                             var coords = geom.getCoordinates();
-                            var lon = coords[0];
-                            var lat = coords[1];
                             
-                            // Australia only
-                            if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
-                                
-                                // Get ANY identifier
-                                var id = f.getId ? f.getId() : 
-                                       props.id || props.ID || 
-                                       props.name || props.Name ||
-                                       props.unit || props.Unit ||
-                                       props.loco || props.Loco ||
-                                       'train_' + lat + '_' + lon;
-                                
-                                id = String(id).replace(/[._]source$/, '').replace(/^[^_]+[._]/, '');
-                                
-                                if (!seen.has(id)) {
-                                    seen.add(id);
-                                    trains.push({
-                                        'id': id,
-                                        'loco': id,  // Use whatever ID we found
-                                        'lat': lat,
-                                        'lon': lon,
-                                        'heading': Number(props.heading || props.Heading || props.rotation || 0),
-                                        'speed': Number(props.speed || props.Speed || 0),
-                                        'operator': String(props.operator || props.Operator || props.railway || ''),
-                                        'service': String(props.service || props.Service || props.trainNumber || ''),
-                                        'destination': String(props.destination || props.Destination || ''),
-                                        'timestamp': String(props.timestamp || props.Timestamp || '')
-                                    });
-                                }
-                            }
+                            // Get the ID - use whatever is available
+                            var id = props.id || props.ID || 
+                                    props.name || props.Name ||
+                                    props.unit || props.Unit ||
+                                    props.loco || props.Loco ||
+                                    f.getId() || 
+                                    sourceName + '_' + allTrains.length;
+                            
+                            allTrains.push({
+                                'id': String(id),
+                                'loco': String(props.loco || props.Loco || props.unit || props.Unit || ''),
+                                'lat': coords[1],
+                                'lon': coords[0],
+                                'heading': Number(props.heading || props.Heading || props.rotation || 0),
+                                'speed': Number(props.speed || props.Speed || 0),
+                                'operator': String(props.operator || props.Operator || ''),
+                                'service': String(props.service || props.Service || props.trainNumber || ''),
+                                'source': sourceName
+                            });
                         }
                     } catch(e) {}
                 });
+            } catch(e) {}
+        }
+        
+        // Check all possible sources
+        var sources = [
+            { name: 'regTrainsSource', obj: window.regTrainsSource },
+            { name: 'unregTrainsSource', obj: window.unregTrainsSource },
+            { name: 'markerSource', obj: window.markerSource },
+            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource },
+            { name: 'regTrainsLayer', obj: window.regTrainsLayer ? window.regTrainsLayer.getSource() : null },
+            { name: 'unregTrainsLayer', obj: window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null }
+        ];
+        
+        sources.forEach(function(s) {
+            if (s.obj) {
+                extractFeatures(s.obj, s.name);
             }
+        });
+        
+        return allTrains;
+        """
+        
+        all_trains = driver.execute_script(script)
+        print(f"\n✅ Extracted {len(all_trains)} total trains before filtering")
+        
+        # Convert coordinates and filter to Australia
+        australian_trains = []
+        seen_ids = set()
+        
+        for train in all_trains:
+            lat, lon = webmercator_to_latlon(train['lon'], train['lat'])
             
-            var sources = [
-                window.regTrainsSource,
-                window.unregTrainsSource,
-                window.regTrainsLayer ? window.regTrainsLayer.getSource() : null,
-                window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null
-            ];
-            
-            sources.forEach(extractAll);
-            return trains;
-            """
-            
-            trains = driver.execute_script(extract_script)
-            print(f"\n✅ Extracted {len(trains)} Australian trains")
-            
-            if trains:
-                print("\n📋 Sample train:")
-                sample = trains[0]
-                for key, value in sample.items():
+            if lat and lon:
+                # Store with proper lat/lon
+                train['lat'] = round(lat, 6)
+                train['lon'] = round(lon, 6)
+                
+                # Check if in Australia
+                if -45 <= lat <= -10 and 110 <= lon <= 155:
+                    train_id = train['id']
+                    if train_id not in seen_ids:
+                        seen_ids.add(train_id)
+                        australian_trains.append(train)
+        
+        print(f"✅ Found {len(australian_trains)} Australian trains")
+        
+        if australian_trains:
+            print("\n📋 Sample Australian train:")
+            sample = australian_trains[0]
+            for key, value in sample.items():
+                if value:
                     print(f"   {key}: {value}")
-            
-            return trains, f"ok - {len(trains)} trains"
-        else:
-            print("\n❌ No Australian trains found! The map might not have loaded properly.")
-            return [], "No Australian trains found"
+        
+        return australian_trains, f"ok - {len(australian_trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
