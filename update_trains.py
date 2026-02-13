@@ -54,7 +54,7 @@ def safe_str(value, default=""):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - WORKING VERSION")
+    print("🚂 RAILOPS - ROBUST VERSION")
     print("=" * 60)
     
     chrome_options = Options()
@@ -114,90 +114,35 @@ def login_and_get_trains():
         """)
         print("✅ Warning page closed")
         
-        # Zoom to Australia
-        print("\n🌏 Zooming to Australia...")
-        driver.execute_script("""
-            if (window.map) {
-                var australia = [112, -44, 154, -10];
-                var proj = window.map.getView().getProjection();
-                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 2000, maxZoom: 10 });
-            }
-        """)
-        print("⏳ Waiting for trains to load...")
-        time.sleep(15)
+        # Try to get trains without zoom first
+        print("\n🔍 Attempt 1: Extract without zoom...")
+        time.sleep(5)
         
-        # Extract trains - SIMPLE VERSION that worked before
-        print("\n🔍 Extracting trains...")
+        all_trains = extract_trains(driver)
+        print(f"   Found {len(all_trains)} trains")
         
-        script = """
-        var allTrains = [];
-        var seenIds = new Set();
-        
-        function extractFromSource(src, sourceName) {
-            if (!src || !src.getFeatures) return;
+        # If no trains, try zooming
+        if len(all_trains) == 0:
+            print("\n🌏 Attempt 2: Zooming to Australia...")
+            driver.execute_script("""
+                if (window.map) {
+                    var australia = [112, -44, 154, -10];
+                    var proj = window.map.getView().getProjection();
+                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                    window.map.getView().fit(extent, { duration: 2000, maxZoom: 10 });
+                }
+            """)
+            print("⏳ Waiting for trains to load...")
+            time.sleep(15)
             
-            try {
-                var features = src.getFeatures();
-                
-                features.forEach(function(f, index) {
-                    try {
-                        var props = f.getProperties();
-                        var geom = f.getGeometry();
-                        
-                        if (geom && geom.getType() === 'Point') {
-                            var coords = geom.getCoordinates();
-                            
-                            // Simple ID - use whatever is available
-                            var id = props.id || props.ID || 
-                                    props.name || props.labelContent ||
-                                    sourceName + '_' + index;
-                            
-                            id = String(id);
-                            
-                            // Australia bounds
-                            var x = coords[0];
-                            var y = coords[1];
-                            var lon = (x / 20037508.34) * 180;
-                            var lat = (y / 20037508.34) * 180;
-                            lat = 180 / 3.14159 * (2 * Math.atan(Math.exp(lat * 3.14159 / 180)) - 3.14159 / 2);
-                            
-                            if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
-                                if (!seenIds.has(id)) {
-                                    seenIds.add(id);
-                                    allTrains.push({
-                                        'id': id,
-                                        'lat': coords[1],
-                                        'lon': coords[0],
-                                        'heading': props.heading || 0,
-                                        'speed': props.speed || 0,
-                                        'source': sourceName
-                                    });
-                                }
-                            }
-                        }
-                    } catch(e) {}
-                });
-            } catch(e) {}
-        }
+            all_trains = extract_trains(driver)
+            print(f"   Found {len(all_trains)} trains after zoom")
         
-        // Extract from ALL sources
-        extractFromSource(window.regTrainsSource, 'reg');
-        extractFromSource(window.unregTrainsSource, 'unreg');
-        extractFromSource(window.markerSource, 'marker');
-        extractFromSource(window.arrowMarkersSource, 'arrow');
-        
-        return allTrains;
-        """
-        
-        all_trains = driver.execute_script(script)
-        print(f"\n✅ Extracted {len(all_trains)} Australian trains")
-        
-        # Convert coordinates safely
+        # Convert coordinates
         trains = []
         for t in all_trains:
             lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
-            if lat and lon:
+            if lat and lon and -45 <= lat <= -10 and 110 <= lon <= 155:
                 trains.append({
                     'id': safe_str(t['id']),
                     'lat': round(lat, 6),
@@ -206,7 +151,7 @@ def login_and_get_trains():
                     'speed': round(safe_float(t['speed']), 1)
                 })
         
-        print(f"✅ Processed {len(trains)} trains")
+        print(f"\n✅ Processed {len(trains)} Australian trains")
         
         if trains:
             print(f"\n📋 First 5 trains:")
@@ -227,6 +172,59 @@ def login_and_get_trains():
     finally:
         if driver:
             driver.quit()
+
+def extract_trains(driver):
+    """Extract trains using JavaScript"""
+    script = """
+    var allTrains = [];
+    var seenIds = new Set();
+    
+    function extractFromSource(src, sourceName) {
+        if (!src || !src.getFeatures) return;
+        
+        try {
+            var features = src.getFeatures();
+            
+            features.forEach(function(f, index) {
+                try {
+                    var props = f.getProperties();
+                    var geom = f.getGeometry();
+                    
+                    if (geom && geom.getType() === 'Point') {
+                        var coords = geom.getCoordinates();
+                        
+                        // Get ID from various possible fields
+                        var id = props.id || props.ID || 
+                                props.name || props.labelContent ||
+                                props.trainName || props.trainNumber ||
+                                props.loco || props.unit ||
+                                sourceName + '_' + index;
+                        
+                        id = String(id);
+                        
+                        allTrains.push({
+                            'id': id,
+                            'lat': coords[1],
+                            'lon': coords[0],
+                            'heading': props.heading || props.Heading || 0,
+                            'speed': props.speed || props.Speed || 0
+                        });
+                    }
+                } catch(e) {}
+            });
+        } catch(e) {}
+    }
+    
+    // Extract from ALL sources
+    extractFromSource(window.regTrainsSource, 'reg');
+    extractFromSource(window.unregTrainsSource, 'unreg');
+    extractFromSource(window.markerSource, 'marker');
+    extractFromSource(window.arrowMarkersSource, 'arrow');
+    
+    return allTrains;
+    """
+    
+    return driver.execute_script(script)
 
 def main():
     if not TF_USERNAME or not TF_PASSWORD:
