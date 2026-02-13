@@ -17,27 +17,6 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install Chrome (Fixed Version)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget gnupg unzip
-        # Remove Chrome if already installed
-        sudo apt-get remove -y google-chrome-stable || true
-        # Install a specific working version (Chrome 132)
-        wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_132.0.6834.159-1_amd64.deb
-        sudo dpkg -i google-chrome-stable_132.0.6834.159-1_amd64.deb
-        sudo apt-get install -f -y
-        google-chrome --version
-    
-    - name: Install ChromeDriver
-      run: |
-        # Install ChromeDriver 132 which matches Chrome 132
-        wget -q https://storage.googleapis.com/chrome-for-testing-public/132.0.6834.159/linux64/chromedriver-linux64.zip
-        unzip -q chromedriver-linux64.zip
-        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-        sudo chmod +x /usr/local/bin/chromedriver
-        chromedriver --version
-    
     - name: Install Python dependencies
       run: |
         pip install selenium webdriver-manager requests
