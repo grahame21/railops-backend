@@ -17,24 +17,21 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install Chrome and ChromeDriver
+    - name: Install Chrome and Xvfb
       run: |
         sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
-        # ChromeDriver is pre-installed on GitHub Actions runners
-        # Just verify it's there
-        chromedriver --version || sudo apt-get install -y chromium-chromedriver
+        sudo apt-get install -y google-chrome-stable xvfb
     
     - name: Install Python dependencies
       run: |
         pip install selenium requests
     
-    - name: Run train scraper
+    - name: Run train scraper with virtual display
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
       run: |
-        python update_trains.py
+        xvfb-run -a python update_trains.py
     
     - name: Commit and push if changed
       run: |
