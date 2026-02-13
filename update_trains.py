@@ -44,10 +44,10 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def login_and_get_trains():
-    """PRODUCTION VERSION - Direct extraction from source internals"""
+    """PRODUCTION VERSION - Extract features directly from layer sources"""
     
     print("=" * 60)
-    print("🚂 RAILOPS - DIRECT SOURCE EXTRACTION")
+    print("🚂 RAILOPS - LAYER SOURCE EXTRACTION")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -131,132 +131,122 @@ def login_and_get_trains():
         print("\n⏳ Loading map and trains...")
         time.sleep(15)
         
-        # STEP 2: DIRECT EXTRACTION FROM SOURCE INTERNALS
-        print("\n🔍 Directly extracting from source internals...")
+        # STEP 2: EXTRACT FROM LAYER SOURCES
+        print("\n🔍 Extracting from layer sources...")
         
         extract_script = """
-        var allTrains = [];
-        var trainIds = new Set();
+        var allFeatures = [];
+        var seenIds = new Set();
         
-        // Direct inspection of known sources
+        // Helper to extract features from a source
+        function extractFromSource(source, sourceName) {
+            if (!source) return;
+            
+            try {
+                // Try different methods to get features
+                var features = null;
+                
+                if (source.getFeatures && typeof source.getFeatures === 'function') {
+                    features = source.getFeatures();
+                } else if (source.getSource && source.getSource().getFeatures) {
+                    features = source.getSource().getFeatures();
+                } else if (source.A && source.A.length) {
+                    features = source.A;
+                } else if (source.features) {
+                    features = source.features;
+                } else if (source.features_) {
+                    features = source.features_;
+                }
+                
+                if (features && features.length) {
+                    console.log(sourceName + ' has ' + features.length + ' features');
+                    
+                    features.forEach(function(f) {
+                        try {
+                            // Get properties
+                            var props = {};
+                            if (f.getProperties) {
+                                props = f.getProperties();
+                            } else if (f.values_) {
+                                props = f.values_;
+                            } else if (f.properties_) {
+                                props = f.properties_;
+                            } else if (f.attributes) {
+                                props = f.attributes;
+                            }
+                            
+                            // Get geometry
+                            var geom = null;
+                            if (f.getGeometry) {
+                                geom = f.getGeometry();
+                            } else if (f.geometry_) {
+                                geom = f.geometry_;
+                            } else if (f.geom) {
+                                geom = f.geom;
+                            }
+                            
+                            if (geom) {
+                                var coords = null;
+                                if (geom.getCoordinates) {
+                                    coords = geom.getCoordinates();
+                                } else if (geom.coordinates_) {
+                                    coords = geom.coordinates_;
+                                } else if (geom.coords) {
+                                    coords = geom.coords;
+                                }
+                                
+                                if (coords && coords.length >= 2) {
+                                    var id = String(props.id || props.ID || props.name || 
+                                                  props.NAME || props.unit || props.Unit || 
+                                                  props.loco || props.Loco || sourceName + '_' + allFeatures.length);
+                                    
+                                    if (!seenIds.has(id)) {
+                                        seenIds.add(id);
+                                        allFeatures.push({
+                                            id: id,
+                                            x: coords[0],
+                                            y: coords[1],
+                                            heading: Number(props.heading || props.Heading || 0),
+                                            speed: Number(props.speed || props.Speed || 0),
+                                            operator: String(props.operator || props.Operator || ''),
+                                            service: String(props.service || props.Service || '')
+                                        });
+                                    }
+                                }
+                            }
+                        } catch(e) {}
+                    });
+                }
+            } catch(e) {
+                console.log('Error with ' + sourceName + ': ' + e);
+            }
+        }
+        
+        // Check all possible train sources
         var sources = [
             { name: 'regTrainsSource', obj: window.regTrainsSource },
             { name: 'unregTrainsSource', obj: window.unregTrainsSource },
             { name: 'markerSource', obj: window.markerSource },
-            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource }
-        ];
-        
-        sources.forEach(function(s) {
-            var source = s.obj;
-            if (!source) return;
-            
-            console.log('Checking ' + s.name);
-            
-            // Try to access internal arrays directly
-            if (source.index_) {
-                console.log(s.name + ' has index_ with ' + Object.keys(source.index_).length + ' items');
-                // This is likely the feature collection
-                var features = [];
-                for (var key in source.index_) {
-                    features.push(source.index_[key]);
-                }
-                
-                features.forEach(function(f) {
-                    try {
-                        var props = f.properties_ || f.values_ || {};
-                        var geom = f.geometry_ || f.geometry;
-                        
-                        if (geom && geom.type_ === 'Point') {
-                            var coords = geom.coordinates_ || geom.coordinates || [];
-                            var id = String(props.id || props.ID || props.name || 
-                                          props.NAME || props.unit || props.Unit || 
-                                          s.name + '_' + allTrains.length);
-                            
-                            if (!trainIds.has(id)) {
-                                trainIds.add(id);
-                                allTrains.push({
-                                    id: id,
-                                    x: coords[0],
-                                    y: coords[1],
-                                    heading: Number(props.heading || props.Heading || 0),
-                                    speed: Number(props.speed || props.Speed || 0),
-                                    operator: String(props.operator || props.Operator || ''),
-                                    service: String(props.service || props.Service || ''),
-                                    source: s.name
-                                });
-                            }
-                        }
-                    } catch(e) {}
-                });
-            }
-            
-            // Try to access features_ array
-            if (source.features_) {
-                console.log(s.name + ' has features_ with ' + source.features_.length + ' items');
-                source.features_.forEach(function(f) {
-                    try {
-                        var props = f.properties_ || f.values_ || {};
-                        var geom = f.geometry_ || f.geometry;
-                        
-                        if (geom && geom.type_ === 'Point') {
-                            var coords = geom.coordinates_ || geom.coordinates || [];
-                            var id = String(props.id || props.ID || props.name || 
-                                          props.NAME || 'unknown');
-                            
-                            if (!trainIds.has(id)) {
-                                trainIds.add(id);
-                                allTrains.push({
-                                    id: id,
-                                    x: coords[0],
-                                    y: coords[1],
-                                    heading: Number(props.heading || props.Heading || 0),
-                                    speed: Number(props.speed || props.Speed || 0),
-                                    operator: String(props.operator || props.Operator || ''),
-                                    service: String(props.service || props.Service || ''),
-                                    source: s.name
-                                });
-                            }
-                        }
-                    } catch(e) {}
-                });
-            }
-            
-            // Try to access array_ property
-            if (source.array_) {
-                console.log(s.name + ' has array_ with ' + source.array_.length + ' items');
-                // Similar extraction...
-            }
-        });
-        
-        // Also try the layer sources
-        var layers = [
+            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource },
             { name: 'regTrainsLayer', obj: window.regTrainsLayer },
             { name: 'unregTrainsLayer', obj: window.unregTrainsLayer },
             { name: 'markerLayer', obj: window.markerLayer },
             { name: 'arrowMarkersLayer', obj: window.arrowMarkersLayer }
         ];
         
-        layers.forEach(function(l) {
-            if (l.obj && l.obj.getSource) {
-                var source = l.obj.getSource();
-                // Repeat the same extraction for the layer's source
-                if (source && source.index_) {
-                    // ... same extraction as above
-                }
+        sources.forEach(function(s) {
+            extractFromSource(s.obj, s.name);
+            // If it's a layer, try its source
+            if (s.obj && s.obj.getSource) {
+                extractFromSource(s.obj.getSource(), s.name + '_source');
             }
         });
         
-        return {
-            trains: allTrains,
-            count: allTrains.length,
-            ids: Array.from(trainIds)
-        };
+        return allFeatures;
         """
         
-        result = driver.execute_script(extract_script)
-        train_features = result.get('trains', [])
-        
-        print(f"\n✅ Found {len(train_features)} train features from direct source inspection")
+        train_features = driver.execute_script(extract_script)
+        print(f"\n✅ Found {len(train_features)} train features from layer sources")
         
         # Convert coordinates and build train list
         trains = []
@@ -320,7 +310,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - DIRECT SOURCE EXTRACTION 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - LAYER SOURCE EXTRACTION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
