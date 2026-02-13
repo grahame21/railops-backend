@@ -25,7 +25,7 @@ def write_output(trains, note=""):
     }
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    print(f"📝 Output: {len(trains or [])} trains")
+    print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
 def webmercator_to_latlon(x, y):
     try:
@@ -40,7 +40,7 @@ def webmercator_to_latlon(x, y):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - GETTING REAL TRAIN IDs")
+    print("🚂 DEBUG MODE - SHOW ALL PROPERTIES")
     print("=" * 60)
     
     chrome_options = Options()
@@ -118,39 +118,22 @@ def login_and_get_trains():
                 window.map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
             }
         """)
-        time.sleep(12)  # Wait for trains to load
+        time.sleep(12)
         
-        # EXTRACT TRAINS
-        print("\n🔍 Extracting REAL train data...")
+        # DEBUG: DUMP ALL PROPERTIES
+        print("\n🔍 DEBUG: Dumping properties of first 5 Australian trains...")
         
         script = """
-        var trains = [];
-        var seen = new Set();
+        var debug = [];
+        var count = 0;
         
-        function getLoco(props, f) {
-            // Try every possible field name
-            var loco = props.loco || props.Loco || 
-                      props.unit || props.Unit ||
-                      props.id || props.ID ||
-                      props.name || props.Name ||
-                      props.trainId || props.TrainId ||
-                      props.locomotive || props.Locomotive ||
-                      '';
-            
-            // If still not found, try feature ID
-            if (!loco || loco.includes('Source') || loco.includes('Layer')) {
-                loco = f.getId ? f.getId() : (f.id_ || f.id || '');
-                loco = String(loco).replace(/^[^_]+[._]/, ''); // Remove prefix
-            }
-            
-            return String(loco).trim();
-        }
-        
-        function extractFromSource(source) {
+        function dumpProperties(source) {
             if (!source || !source.getFeatures) return;
             
             var features = source.getFeatures();
             features.forEach(function(f) {
+                if (count >= 5) return;
+                
                 try {
                     var props = f.getProperties();
                     var geom = f.getGeometry();
@@ -163,63 +146,144 @@ def login_and_get_trains():
                         // Australia only
                         if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
                             
-                            var loco = getLoco(props, f);
-                            
-                            // Only add if we have a valid loco number
-                            if (loco && !loco.includes('Source') && !loco.includes('Layer') && loco.length > 0) {
-                                
-                                if (!seen.has(loco)) {
-                                    seen.add(loco);
-                                    trains.push({
-                                        'id': loco,
-                                        'loco': loco,
-                                        'lat': lat,
-                                        'lon': lon,
-                                        'heading': Number(props.heading || props.Heading || props.rotation || 0),
-                                        'speed': Number(props.speed || props.Speed || 0),
-                                        'operator': String(props.operator || props.Operator || props.railway || ''),
-                                        'service': String(props.service || props.Service || props.trainNumber || ''),
-                                        'destination': String(props.destination || props.Destination || props.to || ''),
-                                        'line': String(props.line || props.Line || props.route || ''),
-                                        'timestamp': String(props.timestamp || props.Timestamp || props.lastSeen || '')
-                                    });
+                            var propNames = [];
+                            for (var key in props) {
+                                if (props.hasOwnProperty(key) && typeof props[key] !== 'function') {
+                                    propNames.push(key + ': ' + typeof props[key] + ' = ' + JSON.stringify(props[key]).slice(0, 50));
                                 }
                             }
+                            
+                            debug.push({
+                                'id': f.getId ? f.getId() : 'no-id',
+                                'lat': lat,
+                                'lon': lon,
+                                'properties': propNames,
+                                'raw_props': JSON.stringify(props).slice(0, 500)
+                            });
+                            count++;
                         }
                     }
                 } catch(e) {}
             });
         }
         
-        // Extract from all sources
+        // Check all sources
         var sources = [
             window.regTrainsSource,
             window.unregTrainsSource,
             window.regTrainsLayer ? window.regTrainsLayer.getSource() : null,
-            window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null
+            window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null,
+            window.markerSource,
+            window.arrowMarkersSource
         ];
         
-        sources.forEach(extractFromSource);
+        sources.forEach(dumpProperties);
         
-        return trains;
+        return debug;
         """
         
-        trains = driver.execute_script(script)
-        print(f"\n✅ Found {len(trains)} Australian trains with real IDs")
+        debug_data = driver.execute_script(script)
         
-        if trains:
-            print("\n📋 Sample train:")
-            sample = trains[0]
-            print(f"   Loco: {sample.get('loco')}")
-            print(f"   Heading: {sample.get('heading')}°")
-            print(f"   Speed: {sample.get('speed')} km/h")
-            print(f"   Operator: {sample.get('operator')}")
-            print(f"   Service: {sample.get('service')}")
+        print(f"\n✅ Found {len(debug_data)} Australian trains for debugging")
         
-        return trains, f"ok - {len(trains)} trains"
+        if debug_data:
+            print("\n" + "="*60)
+            print("🔬 DEBUG: FIRST TRAIN PROPERTIES")
+            print("="*60)
+            train = debug_data[0]
+            print(f"\n📌 Train ID from feature: {train['id']}")
+            print(f"📍 Location: {train['lat']}, {train['lon']}")
+            print("\n📋 ALL PROPERTIES AVAILABLE:")
+            for prop in train['properties']:
+                print(f"   • {prop}")
+            print("\n📦 RAW JSON:")
+            print(train['raw_props'])
+            print("="*60)
+            
+            # NOW extract ALL Australian trains with whatever ID we can get
+            print("\n🔄 Extracting ALL Australian trains...")
+            
+            extract_script = """
+            var trains = [];
+            var seen = new Set();
+            
+            function extractAll(source) {
+                if (!source || !source.getFeatures) return;
+                
+                var features = source.getFeatures();
+                features.forEach(function(f) {
+                    try {
+                        var props = f.getProperties();
+                        var geom = f.getGeometry();
+                        
+                        if (geom) {
+                            var coords = geom.getCoordinates();
+                            var lon = coords[0];
+                            var lat = coords[1];
+                            
+                            // Australia only
+                            if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
+                                
+                                // Get ANY identifier
+                                var id = f.getId ? f.getId() : 
+                                       props.id || props.ID || 
+                                       props.name || props.Name ||
+                                       props.unit || props.Unit ||
+                                       props.loco || props.Loco ||
+                                       'train_' + lat + '_' + lon;
+                                
+                                id = String(id).replace(/[._]source$/, '').replace(/^[^_]+[._]/, '');
+                                
+                                if (!seen.has(id)) {
+                                    seen.add(id);
+                                    trains.push({
+                                        'id': id,
+                                        'loco': id,  // Use whatever ID we found
+                                        'lat': lat,
+                                        'lon': lon,
+                                        'heading': Number(props.heading || props.Heading || props.rotation || 0),
+                                        'speed': Number(props.speed || props.Speed || 0),
+                                        'operator': String(props.operator || props.Operator || props.railway || ''),
+                                        'service': String(props.service || props.Service || props.trainNumber || ''),
+                                        'destination': String(props.destination || props.Destination || ''),
+                                        'timestamp': String(props.timestamp || props.Timestamp || '')
+                                    });
+                                }
+                            }
+                        }
+                    } catch(e) {}
+                });
+            }
+            
+            var sources = [
+                window.regTrainsSource,
+                window.unregTrainsSource,
+                window.regTrainsLayer ? window.regTrainsLayer.getSource() : null,
+                window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null
+            ];
+            
+            sources.forEach(extractAll);
+            return trains;
+            """
+            
+            trains = driver.execute_script(extract_script)
+            print(f"\n✅ Extracted {len(trains)} Australian trains")
+            
+            if trains:
+                print("\n📋 Sample train:")
+                sample = trains[0]
+                for key, value in sample.items():
+                    print(f"   {key}: {value}")
+            
+            return trains, f"ok - {len(trains)} trains"
+        else:
+            print("\n❌ No Australian trains found! The map might not have loaded properly.")
+            return [], "No Australian trains found"
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
         return [], f"error: {type(e).__name__}"
     finally:
         if driver:
