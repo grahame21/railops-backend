@@ -43,11 +43,46 @@ def webmercator_to_latlon(x, y):
     except:
         return None, None
 
+def extract_train_from_source(source_name, source_obj):
+    """Extract train data from a source object"""
+    trains = []
+    if not source_obj or not source_obj.get('getFeatures'):
+        return trains
+    
+    try:
+        features = source_obj['getFeatures']()
+        for feature in features:
+            props = feature.get('properties_', {}) or feature.get('values_', {}) or feature
+            geom = feature.get('geometry_', {})
+            
+            if geom and geom.get('type_') == 'Point':
+                coords = geom.get('coordinates_', [])
+                if len(coords) >= 2:
+                    x, y = coords[0], coords[1]
+                    lat, lon = webmercator_to_latlon(x, y)
+                    
+                    if lat and lon:
+                        train = {
+                            "id": str(props.get('id') or props.get('ID') or props.get('name') or props.get('NAME') or f"{source_name}_{len(trains)}"),
+                            "lat": round(lat, 6),
+                            "lon": round(lon, 6),
+                            "heading": round(to_float(props.get('heading') or props.get('Heading') or 0), 1),
+                            "speed": round(to_float(props.get('speed') or props.get('Speed') or 0), 1),
+                            "operator": (props.get('operator') or props.get('Operator') or props.get('railway') or '')[:50],
+                            "service": (props.get('service') or props.get('Service') or props.get('trainNumber') or '')[:50],
+                            "source": source_name
+                        }
+                        trains.append(train)
+    except Exception as e:
+        print(f"      ⚠️ Error extracting from {source_name}: {e}")
+    
+    return trains
+
 def login_and_get_trains():
-    """PRODUCTION VERSION - Extracts ALL trains from ALL layers"""
+    """PRODUCTION VERSION - Extracts ALL trains from global variables"""
     
     print("=" * 60)
-    print("🚂 RAILOPS PRODUCTION SCRAPER - DEBUG MODE")
+    print("🚂 RAILOPS PRODUCTION SCRAPER - EXTRACTING FROM GLOBAL VARS")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -131,271 +166,166 @@ def login_and_get_trains():
         print("\n⏳ Loading map and trains...")
         time.sleep(15)
         
-        # STEP 2: DEBUG - DUMP ALL LAYER INFORMATION
-        print("\n🔍 DEBUG: Dumping all map layers...")
-        
-        debug_script = """
-        var debug = {
-            layers: [],
-            globalVars: []
-        };
-        
-        // Check map object
-        if (window.map) {
-            debug.mapExists = true;
-            debug.mapView = window.map.getView ? window.map.getView().getZoom() : 'unknown';
-            debug.mapProjection = window.map.getView ? window.map.getView().getProjection().getCode() : 'unknown';
-            
-            window.map.getLayers().forEach(function(layer, index) {
-                var layerInfo = {
-                    index: index,
-                    type: layer.constructor.name,
-                    visible: layer.getVisible ? layer.getVisible() : 'unknown',
-                    zIndex: layer.getZIndex ? layer.getZIndex() : 'unknown',
-                    hasSource: !!layer.getSource,
-                    className: layer.className_ || layer.getClassName ? layer.getClassName() : 'none',
-                    title: layer.get('title') || layer.get('name') || 'none',
-                };
-                
-                // Try to get source info
-                if (layer.getSource) {
-                    var source = layer.getSource();
-                    layerInfo.sourceType = source.constructor.name;
-                    layerInfo.sourceUrl = source.getUrl ? source.getUrl() : 'none';
-                    
-                    // Try to get features
-                    if (source.getFeatures) {
-                        try {
-                            var features = source.getFeatures();
-                            layerInfo.featureCount = features.length;
-                            
-                            // Sample first feature
-                            if (features.length > 0) {
-                                var f = features[0];
-                                var props = f.getProperties();
-                                var geom = f.getGeometry();
-                                layerInfo.sampleProps = Object.keys(props).slice(0, 10);
-                                layerInfo.geomType = geom ? geom.getType() : 'none';
-                                
-                                if (geom && geom.getType() === 'Point') {
-                                    var coords = geom.getCoordinates();
-                                    layerInfo.sampleCoords = [coords[0], coords[1]];
-                                }
-                            }
-                        } catch(e) {
-                            layerInfo.featureError = e.toString();
-                        }
-                    }
-                }
-                
-                // Check for sublayers
-                if (layer.getLayers) {
-                    var subLayers = layer.getLayers();
-                    layerInfo.subLayerCount = subLayers.getLength ? subLayers.getLength() : 'unknown';
-                    layerInfo.subLayers = [];
-                    
-                    subLayers.forEach(function(subLayer, subIndex) {
-                        var subInfo = {
-                            index: subIndex,
-                            type: subLayer.constructor.name,
-                            visible: subLayer.getVisible ? subLayer.getVisible() : 'unknown',
-                            title: subLayer.get('title') || subLayer.get('name') || 'none'
-                        };
-                        
-                        if (subLayer.getSource && subLayer.getSource().getFeatures) {
-                            try {
-                                var features = subLayer.getSource().getFeatures();
-                                subInfo.featureCount = features.length;
-                            } catch(e) {}
-                        }
-                        
-                        layerInfo.subLayers.push(subInfo);
-                    });
-                }
-                
-                debug.layers.push(layerInfo);
-            });
-        } else {
-            debug.mapExists = false;
-        }
-        
-        // Check global variables
-        var trainVars = [];
-        for (var key in window) {
-            if (key.toLowerCase().includes('train') || 
-                key.toLowerCase().includes('marker') || 
-                key.toLowerCase().includes('loco') ||
-                key.toLowerCase().includes('vehicle')) {
-                try {
-                    var val = window[key];
-                    if (val && typeof val === 'object') {
-                        trainVars.push({
-                            name: key,
-                            type: Array.isArray(val) ? 'array' : 'object',
-                            length: Array.isArray(val) ? val.length : Object.keys(val).length
-                        });
-                    }
-                } catch(e) {}
-            }
-        }
-        debug.globalVars = trainVars;
-        
-        return debug;
-        """
-        
-        debug_info = driver.execute_script(debug_script)
-        
-        print(f"\n📊 Map Debug Information:")
-        print(f"   Map exists: {debug_info.get('mapExists', False)}")
-        print(f"   Zoom level: {debug_info.get('mapView', 'unknown')}")
-        print(f"   Projection: {debug_info.get('mapProjection', 'unknown')}")
-        print(f"\n   Found {len(debug_info.get('layers', []))} layers:")
-        
-        for layer in debug_info.get('layers', []):
-            print(f"\n   📍 Layer {layer['index']}: {layer['type']}")
-            print(f"      Title: {layer.get('title', 'none')}")
-            print(f"      Visible: {layer.get('visible', 'unknown')}")
-            print(f"      Z-Index: {layer.get('zIndex', 'unknown')}")
-            print(f"      Has Source: {layer.get('hasSource', False)}")
-            
-            if 'sourceType' in layer:
-                print(f"      Source Type: {layer['sourceType']}")
-                print(f"      Feature Count: {layer.get('featureCount', 0)}")
-                
-                if layer.get('featureCount', 0) > 0:
-                    print(f"      Sample Props: {layer.get('sampleProps', [])}")
-                    print(f"      Geometry Type: {layer.get('geomType', 'none')}")
-                    if 'sampleCoords' in layer:
-                        lat, lon = webmercator_to_latlon(layer['sampleCoords'][0], layer['sampleCoords'][1])
-                        print(f"      Sample Location: {lat:.4f}, {lon:.4f}")
-            
-            if 'subLayerCount' in layer:
-                print(f"      Sub-layers: {layer['subLayerCount']}")
-                for sub in layer.get('subLayers', []):
-                    print(f"         - {sub['type']}: {sub.get('featureCount', 0)} features")
-        
-        print(f"\n📊 Global train-related variables:")
-        for var in debug_info.get('globalVars', []):
-            print(f"   - {var['name']}: {var['type']} with {var.get('length', 0)} items")
-        
-        # STEP 3: NOW EXTRACT ALL FEATURES FROM EVERY LAYER
-        print("\n🔍 Extracting ALL features from ALL layers...")
+        # STEP 2: EXTRACT TRAINS FROM GLOBAL VARIABLES
+        print("\n🔍 Extracting trains from global variables...")
         
         extract_script = """
-        var allFeatures = [];
+        var sources = {
+            'regTrainsSource': window.regTrainsSource,
+            'unregTrainsSource': window.unregTrainsSource,
+            'markerSource': window.markerSource,
+            'arrowMarkersSource': window.arrowMarkersSource,
+            'regTrainsLayer': window.regTrainsLayer,
+            'unregTrainsLayer': window.unregTrainsLayer,
+            'markerLayer': window.markerLayer,
+            'arrowMarkersLayer': window.arrowMarkersLayer
+        };
         
-        function extractFromSource(source, layerInfo) {
-            if (!source || !source.getFeatures) return;
-            try {
-                var features = source.getFeatures();
-                features.forEach(function(f) {
-                    var props = f.getProperties();
-                    var geom = f.getGeometry();
+        var result = {};
+        
+        for (var name in sources) {
+            var source = sources[name];
+            if (!source) continue;
+            
+            result[name] = {
+                exists: true,
+                type: source.constructor ? source.constructor.name : typeof source,
+                features: []
+            };
+            
+            // Try to get features from source
+            if (source.getFeatures) {
+                try {
+                    var features = source.getFeatures();
+                    result[name].featureCount = features.length;
                     
-                    if (geom && geom.getType() === 'Point') {
-                        var coords = geom.getCoordinates();
-                        allFeatures.push({
-                            id: props.id || props.ID || props.name || props.NAME || 'unknown',
-                            x: coords[0],
-                            y: coords[1],
-                            heading: props.heading || props.Heading || props.rotation || 0,
-                            speed: props.speed || props.Speed || 0,
-                            operator: props.operator || props.Operator || props.railway || '',
-                            service: props.service || props.Service || props.trainNumber || '',
-                            layer: layerInfo
-                        });
-                    }
-                });
-            } catch(e) {}
-        }
-        
-        if (window.map) {
-            window.map.getLayers().forEach(function(layer) {
-                var layerName = layer.get('title') || layer.get('name') || layer.constructor.name;
-                
-                // Main layer source
-                if (layer.getSource) {
-                    extractFromSource(layer.getSource(), layerName + ' (main)');
-                }
-                
-                // Sub-layers
-                if (layer.getLayers) {
-                    var subLayers = layer.getLayers();
-                    subLayers.forEach(function(subLayer, idx) {
-                        var subName = subLayer.get('title') || subLayer.get('name') || subLayer.constructor.name;
-                        if (subLayer.getSource) {
-                            extractFromSource(subLayer.getSource(), layerName + ' > ' + subName);
-                        }
+                    features.forEach(function(f) {
+                        try {
+                            var props = {};
+                            // Try to get properties in different ways
+                            if (f.getProperties) {
+                                props = f.getProperties();
+                            } else if (f.values_) {
+                                props = f.values_;
+                            } else if (f.properties_) {
+                                props = f.properties_;
+                            }
+                            
+                            var geom = null;
+                            if (f.getGeometry) {
+                                geom = f.getGeometry();
+                            } else if (f.geometry_) {
+                                geom = f.geometry_;
+                            }
+                            
+                            var featureData = {
+                                props: props,
+                                geom: geom ? {
+                                    type: geom.getType ? geom.getType() : geom.type_,
+                                    coords: geom.getCoordinates ? geom.getCoordinates() : geom.coordinates_
+                                } : null
+                            };
+                            result[name].features.push(featureData);
+                        } catch(e) {}
                     });
+                } catch(e) {
+                    result[name].error = e.toString();
                 }
-            });
+            }
+            
+            // Try to get as array
+            if (Array.isArray(source)) {
+                result[name].arrayLength = source.length;
+                result[name].featureCount = source.length;
+            }
         }
         
-        return allFeatures;
+        // Also try to get any train data arrays
+        var trainArrays = ['regTrains', 'unregtrains', 'currentTrains', 'openTrains'];
+        trainArrays.forEach(function(name) {
+            if (window[name] && Array.isArray(window[name])) {
+                result[name] = {
+                    exists: true,
+                    type: 'array',
+                    featureCount: window[name].length,
+                    features: window[name].slice(0, 10) // First 10 as sample
+                };
+            }
+        });
+        
+        return result;
         """
         
-        features = driver.execute_script(extract_script)
-        print(f"\n✅ Found {len(features)} total features on map")
+        sources_data = driver.execute_script(extract_script)
         
-        # Group features by layer
-        layer_counts = {}
-        for f in features:
-            layer = f.get('layer', 'unknown')
-            layer_counts[layer] = layer_counts.get(layer, 0) + 1
-        
-        print("\n📊 Features by layer:")
-        for layer, count in sorted(layer_counts.items(), key=lambda x: x[1], reverse=True):
-            print(f"   {layer}: {count} features")
-        
-        # Convert coordinates and build train list
-        trains = []
+        all_trains = []
         train_ids = set()
         
-        for feature in features:
-            lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
-            
-            if lat and lon and -90 <= lat <= 90 and -180 <= lon <= 180:
-                train_id = str(feature.get('id', 'unknown'))
+        print(f"\n📊 Train Sources Found:")
+        
+        for source_name, source_info in sources_data.items():
+            if source_info and source_info.get('exists'):
+                feature_count = source_info.get('featureCount', 0)
+                print(f"\n   📍 {source_name}: {feature_count} features")
                 
-                if train_id not in train_ids:
-                    train_ids.add(train_id)
-                    
-                    train = {
-                        "id": train_id,
-                        "lat": round(lat, 6),
-                        "lon": round(lon, 6),
-                        "heading": round(to_float(feature.get('heading', 0)), 1),
-                        "speed": round(to_float(feature.get('speed', 0)), 1),
-                        "operator": feature.get('operator', '')[:50],
-                        "service": feature.get('service', '')[:50]
-                    }
-                    trains.append(train)
+                # Extract features from this source
+                if 'features' in source_info:
+                    for feature_data in source_info['features']:
+                        props = feature_data.get('props', {})
+                        geom = feature_data.get('geom', {})
+                        
+                        if geom and geom.get('type') == 'Point':
+                            coords = geom.get('coords', [])
+                            if len(coords) >= 2:
+                                lat, lon = webmercator_to_latlon(coords[0], coords[1])
+                                
+                                if lat and lon:
+                                    train_id = str(props.get('id') or props.get('ID') or 
+                                                  props.get('name') or props.get('NAME') or 
+                                                  f"{source_name}_{len(all_trains)}")
+                                    
+                                    if train_id not in train_ids:
+                                        train_ids.add(train_id)
+                                        
+                                        train = {
+                                            "id": train_id,
+                                            "lat": round(lat, 6),
+                                            "lon": round(lon, 6),
+                                            "heading": round(to_float(props.get('heading') or props.get('Heading') or 0), 1),
+                                            "speed": round(to_float(props.get('speed') or props.get('Speed') or 0), 1),
+                                            "operator": (props.get('operator') or props.get('Operator') or '')[:50],
+                                            "service": (props.get('service') or props.get('Service') or props.get('trainNumber') or '')[:50],
+                                            "source": source_name
+                                        }
+                                        all_trains.append(train)
         
-        print(f"\n📊 Extracted {len(trains)} unique trains with valid coordinates")
+        print(f"\n📊 Total unique trains extracted: {len(all_trains)}")
         
-        if trains:
-            print("\n📋 Sample trains by region:")
-            aus_trains = [t for t in trains if 110 <= t['lon'] <= 155 and -45 <= t['lat'] <= -10]
-            us_trains = [t for t in trains if -130 <= t['lon'] <= -60 and 25 <= t['lat'] <= 50]
-            
-            print(f"\n   Australian trains: {len(aus_trains)}")
-            print(f"   US trains: {len(us_trains)}")
-            print(f"   Other: {len(trains) - len(aus_trains) - len(us_trains)}")
-            
-            print("\n📋 First 5 trains:")
-            for i, sample in enumerate(trains[:5]):
+        # Categorize by region
+        aus_trains = [t for t in all_trains if 110 <= t['lon'] <= 155 and -45 <= t['lat'] <= -10]
+        us_trains = [t for t in all_trains if -130 <= t['lon'] <= -60 and 25 <= t['lat'] <= 50]
+        
+        print(f"\n📍 Australian trains: {len(aus_trains)}")
+        print(f"📍 US trains: {len(us_trains)}")
+        print(f"📍 Other: {len(all_trains) - len(aus_trains) - len(us_trains)}")
+        
+        if all_trains:
+            print("\n📋 Sample trains:")
+            for i, sample in enumerate(all_trains[:5]):
                 print(f"\n   Train {i+1}:")
                 print(f"     ID: {sample['id']}")
                 print(f"     Location: {sample['lat']}, {sample['lon']}")
                 print(f"     Heading: {sample['heading']}°")
                 print(f"     Speed: {sample['speed']}")
                 print(f"     Operator: {sample['operator']}")
+                print(f"     Service: {sample['service']}")
+                print(f"     Source: {sample['source']}")
         
         # Save screenshot
         driver.save_screenshot("map_with_trains.png")
         print("\n📸 Map screenshot saved")
         
-        return trains, f"ok - {len(trains)} trains"
+        return all_trains, f"ok - {len(all_trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {type(e).__name__}: {str(e)}")
@@ -414,7 +344,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - DEBUG MODE - FIND ALL LAYERS 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - FINAL PRODUCTION VERSION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
