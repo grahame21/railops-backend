@@ -2,6 +2,7 @@ import os
 import json
 import datetime
 import time
+import math
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -9,16 +10,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-from pyproj import Transformer
 
 OUT_FILE = "trains.json"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
-
-# Coordinate transformer: EPSG:3857 (Web Mercator) to EPSG:4326 (Lat/Lon)
-transformer = Transformer.from_crs("EPSG:3857", "EPSG:4326")
 
 def write_output(trains, note=""):
     payload = {
@@ -34,10 +31,19 @@ def to_float(x):
     try: return float(x) if x is not None else None
     except: return None
 
-def convert_coords(x, y):
-    """Convert EPSG:3857 to lat/lon"""
+def webmercator_to_latlon(x, y):
+    """Convert Web Mercator (EPSG:3857) to latitude/longitude (EPSG:4326)"""
     try:
-        lon, lat = transformer.transform(x, y)
+        x = float(x)
+        y = float(y)
+        
+        # Web Mercator to longitude
+        lon = (x / 20037508.34) * 180
+        
+        # Web Mercator to latitude
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        
         return lat, lon
     except:
         return None, None
@@ -130,49 +136,7 @@ def login_and_get_trains():
         print("\n⏳ Loading map and trains...")
         time.sleep(15)
         
-        # STEP 2: DEBUG - Check what layers are available
-        print("\n🔍 Checking map layers...")
-        layer_script = """
-        var layers = [];
-        if (window.map) {
-            window.map.getLayers().forEach(function(layer, index) {
-                var layerInfo = {
-                    index: index,
-                    type: layer.constructor.name,
-                    visible: layer.getVisible(),
-                    zIndex: layer.getZIndex(),
-                    hasSource: !!layer.getSource,
-                    hasFeatures: false,
-                    featureCount: 0
-                };
-                
-                if (layer.getSource && layer.getSource().getFeatures) {
-                    try {
-                        var features = layer.getSource().getFeatures();
-                        layerInfo.hasFeatures = true;
-                        layerInfo.featureCount = features.length;
-                        
-                        // Get first feature as sample
-                        if (features.length > 0) {
-                            var f = features[0];
-                            var props = f.getProperties();
-                            layerInfo.sampleId = props.id || props.name || 'unknown';
-                        }
-                    } catch(e) {}
-                }
-                layers.push(layerInfo);
-            });
-        }
-        return layers;
-        """
-        
-        layers = driver.execute_script(layer_script)
-        print(f"✅ Found {len(layers)} map layers")
-        for layer in layers:
-            print(f"   Layer {layer['index']}: {layer['type']}")
-            print(f"     Visible: {layer['visible']}, Features: {layer['featureCount']}")
-        
-        # STEP 3: EXTRACT ALL TRAINS FROM ALL LAYERS
+        # STEP 2: EXTRACT ALL TRAINS FROM ALL LAYERS
         print("\n🔍 Extracting ALL trains from map...")
         
         extract_script = """
@@ -198,62 +162,65 @@ def login_and_get_trains():
                         var props = f.getProperties();
                         var geom = f.getGeometry();
                         
-                        if (geom) {
+                        if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Handle different geometry types
-                            if (geom.getType() === 'Point') {
-                                // Try to find train identifiers
-                                var id = props.id || 
-                                        props.ID || 
-                                        props.trainId || 
-                                        props.TrainId || 
-                                        props.unit || 
-                                        props.Unit || 
-                                        props.loco || 
-                                        props.Loco || 
-                                        props.name || 
-                                        props.Name || 
-                                        'unknown';
-                                
-                                var heading = props.heading || 
-                                            props.Heading || 
-                                            props.rotation || 
-                                            props.Rotation || 
-                                            props.bearing || 
-                                            props.Bearing || 
-                                            0;
-                                
-                                var speed = props.speed || 
-                                          props.Speed || 
-                                          props.velocity || 
-                                          props.Velocity || 
-                                          0;
-                                
-                                var operator = props.operator || 
-                                             props.Operator || 
-                                             props.company || 
-                                             props.Company || 
-                                             '';
-                                
-                                var service = props.service || 
-                                            props.Service || 
-                                            props.trainNumber || 
-                                            props.TrainNumber || 
-                                            '';
-                                
-                                allTrains.push({
-                                    id: String(id),
-                                    x: coords[0],
-                                    y: coords[1],
-                                    heading: heading,
-                                    speed: speed,
-                                    operator: operator,
-                                    service: service,
-                                    layerIndex: layer.getZIndex ? layer.getZIndex() : 0,
-                                    layerType: layer.constructor.name
-                                });
-                            }
+                            // Try to find train identifiers
+                            var id = props.id || 
+                                    props.ID || 
+                                    props.trainId || 
+                                    props.TrainId || 
+                                    props.unit || 
+                                    props.Unit || 
+                                    props.loco || 
+                                    props.Loco || 
+                                    props.name || 
+                                    props.Name || 
+                                    props.vehicle || 
+                                    props.Vehicle || 
+                                    'unknown';
+                            
+                            var heading = props.heading || 
+                                        props.Heading || 
+                                        props.rotation || 
+                                        props.Rotation || 
+                                        props.bearing || 
+                                        props.Bearing || 
+                                        props.direction || 
+                                        props.Direction || 
+                                        0;
+                            
+                            var speed = props.speed || 
+                                      props.Speed || 
+                                      props.velocity || 
+                                      props.Velocity || 
+                                      0;
+                            
+                            var operator = props.operator || 
+                                         props.Operator || 
+                                         props.company || 
+                                         props.Company || 
+                                         props.railway || 
+                                         props.Railway || 
+                                         '';
+                            
+                            var service = props.service || 
+                                        props.Service || 
+                                        props.trainNumber || 
+                                        props.TrainNumber || 
+                                        props.line || 
+                                        props.Line || 
+                                        '';
+                            
+                            allTrains.push({
+                                id: String(id),
+                                x: coords[0],
+                                y: coords[1],
+                                heading: heading,
+                                speed: speed,
+                                operator: operator,
+                                service: service
+                            });
                         }
                     });
                 }
@@ -277,6 +244,7 @@ def login_and_get_trains():
                                         var heading = props.heading || props.Heading || props.rotation || props.Rotation || 0;
                                         var speed = props.speed || props.Speed || 0;
                                         var operator = props.operator || props.Operator || '';
+                                        var service = props.service || props.Service || '';
                                         
                                         allTrains.push({
                                             id: String(id),
@@ -285,8 +253,7 @@ def login_and_get_trains():
                                             heading: heading,
                                             speed: speed,
                                             operator: operator,
-                                            layerIndex: subLayer.getZIndex ? subLayer.getZIndex() : 0,
-                                            layerType: subLayer.constructor.name
+                                            service: service
                                         });
                                     }
                                 });
@@ -298,9 +265,21 @@ def login_and_get_trains():
         }
         
         // Also check for any global train data arrays
-        if (window.trainData) allTrains = allTrains.concat(window.trainData);
-        if (window.trains) allTrains = allTrains.concat(window.trains);
-        if (window.markers) allTrains = allTrains.concat(window.markers);
+        if (window.trainData) {
+            try {
+                allTrains = allTrains.concat(window.trainData);
+            } catch(e) {}
+        }
+        if (window.trains) {
+            try {
+                allTrains = allTrains.concat(window.trains);
+            } catch(e) {}
+        }
+        if (window.markers) {
+            try {
+                allTrains = allTrains.concat(window.markers);
+            } catch(e) {}
+        }
         
         return allTrains;
         """
@@ -308,28 +287,18 @@ def login_and_get_trains():
         features = driver.execute_script(extract_script)
         print(f"\n✅ Found {len(features)} total features on map")
         
-        # Group by layer to see distribution
-        layer_counts = {}
-        for f in features:
-            layer_type = f.get('layerType', 'unknown')
-            layer_counts[layer_type] = layer_counts.get(layer_type, 0) + 1
-        
-        print("\n📊 Features by layer type:")
-        for layer_type, count in layer_counts.items():
-            print(f"   {layer_type}: {count} features")
-        
         # Convert coordinates and build train list
         trains = []
         train_ids = set()  # Avoid duplicates
         
         for feature in features:
             # Convert coordinates from EPSG:3857 to lat/lon
-            lat, lon = convert_coords(feature['x'], feature['y'])
+            lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
             
-            if lat and lon:
+            if lat and lon and -90 <= lat <= 90 and -180 <= lon <= 180:
                 train_id = str(feature.get('id', 'unknown'))
                 
-                # Avoid duplicates with same ID and similar coordinates
+                # Avoid duplicates with same ID
                 if train_id not in train_ids:
                     train_ids.add(train_id)
                     
@@ -339,15 +308,15 @@ def login_and_get_trains():
                         "lon": round(lon, 6),
                         "heading": round(to_float(feature.get('heading', 0)), 1),
                         "speed": round(to_float(feature.get('speed', 0)), 1),
-                        "operator": feature.get('operator', ''),
-                        "service": feature.get('service', '')
+                        "operator": feature.get('operator', '')[:50],
+                        "service": feature.get('service', '')[:50]
                     }
                     trains.append(train)
         
-        print(f"\n📊 Extracted {len(trains)} unique trains with coordinates")
+        print(f"\n📊 Extracted {len(trains)} unique trains with valid coordinates")
         
         if trains:
-            print("\n📋 Sample trains:")
+            print("\n📋 Sample trains (first 5):")
             for i, sample in enumerate(trains[:5]):
                 print(f"\n   Train {i+1}:")
                 print(f"     ID: {sample['id']}")
