@@ -28,7 +28,6 @@ def write_output(trains, note=""):
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
 def webmercator_to_latlon(x, y):
-    """Convert Web Mercator (EPSG:3857) to latitude/longitude (EPSG:4326)"""
     try:
         x = float(x)
         y = float(y)
@@ -41,11 +40,12 @@ def webmercator_to_latlon(x, y):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - SIMPLE EXTRACTION")
+    print("🚂 RAILOPS - DEBUG MODE (NO HEADLESS)")
     print("=" * 60)
     
     chrome_options = Options()
-    chrome_options.add_argument('--headless=new')
+    # 🔴 TEMPORARILY DISABLE HEADLESS TO DEBUG
+    # chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
@@ -113,8 +113,61 @@ def login_and_get_trains():
         print("✅ Warning page closed")
         
         # Wait for map to load
-        print("\n⏳ Waiting for map to load...")
-        time.sleep(15)
+        print("\n⏳ Waiting for map to load (30 seconds)...")
+        time.sleep(30)
+        
+        # DEBUG: Check if map exists
+        map_exists = driver.execute_script("return typeof window.map !== 'undefined' && window.map !== null;")
+        print(f"✅ Map exists: {map_exists}")
+        
+        if map_exists:
+            # DEBUG: Check layers
+            layer_count = driver.execute_script("return window.map.getLayers().getLength();")
+            print(f"✅ Map has {layer_count} layers")
+        
+        # DEBUG: Check all possible sources
+        print("\n🔍 Checking all train sources...")
+        
+        debug_script = """
+        var sources = {
+            'regTrainsSource': window.regTrainsSource,
+            'unregTrainsSource': window.unregTrainsSource,
+            'markerSource': window.markerSource,
+            'arrowMarkersSource': window.arrowMarkersSource,
+            'regTrainsLayer': window.regTrainsLayer,
+            'unregTrainsLayer': window.unregTrainsLayer,
+            'markerLayer': window.markerLayer,
+            'arrowMarkersLayer': window.arrowMarkersLayer
+        };
+        
+        var result = {};
+        for (var name in sources) {
+            var src = sources[name];
+            result[name] = {
+                exists: src !== null && src !== undefined,
+                type: src ? src.constructor.name : 'null',
+                hasGetFeatures: src ? typeof src.getFeatures === 'function' : false,
+                hasGetSource: src ? typeof src.getSource === 'function' : false
+            };
+            
+            // If it's a layer with source, check that too
+            if (src && src.getSource) {
+                var source = src.getSource();
+                result[name + '_source'] = {
+                    exists: source !== null,
+                    type: source ? source.constructor.name : 'null',
+                    hasGetFeatures: source ? typeof source.getFeatures === 'function' : false
+                };
+            }
+        }
+        
+        return result;
+        """
+        
+        source_info = driver.execute_script(debug_script)
+        print("\n📊 Source Status:")
+        for name, info in source_info.items():
+            print(f"   {name}: exists={info['exists']}, type={info['type']}, hasGetFeatures={info.get('hasGetFeatures', False)}")
         
         # EXTRACT ALL TRAINS
         print("\n🔍 Extracting ALL trains...")
@@ -136,24 +189,12 @@ def login_and_get_trains():
                         
                         if (geom) {
                             var coords = geom.getCoordinates();
-                            
-                            // Get the ID - use whatever is available
-                            var id = props.id || props.ID || 
-                                    props.name || props.Name ||
-                                    props.unit || props.Unit ||
-                                    props.loco || props.Loco ||
-                                    f.getId() || 
-                                    sourceName + '_' + allTrains.length;
-                            
                             allTrains.push({
-                                'id': String(id),
-                                'loco': String(props.loco || props.Loco || props.unit || props.Unit || ''),
+                                'id': String(props.id || props.ID || props.name || sourceName + '_' + allTrains.length),
                                 'lat': coords[1],
                                 'lon': coords[0],
-                                'heading': Number(props.heading || props.Heading || props.rotation || 0),
+                                'heading': Number(props.heading || props.Heading || 0),
                                 'speed': Number(props.speed || props.Speed || 0),
-                                'operator': String(props.operator || props.Operator || ''),
-                                'service': String(props.service || props.Service || props.trainNumber || ''),
                                 'source': sourceName
                             });
                         }
@@ -167,14 +208,15 @@ def login_and_get_trains():
             { name: 'regTrainsSource', obj: window.regTrainsSource },
             { name: 'unregTrainsSource', obj: window.unregTrainsSource },
             { name: 'markerSource', obj: window.markerSource },
-            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource },
-            { name: 'regTrainsLayer', obj: window.regTrainsLayer ? window.regTrainsLayer.getSource() : null },
-            { name: 'unregTrainsLayer', obj: window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null }
+            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource }
         ];
         
         sources.forEach(function(s) {
             if (s.obj) {
                 extractFeatures(s.obj, s.name);
+                if (s.obj.getSource) {
+                    extractFeatures(s.obj.getSource(), s.name + '_source');
+                }
             }
         });
         
@@ -182,37 +224,15 @@ def login_and_get_trains():
         """
         
         all_trains = driver.execute_script(script)
-        print(f"\n✅ Extracted {len(all_trains)} total trains before filtering")
+        print(f"\n✅ Extracted {len(all_trains)} total trains")
         
-        # Convert coordinates and filter to Australia
-        australian_trains = []
-        seen_ids = set()
-        
-        for train in all_trains:
-            lat, lon = webmercator_to_latlon(train['lon'], train['lat'])
-            
-            if lat and lon:
-                # Store with proper lat/lon
-                train['lat'] = round(lat, 6)
-                train['lon'] = round(lon, 6)
-                
-                # Check if in Australia
-                if -45 <= lat <= -10 and 110 <= lon <= 155:
-                    train_id = train['id']
-                    if train_id not in seen_ids:
-                        seen_ids.add(train_id)
-                        australian_trains.append(train)
-        
-        print(f"✅ Found {len(australian_trains)} Australian trains")
-        
-        if australian_trains:
-            print("\n📋 Sample Australian train:")
-            sample = australian_trains[0]
+        if all_trains:
+            print("\n📋 First train sample:")
+            sample = all_trains[0]
             for key, value in sample.items():
-                if value:
-                    print(f"   {key}: {value}")
+                print(f"   {key}: {value}")
         
-        return australian_trains, f"ok - {len(australian_trains)} trains"
+        return all_trains, f"ok - {len(all_trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
@@ -221,6 +241,10 @@ def login_and_get_trains():
         return [], f"error: {type(e).__name__}"
     finally:
         if driver:
+            # Keep browser open for debugging if there are errors
+            if len(all_trains) == 0:
+                print("\n⚠️ No trains found - keeping browser open for 60 seconds for debugging...")
+                time.sleep(60)
             driver.quit()
 
 def main():
