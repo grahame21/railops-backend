@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 OUT_FILE = "trains.json"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
@@ -36,41 +37,9 @@ def webmercator_to_latlon(x, y):
     except:
         return None, None
 
-def wait_for_trains(driver, timeout=30):
-    """Wait for train sources to have features"""
-    print("⏳ Waiting for trains to load...")
-    
-    for i in range(timeout):
-        script = """
-        var total = 0;
-        if (window.regTrainsSource && window.regTrainsSource.getFeatures) {
-            total += window.regTrainsSource.getFeatures().length;
-        }
-        if (window.unregTrainsSource && window.unregTrainsSource.getFeatures) {
-            total += window.unregTrainsSource.getFeatures().length;
-        }
-        if (window.markerSource && window.markerSource.getFeatures) {
-            total += window.markerSource.getFeatures().length;
-        }
-        if (window.arrowMarkersSource && window.arrowMarkersSource.getFeatures) {
-            total += window.arrowMarkersSource.getFeatures().length;
-        }
-        return total;
-        """
-        
-        count = driver.execute_script(script)
-        if count > 0:
-            print(f"✅ Found {count} trains after {i} seconds")
-            return True
-        
-        time.sleep(1)
-    
-    print("⚠️ No trains found after timeout")
-    return False
-
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - WAIT FOR TRAINS")
+    print("🚂 RAILOPS - ULTIMATE AGGRESSIVE")
     print("=" * 60)
     
     chrome_options = Options()
@@ -130,28 +99,56 @@ def login_and_get_trains():
         """)
         print("✅ Warning page closed")
         
-        # Wait for initial load
-        time.sleep(5)
+        # Check initial trains
+        print("\n🔍 Checking for any trains...")
+        initial_count = driver.execute_script("""
+            var count = 0;
+            if (window.regTrainsSource) count += window.regTrainsSource.getFeatures().length;
+            if (window.unregTrainsSource) count += window.unregTrainsSource.getFeatures().length;
+            if (window.markerSource) count += window.markerSource.getFeatures().length;
+            if (window.arrowMarkersSource) count += window.arrowMarkersSource.getFeatures().length;
+            return count;
+        """)
+        print(f"   Found {initial_count} total trains")
         
-        # Wait for trains to appear
-        if not wait_for_trains(driver):
-            print("⚠️ No trains detected, trying zoom...")
+        if initial_count == 0:
+            print("⚠️ No trains found - trying aggressive reload...")
             
-            # Try zooming
-            driver.execute_script("""
+            # Try multiple strategies to get trains
+            strategies = [
+                "window.location.reload();",
+                "if (window.map) { window.map.getView().setZoom(3); }",
+                """
                 if (window.map) {
                     var australia = [110, -45, 155, -5];
                     var proj = window.map.getView().getProjection();
                     var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
                     window.map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
                 }
-            """)
+                """,
+                """
+                var layers = window.map.getLayers().getArray();
+                layers.forEach(function(l) {
+                    if (l.getSource && l.getSource().getFeatures) {
+                        var f = l.getSource().getFeatures();
+                        console.log(l.get('name') + ': ' + f.length);
+                    }
+                });
+                """
+            ]
             
-            # Wait again
-            wait_for_trains(driver)
+            for i, strategy in enumerate(strategies):
+                print(f"   Strategy {i+1}: {strategy[:50]}...")
+                driver.execute_script(strategy)
+                time.sleep(5)
+                
+                new_count = driver.execute_script("return window.regTrainsSource ? window.regTrainsSource.getFeatures().length : 0;")
+                if new_count > 0:
+                    print(f"✅ Found {new_count} trains after strategy {i+1}")
+                    break
         
-        # Extract all trains
-        print("\n🔍 Extracting trains...")
+        # Final extraction
+        print("\n🔍 Extracting ALL trains...")
         
         script = """
         var allTrains = [];
@@ -180,10 +177,12 @@ def login_and_get_trains():
                                     props.labelContent ||
                                     sourceName + '_' + index;
                             
+                            id = String(id).trim();
+                            
                             if (!seenIds.has(id)) {
                                 seenIds.add(id);
                                 allTrains.push({
-                                    'id': String(id),
+                                    'id': id,
                                     'lat': coords[1],
                                     'lon': coords[0],
                                     'heading': props.heading || props.Heading || 0,
@@ -197,10 +196,16 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
+        // Extract from ALL possible sources
         extractFromSource(window.regTrainsSource, 'reg');
         extractFromSource(window.unregTrainsSource, 'unreg');
         extractFromSource(window.markerSource, 'marker');
         extractFromSource(window.arrowMarkersSource, 'arrow');
+        
+        if (window.regTrainsLayer) extractFromSource(window.regTrainsLayer.getSource(), 'reg_layer');
+        if (window.unregTrainsLayer) extractFromSource(window.unregTrainsLayer.getSource(), 'unreg_layer');
+        if (window.markerLayer) extractFromSource(window.markerLayer.getSource(), 'marker_layer');
+        if (window.arrowMarkersLayer) extractFromSource(window.arrowMarkersLayer.getSource(), 'arrow_layer');
         
         return allTrains;
         """
@@ -208,31 +213,47 @@ def login_and_get_trains():
         all_trains = driver.execute_script(script)
         print(f"\n✅ Extracted {len(all_trains)} total trains")
         
-        # Convert coordinates and filter to Australia
-        trains = []
+        # Convert coordinates and show where they are
+        trains_by_region = {'australia': 0, 'asia': 0, 'america': 0, 'other': 0}
+        
         for t in all_trains:
             lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
             if lat and lon:
+                t['lat'] = lat
+                t['lon'] = lon
+                
                 if -45 <= lat <= -10 and 110 <= lon <= 155:
-                    trains.append({
-                        'id': str(t['id']),
-                        'lat': round(lat, 6),
-                        'lon': round(lon, 6),
-                        'heading': round(float(t['heading']), 1),
-                        'speed': round(float(t['speed']), 1)
-                    })
+                    trains_by_region['australia'] += 1
+                elif 0 <= lat <= 30 and 95 <= lon <= 140:
+                    trains_by_region['asia'] += 1
+                elif 20 <= lat <= 50 and -130 <= lon <= -60:
+                    trains_by_region['america'] += 1
+                else:
+                    trains_by_region['other'] += 1
         
-        print(f"✅ Australian trains: {len(trains)}")
+        print(f"\n📊 Train distribution:")
+        print(f"   Australia: {trains_by_region['australia']}")
+        print(f"   Asia: {trains_by_region['asia']}")
+        print(f"   Americas: {trains_by_region['america']}")
+        print(f"   Other: {trains_by_region['other']}")
         
-        if trains:
+        # Filter to Australia only
+        australian_trains = [t for t in all_trains if 
+                            -45 <= t['lat'] <= -10 and 
+                            110 <= t['lon'] <= 155]
+        
+        print(f"\n✅ Australian trains: {len(australian_trains)}")
+        
+        if australian_trains:
             print(f"\n📋 First Australian train:")
-            t = trains[0]
+            t = australian_trains[0]
             print(f"   ID: {t['id']}")
-            print(f"   Location: {t['lat']}, {t['lon']}")
+            print(f"   Location: {t['lat']:.4f}, {t['lon']:.4f}")
             print(f"   Speed: {t['speed']} km/h")
             print(f"   Heading: {t['heading']}°")
+            print(f"   Source: {t['source']}")
         
-        return trains, f"ok - {len(trains)} trains"
+        return australian_trains, f"ok - {len(australian_trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
