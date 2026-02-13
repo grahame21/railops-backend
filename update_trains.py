@@ -1,221 +1,237 @@
-<script>
-    (function() {
-      console.log('🚂 RailOps starting...');
+import os
+import json
+import datetime
+import time
+import math
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-      // Create map
-      const map = new ol.Map({
-        target: 'map',
-        layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
-        view: new ol.View({
-          center: ol.proj.fromLonLat([133.7751, -25.2744]),
-          zoom: 5
-        })
-      });
+OUT_FILE = "trains.json"
+TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 
-      // Railway layers
-      const railLayer = new ol.layer.Tile({
-        source: new ol.source.XYZ({ url: 'https://{a-c}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png' }),
-        visible: true
-      });
-      const stationsLayer = new ol.layer.Tile({
-        source: new ol.source.XYZ({ url: 'https://{a-c}.tiles.openrailwaymap.org/stations/{z}/{x}/{y}.png' }),
-        visible: true
-      });
-      map.addLayer(railLayer);
-      map.addLayer(stationsLayer);
+TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
+TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-      // Coverage layers
-      const ACCC_URL = 'https://spatial.infrastructure.gov.au/server/rest/services/ACCC_Mobile_Sites_and_Coverages/MapServer';
-      function covLayer(id) {
-        return new ol.layer.Tile({
-          source: new ol.source.TileArcGISRest({ url: ACCC_URL, params: { layers: `show:${id}`, transparent: true, format: 'png32' } }),
-          opacity: 0.45,
-          visible: false
-        });
-      }
-      const covTelstra = covLayer(25);
-      const covOptus = covLayer(15);
-      const covTPG = covLayer(33);
-      const covAll = covLayer(4);
-      map.addLayer(covTelstra);
-      map.addLayer(covOptus);
-      map.addLayer(covTPG);
-      map.addLayer(covAll);
+def write_output(trains, note=""):
+    payload = {
+        "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+        "note": note,
+        "trains": trains or []
+    }
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+    print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
-      // Controls
-      document.getElementById('zoomSelect').addEventListener('change', (e) => {
-        if (e.target.value === 'current') {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-              map.getView().animate({
-                center: ol.proj.fromLonLat([pos.coords.longitude, pos.coords.latitude]),
-                zoom: 12
-              });
-            });
-          }
-        } else {
-          map.getView().animate({ center: ol.proj.fromLonLat([133.7751, -25.2744]), zoom: 5 });
-        }
-      });
+def webmercator_to_latlon(x, y):
+    try:
+        x = float(x)
+        y = float(y)
+        lon = (x / 20037508.34) * 180
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        return lat, lon
+    except:
+        return None, None
 
-      document.getElementById('resetBtn').addEventListener('click', () => {
-        map.getView().animate({ center: ol.proj.fromLonLat([133.7751, -25.2744]), zoom: 5 });
-        [covTelstra, covOptus, covTPG, covAll].forEach(l => l.setVisible(false));
-        document.querySelectorAll('#layersPanel input').forEach(c => c.checked = false);
-        railLayer.setVisible(true);
-        stationsLayer.setVisible(true);
-        document.getElementById('railChk').checked = true;
-        document.getElementById('stationsChk').checked = true;
-      });
-
-      document.getElementById('layersBtn').addEventListener('click', () => {
-        const p = document.getElementById('layersPanel');
-        p.style.display = p.style.display === 'none' ? 'block' : 'none';
-      });
-
-      document.getElementById('covTelstra').addEventListener('change', e => covTelstra.setVisible(e.target.checked));
-      document.getElementById('covOptus').addEventListener('change', e => covOptus.setVisible(e.target.checked));
-      document.getElementById('covTPG').addEventListener('change', e => covTPG.setVisible(e.target.checked));
-      document.getElementById('covAll').addEventListener('change', e => covAll.setVisible(e.target.checked));
-      document.getElementById('railChk').addEventListener('change', e => railLayer.setVisible(e.target.checked));
-      document.getElementById('stationsChk').addEventListener('change', e => stationsLayer.setVisible(e.target.checked));
-
-      document.getElementById('zoomInBtn').addEventListener('click', () => {
-        map.getView().animate({ zoom: map.getView().getZoom() + 1 });
-      });
-      document.getElementById('zoomOutBtn').addEventListener('click', () => {
-        map.getView().animate({ zoom: map.getView().getZoom() - 1 });
-      });
-      document.getElementById('locBtn').addEventListener('click', () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(pos => {
-            map.getView().animate({
-              center: ol.proj.fromLonLat([pos.coords.longitude, pos.coords.latitude]),
-              zoom: 12
-            });
-          });
-        }
-      });
-
-      // Clock
-      function updateClock() {
-        document.getElementById('clock').textContent = new Date().toLocaleTimeString();
-      }
-      updateClock();
-      setInterval(updateClock, 1000);
-
-      // Train layer
-      const trainSource = new ol.source.Vector();
-      const trainLayer = new ol.layer.Vector({ source: trainSource, zIndex: 20 });
-      map.addLayer(trainLayer);
-
-      // Popup
-      const popupEl = document.createElement('div');
-      popupEl.className = 'tt-popup';
-      const popup = new ol.Overlay({ element: popupEl, positioning: 'bottom-center', offset: [0, -15] });
-      map.addOverlay(popup);
-
-      map.on('singleclick', (evt) => {
-        const feature = map.forEachFeatureAtPixel(evt.pixel, f => f);
-        if (feature) {
-          const props = feature.getProperties();
-          console.log('Clicked train:', props); // DEBUG
-          
-          if (props.train_number) {
-            popupEl.innerHTML = props.train_number;
-            popup.setPosition(evt.coordinate);
-          } else {
-            popup.setPosition(undefined);
-          }
-        } else {
-          popup.setPosition(undefined);
-        }
-      });
-
-      // Load trains
-      async function loadTrains() {
-        try {
-          const url = 'https://grahame21.github.io/railops-backend/trains.json?t=' + Date.now();
-          console.log('Fetching:', url); // DEBUG
-          
-          const res = await fetch(url);
-          console.log('Response status:', res.status); // DEBUG
-          
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          
-          const data = await res.json();
-          console.log('Data received:', data); // DEBUG
-          console.log('Number of trains:', data.trains?.length); // DEBUG
-          
-          trainSource.clear();
-          
-          if (data.trains && data.trains.length > 0) {
-            console.log('First train:', data.trains[0]); // DEBUG
-            
-            data.trains.forEach((t, index) => {
-              if (t.lat && t.lon) {
-                console.log(`Adding train ${index}:`, t); // DEBUG
-                
-                const feature = new ol.Feature({
-                  geometry: new ol.geom.Point(ol.proj.fromLonLat([t.lon, t.lat]))
-                });
-                
-                feature.set('id', t.id);
-                feature.set('train_number', t.train_number);
-                feature.set('speed', t.speed || 0);
-                feature.set('heading', t.heading || 0);
-                
-                const heading = t.heading || 0;
-                const speed = t.speed || 0;
-                const color = speed > 0 ? [46, 204, 113, 0.9] : [0, 120, 255, 0.9];
-                
-                feature.setStyle(new ol.style.Style({
-                  image: new ol.style.RegularShape({
-                    points: 3,
-                    radius: 12,
-                    rotation: (heading * Math.PI) / 180,
-                    fill: new ol.style.Fill({ color }),
-                    stroke: new ol.style.Stroke({ color: [0,0,0,0.8], width: 1.5 })
-                  })
-                }));
-                
-                trainSource.addFeature(feature);
-              } else {
-                console.log('Skipping train with no lat/lon:', t); // DEBUG
-              }
-            });
-            
-            console.log('Total features added:', trainSource.getFeatures().length); // DEBUG
-            document.getElementById('lastUpdated').innerHTML = `${trainSource.getFeatures().length} trains • ${new Date().toLocaleTimeString()}`;
-          } else {
-            console.log('No trains in data'); // DEBUG
-          }
-        } catch (e) {
-          console.error('Error:', e); // DEBUG
-          document.getElementById('lastUpdated').innerHTML = '❌ Failed to load';
-        }
-      }
-
-      loadTrains();
-      setInterval(loadTrains, 30000);
-
-      // Search
-      document.getElementById('searchBtn').addEventListener('click', () => {
-        const query = document.getElementById('searchBox').value.trim().toLowerCase();
-        if (!query) return;
+def login_and_get_trains():
+    print("=" * 60)
+    print("🚂 RAILOPS - FINAL XVFB VERSION")
+    print("=" * 60)
+    
+    chrome_options = Options()
+    # NO HEADLESS MODE - xvfb provides virtual display
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--window-size=1920,1080')
+    
+    driver = None
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
         
-        trainSource.forEachFeature(f => {
-          const props = f.getProperties();
-          if ((props.train_number && props.train_number.toLowerCase().includes(query)) ||
-              (props.id && props.id.toLowerCase().includes(query))) {
-            map.getView().animate({
-              center: f.getGeometry().getCoordinates(),
-              zoom: 14
-            });
-          }
-        });
-      });
+        print("\n📌 Logging in...")
+        driver.get(TF_LOGIN_URL)
+        time.sleep(5)
+        
+        username = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "useR_name"))
+        )
+        username.send_keys(TF_USERNAME)
+        print("✅ Username entered")
+        
+        password = driver.find_element(By.ID, "pasS_word")
+        password.send_keys(TF_PASSWORD)
+        print("✅ Password entered")
+        
+        driver.execute_script("""
+            var tables = document.getElementsByClassName('popup_table');
+            for(var i = 0; i < tables.length; i++) {
+                if(tables[i].className.includes('login')) {
+                    var elements = tables[i].getElementsByTagName('*');
+                    for(var j = 0; j < elements.length; j++) {
+                        if(elements[j].textContent.trim() === 'Log In') {
+                            elements[j].click();
+                            return;
+                        }
+                    }
+                }
+            }
+        """)
+        print("✅ Login button clicked")
+        time.sleep(8)
+        
+        driver.execute_script("""
+            var paths = document.getElementsByTagName('path');
+            for(var i = 0; i < paths.length; i++) {
+                var d = paths[i].getAttribute('d') || '';
+                if(d.includes('M13.7,11l6.1-6.1')) {
+                    var parent = paths[i].parentElement;
+                    while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                        parent = parent.parentElement;
+                    }
+                    if(parent) parent.click();
+                }
+            }
+        """)
+        print("✅ Warning page closed")
+        
+        # Wait for map
+        print("\n⏳ Waiting for map to load...")
+        time.sleep(10)
+        
+        # Zoom to Australia
+        print("🌏 Zooming to Australia...")
+        driver.execute_script("""
+            if (window.map) {
+                var australia = [112, -44, 154, -10];
+                var proj = window.map.getView().getProjection();
+                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                window.map.getView().fit(extent, { duration: 2000, maxZoom: 10 });
+            }
+        """)
+        
+        print("⏳ Waiting for Australian trains to load...")
+        time.sleep(15)
+        
+        # Extract all trains
+        print("\n🔍 Extracting trains...")
+        
+        script = """
+        var allTrains = [];
+        var seenIds = new Set();
+        
+        function extractFromSource(src, sourceName) {
+            if (!src || !src.getFeatures) return;
+            
+            try {
+                var features = src.getFeatures();
+                
+                features.forEach(function(f, index) {
+                    try {
+                        var props = f.getProperties();
+                        var geom = f.getGeometry();
+                        
+                        if (geom && geom.getType() === 'Point') {
+                            var coords = geom.getCoordinates();
+                            
+                            var id = props.id || props.ID || 
+                                    props.name || props.NAME ||
+                                    props.loco || props.Loco ||
+                                    props.unit || props.Unit ||
+                                    props.trainName || props.trainNumber ||
+                                    sourceName + '_' + index;
+                            
+                            id = String(id).trim();
+                            
+                            if (!seenIds.has(id)) {
+                                seenIds.add(id);
+                                allTrains.push({
+                                    'id': id,
+                                    'loco': props.loco || props.Loco || props.unit || props.Unit || '',
+                                    'service': props.service || props.Service || props.trainNumber || '',
+                                    'operator': props.operator || props.Operator || '',
+                                    'lat': coords[1],
+                                    'lon': coords[0],
+                                    'heading': props.heading || props.Heading || 0,
+                                    'speed': props.speed || props.Speed || 0,
+                                    'destination': props.destination || props.Destination || '',
+                                    'source': sourceName
+                                });
+                            }
+                        }
+                    } catch(e) {}
+                });
+            } catch(e) {}
+        }
+        
+        extractFromSource(window.regTrainsSource, 'reg');
+        extractFromSource(window.unregTrainsSource, 'unreg');
+        extractFromSource(window.markerSource, 'marker');
+        extractFromSource(window.arrowMarkersSource, 'arrow');
+        
+        return allTrains;
+        """
+        
+        all_trains = driver.execute_script(script)
+        print(f"\n✅ Extracted {len(all_trains)} total trains")
+        
+        # Convert coordinates and filter to Australia
+        trains = []
+        for t in all_trains:
+            lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
+            if lat and lon:
+                if -45 <= lat <= -10 and 110 <= lon <= 155:
+                    trains.append({
+                        'id': t['id'],
+                        'loco': t['loco'],
+                        'service': t['service'],
+                        'operator': t['operator'],
+                        'lat': round(lat, 6),
+                        'lon': round(lon, 6),
+                        'heading': round(float(t['heading']), 1),
+                        'speed': round(float(t['speed']), 1),
+                        'destination': t['destination']
+                    })
+        
+        print(f"✅ Australian trains: {len(trains)}")
+        
+        if trains:
+            print(f"\n📋 Sample Australian train:")
+            t = trains[0]
+            print(f"   ID: {t['id']}")
+            print(f"   Loco: {t['loco']}")
+            print(f"   Location: {t['lat']}, {t['lon']}")
+            print(f"   Speed: {t['speed']} km/h")
+            print(f"   Heading: {t['heading']}°")
+            if t['service']:
+                print(f"   Service: {t['service']}")
+            if t['operator']:
+                print(f"   Operator: {t['operator']}")
+            if t['destination']:
+                print(f"   Destination: {t['destination']}")
+        
+        return trains, f"ok - {len(trains)} trains"
+        
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return [], f"error: {type(e).__name__}"
+    finally:
+        if driver:
+            driver.quit()
 
-      console.log('✅ RailOps ready');
-    })();
-  </script>
+def main():
+    if not TF_USERNAME or not TF_PASSWORD:
+        print("❌ Missing credentials")
+        write_output([], "Missing credentials")
+        return
+    
+    trains, note = login_and_get_trains()
+    write_output(trains, note)
+
+if __name__ == "__main__":
+    main()
