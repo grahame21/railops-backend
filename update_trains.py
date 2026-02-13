@@ -44,10 +44,10 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def login_and_get_trains():
-    """PRODUCTION VERSION - Extracts ALL trains from global variables (no circular refs)"""
+    """PRODUCTION VERSION - Gets ALL trains from ALL sources"""
     
     print("=" * 60)
-    print("🚂 RAILOPS PRODUCTION SCRAPER - EXTRACTING TRAINS")
+    print("🚂 RAILOPS - GETTING ALL 92+ TRAINS!")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -131,53 +131,64 @@ def login_and_get_trains():
         print("\n⏳ Loading map and trains...")
         time.sleep(15)
         
-        # STEP 2: EXTRACT TRAINS FROM GLOBAL VARIABLES - SIMPLE VERSION
-        print("\n🔍 Extracting trains from global variables...")
+        # STEP 2: EXTRACT ALL TRAINS FROM ALL SOURCES
+        print("\n🔍 Extracting ALL trains from ALL sources...")
         
         extract_script = """
-        var trains = [];
+        var allTrains = [];
+        var trainIds = new Set();
         
-        // Helper function to extract train data from a source
+        // Helper to extract features from a source
         function extractFromSource(source, sourceName) {
-            if (!source || !source.getFeatures) return;
+            if (!source) return;
             
             try {
-                var features = source.getFeatures();
-                features.forEach(function(f) {
-                    try {
-                        var props = {};
-                        // Safely get properties
-                        if (f.getProperties) {
-                            var rawProps = f.getProperties();
-                            // Only extract primitive values, no nested objects
-                            props.id = rawProps.id || rawProps.ID || rawProps.name || rawProps.NAME || '';
-                            props.heading = rawProps.heading || rawProps.Heading || rawProps.rotation || 0;
-                            props.speed = rawProps.speed || rawProps.Speed || 0;
-                            props.operator = rawProps.operator || rawProps.Operator || '';
-                            props.service = rawProps.service || rawProps.Service || rawProps.trainNumber || '';
-                        }
-                        
-                        // Get geometry
-                        var geom = f.getGeometry();
-                        if (geom && geom.getType() === 'Point') {
-                            var coords = geom.getCoordinates();
-                            trains.push({
-                                id: String(props.id || 'unknown'),
-                                x: coords[0],
-                                y: coords[1],
-                                heading: Number(props.heading || 0),
-                                speed: Number(props.speed || 0),
-                                operator: String(props.operator || ''),
-                                service: String(props.service || ''),
-                                source: sourceName
-                            });
-                        }
-                    } catch(e) {}
-                });
-            } catch(e) {}
+                // If it's a layer with getSource, get the source
+                if (source.getSource) {
+                    source = source.getSource();
+                }
+                
+                // If it's a source with getFeatures
+                if (source && source.getFeatures) {
+                    var features = source.getFeatures();
+                    console.log(sourceName + ' has ' + features.length + ' features');
+                    
+                    features.forEach(function(f) {
+                        try {
+                            var props = f.getProperties ? f.getProperties() : {};
+                            var geom = f.getGeometry ? f.getGeometry() : null;
+                            
+                            if (geom && geom.getType() === 'Point') {
+                                var coords = geom.getCoordinates();
+                                var id = String(props.id || props.ID || props.name || props.NAME || 
+                                              props.unit || props.Unit || props.loco || props.Loco || 
+                                              sourceName + '_' + allTrains.length);
+                                
+                                // Only add if we haven't seen this ID before
+                                if (!trainIds.has(id)) {
+                                    trainIds.add(id);
+                                    
+                                    allTrains.push({
+                                        id: id,
+                                        x: coords[0],
+                                        y: coords[1],
+                                        heading: Number(props.heading || props.Heading || props.rotation || 0),
+                                        speed: Number(props.speed || props.Speed || 0),
+                                        operator: String(props.operator || props.Operator || props.railway || ''),
+                                        service: String(props.service || props.Service || props.trainNumber || ''),
+                                        source: sourceName
+                                    });
+                                }
+                            }
+                        } catch(e) {}
+                    });
+                }
+            } catch(e) {
+                console.log('Error with ' + sourceName + ': ' + e);
+            }
         }
         
-        // Extract from all known train sources
+        // List of ALL possible train sources from the debug output
         var sources = [
             { name: 'regTrainsSource', obj: window.regTrainsSource },
             { name: 'unregTrainsSource', obj: window.unregTrainsSource },
@@ -189,32 +200,29 @@ def login_and_get_trains():
             { name: 'arrowMarkersLayer', obj: window.arrowMarkersLayer }
         ];
         
+        // Extract from each source
         sources.forEach(function(s) {
-            if (s.obj) {
-                // Try as source
-                extractFromSource(s.obj, s.name);
-                
-                // Try as layer with source
-                if (s.obj.getSource) {
-                    extractFromSource(s.obj.getSource(), s.name + '_source');
-                }
-            }
+            extractFromSource(s.obj, s.name);
         });
         
         // Also try to get from any train arrays
         if (window.regTrains && Array.isArray(window.regTrains)) {
             window.regTrains.forEach(function(train, i) {
                 if (train.lat && train.lon) {
-                    trains.push({
-                        id: String(train.id || train.ID || 'reg_' + i),
-                        x: train.lon,
-                        y: train.lat,
-                        heading: Number(train.heading || 0),
-                        speed: Number(train.speed || 0),
-                        operator: String(train.operator || ''),
-                        service: String(train.service || ''),
-                        source: 'regTrains_array'
-                    });
+                    var id = String(train.id || train.ID || 'reg_' + i);
+                    if (!trainIds.has(id)) {
+                        trainIds.add(id);
+                        allTrains.push({
+                            id: id,
+                            x: train.lon,
+                            y: train.lat,
+                            heading: Number(train.heading || 0),
+                            speed: Number(train.speed || 0),
+                            operator: String(train.operator || ''),
+                            service: String(train.service || ''),
+                            source: 'regTrains_array'
+                        });
+                    }
                 }
             });
         }
@@ -222,50 +230,47 @@ def login_and_get_trains():
         if (window.unregtrains && Array.isArray(window.unregtrains)) {
             window.unregtrains.forEach(function(train, i) {
                 if (train.lat && train.lon) {
-                    trains.push({
-                        id: String(train.id || train.ID || 'unreg_' + i),
-                        x: train.lon,
-                        y: train.lat,
-                        heading: Number(train.heading || 0),
-                        speed: Number(train.speed || 0),
-                        operator: String(train.operator || ''),
-                        service: String(train.service || ''),
-                        source: 'unregtrains_array'
-                    });
+                    var id = String(train.id || train.ID || 'unreg_' + i);
+                    if (!trainIds.has(id)) {
+                        trainIds.add(id);
+                        allTrains.push({
+                            id: id,
+                            x: train.lon,
+                            y: train.lat,
+                            heading: Number(train.heading || 0),
+                            speed: Number(train.speed || 0),
+                            operator: String(train.operator || ''),
+                            service: String(train.service || ''),
+                            source: 'unregtrains_array'
+                        });
+                    }
                 }
             });
         }
         
-        return trains;
+        return allTrains;
         """
         
         train_features = driver.execute_script(extract_script)
-        print(f"\n✅ Found {len(train_features)} train features from global variables")
+        print(f"\n✅ Found {len(train_features)} train features from all sources")
         
         # Convert coordinates and build train list
         trains = []
-        train_ids = set()
         
         for feature in train_features:
             lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
             
             if lat and lon and -90 <= lat <= 90 and -180 <= lon <= 180:
-                train_id = str(feature.get('id', 'unknown'))
-                
-                # Only add if we haven't seen this train ID before
-                if train_id not in train_ids:
-                    train_ids.add(train_id)
-                    
-                    train = {
-                        "id": train_id,
-                        "lat": round(lat, 6),
-                        "lon": round(lon, 6),
-                        "heading": round(to_float(feature.get('heading', 0)), 1),
-                        "speed": round(to_float(feature.get('speed', 0)), 1),
-                        "operator": feature.get('operator', '')[:50],
-                        "service": feature.get('service', '')[:50]
-                    }
-                    trains.append(train)
+                train = {
+                    "id": str(feature.get('id', 'unknown')),
+                    "lat": round(lat, 6),
+                    "lon": round(lon, 6),
+                    "heading": round(to_float(feature.get('heading', 0)), 1),
+                    "speed": round(to_float(feature.get('speed', 0)), 1),
+                    "operator": feature.get('operator', '')[:50],
+                    "service": feature.get('service', '')[:50]
+                }
+                trains.append(train)
         
         print(f"\n📊 Total unique trains extracted: {len(trains)}")
         
@@ -277,9 +282,9 @@ def login_and_get_trains():
         print(f"📍 US trains: {len(us_trains)}")
         print(f"📍 Other: {len(trains) - len(aus_trains) - len(us_trains)}")
         
-        if trains:
-            print("\n📋 Sample trains (first 10):")
-            for i, sample in enumerate(trains[:10]):
+        if aus_trains:
+            print("\n📋 Sample Australian trains:")
+            for i, sample in enumerate(aus_trains[:5]):
                 print(f"\n   Train {i+1}:")
                 print(f"     ID: {sample['id']}")
                 print(f"     Location: {sample['lat']}, {sample['lon']}")
@@ -311,7 +316,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - PRODUCTION READY 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - ALL TRAINS VERSION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
