@@ -37,7 +37,6 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def safe_float(value, default=0.0):
-    """Safely convert any value to float, return default if fails"""
     try:
         if value is None:
             return default
@@ -46,7 +45,6 @@ def safe_float(value, default=0.0):
         return default
 
 def safe_str(value, default=""):
-    """Safely convert any value to string"""
     try:
         if value is None:
             return default
@@ -56,7 +54,7 @@ def safe_str(value, default=""):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - PRODUCTION READY")
+    print("🚂 RAILOPS - WORKING VERSION")
     print("=" * 60)
     
     chrome_options = Options()
@@ -129,27 +127,12 @@ def login_and_get_trains():
         print("⏳ Waiting for trains to load...")
         time.sleep(15)
         
-        # Extract trains with REAL IDs
-        print("\n🔍 Extracting trains with real IDs...")
+        # Extract trains - SIMPLE VERSION that worked before
+        print("\n🔍 Extracting trains...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
-        
-        function getTrainId(props) {
-            // Try ALL possible ID fields
-            var id = props.trainName || props.trainNumber || 
-                    props.name || props.labelContent ||
-                    props.id || props.ID || 
-                    props.unit || props.Unit ||
-                    props.loco || props.Loco ||
-                    null;
-            
-            if (id) {
-                return String(id).trim();
-            }
-            return null;
-        }
         
         function extractFromSource(src, sourceName) {
             if (!src || !src.getFeatures) return;
@@ -165,11 +148,12 @@ def login_and_get_trains():
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Get train ID
-                            var trainId = getTrainId(props);
-                            if (!trainId) {
-                                trainId = sourceName + '_' + index;
-                            }
+                            // Simple ID - use whatever is available
+                            var id = props.id || props.ID || 
+                                    props.name || props.labelContent ||
+                                    sourceName + '_' + index;
+                            
+                            id = String(id);
                             
                             // Australia bounds
                             var x = coords[0];
@@ -179,20 +163,14 @@ def login_and_get_trains():
                             lat = 180 / 3.14159 * (2 * Math.atan(Math.exp(lat * 3.14159 / 180)) - 3.14159 / 2);
                             
                             if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
-                                if (!seenIds.has(trainId)) {
-                                    seenIds.add(trainId);
+                                if (!seenIds.has(id)) {
+                                    seenIds.add(id);
                                     allTrains.push({
-                                        'id': trainId,
-                                        'loco': trainId,
-                                        'name': props.trainName || props.name || '',
-                                        'number': props.trainNumber || '',
-                                        'speed': props.trainSpeed || props.speed || 0,
-                                        'heading': props.heading || 0,
+                                        'id': id,
                                         'lat': coords[1],
                                         'lon': coords[0],
-                                        'km': props.trainKM || 0,
-                                        'time': props.trainTime || '',
-                                        'date': props.trainDate || '',
+                                        'heading': props.heading || 0,
+                                        'speed': props.speed || 0,
                                         'source': sourceName
                                     });
                                 }
@@ -209,37 +187,26 @@ def login_and_get_trains():
         extractFromSource(window.markerSource, 'marker');
         extractFromSource(window.arrowMarkersSource, 'arrow');
         
-        if (window.regTrainsLayer) extractFromSource(window.regTrainsLayer.getSource(), 'reg_layer');
-        if (window.unregTrainsLayer) extractFromSource(window.unregTrainsLayer.getSource(), 'unreg_layer');
-        if (window.markerLayer) extractFromSource(window.markerLayer.getSource(), 'marker_layer');
-        if (window.arrowMarkersLayer) extractFromSource(window.arrowMarkersLayer.getSource(), 'arrow_layer');
-        
         return allTrains;
         """
         
         all_trains = driver.execute_script(script)
         print(f"\n✅ Extracted {len(all_trains)} Australian trains")
         
-        # Convert coordinates and build final train list
+        # Convert coordinates safely
         trains = []
         for t in all_trains:
             lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
             if lat and lon:
                 trains.append({
                     'id': safe_str(t['id']),
-                    'loco': safe_str(t['loco']),
-                    'name': safe_str(t['name']),
-                    'number': safe_str(t['number']),
                     'lat': round(lat, 6),
                     'lon': round(lon, 6),
-                    'speed': round(safe_float(t['speed']), 1),
                     'heading': round(safe_float(t['heading']), 1),
-                    'km': round(safe_float(t['km']), 1),
-                    'time': safe_str(t['time']),
-                    'date': safe_str(t['date'])
+                    'speed': round(safe_float(t['speed']), 1)
                 })
         
-        print(f"✅ Processed {len(trains)} trains with real IDs")
+        print(f"✅ Processed {len(trains)} trains")
         
         if trains:
             print(f"\n📋 First 5 trains:")
@@ -249,10 +216,6 @@ def login_and_get_trains():
                 print(f"     Location: {t['lat']}, {t['lon']}")
                 print(f"     Speed: {t['speed']} km/h")
                 print(f"     Heading: {t['heading']}°")
-                if t['name']:
-                    print(f"     Name: {t['name']}")
-                if t['number']:
-                    print(f"     Number: {t['number']}")
         
         return trains, f"ok - {len(trains)} trains"
         
