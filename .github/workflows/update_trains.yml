@@ -3,7 +3,7 @@ name: Update trains.json
 on:
   schedule:
     - cron: '*/10 * * * *'  # Every 10 minutes
-  workflow_dispatch:
+  workflow_dispatch:        # Manual trigger
 
 jobs:
   update:
@@ -33,11 +33,14 @@ jobs:
       run: |
         python update_trains.py
     
-    - name: Commit and push
+    - name: Commit and push if changed
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add trains.json
-        git diff --cached --quiet || git commit -m "Update train data"
-        git pull --rebase
-        git push
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git push
+        fi
