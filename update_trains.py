@@ -111,21 +111,38 @@ def login_and_get_trains():
         print("⏳ Waiting for trains to load...")
         time.sleep(15)
         
-        # Extract trains with REAL IDs
+        # Extract trains with REAL IDs based on layer type
         print("\n🔍 Extracting trains with real IDs...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
         
-        // Extract from a source
+        function getTrainId(props, sourceName) {
+            // Try ALL possible ID fields from the debug output
+            var id = props.trainName || props.trainNumber || 
+                    props.name || props.labelContent ||
+                    props.id || props.ID || 
+                    props.unit || props.Unit ||
+                    props.loco || props.Loco ||
+                    null;
+            
+            // Clean up the ID
+            if (id) {
+                return String(id).trim();
+            }
+            
+            // If no ID found, return null (will use source+index)
+            return null;
+        }
+        
         function extractFromSource(src, sourceName) {
             if (!src || !src.getFeatures) return;
             
             try {
                 var features = src.getFeatures();
                 
-                features.forEach(function(f) {
+                features.forEach(function(f, index) {
                     try {
                         var props = f.getProperties();
                         var geom = f.getGeometry();
@@ -133,19 +150,13 @@ def login_and_get_trains():
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // 🚂 REAL TRAIN ID - from the debug output!
-                            var trainId = props.trainName || props.trainNumber || 
-                                         props.name || props.labelContent || 
-                                         props.id || props.ID;
-                            
-                            // If still no ID, use the source name + index
+                            // Get train ID
+                            var trainId = getTrainId(props, sourceName);
                             if (!trainId) {
-                                trainId = sourceName + '_' + allTrains.length;
+                                trainId = sourceName + '_' + index;
                             }
                             
-                            trainId = String(trainId).trim();
-                            
-                            // Australia bounds (convert from Web Mercator)
+                            // Australia bounds
                             var x = coords[0];
                             var y = coords[1];
                             var lon = (x / 20037508.34) * 180;
@@ -158,7 +169,7 @@ def login_and_get_trains():
                                     allTrains.push({
                                         'id': trainId,
                                         'loco': trainId,
-                                        'name': String(props.trainName || ''),
+                                        'name': String(props.trainName || props.name || ''),
                                         'number': String(props.trainNumber || ''),
                                         'speed': Number(props.trainSpeed || props.speed || 0),
                                         'heading': Number(props.heading || 0),
@@ -177,7 +188,7 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Get from all the sources we found
+        // Extract from ALL sources we found in the debug
         extractFromSource(window.regTrainsSource, 'reg');
         extractFromSource(window.unregTrainsSource, 'unreg');
         extractFromSource(window.markerSource, 'marker');
@@ -216,17 +227,17 @@ def login_and_get_trains():
         print(f"✅ Processed {len(trains)} trains with real IDs")
         
         if trains:
-            print(f"\n📋 First train details:")
-            print(f"   ID: {trains[0]['id']}")
-            print(f"   Location: {trains[0]['lat']}, {trains[0]['lon']}")
-            print(f"   Speed: {trains[0]['speed']} km/h")
-            print(f"   Heading: {trains[0]['heading']}°")
-            if trains[0]['name']:
-                print(f"   Name: {trains[0]['name']}")
-            if trains[0]['number']:
-                print(f"   Number: {trains[0]['number']}")
-            if trains[0]['km']:
-                print(f"   KM: {trains[0]['km']}")
+            print(f"\n📋 Sample trains:")
+            for i, t in enumerate(trains[:5]):
+                print(f"\n   Train {i+1}:")
+                print(f"     ID: {t['id']}")
+                print(f"     Location: {t['lat']}, {t['lon']}")
+                print(f"     Speed: {t['speed']} km/h")
+                print(f"     Heading: {t['heading']}°")
+                if t['name']:
+                    print(f"     Name: {t['name']}")
+                if t['number']:
+                    print(f"     Number: {t['number']}")
         
         return trains, f"ok - {len(trains)} trains"
         
