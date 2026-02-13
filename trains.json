@@ -1,5 +1,15 @@
 {
-  "lastUpdated": "2026-02-13T02:51:54.409277Z",
-  "note": "Error: JavascriptException",
-  "trains": []
+  "lastUpdated": "2026-02-13T02:55:25.026799Z",
+  "note": "ok - 1 trains",
+  "trains": [
+    {
+      "id": "unknown",
+      "lat": 38.794595,
+      "lon": -106.534838,
+      "heading": 0.0,
+      "speed": 0.0,
+      "operator": "",
+      "service": ""
+    }
+  ]
 }
