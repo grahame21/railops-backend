@@ -1,5 +1,33 @@
 {
-  "lastUpdated": "2026-02-13T03:13:54.656530Z",
-  "note": "ok - 0 trains",
-  "trains": []
+  "lastUpdated": "2026-02-13T03:19:05.064614Z",
+  "note": "ok - 3 trains",
+  "trains": [
+    {
+      "id": "markerSource_0",
+      "lat": 38.794595,
+      "lon": -106.534838,
+      "heading": 0.0,
+      "speed": 0.0,
+      "operator": "",
+      "service": ""
+    },
+    {
+      "id": "markerLayer_1",
+      "lat": 38.794595,
+      "lon": -106.534838,
+      "heading": 0.0,
+      "speed": 0.0,
+      "operator": "",
+      "service": ""
+    },
+    {
+      "id": "markerLayer_source_2",
+      "lat": 38.794595,
+      "lon": -106.534838,
+      "heading": 0.0,
+      "speed": 0.0,
+      "operator": "",
+      "service": ""
+    }
+  ]
 }
