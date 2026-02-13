@@ -2,10 +2,12 @@ import os
 import json
 import datetime
 import time
+import math
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
@@ -26,21 +28,35 @@ def write_output(trains, note=""):
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
-def login_and_capture_network():
-    """Capture ALL network requests to find the real data source"""
+def to_float(x):
+    try: return float(x) if x is not None else None
+    except: return None
+
+def webmercator_to_latlon(x, y):
+    """Convert Web Mercator (EPSG:3857) to latitude/longitude (EPSG:4326)"""
+    try:
+        x = float(x)
+        y = float(y)
+        lon = (x / 20037508.34) * 180
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        return lat, lon
+    except:
+        return None, None
+
+def login_and_get_trains():
+    """ZOOM TO AUSTRALIA and get ALL trains"""
     
     print("=" * 60)
-    print("🚂 RAILOPS - NETWORK CAPTURE MODE")
+    print("🚂 RAILOPS - ZOOM TO AUSTRALIA")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
-    # Enable performance logging
     chrome_options = Options()
     chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
-    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     
     driver = None
     try:
@@ -112,133 +128,198 @@ def login_and_capture_network():
         """)
         print("✅ Warning page closed")
         
-        # Wait for map to load
-        print("\n⏳ Loading map...")
-        time.sleep(10)
-        
-        # Clear logs before capturing
-        driver.get_log('performance')
-        
-        # Wait a bit more to capture all requests
+        # Wait for map
         time.sleep(5)
         
-        # STEP 2: CAPTURE ALL NETWORK REQUESTS
-        print("\n📡 Capturing network requests...")
-        logs = driver.get_log('performance')
+        # STEP 2: ZOOM TO AUSTRALIA
+        print("\n🌏 Zooming to Australia...")
         
-        api_calls = []
-        json_responses = []
+        # Try to find Australia zoom button or use JavaScript to set view
+        zoom_script = """
+        if (window.map) {
+            // Australia bounds
+            var australiaExtent = [112, -44, 154, -10];
+            var proj = window.map.getView().getProjection();
+            
+            // Convert to map projection
+            var extent = ol.proj.transformExtent(australiaExtent, 'EPSG:4326', proj);
+            
+            // Fit to Australia with animation
+            window.map.getView().fit(extent, {
+                duration: 1000,
+                padding: [50, 50, 50, 50],
+                maxZoom: 8
+            });
+            
+            return 'Zoomed to Australia';
+        }
+        return 'Map not found';
+        """
         
-        for log in logs:
-            try:
-                message = json.loads(log['message'])['message']
+        zoom_result = driver.execute_script(zoom_script)
+        print(f"✅ {zoom_result}")
+        
+        # Wait for new tiles to load
+        print("\n⏳ Waiting for Australian trains to load...")
+        time.sleep(10)
+        
+        # STEP 3: EXTRACT ALL FEATURES FROM ALL SOURCES
+        print("\n🔍 Extracting ALL features from ALL sources...")
+        
+        extract_script = """
+        var allFeatures = [];
+        var seenIds = new Set();
+        
+        function extractFromSource(source, sourceName) {
+            if (!source) return;
+            
+            try {
+                // Try all known OpenLayers internal structures
+                var features = null;
                 
-                # Look for network responses
-                if message['method'] == 'Network.responseReceived':
-                    url = message['params']['response']['url']
-                    mime_type = message['params']['response'].get('mimeType', '')
+                if (source.getFeatures) {
+                    features = source.getFeatures();
+                } else if (source.A) {
+                    features = source.A;
+                } else if (source.features) {
+                    features = source.features;
+                } else if (source.features_) {
+                    features = source.features_;
+                } else if (source.featuresArray) {
+                    features = source.featuresArray;
+                } else if (source.getSource && source.getSource().getFeatures) {
+                    features = source.getSource().getFeatures();
+                }
+                
+                if (features && features.length) {
+                    console.log(sourceName + ': ' + features.length + ' features');
                     
-                    # Look for API/train data endpoints
-                    if any(x in url.lower() for x in ['api', 'train', 'marker', 'data', 'get']):
-                        if 'json' in mime_type.lower() or 'javascript' in mime_type.lower():
-                            api_calls.append({
-                                'url': url,
-                                'mime_type': mime_type,
-                                'status': message['params']['response']['status']
-                            })
-                            print(f"\n   🔗 Found API endpoint: {url}")
-                            print(f"      Status: {message['params']['response']['status']}")
-                            print(f"      Type: {mime_type}")
-                
-                # Try to get response body
-                if message['method'] == 'Network.responseReceived' and 'requestId' in message['params']:
-                    request_id = message['params']['requestId']
-                    try:
-                        response = driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': request_id})
-                        body = response.get('body', '')
-                        
-                        # Check if it's JSON and contains train data
-                        if body.strip().startswith(('{', '[')):
-                            try:
-                                data = json.loads(body)
-                                # Look for train-related data
-                                if any(x in str(data).lower() for x in ['lat', 'lon', 'train', 'marker']):
-                                    json_responses.append({
-                                        'url': url,
-                                        'data': data,
-                                        'size': len(body)
-                                    })
-                                    print(f"      ✅ Contains JSON data ({len(body)} bytes)")
-                            except:
-                                pass
-                    except:
-                        pass
-                        
-            except Exception as e:
-                continue
-        
-        print(f"\n📊 Found {len(api_calls)} potential API endpoints")
-        print(f"📊 Found {len(json_responses)} JSON responses with train data")
-        
-        # STEP 3: EXTRACT TRAINS FROM THE RESPONSES
-        all_trains = []
-        train_ids = set()
-        
-        for response in json_responses:
-            data = response['data']
-            url = response['url']
-            
-            # Try to extract trains from various JSON structures
-            if isinstance(data, list):
-                for item in data:
-                    if isinstance(item, dict):
-                        lat = item.get('lat') or item.get('latitude') or item.get('Lat') or item.get('y')
-                        lon = item.get('lon') or item.get('longitude') or item.get('Lon') or item.get('x')
-                        if lat and lon:
-                            train = {
-                                'id': str(item.get('id') or item.get('ID') or item.get('name') or f"train_{len(all_trains)}"),
-                                'lat': float(lat),
-                                'lon': float(lon),
-                                'heading': float(item.get('heading') or item.get('Heading') or 0),
-                                'speed': float(item.get('speed') or item.get('Speed') or 0),
-                                'operator': item.get('operator') or item.get('Operator') or '',
-                                'service': item.get('service') or item.get('Service') or item.get('trainNumber') or ''
-                            }
-                            if train['id'] not in train_ids:
-                                train_ids.add(train['id'])
-                                all_trains.append(train)
-            
-            elif isinstance(data, dict):
-                # Check common container keys
-                for key in ['trains', 'Train', 'markers', 'features', 'data', 'results']:
-                    items = data.get(key, [])
-                    if isinstance(items, list):
-                        for item in items:
-                            if isinstance(item, dict):
-                                lat = item.get('lat') or item.get('latitude') or item.get('Lat') or item.get('y')
-                                lon = item.get('lon') or item.get('longitude') or item.get('Lon') or item.get('x')
-                                if lat and lon:
-                                    train = {
-                                        'id': str(item.get('id') or item.get('ID') or item.get('name') or f"train_{len(all_trains)}"),
-                                        'lat': float(lat),
-                                        'lon': float(lon),
-                                        'heading': float(item.get('heading') or item.get('Heading') or 0),
-                                        'speed': float(item.get('speed') or item.get('Speed') or 0),
-                                        'operator': item.get('operator') or item.get('Operator') or '',
-                                        'service': item.get('service') or item.get('Service') or item.get('trainNumber') or ''
+                    features.forEach(function(f) {
+                        try {
+                            var props = f.getProperties ? f.getProperties() : 
+                                      f.values_ || f.properties_ || f.attributes || {};
+                            var geom = f.getGeometry ? f.getGeometry() : 
+                                     f.geometry_ || f.geom;
+                            
+                            if (geom) {
+                                var coords = geom.getCoordinates ? geom.getCoordinates() :
+                                           geom.coordinates_ || geom.coords || [];
+                                
+                                if (coords.length >= 2) {
+                                    var id = String(props.id || props.ID || 
+                                                  props.name || props.NAME || 
+                                                  props.loco || props.Loco || 
+                                                  props.unit || props.Unit ||
+                                                  sourceName + '_' + allFeatures.length);
+                                    
+                                    if (!seenIds.has(id)) {
+                                        seenIds.add(id);
+                                        allFeatures.push({
+                                            id: id,
+                                            x: coords[0],
+                                            y: coords[1],
+                                            heading: Number(props.heading || props.Heading || 0),
+                                            speed: Number(props.speed || props.Speed || 0),
+                                            operator: String(props.operator || props.Operator || ''),
+                                            service: String(props.service || props.Service || ''),
+                                            source: sourceName
+                                        });
                                     }
-                                    if train['id'] not in train_ids:
-                                        train_ids.add(train['id'])
-                                        all_trains.append(train)
+                                }
+                            }
+                        } catch(e) {}
+                    });
+                }
+            } catch(e) {
+                console.log('Error with ' + sourceName + ': ' + e);
+            }
+        }
         
-        print(f"\n✅ Extracted {len(all_trains)} trains from network responses")
+        // Check all possible sources
+        var sources = [
+            'regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource',
+            'regTrainsLayer', 'unregTrainsLayer', 'markerLayer', 'arrowMarkersLayer'
+        ];
         
-        # Save the found endpoints to a file for future use
-        with open('found_endpoints.json', 'w') as f:
-            json.dump(api_calls, f, indent=2)
-        print("📝 Saved found endpoints to found_endpoints.json")
+        sources.forEach(function(name) {
+            var obj = window[name];
+            if (obj) {
+                extractFromSource(obj, name);
+                if (obj.getSource) {
+                    extractFromSource(obj.getSource(), name + '_source');
+                }
+            }
+        });
         
-        return all_trains, f"ok - {len(all_trains)} trains from network"
+        // Also check all map layers
+        if (window.map) {
+            window.map.getLayers().forEach(function(layer, index) {
+                if (layer.getSource) {
+                    extractFromSource(layer.getSource(), 'layer_' + index);
+                }
+            });
+        }
+        
+        return allFeatures;
+        """
+        
+        train_features = driver.execute_script(extract_script)
+        print(f"\n✅ Found {len(train_features)} total features")
+        
+        # Group by source
+        source_counts = {}
+        for f in train_features:
+            source = f.get('source', 'unknown')
+            source_counts[source] = source_counts.get(source, 0) + 1
+        
+        print("\n📊 Features by source:")
+        for source, count in sorted(source_counts.items(), key=lambda x: x[1], reverse=True):
+            print(f"   {source}: {count} features")
+        
+        # Convert coordinates and build train list
+        trains = []
+        
+        for feature in train_features:
+            lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
+            
+            if lat and lon and -90 <= lat <= 90 and -180 <= lon <= 180:
+                train = {
+                    "id": str(feature.get('id', 'unknown')),
+                    "lat": round(lat, 6),
+                    "lon": round(lon, 6),
+                    "heading": round(to_float(feature.get('heading', 0)), 1),
+                    "speed": round(to_float(feature.get('speed', 0)), 1),
+                    "operator": feature.get('operator', '')[:50],
+                    "service": feature.get('service', '')[:50]
+                }
+                trains.append(train)
+        
+        print(f"\n📊 Total trains: {len(trains)}")
+        
+        # Categorize by region
+        aus_trains = [t for t in trains if 110 <= t['lon'] <= 155 and -45 <= t['lat'] <= -10]
+        us_trains = [t for t in trains if -130 <= t['lon'] <= -60 and 25 <= t['lat'] <= 50]
+        
+        print(f"\n📍 Australian trains: {len(aus_trains)}")
+        print(f"📍 US trains: {len(us_trains)}")
+        print(f"📍 Other: {len(trains) - len(aus_trains) - len(us_trains)}")
+        
+        if aus_trains:
+            print("\n📋 Australian trains:")
+            for i, sample in enumerate(aus_trains[:10]):
+                print(f"\n   Train {i+1}:")
+                print(f"     ID: {sample['id']}")
+                print(f"     Location: {sample['lat']}, {sample['lon']}")
+                print(f"     Heading: {sample['heading']}°")
+                print(f"     Speed: {sample['speed']}")
+                print(f"     Operator: {sample['operator']}")
+                print(f"     Service: {sample['service']}")
+        
+        # Save screenshot
+        driver.save_screenshot("australia_map.png")
+        print("\n📸 Australia map screenshot saved")
+        
+        return trains, f"ok - {len(trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {type(e).__name__}: {str(e)}")
@@ -252,7 +333,7 @@ def login_and_capture_network():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - NETWORK CAPTURE 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - ZOOM TO AUSTRALIA 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -261,7 +342,7 @@ def main():
         write_output([], "Missing credentials")
         return
     
-    trains, note = login_and_capture_network()
+    trains, note = login_and_get_trains()
     write_output(trains, note)
     
     print("\n" + "=" * 60)
