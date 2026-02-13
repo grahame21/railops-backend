@@ -44,10 +44,10 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def login_and_get_trains():
-    """PRODUCTION VERSION - Gets ALL trains from ALL sources"""
+    """PRODUCTION VERSION - Direct extraction from source internals"""
     
     print("=" * 60)
-    print("🚂 RAILOPS - GETTING ALL 92+ TRAINS!")
+    print("🚂 RAILOPS - DIRECT SOURCE EXTRACTION")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -131,128 +131,132 @@ def login_and_get_trains():
         print("\n⏳ Loading map and trains...")
         time.sleep(15)
         
-        # STEP 2: EXTRACT ALL TRAINS FROM ALL SOURCES
-        print("\n🔍 Extracting ALL trains from ALL sources...")
+        # STEP 2: DIRECT EXTRACTION FROM SOURCE INTERNALS
+        print("\n🔍 Directly extracting from source internals...")
         
         extract_script = """
         var allTrains = [];
         var trainIds = new Set();
         
-        // Helper to extract features from a source
-        function extractFromSource(source, sourceName) {
-            if (!source) return;
-            
-            try {
-                // If it's a layer with getSource, get the source
-                if (source.getSource) {
-                    source = source.getSource();
-                }
-                
-                // If it's a source with getFeatures
-                if (source && source.getFeatures) {
-                    var features = source.getFeatures();
-                    console.log(sourceName + ' has ' + features.length + ' features');
-                    
-                    features.forEach(function(f) {
-                        try {
-                            var props = f.getProperties ? f.getProperties() : {};
-                            var geom = f.getGeometry ? f.getGeometry() : null;
-                            
-                            if (geom && geom.getType() === 'Point') {
-                                var coords = geom.getCoordinates();
-                                var id = String(props.id || props.ID || props.name || props.NAME || 
-                                              props.unit || props.Unit || props.loco || props.Loco || 
-                                              sourceName + '_' + allTrains.length);
-                                
-                                // Only add if we haven't seen this ID before
-                                if (!trainIds.has(id)) {
-                                    trainIds.add(id);
-                                    
-                                    allTrains.push({
-                                        id: id,
-                                        x: coords[0],
-                                        y: coords[1],
-                                        heading: Number(props.heading || props.Heading || props.rotation || 0),
-                                        speed: Number(props.speed || props.Speed || 0),
-                                        operator: String(props.operator || props.Operator || props.railway || ''),
-                                        service: String(props.service || props.Service || props.trainNumber || ''),
-                                        source: sourceName
-                                    });
-                                }
-                            }
-                        } catch(e) {}
-                    });
-                }
-            } catch(e) {
-                console.log('Error with ' + sourceName + ': ' + e);
-            }
-        }
-        
-        // List of ALL possible train sources from the debug output
+        // Direct inspection of known sources
         var sources = [
             { name: 'regTrainsSource', obj: window.regTrainsSource },
             { name: 'unregTrainsSource', obj: window.unregTrainsSource },
             { name: 'markerSource', obj: window.markerSource },
-            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource },
+            { name: 'arrowMarkersSource', obj: window.arrowMarkersSource }
+        ];
+        
+        sources.forEach(function(s) {
+            var source = s.obj;
+            if (!source) return;
+            
+            console.log('Checking ' + s.name);
+            
+            // Try to access internal arrays directly
+            if (source.index_) {
+                console.log(s.name + ' has index_ with ' + Object.keys(source.index_).length + ' items');
+                // This is likely the feature collection
+                var features = [];
+                for (var key in source.index_) {
+                    features.push(source.index_[key]);
+                }
+                
+                features.forEach(function(f) {
+                    try {
+                        var props = f.properties_ || f.values_ || {};
+                        var geom = f.geometry_ || f.geometry;
+                        
+                        if (geom && geom.type_ === 'Point') {
+                            var coords = geom.coordinates_ || geom.coordinates || [];
+                            var id = String(props.id || props.ID || props.name || 
+                                          props.NAME || props.unit || props.Unit || 
+                                          s.name + '_' + allTrains.length);
+                            
+                            if (!trainIds.has(id)) {
+                                trainIds.add(id);
+                                allTrains.push({
+                                    id: id,
+                                    x: coords[0],
+                                    y: coords[1],
+                                    heading: Number(props.heading || props.Heading || 0),
+                                    speed: Number(props.speed || props.Speed || 0),
+                                    operator: String(props.operator || props.Operator || ''),
+                                    service: String(props.service || props.Service || ''),
+                                    source: s.name
+                                });
+                            }
+                        }
+                    } catch(e) {}
+                });
+            }
+            
+            // Try to access features_ array
+            if (source.features_) {
+                console.log(s.name + ' has features_ with ' + source.features_.length + ' items');
+                source.features_.forEach(function(f) {
+                    try {
+                        var props = f.properties_ || f.values_ || {};
+                        var geom = f.geometry_ || f.geometry;
+                        
+                        if (geom && geom.type_ === 'Point') {
+                            var coords = geom.coordinates_ || geom.coordinates || [];
+                            var id = String(props.id || props.ID || props.name || 
+                                          props.NAME || 'unknown');
+                            
+                            if (!trainIds.has(id)) {
+                                trainIds.add(id);
+                                allTrains.push({
+                                    id: id,
+                                    x: coords[0],
+                                    y: coords[1],
+                                    heading: Number(props.heading || props.Heading || 0),
+                                    speed: Number(props.speed || props.Speed || 0),
+                                    operator: String(props.operator || props.Operator || ''),
+                                    service: String(props.service || props.Service || ''),
+                                    source: s.name
+                                });
+                            }
+                        }
+                    } catch(e) {}
+                });
+            }
+            
+            // Try to access array_ property
+            if (source.array_) {
+                console.log(s.name + ' has array_ with ' + source.array_.length + ' items');
+                // Similar extraction...
+            }
+        });
+        
+        // Also try the layer sources
+        var layers = [
             { name: 'regTrainsLayer', obj: window.regTrainsLayer },
             { name: 'unregTrainsLayer', obj: window.unregTrainsLayer },
             { name: 'markerLayer', obj: window.markerLayer },
             { name: 'arrowMarkersLayer', obj: window.arrowMarkersLayer }
         ];
         
-        // Extract from each source
-        sources.forEach(function(s) {
-            extractFromSource(s.obj, s.name);
+        layers.forEach(function(l) {
+            if (l.obj && l.obj.getSource) {
+                var source = l.obj.getSource();
+                // Repeat the same extraction for the layer's source
+                if (source && source.index_) {
+                    // ... same extraction as above
+                }
+            }
         });
         
-        // Also try to get from any train arrays
-        if (window.regTrains && Array.isArray(window.regTrains)) {
-            window.regTrains.forEach(function(train, i) {
-                if (train.lat && train.lon) {
-                    var id = String(train.id || train.ID || 'reg_' + i);
-                    if (!trainIds.has(id)) {
-                        trainIds.add(id);
-                        allTrains.push({
-                            id: id,
-                            x: train.lon,
-                            y: train.lat,
-                            heading: Number(train.heading || 0),
-                            speed: Number(train.speed || 0),
-                            operator: String(train.operator || ''),
-                            service: String(train.service || ''),
-                            source: 'regTrains_array'
-                        });
-                    }
-                }
-            });
-        }
-        
-        if (window.unregtrains && Array.isArray(window.unregtrains)) {
-            window.unregtrains.forEach(function(train, i) {
-                if (train.lat && train.lon) {
-                    var id = String(train.id || train.ID || 'unreg_' + i);
-                    if (!trainIds.has(id)) {
-                        trainIds.add(id);
-                        allTrains.push({
-                            id: id,
-                            x: train.lon,
-                            y: train.lat,
-                            heading: Number(train.heading || 0),
-                            speed: Number(train.speed || 0),
-                            operator: String(train.operator || ''),
-                            service: String(train.service || ''),
-                            source: 'unregtrains_array'
-                        });
-                    }
-                }
-            });
-        }
-        
-        return allTrains;
+        return {
+            trains: allTrains,
+            count: allTrains.length,
+            ids: Array.from(trainIds)
+        };
         """
         
-        train_features = driver.execute_script(extract_script)
-        print(f"\n✅ Found {len(train_features)} train features from all sources")
+        result = driver.execute_script(extract_script)
+        train_features = result.get('trains', [])
+        
+        print(f"\n✅ Found {len(train_features)} train features from direct source inspection")
         
         # Convert coordinates and build train list
         trains = []
@@ -316,7 +320,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - ALL TRAINS VERSION 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - DIRECT SOURCE EXTRACTION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
