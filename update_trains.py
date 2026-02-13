@@ -192,10 +192,10 @@ def login_and_get_trains():
                                 
                                 if (coords.length >= 2) {
                                     // CRITICAL: Extract the REAL train ID
-                                    // The IDs in your screenshot are like "ice13802", "ice33799", "ice23779"
                                     var realTrainId = null;
                                     
                                     // Check all possible ID fields in order of priority
+                                    // In your screenshot, the IDs look like "ice13802", "ice33799", etc.
                                     realTrainId = props.loco || props.Loco || 
                                                  props.unit || props.Unit ||
                                                  props.id || props.ID ||
@@ -203,15 +203,15 @@ def login_and_get_trains():
                                                  props.trainId || props.TrainId ||
                                                  props.vehicle || props.Vehicle;
                                     
-                                    // If we found a real ID, use it
-                                    if (realTrainId) {
-                                        realTrainId = String(realTrainId);
+                                    // Convert to string and clean up
+                                    if (realTrainId !== null && realTrainId !== undefined) {
+                                        realTrainId = String(realTrainId).trim();
                                     } else {
-                                        // Try to extract from the feature's class or other attributes
-                                        realTrainId = f.className_ || f.id_ || f.ol_uid || 'unknown';
+                                        // Generate a fallback ID
+                                        realTrainId = sourceName + '_' + allTrains.length;
                                     }
                                     
-                                    // Extract heading/direction - this is what makes arrows point correctly
+                                    // Extract heading/direction
                                     var heading = Number(props.heading || props.Heading || 
                                                         props.rotation || props.Rotation ||
                                                         props.bearing || props.Bearing || 0);
@@ -230,11 +230,12 @@ def login_and_get_trains():
                                     var operator = String(props.operator || props.Operator || 
                                                          props.railway || props.Railway || '');
                                     
-                                    // Create a unique ID but preserve the real train number
-                                    var uniqueId = realTrainId;
+                                    var line = String(props.line || props.Line || 
+                                                     props.route || props.Route || '');
                                     
-                                    if (!seenIds.has(uniqueId)) {
-                                        seenIds.add(uniqueId);
+                                    // Create a unique ID but preserve the real train number
+                                    if (!seenIds.has(realTrainId)) {
+                                        seenIds.add(realTrainId);
                                         
                                         allTrains.push({
                                             // Use the REAL train ID as the primary identifier
@@ -258,7 +259,7 @@ def login_and_get_trains():
                                             'service': service,
                                             'destination': destination,
                                             'operator': operator,
-                                            'line': String(props.line || props.Line || props.route || props.Route || ''),
+                                            'line': line,
                                             
                                             // Timing
                                             'timestamp': String(props.timestamp || props.Timestamp || 
@@ -313,52 +314,53 @@ def login_and_get_trains():
         
         # Convert coordinates and clean up data
         trains = []
-        id_counts = {}
         
         for feature in train_features:
             lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
             
             if lat and lon:
-                # Get the real train ID
-                train_id = feature.get('id', 'unknown')
-                
-                # Count occurrences to spot duplicates
-                id_counts[train_id] = id_counts.get(train_id, 0) + 1
+                # Get the real train ID and ensure it's a string
+                train_id = str(feature.get('id', 'unknown'))
                 
                 train = {
-                    "id": train_id,  # This should now be "ice13802", not "arrowMarlLayer_xxx"
-                    "loco": feature.get('loco', train_id),
-                    "unit": feature.get('unit', ''),
-                    "service": feature.get('service', ''),
-                    "operator": feature.get('operator', ''),
-                    "destination": feature.get('destination', ''),
-                    "line": feature.get('line', ''),
+                    "id": train_id,
+                    "loco": str(feature.get('loco', train_id)),
+                    "unit": str(feature.get('unit', '')),
+                    "service": str(feature.get('service', '')),
+                    "operator": str(feature.get('operator', '')),
+                    "destination": str(feature.get('destination', '')),
+                    "line": str(feature.get('line', '')),
                     
                     "lat": round(lat, 6),
                     "lon": round(lon, 6),
                     
                     "heading": round(to_float(feature.get('heading', 0)), 1),
                     "speed": round(to_float(feature.get('speed', 0)), 1),
-                    "direction": feature.get('direction', ''),
+                    "direction": str(feature.get('direction', '')),
                     
-                    "timestamp": feature.get('timestamp', ''),
-                    "updated": feature.get('updated', ''),
+                    "timestamp": str(feature.get('timestamp', '')),
+                    "updated": str(feature.get('updated', '')),
                     
-                    "source": feature.get('source', '')
+                    "source": str(feature.get('source', ''))
                 }
                 trains.append(train)
         
         print(f"\n📊 Total trains with REAL IDs: {len(trains)}")
         
-        # Show sample of REAL train IDs
+        # Show sample of REAL train IDs - with safe string conversion
         if trains:
             print("\n📋 Sample train IDs (should be like 'ice13802', 'ice33799', etc.):")
+            real_id_count = 0
             for i, train in enumerate(trains[:20]):
-                if train['id'] and not train['id'].startswith('arrowMarlLayer'):
-                    print(f"   {train['id']} - heading: {train['heading']}°")
+                train_id = str(train['id'])
+                if train_id and not train_id.startswith(('arrow', 'layer', 'marker', 'unknown', 'reg', 'unreg')):
+                    real_id_count += 1
+                    print(f"   {train_id} - heading: {train['heading']}°")
+            
+            print(f"\n✅ Trains with REAL IDs in sample: {real_id_count}/{min(20, len(trains))}")
         
         # Check if we got any real train IDs
-        real_ids = [t for t in trains if t['id'] and not t['id'].startswith(('arrow', 'layer', 'marker', 'unknown'))]
+        real_ids = [t for t in trains if t['id'] and not str(t['id']).startswith(('arrow', 'layer', 'marker', 'unknown', 'reg', 'unreg'))]
         print(f"\n✅ Trains with REAL IDs: {len(real_ids)} out of {len(trains)}")
         
         # Save screenshot
