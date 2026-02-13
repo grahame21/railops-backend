@@ -7,7 +7,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
@@ -45,10 +44,10 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def login_and_get_trains():
-    """ZOOM TO AUSTRALIA and get ALL trains"""
+    """FINAL VERSION - Get ALL trains with ALL properties"""
     
     print("=" * 60)
-    print("🚂 RAILOPS - ZOOM TO AUSTRALIA")
+    print("🚂 RAILOPS - FULL DETAIL EXTRACTION")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -134,23 +133,16 @@ def login_and_get_trains():
         # STEP 2: ZOOM TO AUSTRALIA
         print("\n🌏 Zooming to Australia...")
         
-        # Try to find Australia zoom button or use JavaScript to set view
         zoom_script = """
         if (window.map) {
-            // Australia bounds
             var australiaExtent = [112, -44, 154, -10];
             var proj = window.map.getView().getProjection();
-            
-            // Convert to map projection
             var extent = ol.proj.transformExtent(australiaExtent, 'EPSG:4326', proj);
-            
-            // Fit to Australia with animation
             window.map.getView().fit(extent, {
                 duration: 1000,
                 padding: [50, 50, 50, 50],
-                maxZoom: 8
+                maxZoom: 10
             });
-            
             return 'Zoomed to Australia';
         }
         return 'Map not found';
@@ -159,24 +151,22 @@ def login_and_get_trains():
         zoom_result = driver.execute_script(zoom_script)
         print(f"✅ {zoom_result}")
         
-        # Wait for new tiles to load
-        print("\n⏳ Waiting for Australian trains to load...")
-        time.sleep(10)
+        # Wait for Australian trains to load
+        print("\n⏳ Loading Australian trains...")
+        time.sleep(12)
         
-        # STEP 3: EXTRACT ALL FEATURES FROM ALL SOURCES
-        print("\n🔍 Extracting ALL features from ALL sources...")
+        # STEP 3: EXTRACT ALL FEATURES WITH ALL PROPERTIES
+        print("\n🔍 Extracting ALL train details...")
         
         extract_script = """
-        var allFeatures = [];
+        var allTrains = [];
         var seenIds = new Set();
         
         function extractFromSource(source, sourceName) {
             if (!source) return;
             
             try {
-                // Try all known OpenLayers internal structures
                 var features = null;
-                
                 if (source.getFeatures) {
                     features = source.getFeatures();
                 } else if (source.A) {
@@ -185,19 +175,14 @@ def login_and_get_trains():
                     features = source.features;
                 } else if (source.features_) {
                     features = source.features_;
-                } else if (source.featuresArray) {
-                    features = source.featuresArray;
-                } else if (source.getSource && source.getSource().getFeatures) {
-                    features = source.getSource().getFeatures();
                 }
                 
                 if (features && features.length) {
-                    console.log(sourceName + ': ' + features.length + ' features');
-                    
                     features.forEach(function(f) {
                         try {
                             var props = f.getProperties ? f.getProperties() : 
                                       f.values_ || f.properties_ || f.attributes || {};
+                            
                             var geom = f.getGeometry ? f.getGeometry() : 
                                      f.geometry_ || f.geom;
                             
@@ -206,23 +191,52 @@ def login_and_get_trains():
                                            geom.coordinates_ || geom.coords || [];
                                 
                                 if (coords.length >= 2) {
+                                    // Get ALL possible train identifiers
                                     var id = String(props.id || props.ID || 
-                                                  props.name || props.NAME || 
-                                                  props.loco || props.Loco || 
+                                                  props.locoId || props.LocoId ||
+                                                  props.loco || props.Loco ||
                                                   props.unit || props.Unit ||
-                                                  sourceName + '_' + allFeatures.length);
+                                                  props.name || props.NAME ||
+                                                  props.vehicle || props.Vehicle ||
+                                                  sourceName + '_' + allTrains.length);
                                     
                                     if (!seenIds.has(id)) {
                                         seenIds.add(id);
-                                        allFeatures.push({
-                                            id: id,
-                                            x: coords[0],
-                                            y: coords[1],
-                                            heading: Number(props.heading || props.Heading || 0),
-                                            speed: Number(props.speed || props.Speed || 0),
-                                            operator: String(props.operator || props.Operator || ''),
-                                            service: String(props.service || props.Service || ''),
-                                            source: sourceName
+                                        
+                                        // Extract EVERY property we can find
+                                        allTrains.push({
+                                            // Core identifiers
+                                            'id': id,
+                                            'train_id': String(props.train_id || props.TrainId || props.trainId || ''),
+                                            'loco': String(props.loco || props.Loco || props.locomotive || props.Locomotive || ''),
+                                            'unit': String(props.unit || props.Unit || ''),
+                                            'service': String(props.service || props.Service || props.trainNumber || props.TrainNumber || ''),
+                                            'operator': String(props.operator || props.Operator || props.railway || props.Railway || ''),
+                                            
+                                            // Position
+                                            'lat': coords[1],
+                                            'lon': coords[0],
+                                            'x': coords[0],
+                                            'y': coords[1],
+                                            
+                                            // Movement
+                                            'heading': Number(props.heading || props.Heading || props.rotation || props.Rotation || props.bearing || props.Bearing || 0),
+                                            'speed': Number(props.speed || props.Speed || props.velocity || props.Velocity || 0),
+                                            'direction': String(props.direction || props.Direction || ''),
+                                            
+                                            // Timing
+                                            'timestamp': String(props.timestamp || props.Timestamp || props.time || props.Time || props.lastSeen || props.LastSeen || ''),
+                                            'updated': String(props.updated || props.Updated || ''),
+                                            
+                                            // Additional details
+                                            'type': String(props.type || props.Type || props.vehicleType || props.VehicleType || ''),
+                                            'status': String(props.status || props.Status || ''),
+                                            'line': String(props.line || props.Line || props.route || props.Route || ''),
+                                            'destination': String(props.destination || props.Destination || props.to || props.To || ''),
+                                            
+                                            // Metadata
+                                            'source': sourceName,
+                                            'feature_id': String(f.id_ || f.id || '')
                                         });
                                     }
                                 }
@@ -230,18 +244,16 @@ def login_and_get_trains():
                         } catch(e) {}
                     });
                 }
-            } catch(e) {
-                console.log('Error with ' + sourceName + ': ' + e);
-            }
+            } catch(e) {}
         }
         
-        // Check all possible sources
-        var sources = [
+        // Check all sources
+        var sourceNames = [
             'regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource',
             'regTrainsLayer', 'unregTrainsLayer', 'markerLayer', 'arrowMarkersLayer'
         ];
         
-        sources.forEach(function(name) {
+        sourceNames.forEach(function(name) {
             var obj = window[name];
             if (obj) {
                 extractFromSource(obj, name);
@@ -260,63 +272,58 @@ def login_and_get_trains():
             });
         }
         
-        return allFeatures;
+        return allTrains;
         """
         
         train_features = driver.execute_script(extract_script)
-        print(f"\n✅ Found {len(train_features)} total features")
+        print(f"\n✅ Found {len(train_features)} trains with full details")
         
-        # Group by source
-        source_counts = {}
-        for f in train_features:
-            source = f.get('source', 'unknown')
-            source_counts[source] = source_counts.get(source, 0) + 1
-        
-        print("\n📊 Features by source:")
-        for source, count in sorted(source_counts.items(), key=lambda x: x[1], reverse=True):
-            print(f"   {source}: {count} features")
-        
-        # Convert coordinates and build train list
+        # Convert coordinates and clean up data
         trains = []
         
         for feature in train_features:
             lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
             
-            if lat and lon and -90 <= lat <= 90 and -180 <= lon <= 180:
+            if lat and lon:
                 train = {
-                    "id": str(feature.get('id', 'unknown')),
+                    "id": feature.get('id', 'unknown'),
+                    "train_id": feature.get('train_id', ''),
+                    "loco": feature.get('loco', ''),
+                    "unit": feature.get('unit', ''),
+                    "service": feature.get('service', ''),
+                    "operator": feature.get('operator', ''),
+                    
                     "lat": round(lat, 6),
                     "lon": round(lon, 6),
+                    
                     "heading": round(to_float(feature.get('heading', 0)), 1),
                     "speed": round(to_float(feature.get('speed', 0)), 1),
-                    "operator": feature.get('operator', '')[:50],
-                    "service": feature.get('service', '')[:50]
+                    "direction": feature.get('direction', ''),
+                    
+                    "timestamp": feature.get('timestamp', ''),
+                    "updated": feature.get('updated', ''),
+                    
+                    "type": feature.get('type', ''),
+                    "status": feature.get('status', ''),
+                    "line": feature.get('line', ''),
+                    "destination": feature.get('destination', ''),
+                    
+                    "source": feature.get('source', '')
                 }
                 trains.append(train)
         
-        print(f"\n📊 Total trains: {len(trains)}")
+        print(f"\n📊 Total trains with details: {len(trains)}")
         
-        # Categorize by region
-        aus_trains = [t for t in trains if 110 <= t['lon'] <= 155 and -45 <= t['lat'] <= -10]
-        us_trains = [t for t in trains if -130 <= t['lon'] <= -60 and 25 <= t['lat'] <= 50]
-        
-        print(f"\n📍 Australian trains: {len(aus_trains)}")
-        print(f"📍 US trains: {len(us_trains)}")
-        print(f"📍 Other: {len(trains) - len(aus_trains) - len(us_trains)}")
-        
-        if aus_trains:
-            print("\n📋 Australian trains:")
-            for i, sample in enumerate(aus_trains[:10]):
-                print(f"\n   Train {i+1}:")
-                print(f"     ID: {sample['id']}")
-                print(f"     Location: {sample['lat']}, {sample['lon']}")
-                print(f"     Heading: {sample['heading']}°")
-                print(f"     Speed: {sample['speed']}")
-                print(f"     Operator: {sample['operator']}")
-                print(f"     Service: {sample['service']}")
+        # Show sample with all fields
+        if trains:
+            print("\n📋 Sample train (full details):")
+            sample = trains[0]
+            for key, value in sample.items():
+                if value:  # Only show non-empty values
+                    print(f"   {key}: {value}")
         
         # Save screenshot
-        driver.save_screenshot("australia_map.png")
+        driver.save_screenshot("australia_trains.png")
         print("\n📸 Australia map screenshot saved")
         
         return trains, f"ok - {len(trains)} trains"
@@ -333,7 +340,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - ZOOM TO AUSTRALIA 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - FULL DETAIL EXTRACTION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
