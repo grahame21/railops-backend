@@ -44,10 +44,10 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def login_and_get_trains():
-    """FINAL VERSION - Get ALL trains with ALL properties"""
+    """FIXED VERSION - Get REAL train IDs from the data"""
     
     print("=" * 60)
-    print("🚂 RAILOPS - FULL DETAIL EXTRACTION")
+    print("🚂 RAILOPS - REAL TRAIN ID EXTRACTION")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -155,8 +155,8 @@ def login_and_get_trains():
         print("\n⏳ Loading Australian trains...")
         time.sleep(12)
         
-        # STEP 3: EXTRACT ALL FEATURES WITH ALL PROPERTIES
-        print("\n🔍 Extracting ALL train details...")
+        # STEP 3: EXTRACT REAL TRAIN IDs AND HEADINGS
+        print("\n🔍 Extracting REAL train IDs and headings...")
         
         extract_script = """
         var allTrains = [];
@@ -191,27 +191,57 @@ def login_and_get_trains():
                                            geom.coordinates_ || geom.coords || [];
                                 
                                 if (coords.length >= 2) {
-                                    // Get ALL possible train identifiers
-                                    var id = String(props.id || props.ID || 
-                                                  props.locoId || props.LocoId ||
-                                                  props.loco || props.Loco ||
-                                                  props.unit || props.Unit ||
-                                                  props.name || props.NAME ||
-                                                  props.vehicle || props.Vehicle ||
-                                                  sourceName + '_' + allTrains.length);
+                                    // CRITICAL: Extract the REAL train ID
+                                    // The IDs in your screenshot are like "ice13802", "ice33799", "ice23779"
+                                    var realTrainId = null;
                                     
-                                    if (!seenIds.has(id)) {
-                                        seenIds.add(id);
+                                    // Check all possible ID fields in order of priority
+                                    realTrainId = props.loco || props.Loco || 
+                                                 props.unit || props.Unit ||
+                                                 props.id || props.ID ||
+                                                 props.name || props.NAME ||
+                                                 props.trainId || props.TrainId ||
+                                                 props.vehicle || props.Vehicle;
+                                    
+                                    // If we found a real ID, use it
+                                    if (realTrainId) {
+                                        realTrainId = String(realTrainId);
+                                    } else {
+                                        // Try to extract from the feature's class or other attributes
+                                        realTrainId = f.className_ || f.id_ || f.ol_uid || 'unknown';
+                                    }
+                                    
+                                    // Extract heading/direction - this is what makes arrows point correctly
+                                    var heading = Number(props.heading || props.Heading || 
+                                                        props.rotation || props.Rotation ||
+                                                        props.bearing || props.Bearing || 0);
+                                    
+                                    // Extract speed
+                                    var speed = Number(props.speed || props.Speed || 
+                                                      props.velocity || props.Velocity || 0);
+                                    
+                                    // Extract destination/service info
+                                    var service = String(props.service || props.Service || 
+                                                        props.trainNumber || props.TrainNumber || '');
+                                    
+                                    var destination = String(props.destination || props.Destination || 
+                                                            props.to || props.To || '');
+                                    
+                                    var operator = String(props.operator || props.Operator || 
+                                                         props.railway || props.Railway || '');
+                                    
+                                    // Create a unique ID but preserve the real train number
+                                    var uniqueId = realTrainId;
+                                    
+                                    if (!seenIds.has(uniqueId)) {
+                                        seenIds.add(uniqueId);
                                         
-                                        // Extract EVERY property we can find
                                         allTrains.push({
-                                            // Core identifiers
-                                            'id': id,
-                                            'train_id': String(props.train_id || props.TrainId || props.trainId || ''),
-                                            'loco': String(props.loco || props.Loco || props.locomotive || props.Locomotive || ''),
+                                            // Use the REAL train ID as the primary identifier
+                                            'id': realTrainId,
+                                            'train_id': realTrainId,
+                                            'loco': realTrainId,
                                             'unit': String(props.unit || props.Unit || ''),
-                                            'service': String(props.service || props.Service || props.trainNumber || props.TrainNumber || ''),
-                                            'operator': String(props.operator || props.Operator || props.railway || props.Railway || ''),
                                             
                                             // Position
                                             'lat': coords[1],
@@ -219,24 +249,25 @@ def login_and_get_trains():
                                             'x': coords[0],
                                             'y': coords[1],
                                             
-                                            // Movement
-                                            'heading': Number(props.heading || props.Heading || props.rotation || props.Rotation || props.bearing || props.Bearing || 0),
-                                            'speed': Number(props.speed || props.Speed || props.velocity || props.Velocity || 0),
+                                            // Movement - CRITICAL for arrow direction
+                                            'heading': heading,
+                                            'speed': speed,
                                             'direction': String(props.direction || props.Direction || ''),
                                             
-                                            // Timing
-                                            'timestamp': String(props.timestamp || props.Timestamp || props.time || props.Time || props.lastSeen || props.LastSeen || ''),
-                                            'updated': String(props.updated || props.Updated || ''),
-                                            
-                                            // Additional details
-                                            'type': String(props.type || props.Type || props.vehicleType || props.VehicleType || ''),
-                                            'status': String(props.status || props.Status || ''),
+                                            // Service details
+                                            'service': service,
+                                            'destination': destination,
+                                            'operator': operator,
                                             'line': String(props.line || props.Line || props.route || props.Route || ''),
-                                            'destination': String(props.destination || props.Destination || props.to || props.To || ''),
                                             
-                                            // Metadata
-                                            'source': sourceName,
-                                            'feature_id': String(f.id_ || f.id || '')
+                                            // Timing
+                                            'timestamp': String(props.timestamp || props.Timestamp || 
+                                                              props.time || props.Time || ''),
+                                            'updated': String(props.updated || props.Updated || 
+                                                            props.lastSeen || props.LastSeen || ''),
+                                            
+                                            // Source
+                                            'source': sourceName
                                         });
                                     }
                                 }
@@ -247,13 +278,15 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Check all sources
-        var sourceNames = [
-            'regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource',
-            'regTrainsLayer', 'unregTrainsLayer', 'markerLayer', 'arrowMarkersLayer'
+        // Check all sources - PRIORITIZE arrowMarkersSource (has the train IDs)
+        var sourcePriority = [
+            'arrowMarkersSource', 'arrowMarkersLayer',
+            'regTrainsSource', 'regTrainsLayer',
+            'unregTrainsSource', 'unregTrainsLayer',
+            'markerSource', 'markerLayer'
         ];
         
-        sourceNames.forEach(function(name) {
+        sourcePriority.forEach(function(name) {
             var obj = window[name];
             if (obj) {
                 extractFromSource(obj, name);
@@ -276,22 +309,30 @@ def login_and_get_trains():
         """
         
         train_features = driver.execute_script(extract_script)
-        print(f"\n✅ Found {len(train_features)} trains with full details")
+        print(f"\n✅ Found {len(train_features)} trains with REAL IDs")
         
         # Convert coordinates and clean up data
         trains = []
+        id_counts = {}
         
         for feature in train_features:
             lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
             
             if lat and lon:
+                # Get the real train ID
+                train_id = feature.get('id', 'unknown')
+                
+                # Count occurrences to spot duplicates
+                id_counts[train_id] = id_counts.get(train_id, 0) + 1
+                
                 train = {
-                    "id": feature.get('id', 'unknown'),
-                    "train_id": feature.get('train_id', ''),
-                    "loco": feature.get('loco', ''),
+                    "id": train_id,  # This should now be "ice13802", not "arrowMarlLayer_xxx"
+                    "loco": feature.get('loco', train_id),
                     "unit": feature.get('unit', ''),
                     "service": feature.get('service', ''),
                     "operator": feature.get('operator', ''),
+                    "destination": feature.get('destination', ''),
+                    "line": feature.get('line', ''),
                     
                     "lat": round(lat, 6),
                     "lon": round(lon, 6),
@@ -303,24 +344,22 @@ def login_and_get_trains():
                     "timestamp": feature.get('timestamp', ''),
                     "updated": feature.get('updated', ''),
                     
-                    "type": feature.get('type', ''),
-                    "status": feature.get('status', ''),
-                    "line": feature.get('line', ''),
-                    "destination": feature.get('destination', ''),
-                    
                     "source": feature.get('source', '')
                 }
                 trains.append(train)
         
-        print(f"\n📊 Total trains with details: {len(trains)}")
+        print(f"\n📊 Total trains with REAL IDs: {len(trains)}")
         
-        # Show sample with all fields
+        # Show sample of REAL train IDs
         if trains:
-            print("\n📋 Sample train (full details):")
-            sample = trains[0]
-            for key, value in sample.items():
-                if value:  # Only show non-empty values
-                    print(f"   {key}: {value}")
+            print("\n📋 Sample train IDs (should be like 'ice13802', 'ice33799', etc.):")
+            for i, train in enumerate(trains[:20]):
+                if train['id'] and not train['id'].startswith('arrowMarlLayer'):
+                    print(f"   {train['id']} - heading: {train['heading']}°")
+        
+        # Check if we got any real train IDs
+        real_ids = [t for t in trains if t['id'] and not t['id'].startswith(('arrow', 'layer', 'marker', 'unknown'))]
+        print(f"\n✅ Trains with REAL IDs: {len(real_ids)} out of {len(trains)}")
         
         # Save screenshot
         driver.save_screenshot("australia_trains.png")
@@ -340,7 +379,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - FULL DETAIL EXTRACTION 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - REAL TRAIN ID EXTRACTION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
