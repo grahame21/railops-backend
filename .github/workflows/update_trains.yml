@@ -17,25 +17,22 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install Chrome
+    - name: Install Chrome (Fixed Version)
       run: |
         sudo apt-get update
         sudo apt-get install -y wget gnupg unzip
-        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable
+        # Remove Chrome if already installed
+        sudo apt-get remove -y google-chrome-stable || true
+        # Install a specific working version (Chrome 132)
+        wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_132.0.6834.159-1_amd64.deb
+        sudo dpkg -i google-chrome-stable_132.0.6834.159-1_amd64.deb
+        sudo apt-get install -f -y
         google-chrome --version
     
     - name: Install ChromeDriver
       run: |
-        CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
-        echo "Chrome version: $CHROME_VERSION"
-        # Get latest ChromeDriver version for this Chrome major version
-        wget -q "https://storage.googleapis.com/chrome-for-testing-public/LATEST_RELEASE_$CHROME_VERSION" -O latest_version.txt
-        CHROMEDRIVER_VERSION=$(cat latest_version.txt)
-        echo "ChromeDriver version: $CHROMEDRIVER_VERSION"
-        wget -q "https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip"
+        # Install ChromeDriver 132 which matches Chrome 132
+        wget -q https://storage.googleapis.com/chrome-for-testing-public/132.0.6834.159/linux64/chromedriver-linux64.zip
         unzip -q chromedriver-linux64.zip
         sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
@@ -43,7 +40,7 @@ jobs:
     
     - name: Install Python dependencies
       run: |
-        pip install selenium requests
+        pip install selenium webdriver-manager requests
     
     - name: Run train scraper
       env:
