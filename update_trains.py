@@ -36,6 +36,24 @@ def webmercator_to_latlon(x, y):
     except:
         return None, None
 
+def safe_float(value, default=0.0):
+    """Safely convert any value to float, return default if fails"""
+    try:
+        if value is None:
+            return default
+        return float(value)
+    except (ValueError, TypeError):
+        return default
+
+def safe_str(value, default=""):
+    """Safely convert any value to string"""
+    try:
+        if value is None:
+            return default
+        return str(value)
+    except:
+        return default
+
 def login_and_get_trains():
     print("=" * 60)
     print("🚂 RAILOPS - PRODUCTION READY")
@@ -111,15 +129,15 @@ def login_and_get_trains():
         print("⏳ Waiting for trains to load...")
         time.sleep(15)
         
-        # Extract trains with REAL IDs based on layer type
+        # Extract trains with REAL IDs
         print("\n🔍 Extracting trains with real IDs...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
         
-        function getTrainId(props, sourceName) {
-            // Try ALL possible ID fields from the debug output
+        function getTrainId(props) {
+            // Try ALL possible ID fields
             var id = props.trainName || props.trainNumber || 
                     props.name || props.labelContent ||
                     props.id || props.ID || 
@@ -127,12 +145,9 @@ def login_and_get_trains():
                     props.loco || props.Loco ||
                     null;
             
-            // Clean up the ID
             if (id) {
                 return String(id).trim();
             }
-            
-            // If no ID found, return null (will use source+index)
             return null;
         }
         
@@ -151,7 +166,7 @@ def login_and_get_trains():
                             var coords = geom.getCoordinates();
                             
                             // Get train ID
-                            var trainId = getTrainId(props, sourceName);
+                            var trainId = getTrainId(props);
                             if (!trainId) {
                                 trainId = sourceName + '_' + index;
                             }
@@ -169,15 +184,15 @@ def login_and_get_trains():
                                     allTrains.push({
                                         'id': trainId,
                                         'loco': trainId,
-                                        'name': String(props.trainName || props.name || ''),
-                                        'number': String(props.trainNumber || ''),
-                                        'speed': Number(props.trainSpeed || props.speed || 0),
-                                        'heading': Number(props.heading || 0),
+                                        'name': props.trainName || props.name || '',
+                                        'number': props.trainNumber || '',
+                                        'speed': props.trainSpeed || props.speed || 0,
+                                        'heading': props.heading || 0,
                                         'lat': coords[1],
                                         'lon': coords[0],
-                                        'km': Number(props.trainKM || 0),
-                                        'time': String(props.trainTime || ''),
-                                        'date': String(props.trainDate || ''),
+                                        'km': props.trainKM || 0,
+                                        'time': props.trainTime || '',
+                                        'date': props.trainDate || '',
                                         'source': sourceName
                                     });
                                 }
@@ -188,7 +203,7 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Extract from ALL sources we found in the debug
+        // Extract from ALL sources
         extractFromSource(window.regTrainsSource, 'reg');
         extractFromSource(window.unregTrainsSource, 'unreg');
         extractFromSource(window.markerSource, 'marker');
@@ -211,23 +226,23 @@ def login_and_get_trains():
             lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
             if lat and lon:
                 trains.append({
-                    'id': t['id'],
-                    'loco': t['loco'],
-                    'name': t['name'],
-                    'number': t['number'],
+                    'id': safe_str(t['id']),
+                    'loco': safe_str(t['loco']),
+                    'name': safe_str(t['name']),
+                    'number': safe_str(t['number']),
                     'lat': round(lat, 6),
                     'lon': round(lon, 6),
-                    'speed': round(t['speed'], 1),
-                    'heading': round(t['heading'], 1),
-                    'km': round(t['km'], 1),
-                    'time': t['time'],
-                    'date': t['date']
+                    'speed': round(safe_float(t['speed']), 1),
+                    'heading': round(safe_float(t['heading']), 1),
+                    'km': round(safe_float(t['km']), 1),
+                    'time': safe_str(t['time']),
+                    'date': safe_str(t['date'])
                 })
         
         print(f"✅ Processed {len(trains)} trains with real IDs")
         
         if trains:
-            print(f"\n📋 Sample trains:")
+            print(f"\n📋 First 5 trains:")
             for i, t in enumerate(trains[:5]):
                 print(f"\n   Train {i+1}:")
                 print(f"     ID: {t['id']}")
