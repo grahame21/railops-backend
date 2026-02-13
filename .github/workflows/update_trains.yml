@@ -2,8 +2,8 @@ name: Update trains.json
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Every 10 minutes
-  workflow_dispatch:        # Manual trigger
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
 
 jobs:
   update:
@@ -17,10 +17,22 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install Chrome
+    - name: Install Chrome and ChromeDriver
       run: |
         sudo apt-get update
+        sudo apt-get install -y wget gnupg unzip
+        # Install Chrome
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+        sudo apt-get update
         sudo apt-get install -y google-chrome-stable
+        # Install ChromeDriver matching Chrome version
+        CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
+        wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROME_VERSION}.0.7559.132/linux64/chromedriver-linux64.zip"
+        unzip -q chromedriver-linux64.zip
+        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+        sudo chmod +x /usr/local/bin/chromedriver
+        chromedriver --version
     
     - name: Install Python dependencies
       run: |
