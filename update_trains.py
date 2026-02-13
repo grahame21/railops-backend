@@ -25,9 +25,20 @@ def write_output(trains, note=""):
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
+def webmercator_to_latlon(x, y):
+    try:
+        x = float(x)
+        y = float(y)
+        lon = (x / 20037508.34) * 180
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        return lat, lon
+    except:
+        return None, None
+
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - FIXED COORDINATE CONVERSION")
+    print("🚂 RAILOPS - TRAIN SCRAPER")
     print("=" * 60)
     
     chrome_options = Options()
@@ -104,40 +115,18 @@ def login_and_get_trains():
         print("⏳ Waiting for Australian trains to load...")
         time.sleep(15)
         
-        # Take screenshot to verify we can see trains
-        driver.save_screenshot('trainfinder_debug.png')
-        print("✅ Screenshot saved as trainfinder_debug.png")
-        
-        # Extract all trains with proper coordinate conversion
+        # Extract all trains
         print("\n🔍 Extracting trains...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
         
-        function webMercatorToLatLon(x, y) {
-            try {
-                x = parseFloat(x);
-                y = parseFloat(y);
-                // Web Mercator to Lat/Lon conversion
-                var lon = (x / 20037508.34) * 180;
-                var lat = (y / 20037508.34) * 180;
-                lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI / 2);
-                return [lat, lon];
-            } catch(e) {
-                return [null, null];
-            }
-        }
-        
         function extractFromSource(src, sourceName) {
-            if (!src || !src.getFeatures) {
-                console.log(sourceName + ' source not found');
-                return;
-            }
+            if (!src || !src.getFeatures) return;
             
             try {
                 var features = src.getFeatures();
-                console.log(sourceName + ' has ' + features.length + ' features');
                 
                 features.forEach(function(f, index) {
                     try {
@@ -146,17 +135,6 @@ def login_and_get_trains():
                         
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
-                            
-                            // CONVERT Web Mercator to Lat/Lon HERE
-                            var latLon = webMercatorToLatLon(coords[0], coords[1]);
-                            var lat = latLon[0];
-                            var lon = latLon[1];
-                            
-                            // Skip if conversion failed
-                            if (lat === null || lon === null) return;
-                            
-                            // Only include Australian trains
-                            if (lat < -45 || lat > -10 || lon < 110 || lon > 155) return;
                             
                             var id = props.id || props.ID || 
                                     props.name || props.NAME ||
@@ -174,8 +152,8 @@ def login_and_get_trains():
                                     'loco': props.loco || props.Loco || props.unit || props.Unit || '',
                                     'service': props.service || props.Service || props.trainNumber || '',
                                     'operator': props.operator || props.Operator || '',
-                                    'lat': lat,           // NOW it's actual latitude
-                                    'lon': lon,           // NOW it's actual longitude
+                                    'x': coords[0],
+                                    'y': coords[1],
                                     'heading': props.heading || props.Heading || 0,
                                     'speed': props.speed || props.Speed || 0,
                                     'destination': props.destination || props.Destination || '',
@@ -183,22 +161,10 @@ def login_and_get_trains():
                                 });
                             }
                         }
-                    } catch(e) {
-                        console.log('Error processing feature:', e);
-                    }
+                    } catch(e) {}
                 });
-            } catch(e) {
-                console.log('Error accessing source:', e);
-            }
+            } catch(e) {}
         }
-        
-        // Debug - check if sources exist
-        console.log('=== SOURCE CHECK ===');
-        console.log('regTrainsSource exists:', !!window.regTrainsSource);
-        console.log('unregTrainsSource exists:', !!window.unregTrainsSource);
-        console.log('markerSource exists:', !!window.markerSource);
-        console.log('arrowMarkersSource exists:', !!window.arrowMarkersSource);
-        console.log('===================');
         
         extractFromSource(window.regTrainsSource, 'reg');
         extractFromSource(window.unregTrainsSource, 'unreg');
@@ -211,53 +177,26 @@ def login_and_get_trains():
         all_trains = driver.execute_script(script)
         print(f"\n✅ Extracted {len(all_trains)} total trains")
         
-        # Debug - print first few raw trains
-        if all_trains and len(all_trains) > 0:
-            print("\n📋 First 5 trains (post-conversion):")
-            for i, t in enumerate(all_trains[:5]):
-                print(f"   Train {i+1}: ID={t.get('id', 'N/A')}")
-                print(f"      Location: {t.get('lat', 'N/A'):.6f}, {t.get('lon', 'N/A'):.6f}")
-                print(f"      Heading: {t.get('heading', 0)}°, Speed: {t.get('speed', 0)} km/h")
-                if t.get('service'):
-                    print(f"      Service: {t.get('service')}")
-        else:
-            print("⚠️ No trains extracted!")
-            # Try to get page source for debugging
-            html = driver.page_source
-            with open('debug_page.html', 'w', encoding='utf-8') as f:
-                f.write(html)
-            print("📄 Page source saved to debug_page.html for inspection")
+        # Convert coordinates and filter to Australia
+        trains = []
+        for t in all_trains:
+            lat, lon = webmercator_to_latlon(t['x'], t['y'])
+            if lat and lon:
+                if -45 <= lat <= -10 and 110 <= lon <= 155:
+                    trains.append({
+                        'id': t['id'],
+                        'train_number': t['service'] or t['loco'] or t['id'],
+                        'lat': round(lat, 6),
+                        'lon': round(lon, 6),
+                        'heading': round(float(t['heading']), 1),
+                        'speed': round(float(t['speed']), 1)
+                    })
         
-        # No need for further filtering since we already filtered in JavaScript
-        trains = all_trains
-        
-        print(f"\n✅ Australian trains: {len(trains)}")
-        
-        if trains:
-            print(f"\n📋 Sample Australian train:")
-            t = trains[0]
-            print(f"   ID: {t['id']}")
-            print(f"   Loco: {t.get('loco', 'N/A')}")
-            print(f"   Location: {t['lat']:.6f}, {t['lon']:.6f}")
-            print(f"   Speed: {t.get('speed', 0)} km/h")
-            print(f"   Heading: {t.get('heading', 0)}°")
-            if t.get('service'):
-                print(f"   Service: {t['service']}")
-            if t.get('operator'):
-                print(f"   Operator: {t['operator']}")
-            if t.get('destination'):
-                print(f"   Destination: {t['destination']}")
-        
+        print(f"✅ Australian trains: {len(trains)}")
         return trains, f"ok - {len(trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
-        import traceback
-        traceback.print_exc()
-        # Save screenshot on error
-        if driver:
-            driver.save_screenshot('error_debug.png')
-            print("📸 Error screenshot saved as error_debug.png")
         return [], f"error: {type(e).__name__}"
     finally:
         if driver:
