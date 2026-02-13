@@ -1,11 +1,20 @@
 {
-  "lastUpdated": "2026-02-13T02:55:25.026799Z",
-  "note": "ok - 1 trains",
+  "lastUpdated": "2026-02-13T03:02:44.478758Z",
+  "note": "ok - 2 trains",
   "trains": [
     {
-      "id": "unknown",
-      "lat": 38.794595,
-      "lon": -106.534838,
+      "id": "markerSource_0",
+      "lat": 41.581242,
+      "lon": -87.854976,
+      "heading": 0.0,
+      "speed": 0.0,
+      "operator": "",
+      "service": ""
+    },
+    {
+      "id": "markerLayer_1",
+      "lat": 41.581242,
+      "lon": -87.854976,
       "heading": 0.0,
       "speed": 0.0,
       "operator": "",
