@@ -8,7 +8,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
 
 OUT_FILE = "trains.json"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
@@ -37,77 +36,41 @@ def webmercator_to_latlon(x, y):
     except:
         return None, None
 
-def safe_float(value, default=0.0):
-    try:
-        if value is None:
-            return default
-        return float(value)
-    except (ValueError, TypeError):
-        return default
-
-def safe_str(value, default=""):
-    try:
-        if value is None:
-            return default
-        return str(value)
-    except:
-        return default
-
-def extract_trains(driver):
-    """Extract ALL trains without filtering"""
-    script = """
-    var allTrains = [];
+def wait_for_trains(driver, timeout=30):
+    """Wait for train sources to have features"""
+    print("⏳ Waiting for trains to load...")
     
-    function extractFromSource(src, sourceName) {
-        if (!src || !src.getFeatures) return;
+    for i in range(timeout):
+        script = """
+        var total = 0;
+        if (window.regTrainsSource && window.regTrainsSource.getFeatures) {
+            total += window.regTrainsSource.getFeatures().length;
+        }
+        if (window.unregTrainsSource && window.unregTrainsSource.getFeatures) {
+            total += window.unregTrainsSource.getFeatures().length;
+        }
+        if (window.markerSource && window.markerSource.getFeatures) {
+            total += window.markerSource.getFeatures().length;
+        }
+        if (window.arrowMarkersSource && window.arrowMarkersSource.getFeatures) {
+            total += window.arrowMarkersSource.getFeatures().length;
+        }
+        return total;
+        """
         
-        try {
-            var features = src.getFeatures();
-            
-            features.forEach(function(f, index) {
-                try {
-                    var props = f.getProperties();
-                    var geom = f.getGeometry();
-                    
-                    if (geom && geom.getType() === 'Point') {
-                        var coords = geom.getCoordinates();
-                        
-                        // Get ID from any available field
-                        var id = props.id || props.ID || 
-                                props.name || props.NAME ||
-                                props.loco || props.Loco ||
-                                props.unit || props.Unit ||
-                                props.trainName || props.trainNumber ||
-                                props.labelContent ||
-                                sourceName + '_' + index;
-                        
-                        allTrains.push({
-                            'id': String(id),
-                            'lat': coords[1],
-                            'lon': coords[0],
-                            'heading': safe_float(props.heading || props.Heading || 0),
-                            'speed': safe_float(props.speed || props.Speed || 0),
-                            'source': sourceName
-                        });
-                    }
-                } catch(e) {}
-            });
-        } catch(e) {}
-    }
+        count = driver.execute_script(script)
+        if count > 0:
+            print(f"✅ Found {count} trains after {i} seconds")
+            return True
+        
+        time.sleep(1)
     
-    // Extract from ALL possible sources
-    extractFromSource(window.regTrainsSource, 'reg');
-    extractFromSource(window.unregTrainsSource, 'unreg');
-    extractFromSource(window.markerSource, 'marker');
-    extractFromSource(window.arrowMarkersSource, 'arrow');
-    
-    return allTrains;
-    """
-    return driver.execute_script(script)
+    print("⚠️ No trains found after timeout")
+    return False
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - AGGRESSIVE ZOOM")
+    print("🚂 RAILOPS - WAIT FOR TRAINS")
     print("=" * 60)
     
     chrome_options = Options()
@@ -167,66 +130,109 @@ def login_and_get_trains():
         """)
         print("✅ Warning page closed")
         
-        # Get initial train count
-        initial_trains = extract_trains(driver)
-        print(f"\n📍 Initial trains worldwide: {len(initial_trains)}")
+        # Wait for initial load
+        time.sleep(5)
         
-        if initial_trains:
-            # Show where the first train is
-            lat, lon = webmercator_to_latlon(initial_trains[0]['lon'], initial_trains[0]['lat'])
-            print(f"   First train at: {lat:.2f}, {lon:.2f}")
-        
-        # ZOOM TO AUSTRALIA MULTIPLE TIMES
-        print("\n🌏 Aggressively zooming to Australia...")
-        
-        for attempt in range(3):
+        # Wait for trains to appear
+        if not wait_for_trains(driver):
+            print("⚠️ No trains detected, trying zoom...")
+            
+            # Try zooming
             driver.execute_script("""
                 if (window.map) {
                     var australia = [110, -45, 155, -5];
                     var proj = window.map.getView().getProjection();
                     var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                    window.map.getView().fit(extent, { 
-                        duration: 1000,
-                        maxZoom: 10,
-                        padding: [20, 20, 20, 20]
-                    });
+                    window.map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
                 }
             """)
-            print(f"   Zoom attempt {attempt + 1} complete")
-            time.sleep(5)
-        
-        print("⏳ Waiting for trains to load...")
-        time.sleep(15)
+            
+            # Wait again
+            wait_for_trains(driver)
         
         # Extract all trains
-        all_trains = extract_trains(driver)
-        print(f"\n📍 Trains after zoom: {len(all_trains)}")
+        print("\n🔍 Extracting trains...")
+        
+        script = """
+        var allTrains = [];
+        var seenIds = new Set();
+        
+        function extractFromSource(src, sourceName) {
+            if (!src || !src.getFeatures) return;
+            
+            try {
+                var features = src.getFeatures();
+                
+                features.forEach(function(f, index) {
+                    try {
+                        var props = f.getProperties();
+                        var geom = f.getGeometry();
+                        
+                        if (geom && geom.getType() === 'Point') {
+                            var coords = geom.getCoordinates();
+                            
+                            // Get ID from any available field
+                            var id = props.id || props.ID || 
+                                    props.name || props.NAME ||
+                                    props.loco || props.Loco ||
+                                    props.unit || props.Unit ||
+                                    props.trainName || props.trainNumber ||
+                                    props.labelContent ||
+                                    sourceName + '_' + index;
+                            
+                            if (!seenIds.has(id)) {
+                                seenIds.add(id);
+                                allTrains.push({
+                                    'id': String(id),
+                                    'lat': coords[1],
+                                    'lon': coords[0],
+                                    'heading': props.heading || props.Heading || 0,
+                                    'speed': props.speed || props.Speed || 0,
+                                    'source': sourceName
+                                });
+                            }
+                        }
+                    } catch(e) {}
+                });
+            } catch(e) {}
+        }
+        
+        extractFromSource(window.regTrainsSource, 'reg');
+        extractFromSource(window.unregTrainsSource, 'unreg');
+        extractFromSource(window.markerSource, 'marker');
+        extractFromSource(window.arrowMarkersSource, 'arrow');
+        
+        return allTrains;
+        """
+        
+        all_trains = driver.execute_script(script)
+        print(f"\n✅ Extracted {len(all_trains)} total trains")
         
         # Convert coordinates and filter to Australia
-        australian_trains = []
+        trains = []
         for t in all_trains:
             lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
             if lat and lon:
                 if -45 <= lat <= -10 and 110 <= lon <= 155:
-                    australian_trains.append({
-                        'id': safe_str(t['id']),
+                    trains.append({
+                        'id': str(t['id']),
                         'lat': round(lat, 6),
                         'lon': round(lon, 6),
-                        'heading': round(safe_float(t['heading']), 1),
-                        'speed': round(safe_float(t['speed']), 1)
+                        'heading': round(float(t['heading']), 1),
+                        'speed': round(float(t['speed']), 1)
                     })
         
-        print(f"\n✅ Australian trains: {len(australian_trains)}")
+        print(f"✅ Australian trains: {len(trains)}")
         
-        if australian_trains:
+        if trains:
             print(f"\n📋 First Australian train:")
-            t = australian_trains[0]
+            t = trains[0]
             print(f"   ID: {t['id']}")
             print(f"   Location: {t['lat']}, {t['lon']}")
             print(f"   Speed: {t['speed']} km/h")
             print(f"   Heading: {t['heading']}°")
         
-        return australian_trains, f"ok - {len(australian_trains)} trains"
+        return trains, f"ok - {len(trains)} trains"
         
     except Exception as e:
         print(f"\n❌ Error: {e}")
