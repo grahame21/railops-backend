@@ -38,11 +38,10 @@ def webmercator_to_latlon(x, y):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - EXTRACT ALL DETAILS")
+    print("🚂 RAILOPS - ULTRA PATIENT VERSION")
     print("=" * 60)
     
     chrome_options = Options()
-    chrome_options.add_argument('--headless=new')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--window-size=1920,1080')
@@ -97,23 +96,27 @@ def login_and_get_trains():
         """)
         print("✅ Warning page closed")
         
-        # Wait for map
-        time.sleep(5)
+        # Wait for map to fully initialize
+        print("\n⏳ Waiting 30 seconds for map to stabilize...")
+        time.sleep(30)
         
-        # Zoom to Australia
-        print("\n🌏 Zooming to Australia...")
+        # Zoom to Australia multiple times
+        print("🌏 Zooming to Australia (slowly)...")
         driver.execute_script("""
             if (window.map) {
                 var australia = [112, -44, 154, -10];
                 var proj = window.map.getView().getProjection();
                 var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 2000, maxZoom: 10 });
+                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
             }
         """)
-        time.sleep(10)
         
-        # EXTRACT ALL TRAIN DETAILS
-        print("\n🔍 Extracting ALL train details...")
+        # Wait a LONG time for trains to load
+        print("⏳ Waiting 60 seconds for Australian trains to load...")
+        time.sleep(60)
+        
+        # Extract trains
+        print("\n🔍 Extracting trains...")
         
         script = """
         var allTrains = [];
@@ -124,6 +127,7 @@ def login_and_get_trains():
             
             try {
                 var features = src.getFeatures();
+                console.log(sourceName + ' has ' + features.length + ' features');
                 
                 features.forEach(function(f, index) {
                     try {
@@ -140,16 +144,14 @@ def login_and_get_trains():
                             var lat = (y / 20037508.34) * 180;
                             lat = 180 / 3.14159 * (2 * Math.atan(Math.exp(lat * 3.14159 / 180)) - 3.14159 / 2);
                             
-                            // Only keep Australian trains
-                            if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
+                            // Australia bounds (expanded slightly)
+                            if (lat >= -45 && lat <= -5 && lon >= 110 && lon <= 160) {
                                 
-                                // Get ALL possible identifiers
                                 var id = props.id || props.ID || 
                                         props.name || props.NAME ||
                                         props.loco || props.Loco ||
                                         props.unit || props.Unit ||
                                         props.trainId || props.TrainId ||
-                                        props.trainName || props.trainNumber ||
                                         sourceName + '_' + index;
                                 
                                 id = String(id).trim();
@@ -157,35 +159,16 @@ def login_and_get_trains():
                                 if (!seenIds.has(id)) {
                                     seenIds.add(id);
                                     allTrains.push({
-                                        // Core identifiers
                                         'id': id,
-                                        'loco': String(props.loco || props.Loco || props.unit || props.Unit || props.name || props.NAME || ''),
                                         'train_id': String(props.trainId || props.TrainId || props.trainNumber || ''),
-                                        
-                                        // Service info
-                                        'service': String(props.service || props.Service || props.trainNumber || ''),
-                                        'operator': String(props.operator || props.Operator || props.railway || ''),
-                                        'line': String(props.line || props.Line || props.route || ''),
-                                        'destination': String(props.destination || props.Destination || props.to || ''),
-                                        
-                                        // Position
-                                        'lat': coords[1],
-                                        'lon': coords[0],
-                                        
-                                        // Movement
-                                        'heading': Number(props.heading || props.Heading || props.rotation || 0),
-                                        'speed': Number(props.speed || props.Speed || props.velocity || 0),
-                                        
-                                        // Timing
-                                        'timestamp': String(props.timestamp || props.Timestamp || props.lastSeen || ''),
-                                        'updated': String(props.updated || props.Updated || ''),
-                                        
-                                        // Additional
-                                        'type': String(props.type || props.Type || ''),
-                                        'status': String(props.status || props.Status || ''),
-                                        
-                                        // Source for debugging
-                                        'source': sourceName
+                                        'service': String(props.service || props.Service || ''),
+                                        'operator': String(props.operator || props.Operator || ''),
+                                        'lat': lat,
+                                        'lon': lon,
+                                        'heading': Number(props.heading || props.Heading || 0),
+                                        'speed': Number(props.speed || props.Speed || 0),
+                                        'destination': String(props.destination || props.Destination || ''),
+                                        'timestamp': String(props.timestamp || props.Timestamp || '')
                                     });
                                 }
                             }
@@ -195,53 +178,23 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Extract from ALL sources
+        // Extract from all sources
         extractFromSource(window.regTrainsSource, 'reg');
         extractFromSource(window.unregTrainsSource, 'unreg');
         extractFromSource(window.markerSource, 'marker');
         extractFromSource(window.arrowMarkersSource, 'arrow');
         
-        if (window.regTrainsLayer) extractFromSource(window.regTrainsLayer.getSource(), 'reg_layer');
-        if (window.unregTrainsLayer) extractFromSource(window.unregTrainsLayer.getSource(), 'unreg_layer');
-        if (window.markerLayer) extractFromSource(window.markerLayer.getSource(), 'marker_layer');
-        if (window.arrowMarkersLayer) extractFromSource(window.arrowMarkersLayer.getSource(), 'arrow_layer');
-        
         return allTrains;
         """
         
-        all_trains = driver.execute_script(script)
-        print(f"\n✅ Extracted {len(all_trains)} Australian trains")
-        
-        # Convert coordinates
-        trains = []
-        for t in all_trains:
-            lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
-            if lat and lon:
-                trains.append({
-                    'id': t['id'],
-                    'loco': t['loco'],
-                    'train_id': t['train_id'],
-                    'service': t['service'],
-                    'operator': t['operator'],
-                    'line': t['line'],
-                    'destination': t['destination'],
-                    'lat': round(lat, 6),
-                    'lon': round(lon, 6),
-                    'heading': round(t['heading'], 1),
-                    'speed': round(t['speed'], 1),
-                    'timestamp': t['timestamp'],
-                    'type': t['type'],
-                    'status': t['status']
-                })
-        
-        print(f"✅ Processed {len(trains)} trains")
+        trains = driver.execute_script(script)
+        print(f"\n✅ Extracted {len(trains)} Australian trains")
         
         if trains:
             print(f"\n📋 Sample train:")
             t = trains[0]
-            for key, value in t.items():
-                if value:
-                    print(f"   {key}: {value}")
+            print(f"   ID: {t['id']}")
+            print(f"   Location: {t['lat']:.4f}, {t['lon']:.4f}")
         
         return trains, f"ok - {len(trains)} trains"
         
