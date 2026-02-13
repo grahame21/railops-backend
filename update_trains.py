@@ -25,20 +25,9 @@ def write_output(trains, note=""):
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
-def webmercator_to_latlon(x, y):
-    try:
-        x = float(x)
-        y = float(y)
-        lon = (x / 20037508.34) * 180
-        lat = (y / 20037508.34) * 180
-        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
-        return lat, lon
-    except:
-        return None, None
-
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - EXTRACT SPECIFIC FIELDS")
+    print("🚂 RAILOPS - ENHANCED DATA EXTRACTION")
     print("=" * 60)
     
     chrome_options = Options()
@@ -96,8 +85,8 @@ def login_and_get_trains():
         """)
         print("✅ Warning page closed")
         
-        # Wait for map to fully initialize
-        print("\n⏳ Waiting 30 seconds for map to stabilize...")
+        # Wait for map
+        print("\n⏳ Waiting for map...")
         time.sleep(30)
         
         # Zoom to Australia
@@ -111,11 +100,10 @@ def login_and_get_trains():
             }
         """)
         
-        # Wait for trains to load
-        print("⏳ Waiting 60 seconds for Australian trains to load...")
+        print("⏳ Waiting for trains to load...")
         time.sleep(60)
         
-        # Extract trains with specific fields
+        # ENHANCED extraction - try to get more details
         print("\n🔍 Extracting train details...")
         
         script = """
@@ -137,7 +125,7 @@ def login_and_get_trains():
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Convert to lat/lon for Australia check
+                            // Convert to lat/lon
                             var x = coords[0];
                             var y = coords[1];
                             var lon = (x / 20037508.34) * 180;
@@ -147,7 +135,7 @@ def login_and_get_trains():
                             // Australia bounds
                             if (lat >= -45 && lat <= -5 && lon >= 110 && lon <= 160) {
                                 
-                                // Generate a unique ID if none exists
+                                // Try to get a meaningful ID
                                 var id = props.id || props.ID || 
                                         props.name || props.NAME ||
                                         props.loco || props.Loco ||
@@ -160,18 +148,57 @@ def login_and_get_trains():
                                 if (!seenIds.has(id)) {
                                     seenIds.add(id);
                                     
-                                    // Extract ONLY the fields we want
+                                    // Look for train details in all properties
                                     var train = {
                                         'id': id,
-                                        'train_id': String(props.trainId || props.TrainId || props.trainNumber || props.TrainNumber || ''),
-                                        'operator': String(props.operator || props.Operator || props.oper || props.Oper || ''),
-                                        'heading': Number(props.heading || props.Heading || props.dir || props.Dir || 0),
-                                        'speed': Number(props.speed || props.Speed || props.spd || props.Spd || 0),
-                                        'destination': String(props.destination || props.Destination || props.dest || props.Dest || ''),
-                                        'timestamp': String(props.timestamp || props.Timestamp || props.time || props.Time || ''),
                                         'lat': lat,
-                                        'lon': lon
+                                        'lon': lon,
+                                        'speed': Number(props.speed || props.Speed || props.spd || props.Spd || 0),
+                                        'heading': Number(props.heading || props.Heading || props.dir || props.Dir || 0)
                                     };
+                                    
+                                    // Try to find train number (could be in various fields)
+                                    if (props.trainNumber || props.TrainNumber) {
+                                        train['train_number'] = String(props.trainNumber || props.TrainNumber);
+                                    }
+                                    if (props.train_id || props.TrainId) {
+                                        train['train_id'] = String(props.train_id || props.TrainId);
+                                    }
+                                    
+                                    // Try to find operator
+                                    if (props.operator || props.Operator) {
+                                        train['operator'] = String(props.operator || props.Operator);
+                                    }
+                                    if (props.oper || props.Oper) {
+                                        train['operator'] = String(props.oper || props.Oper);
+                                    }
+                                    
+                                    // Try to find destination
+                                    if (props.destination || props.Destination) {
+                                        train['destination'] = String(props.destination || props.Destination);
+                                    }
+                                    if (props.dest || props.Dest) {
+                                        train['destination'] = String(props.dest || props.Dest);
+                                    }
+                                    
+                                    // Try to find timestamp
+                                    if (props.timestamp || props.Timestamp) {
+                                        train['timestamp'] = String(props.timestamp || props.Timestamp);
+                                    }
+                                    if (props.time || props.Time) {
+                                        train['timestamp'] = String(props.time || props.Time);
+                                    }
+                                    
+                                    // Also look for any other useful fields
+                                    if (props.service || props.Service) {
+                                        train['service'] = String(props.service || props.Service);
+                                    }
+                                    if (props.type || props.Type) {
+                                        train['type'] = String(props.type || props.Type);
+                                    }
+                                    if (props.status || props.Status) {
+                                        train['status'] = String(props.status || props.Status);
+                                    }
                                     
                                     allTrains.push(train);
                                 }
@@ -184,7 +211,7 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Extract from all possible sources
+        // Extract from all sources
         extractFromSource(window.regTrainsSource, 'reg');
         extractFromSource(window.unregTrainsSource, 'unreg');
         extractFromSource(window.markerSource, 'marker');
@@ -199,14 +226,15 @@ def login_and_get_trains():
         if trains and len(trains) > 0:
             print(f"\n📋 Sample train (first one):")
             t = trains[0]
-            print(f"   ID: {t['id']}")
-            print(f"   Train ID: {t['train_id']}")
-            print(f"   Operator: {t['operator']}")
-            print(f"   Heading: {t['heading']}°")
-            print(f"   Speed: {t['speed']} km/h")
-            print(f"   Destination: {t['destination']}")
-            print(f"   Timestamp: {t['timestamp']}")
-            print(f"   Location: {t['lat']:.4f}, {t['lon']:.4f}")
+            print(f"   ID: {t.get('id', 'N/A')}")
+            print(f"   Speed: {t.get('speed', 'N/A')} km/h")
+            print(f"   Heading: {t.get('heading', 'N/A')}°")
+            print(f"   Train number: {t.get('train_number', 'Not found')}")
+            print(f"   Train ID: {t.get('train_id', 'Not found')}")
+            print(f"   Operator: {t.get('operator', 'Not found')}")
+            print(f"   Destination: {t.get('destination', 'Not found')}")
+            print(f"   Timestamp: {t.get('timestamp', 'Not found')}")
+            print(f"   Location: {t.get('lat', 0):.4f}, {t.get('lon', 0):.4f}")
         
         return trains, f"ok - {len(trains)} trains"
         
