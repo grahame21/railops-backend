@@ -44,10 +44,10 @@ def webmercator_to_latlon(x, y):
         return None, None
 
 def login_and_get_trains():
-    """FIXED VERSION - Extract train ID from feature ID, not properties"""
+    """FINAL VERSION - Wait longer for Australian trains to load"""
     
     print("=" * 60)
-    print("🚂 RAILOPS - FEATURE ID EXTRACTION")
+    print("🚂 RAILOPS - FINAL VERSION - LONG WAIT")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
@@ -151,12 +151,63 @@ def login_and_get_trains():
         zoom_result = driver.execute_script(zoom_script)
         print(f"✅ {zoom_result}")
         
-        # Wait for Australian trains to load
-        print("\n⏳ Loading Australian trains...")
-        time.sleep(12)
+        # STEP 3: WAIT LONGER for Australian trains to load
+        print("\n⏳ Waiting 30 seconds for Australian trains to load...")
+        for i in range(30, 0, -1):
+            print(f"   {i} seconds remaining...", end='\r')
+            time.sleep(1)
+        print("   ✅ Done waiting!                          ")
         
-        # STEP 3: EXTRACT TRAINS USING FEATURE ID
-        print("\n🔍 Extracting trains using FEATURE ID...")
+        # STEP 4: CHECK WHICH SOURCES HAVE FEATURES
+        print("\n🔍 Checking which sources have features...")
+        
+        check_script = """
+        var results = {};
+        var sources = [
+            'arrowMarkersSource', 'arrowMarkersLayer',
+            'regTrainsSource', 'regTrainsLayer',
+            'unregTrainsSource', 'unregTrainsLayer',
+            'markerSource', 'markerLayer'
+        ];
+        
+        sources.forEach(function(name) {
+            var obj = window[name];
+            if (obj) {
+                try {
+                    var features = null;
+                    if (obj.getFeatures) {
+                        features = obj.getFeatures();
+                    } else if (obj.getSource && obj.getSource().getFeatures) {
+                        features = obj.getSource().getFeatures();
+                    }
+                    
+                    results[name] = features ? features.length : 0;
+                    
+                    // Also try to get source directly
+                    if (obj.getSource) {
+                        var source = obj.getSource();
+                        if (source && source.getFeatures) {
+                            results[name + '_source'] = source.getFeatures().length;
+                        }
+                    }
+                } catch(e) {
+                    results[name] = 'error: ' + e.toString();
+                }
+            } else {
+                results[name] = 'not found';
+            }
+        });
+        
+        return results;
+        """
+        
+        source_check = driver.execute_script(check_script)
+        print("\n📊 Source feature counts:")
+        for source, count in source_check.items():
+            print(f"   {source}: {count}")
+        
+        # STEP 5: EXTRACT TRAINS - FOCUS ON ARROWMARKERSSOURCE
+        print("\n🔍 Extracting trains from arrowMarkersSource...")
         
         extract_script = """
         var allTrains = [];
@@ -169,28 +220,20 @@ def login_and_get_trains():
                 var features = null;
                 if (source.getFeatures) {
                     features = source.getFeatures();
-                } else if (source.A) {
-                    features = source.A;
-                } else if (source.features) {
-                    features = source.features;
-                } else if (source.features_) {
-                    features = source.features_;
                 }
                 
                 if (features && features.length) {
+                    console.log(sourceName + ' has ' + features.length + ' features');
+                    
                     features.forEach(function(f) {
                         try {
-                            var geom = f.getGeometry ? f.getGeometry() : 
-                                     f.geometry_ || f.geom;
+                            var geom = f.getGeometry ? f.getGeometry() : null;
                             
                             if (geom && geom.getType() === 'Point') {
                                 var coords = geom.getCoordinates();
                                 
-                                // CRITICAL: Get the feature ID from the feature itself
-                                // This is where "ice13802", "ice33799" etc. are stored
+                                // Try to get the feature ID - this is where "ice13802" is stored
                                 var featureId = null;
-                                
-                                // Try all possible feature ID locations
                                 if (f.getId) {
                                     featureId = f.getId();
                                 } else if (f.id_) {
@@ -201,24 +244,28 @@ def login_and_get_trains():
                                     featureId = f.ol_uid;
                                 }
                                 
-                                // Convert to string and clean up
-                                if (featureId !== null && featureId !== undefined) {
+                                // Get any properties that might contain additional info
+                                var props = f.getProperties ? f.getProperties() : {};
+                                var heading = Number(props.heading || props.Heading || 0);
+                                var speed = Number(props.speed || props.Speed || 0);
+                                var direction = String(props.direction || props.Direction || '');
+                                
+                                // Clean up the ID
+                                if (featureId) {
                                     featureId = String(featureId).trim();
+                                    // Remove any OpenLayers prefixes
+                                    if (featureId.includes('.')) {
+                                        featureId = featureId.split('.').pop();
+                                    }
                                 } else {
                                     featureId = sourceName + '_' + allTrains.length;
                                 }
                                 
-                                // Get properties (minimal, but include heading if available)
-                                var props = f.getProperties ? f.getProperties() : {};
-                                var heading = Number(props.heading || props.Heading || 0);
-                                var speed = Number(props.speed || props.Speed || 0);
-                                
                                 if (!seenIds.has(featureId)) {
                                     seenIds.add(featureId);
-                                    
                                     allTrains.push({
                                         'id': featureId,
-                                        'loco': featureId,  // Use the feature ID as the loco number
+                                        'loco': featureId,
                                         'feature_id': featureId,
                                         'lat': coords[1],
                                         'lon': coords[0],
@@ -226,6 +273,7 @@ def login_and_get_trains():
                                         'y': coords[1],
                                         'heading': heading,
                                         'speed': speed,
+                                        'direction': direction,
                                         'source': sourceName
                                     });
                                 }
@@ -236,15 +284,24 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Check all sources - PRIORITIZE arrowMarkersSource (has the train IDs in your screenshot)
-        var sourcePriority = [
-            'arrowMarkersSource', 'arrowMarkersLayer',
+        // PRIORITY 1: arrowMarkersSource - this has the train IDs from your screenshot
+        if (window.arrowMarkersSource) {
+            extractFromSource(window.arrowMarkersSource, 'arrowMarkersSource');
+        }
+        if (window.arrowMarkersLayer) {
+            if (window.arrowMarkersLayer.getSource) {
+                extractFromSource(window.arrowMarkersLayer.getSource(), 'arrowMarkersLayer');
+            }
+        }
+        
+        // PRIORITY 2: Other sources
+        var otherSources = [
             'regTrainsSource', 'regTrainsLayer',
             'unregTrainsSource', 'unregTrainsLayer',
             'markerSource', 'markerLayer'
         ];
         
-        sourcePriority.forEach(function(name) {
+        otherSources.forEach(function(name) {
             var obj = window[name];
             if (obj) {
                 extractFromSource(obj, name);
@@ -254,45 +311,48 @@ def login_and_get_trains():
             }
         });
         
-        // Also check all map layers
-        if (window.map) {
-            window.map.getLayers().forEach(function(layer, index) {
-                if (layer.getSource) {
-                    extractFromSource(layer.getSource(), 'layer_' + index);
-                }
-            });
-        }
-        
         return allTrains;
         """
         
         train_features = driver.execute_script(extract_script)
-        print(f"\n✅ Found {len(train_features)} trains with FEATURE IDs")
+        print(f"\n✅ Found {len(train_features)} trains from arrowMarkersSource and other sources")
         
         # Show sample of what IDs we actually got
         if train_features:
-            print("\n📋 Sample of extracted train IDs (should be like 'ice13802', 'ice33799'):")
+            print("\n📋 Sample of extracted train IDs:")
             real_id_count = 0
             for i, train in enumerate(train_features[:20]):
                 train_id = str(train.get('id', 'unknown'))
-                print(f"   {i+1}. {train_id}")
-                if train_id and not train_id.startswith(('arrow', 'layer', 'marker', 'unknown', 'reg', 'unreg')):
+                # Clean up the ID for display
+                if '.' in train_id:
+                    display_id = train_id.split('.')[-1]
+                else:
+                    display_id = train_id
+                print(f"   {i+1}. {display_id}")
+                # Check if it looks like a real train ID (starts with letters, has numbers)
+                if any(c.isalpha() for c in display_id) and any(c.isdigit() for c in display_id):
                     real_id_count += 1
             
-            print(f"\n✅ Real train IDs in sample: {real_id_count}/{min(20, len(train_features))}")
+            print(f"\n✅ Real-looking train IDs in sample: {real_id_count}/{min(20, len(train_features))}")
         
         # Convert coordinates and build final train list
         trains = []
         for feature in train_features:
             lat, lon = webmercator_to_latlon(feature['x'], feature['y'])
             if lat and lon:
+                train_id = str(feature.get('id', 'unknown'))
+                # Clean up the ID for storage
+                if '.' in train_id:
+                    train_id = train_id.split('.').pop()
+                
                 train = {
-                    'id': str(feature.get('id', 'unknown')),
-                    'loco': str(feature.get('loco', feature.get('id', 'unknown'))),
+                    'id': train_id,
+                    'loco': train_id,
                     'lat': round(lat, 6),
                     'lon': round(lon, 6),
                     'heading': round(to_float(feature.get('heading', 0)), 1),
                     'speed': round(to_float(feature.get('speed', 0)), 1),
+                    'direction': str(feature.get('direction', '')),
                     'source': str(feature.get('source', ''))
                 }
                 trains.append(train)
@@ -301,10 +361,11 @@ def login_and_get_trains():
         
         # Final check - count trains with real-looking IDs
         if trains:
-            real_ids = [t for t in trains if t['id'] and 
-                       not str(t['id']).startswith(('arrow', 'layer', 'marker', 'unknown', 'reg', 'unreg')) and
-                       len(str(t['id'])) > 3]  # IDs like "ice13802" are longer
-            print(f"\n✅ Trains with REAL IDs: {len(real_ids)} out of {len(trains)}")
+            real_ids = [t for t in trains if 
+                       any(c.isalpha() for c in t['id']) and 
+                       any(c.isdigit() for c in t['id']) and
+                       len(t['id']) > 3]
+            print(f"\n✅ Trains with REAL-looking IDs: {len(real_ids)} out of {len(trains)}")
         
         # Save screenshot
         driver.save_screenshot("australia_trains.png")
@@ -324,7 +385,7 @@ def login_and_get_trains():
 
 def main():
     print("=" * 60)
-    print("🚂🚂🚂 RAILOPS - FEATURE ID EXTRACTION 🚂🚂🚂")
+    print("🚂🚂🚂 RAILOPS - FINAL VERSION 🚂🚂🚂")
     print(f"📅 {datetime.datetime.utcnow().isoformat()}")
     print("=" * 60)
     
