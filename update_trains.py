@@ -38,7 +38,7 @@ def webmercator_to_latlon(x, y):
 
 def login_and_get_trains():
     print("=" * 60)
-    print("🚂 RAILOPS - SCAN ALL POSSIBLE SOURCES")
+    print("🚂 RAILOPS - PRODUCTION READY")
     print("=" * 60)
     
     chrome_options = Options()
@@ -109,167 +109,21 @@ def login_and_get_trains():
             }
         """)
         print("⏳ Waiting for trains to load...")
-        time.sleep(20)  # Extra long wait
+        time.sleep(15)
         
-        # SCAN EVERY POSSIBLE SOURCE
-        print("\n🔍 SCANNING ALL POSSIBLE TRAIN SOURCES...")
+        # Extract trains with REAL IDs
+        print("\n🔍 Extracting trains with real IDs...")
         
-        scan_script = """
-        var results = {
-            sources: {},
-            layers: {},
-            mapLayers: [],
-            globalVars: []
-        };
-        
-        // Check all known source names
-        var sourceNames = [
-            'regTrainsSource', 'unregTrainsSource',
-            'markerSource', 'arrowMarkersSource',
-            'trainSource', 'trainsSource',
-            'vehicleSource', 'vehiclesSource',
-            'locosSource', 'locomotivesSource',
-            'pointSource', 'featureSource'
-        ];
-        
-        sourceNames.forEach(function(name) {
-            if (window[name]) {
-                var src = window[name];
-                results.sources[name] = {
-                    exists: true,
-                    type: src.constructor ? src.constructor.name : typeof src,
-                    hasGetFeatures: typeof src.getFeatures === 'function',
-                    featureCount: src.getFeatures ? src.getFeatures().length : 0
-                };
-            }
-        });
-        
-        // Check all known layer names
-        var layerNames = [
-            'regTrainsLayer', 'unregTrainsLayer',
-            'markerLayer', 'arrowMarkersLayer',
-            'trainLayer', 'trainsLayer',
-            'vehicleLayer', 'vehiclesLayer',
-            'locoLayer', 'locomotivesLayer'
-        ];
-        
-        layerNames.forEach(function(name) {
-            if (window[name]) {
-                var layer = window[name];
-                results.layers[name] = {
-                    exists: true,
-                    type: layer.constructor ? layer.constructor.name : typeof layer,
-                    hasSource: typeof layer.getSource === 'function'
-                };
-                if (layer.getSource) {
-                    var src = layer.getSource();
-                    results.layers[name + '_source'] = {
-                        exists: true,
-                        type: src.constructor ? src.constructor.name : typeof src,
-                        hasGetFeatures: typeof src.getFeatures === 'function',
-                        featureCount: src.getFeatures ? src.getFeatures().length : 0
-                    };
-                }
-            }
-        });
-        
-        // Check all map layers
-        if (window.map) {
-            window.map.getLayers().forEach(function(layer, index) {
-                var layerInfo = {
-                    index: index,
-                    type: layer.constructor.name,
-                    title: layer.get('title') || layer.get('name') || 'unknown'
-                };
-                
-                if (layer.getSource) {
-                    var src = layer.getSource();
-                    layerInfo.hasSource = true;
-                    layerInfo.sourceType = src.constructor.name;
-                    layerInfo.featureCount = src.getFeatures ? src.getFeatures().length : 0;
-                    
-                    // Sample first feature
-                    if (src.getFeatures && src.getFeatures().length > 0) {
-                        var f = src.getFeatures()[0];
-                        var props = f.getProperties();
-                        layerInfo.sampleProps = Object.keys(props).slice(0, 10);
-                    }
-                }
-                
-                results.mapLayers.push(layerInfo);
-            });
-        }
-        
-        // Check global variables for anything train-related
-        for (var key in window) {
-            if (key.toLowerCase().includes('train') || 
-                key.toLowerCase().includes('loco') || 
-                key.toLowerCase().includes('vehicle') ||
-                key.toLowerCase().includes('rail')) {
-                try {
-                    var val = window[key];
-                    if (val && typeof val === 'object') {
-                        results.globalVars.push({
-                            name: key,
-                            type: val.constructor ? val.constructor.name : typeof val,
-                            length: val.length !== undefined ? val.length : 
-                                   (val.getFeatures ? '(source)' : 'unknown')
-                        });
-                    }
-                } catch(e) {}
-            }
-        }
-        
-        return results;
-        """
-        
-        scan_results = driver.execute_script(scan_script)
-        
-        print("\n" + "="*60)
-        print("📊 SOURCE SCAN RESULTS")
-        print("="*60)
-        
-        print("\n🔹 NAMED SOURCES:")
-        for name, info in scan_results.get('sources', {}).items():
-            if info.get('exists'):
-                print(f"   ✅ {name}: {info.get('featureCount', 0)} features")
-            else:
-                print(f"   ❌ {name}: not found")
-        
-        print("\n🔹 NAMED LAYERS:")
-        for name, info in scan_results.get('layers', {}).items():
-            if info.get('exists'):
-                if 'featureCount' in info:
-                    print(f"   ✅ {name}: {info.get('featureCount', 0)} features")
-                else:
-                    print(f"   ✅ {name}: exists")
-        
-        print("\n🔹 MAP LAYERS:")
-        for layer in scan_results.get('mapLayers', []):
-            print(f"   📍 Layer {layer.get('index')}: {layer.get('type')}")
-            print(f"      Title: {layer.get('title')}")
-            print(f"      Features: {layer.get('featureCount', 0)}")
-            if layer.get('sampleProps'):
-                print(f"      Sample props: {layer.get('sampleProps')}")
-        
-        print("\n🔹 TRAIN-RELATED GLOBAL VARIABLES:")
-        for var in scan_results.get('globalVars', []):
-            print(f"   🔸 {var.get('name')}: {var.get('type')} ({var.get('length')})")
-        
-        # Now try to extract from ANY source that has features
-        print("\n" + "="*60)
-        print("🔍 EXTRACTING FROM ALL SOURCES WITH FEATURES")
-        print("="*60)
-        
-        extract_script = """
+        script = """
         var allTrains = [];
         var seenIds = new Set();
         
+        // Extract from a source
         function extractFromSource(src, sourceName) {
-            if (!src) return;
+            if (!src || !src.getFeatures) return;
+            
             try {
-                var features = src.getFeatures ? src.getFeatures() : [];
-                console.log(sourceName + ' has ' + features.length + ' features');
+                var features = src.getFeatures();
                 
                 features.forEach(function(f) {
                     try {
@@ -279,21 +133,19 @@ def login_and_get_trains():
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Get ID from any property
-                            var id = props.id || props.ID || 
-                                    props.name || props.NAME ||
-                                    props.loco || props.Loco ||
-                                    props.unit || props.Unit ||
-                                    props.trainId || props.TrainId ||
-                                    f.getId ? f.getId() : null;
+                            // 🚂 REAL TRAIN ID - from the debug output!
+                            var trainId = props.trainName || props.trainNumber || 
+                                         props.name || props.labelContent || 
+                                         props.id || props.ID;
                             
-                            if (!id) {
-                                id = sourceName + '_' + allTrains.length;
+                            // If still no ID, use the source name + index
+                            if (!trainId) {
+                                trainId = sourceName + '_' + allTrains.length;
                             }
                             
-                            id = String(id).trim();
+                            trainId = String(trainId).trim();
                             
-                            // Australia bounds (in Web Mercator)
+                            // Australia bounds (convert from Web Mercator)
                             var x = coords[0];
                             var y = coords[1];
                             var lon = (x / 20037508.34) * 180;
@@ -301,14 +153,21 @@ def login_and_get_trains():
                             lat = 180 / 3.14159 * (2 * Math.atan(Math.exp(lat * 3.14159 / 180)) - 3.14159 / 2);
                             
                             if (lat >= -45 && lat <= -10 && lon >= 110 && lon <= 155) {
-                                if (!seenIds.has(id)) {
-                                    seenIds.add(id);
+                                if (!seenIds.has(trainId)) {
+                                    seenIds.add(trainId);
                                     allTrains.push({
-                                        'id': id,
+                                        'id': trainId,
+                                        'loco': trainId,
+                                        'name': String(props.trainName || ''),
+                                        'number': String(props.trainNumber || ''),
+                                        'speed': Number(props.trainSpeed || props.speed || 0),
+                                        'heading': Number(props.heading || 0),
                                         'lat': coords[1],
                                         'lon': coords[0],
-                                        'heading': Number(props.heading || props.Heading || 0),
-                                        'speed': Number(props.speed || props.Speed || 0)
+                                        'km': Number(props.trainKM || 0),
+                                        'time': String(props.trainTime || ''),
+                                        'date': String(props.trainDate || ''),
+                                        'source': sourceName
                                     });
                                 }
                             }
@@ -318,52 +177,56 @@ def login_and_get_trains():
             } catch(e) {}
         }
         
-        // Check all possible sources
-        var sourceList = [
-            window.regTrainsSource,
-            window.unregTrainsSource,
-            window.markerSource,
-            window.arrowMarkersSource,
-            window.regTrainsLayer ? window.regTrainsLayer.getSource() : null,
-            window.unregTrainsLayer ? window.unregTrainsLayer.getSource() : null,
-            window.markerLayer ? window.markerLayer.getSource() : null,
-            window.arrowMarkersLayer ? window.arrowMarkersLayer.getSource() : null
-        ];
+        // Get from all the sources we found
+        extractFromSource(window.regTrainsSource, 'reg');
+        extractFromSource(window.unregTrainsSource, 'unreg');
+        extractFromSource(window.markerSource, 'marker');
+        extractFromSource(window.arrowMarkersSource, 'arrow');
         
-        var sourceNames = [
-            'regTrainsSource', 'unregTrainsSource',
-            'markerSource', 'arrowMarkersSource',
-            'regTrainsLayer', 'unregTrainsLayer',
-            'markerLayer', 'arrowMarkersLayer'
-        ];
-        
-        for (var i = 0; i < sourceList.length; i++) {
-            extractFromSource(sourceList[i], sourceNames[i]);
-        }
+        if (window.regTrainsLayer) extractFromSource(window.regTrainsLayer.getSource(), 'reg_layer');
+        if (window.unregTrainsLayer) extractFromSource(window.unregTrainsLayer.getSource(), 'unreg_layer');
+        if (window.markerLayer) extractFromSource(window.markerLayer.getSource(), 'marker_layer');
+        if (window.arrowMarkersLayer) extractFromSource(window.arrowMarkersLayer.getSource(), 'arrow_layer');
         
         return allTrains;
         """
         
-        all_trains = driver.execute_script(extract_script)
+        all_trains = driver.execute_script(script)
         print(f"\n✅ Extracted {len(all_trains)} Australian trains")
         
-        # Convert coordinates
+        # Convert coordinates and build final train list
         trains = []
         for t in all_trains:
             lat, lon = webmercator_to_latlon(t['lon'], t['lat'])
             if lat and lon:
                 trains.append({
                     'id': t['id'],
+                    'loco': t['loco'],
+                    'name': t['name'],
+                    'number': t['number'],
                     'lat': round(lat, 6),
                     'lon': round(lon, 6),
-                    'heading': round(float(t['heading']), 1),
-                    'speed': round(float(t['speed']), 1)
+                    'speed': round(t['speed'], 1),
+                    'heading': round(t['heading'], 1),
+                    'km': round(t['km'], 1),
+                    'time': t['time'],
+                    'date': t['date']
                 })
         
-        print(f"✅ Processed {len(trains)} trains with coordinates")
+        print(f"✅ Processed {len(trains)} trains with real IDs")
         
         if trains:
-            print(f"\n📋 First train: ID={trains[0]['id']} at {trains[0]['lat']}, {trains[0]['lon']}")
+            print(f"\n📋 First train details:")
+            print(f"   ID: {trains[0]['id']}")
+            print(f"   Location: {trains[0]['lat']}, {trains[0]['lon']}")
+            print(f"   Speed: {trains[0]['speed']} km/h")
+            print(f"   Heading: {trains[0]['heading']}°")
+            if trains[0]['name']:
+                print(f"   Name: {trains[0]['name']}")
+            if trains[0]['number']:
+                print(f"   Number: {trains[0]['number']}")
+            if trains[0]['km']:
+                print(f"   KM: {trains[0]['km']}")
         
         return trains, f"ok - {len(trains)} trains"
         
