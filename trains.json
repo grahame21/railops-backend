@@ -1,180 +1,724 @@
 {
-  "lastUpdated": "2026-02-14T16:02:37.418901Z",
-  "note": "ok - 590 trains",
+  "lastUpdated": "2026-02-14T16:48:38.017329Z",
+  "note": "ok - 609 trains",
   "trains": [
     {
-      "id": "TNSW-9499-8536",
-      "train_number": "N689",
-      "lat": -33.2854,
-      "lon": 151.42519,
+      "id": "GWA005",
+      "train_number": "6DA2",
+      "lat": -32.346213,
+      "lon": 137.603773,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-3150-4577",
-      "train_number": "N408",
-      "lat": -32.9416,
-      "lon": 151.69795,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "5042",
-      "train_number": "WG914",
-      "lat": -32.870983,
-      "lon": 151.74196,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-6217-2227",
-      "train_number": "N697",
-      "lat": -32.920212,
-      "lon": 151.751007,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "LDP002",
-      "train_number": "HV246",
-      "lat": -32.86676,
-      "lon": 151.752053,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR98",
-      "train_number": "7SB3",
-      "lat": -32.898793,
-      "lon": 151.761827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QE002",
-      "train_number": "8968",
-      "lat": -33.529877,
-      "lon": 149.883973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-4585-7588",
-      "train_number": "W699",
-      "lat": -33.478039,
-      "lon": 150.245316,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-2378-2752",
-      "train_number": "R488",
-      "lat": -33.585709,
-      "lon": 150.257523,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT116",
-      "train_number": "MR248",
-      "lat": -32.398057,
-      "lon": 150.66844,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-9828-3109",
-      "train_number": "W697",
-      "lat": -33.5583,
-      "lon": 150.261795,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-4764-3928",
-      "train_number": "R796",
-      "lat": -33.708412,
-      "lon": 150.585613,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT131",
-      "train_number": "MR280",
-      "lat": -32.323017,
-      "lon": 149.899973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8258",
-      "train_number": "5420",
-      "lat": -31.221067,
-      "lon": 150.408413,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9305",
-      "train_number": "BE531",
-      "lat": -30.970517,
-      "lon": 150.238333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "C502",
-      "train_number": "4547",
-      "lat": -30.349203,
-      "lon": 149.763853,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MAN012",
-      "train_number": "5572",
-      "lat": -29.985723,
-      "lon": 149.791907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8239",
-      "train_number": "4525",
-      "lat": -29.49648,
-      "lon": 149.853,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "WH001",
-      "train_number": "NB523",
-      "lat": -30.514583,
-      "lon": 149.90348,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "6022",
-      "train_number": "7SP1",
-      "lat": -33.143757,
-      "lon": 148.099427,
+      "id": "SCT009",
+      "train_number": "7GP1",
+      "lat": -31.960977,
+      "lon": 141.466013,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "4917",
       "train_number": "8875",
-      "lat": -32.293667,
-      "lon": 148.198693,
+      "lat": -32.233957,
+      "lon": 148.240147,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QL019",
+      "train_number": "9861",
+      "lat": -30.99189,
+      "lon": 148.362213,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "QL013",
       "train_number": "3862",
-      "lat": -32.173777,
-      "lon": 148.631853,
+      "lat": -31.94169,
+      "lon": 148.624387,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR76",
+      "train_number": "6PS7",
+      "lat": -31.107503,
+      "lon": 135.905773,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CSR023",
+      "train_number": "6MP9",
+      "lat": -31.165497,
+      "lon": 136.12464,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR50",
+      "train_number": "7YN2",
+      "lat": -32.282833,
+      "lon": 142.35264,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR112",
+      "train_number": "7SP7",
+      "lat": -31.11754,
+      "lon": 135.933973,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR95",
+      "train_number": "5PS6",
+      "lat": -32.935293,
+      "lon": 139.104,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6057",
+      "train_number": "6MP1",
+      "lat": -32.46913,
+      "lon": 137.768093,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR52",
+      "train_number": "6MP5",
+      "lat": -32.39728,
+      "lon": 137.731267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR45",
+      "train_number": "6NY3",
+      "lat": -32.469713,
+      "lon": 137.768307,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6055",
+      "train_number": "8102",
+      "lat": -32.483507,
+      "lon": 137.770707,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GWU013",
+      "train_number": "9614",
+      "lat": -32.4599,
+      "lon": 137.762507,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8134",
+      "train_number": "8M51",
+      "lat": -35.069967,
+      "lon": 147.414147,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4422",
+      "train_number": "8364",
+      "lat": -34.646663,
+      "lon": 147.994707,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR115",
+      "train_number": "7SP5",
+      "lat": -33.029703,
+      "lon": 146.79184,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "S312",
+      "train_number": "8875",
+      "lat": -32.236303,
+      "lon": 148.24536,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR2",
+      "train_number": "7MB4",
+      "lat": -35.160993,
+      "lon": 147.30112,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8220",
+      "train_number": "3339",
+      "lat": -34.00654,
+      "lon": 147.302973,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6022",
+      "train_number": "7SP1",
+      "lat": -33.129853,
+      "lon": 147.57708,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR85",
+      "train_number": "7MP5",
+      "lat": -35.316553,
+      "lon": 139.50936,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6061",
+      "train_number": "7MP1",
+      "lat": -35.142343,
+      "lon": 139.33048,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR21",
+      "train_number": "7XM4",
+      "lat": -35.004183,
+      "lon": 138.80492,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4431",
+      "train_number": "5PM9",
+      "lat": -34.695803,
+      "lon": 138.591573,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6005",
+      "train_number": "WH943",
+      "lat": -30.955663,
+      "lon": 150.19784,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "WH001",
+      "train_number": "NB523",
+      "lat": -30.515713,
+      "lon": 149.907947,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "C502",
+      "train_number": "4547",
+      "lat": -30.281537,
+      "lon": 149.589613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MAN012",
+      "train_number": "5572",
+      "lat": -29.83436,
+      "lon": 149.79232,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9305",
+      "train_number": "BE531",
+      "lat": -30.61996,
+      "lon": 150.076427,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QR5400",
+      "train_number": "C81T",
+      "lat": -22.140948,
+      "lon": 149.531679,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "SO2",
+      "train_number": "W57T",
+      "lat": -23.599606,
+      "lon": 150.166603,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "5039",
+      "train_number": "AT762",
+      "lat": -32.315803,
+      "lon": 150.75408,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8236",
+      "train_number": "4539",
+      "lat": -31.768257,
+      "lon": 150.83848,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XRN001",
+      "train_number": "UL244",
+      "lat": -32.273837,
+      "lon": 150.85784,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9323",
+      "train_number": "NB545",
+      "lat": -32.026327,
+      "lon": 150.867627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8235",
+      "train_number": "5434",
+      "lat": -31.764,
+      "lon": 150.81748,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT122",
+      "train_number": "BG343",
+      "lat": -32.28836,
+      "lon": 150.83188,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9302",
+      "train_number": "WH957",
+      "lat": -31.721333,
+      "lon": 150.783973,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "5030",
+      "train_number": "BW131",
+      "lat": -32.33508,
+      "lon": 150.90256,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "5025",
+      "train_number": "AT906",
+      "lat": -32.278673,
+      "lon": 150.91668,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9304",
+      "train_number": "MB909",
+      "lat": -32.248993,
+      "lon": 150.895253,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9303",
+      "train_number": "BE942",
+      "lat": -32.215473,
+      "lon": 150.89988,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT128",
+      "train_number": "MR218",
+      "lat": -32.282973,
+      "lon": 150.954747,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8258",
+      "train_number": "5420",
+      "lat": -31.44886,
+      "lon": 150.660827,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9313",
+      "train_number": "BE537",
+      "lat": -31.67264,
+      "lon": 150.74536,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6028",
+      "train_number": "MB956",
+      "lat": -31.64977,
+      "lon": 150.725947,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GWU005",
+      "train_number": "UL315",
+      "lat": -32.273377,
+      "lon": 149.76332,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT103",
+      "train_number": "MR387",
+      "lat": -32.37148,
+      "lon": 150.46012,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XRN017",
+      "train_number": "MN361",
+      "lat": -32.312523,
+      "lon": 150.714667,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT116",
+      "train_number": "MR248",
+      "lat": -32.347237,
+      "lon": 150.70952,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT131",
+      "train_number": "MR280",
+      "lat": -32.43568,
+      "lon": 150.1452,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XRN011",
+      "train_number": "UL127",
+      "lat": -32.3508,
+      "lon": 150.599533,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT115",
+      "train_number": "HV974",
+      "lat": -32.558013,
+      "lon": 151.157507,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "5021",
+      "train_number": "BW346",
+      "lat": -32.475143,
+      "lon": 151.13132,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "LDP006",
+      "train_number": "HV985",
+      "lat": -32.39165,
+      "lon": 151.002307,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XRN027",
+      "train_number": "ER404",
+      "lat": -32.375657,
+      "lon": 151.024733,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6052",
+      "train_number": "6PM1",
+      "lat": -30.48921,
+      "lon": 132.3526,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GWU015",
+      "train_number": "9612",
+      "lat": -29.808087,
+      "lon": 134.53868,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GWA002",
+      "train_number": "6AD1",
+      "lat": -22.186102,
+      "lon": 133.93272,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GWA008",
+      "train_number": "1DW4",
+      "lat": -13.09505,
+      "lon": 131.098627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR97",
+      "train_number": "7MP7",
+      "lat": -30.490807,
+      "lon": 132.340827,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR57",
+      "train_number": "6PM7",
+      "lat": -30.703467,
+      "lon": 134.331627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6048",
+      "train_number": "6SP1",
+      "lat": -30.662437,
+      "lon": 129.968813,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR69",
+      "train_number": "6MP4",
+      "lat": -30.633613,
+      "lon": 130.2302,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "SCT001",
+      "train_number": "6PM9",
+      "lat": -30.572563,
+      "lon": 130.7664,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GWA009",
+      "train_number": "7AD1",
+      "lat": -30.628573,
+      "lon": 134.51864,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR105",
+      "train_number": "6PM6",
+      "lat": -30.71378,
+      "lon": 129.4874,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR48",
+      "train_number": "7PM5",
+      "lat": -30.8609,
+      "lon": 120.649707,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4018",
+      "train_number": "7430",
+      "lat": -30.853523,
+      "lon": 121.119373,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4014",
+      "train_number": "7461",
+      "lat": -30.776739,
+      "lon": 121.423889,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6049",
+      "train_number": "7PS1",
+      "lat": -30.95799,
+      "lon": 126.88564,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4432",
+      "train_number": "5MP9",
+      "lat": -30.84595,
+      "lon": 120.410507,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR5",
+      "train_number": "6SP5",
+      "lat": -31.005517,
+      "lon": 125.075547,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR17",
+      "train_number": "5MP5",
+      "lat": -31.648583,
+      "lon": 117.2704,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACD6050",
+      "train_number": "5MP1",
+      "lat": -30.94037,
+      "lon": 119.373693,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR27",
+      "train_number": "7PA8",
+      "lat": -30.829223,
+      "lon": 119.595587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4006",
+      "train_number": "5029",
+      "lat": -31.364115,
+      "lon": 118.907364,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACB4403",
+      "train_number": "6426",
+      "lat": -31.382545,
+      "lon": 118.497101,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4429",
+      "train_number": "7PG1",
+      "lat": -31.6446,
+      "lon": 116.802627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QE003",
+      "train_number": "6BW7",
+      "lat": -33.734723,
+      "lon": 151.075427,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4408",
+      "train_number": "1491",
+      "lat": -33.704463,
+      "lon": 151.09796,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-7889-1121",
+      "train_number": "120B",
+      "lat": -33.698315,
+      "lon": 151.099643,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR10",
+      "train_number": "1SB6",
+      "lat": -33.660467,
+      "lon": 151.128253,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-2098-9321",
+      "train_number": "N704",
+      "lat": -33.578301,
+      "lon": 151.188505,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "FIE004",
+      "train_number": "8148",
+      "lat": -33.7738,
+      "lon": 150.919613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-4764-3928",
+      "train_number": "R796",
+      "lat": -33.767361,
+      "lon": 150.901321,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-5089-3991",
+      "train_number": "811B",
+      "lat": -33.75824,
+      "lon": 150.72003,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-2903-6522",
+      "train_number": "811A",
+      "lat": -33.750617,
+      "lon": 150.698481,
       "heading": 0.0,
       "speed": 0.0
     },
@@ -187,202 +731,98 @@
       "speed": 0.0
     },
     {
-      "id": "NR115",
-      "train_number": "7SP5",
-      "lat": -33.081773,
-      "lon": 147.29356,
+      "id": "TNSW-5492-8991",
+      "train_number": "R490",
+      "lat": -33.585709,
+      "lon": 150.257523,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "QL019",
-      "train_number": "9861",
-      "lat": -31.0482,
-      "lon": 148.349307,
+      "id": "TNSW-8553-4601",
+      "train_number": "W410",
+      "lat": -33.47892,
+      "lon": 150.164063,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-6665-5476",
-      "train_number": "609A",
-      "lat": -34.05606,
-      "lon": 151.15148,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4403",
-      "train_number": "2188",
-      "lat": -33.922573,
-      "lon": 151.17108,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "C508",
-      "train_number": "8178",
-      "lat": -33.958653,
-      "lon": 151.21904,
+      "id": "QE002",
+      "train_number": "8968",
+      "lat": -33.410873,
+      "lon": 150.110867,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "BRM002",
       "train_number": "8178B",
-      "lat": -33.958,
-      "lon": 151.219173,
+      "lat": -33.962897,
+      "lon": 151.21948,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "G534",
-      "train_number": "T170",
-      "lat": -33.967593,
-      "lon": 151.220733,
+      "id": "C508",
+      "train_number": "8178",
+      "lat": -33.962497,
+      "lon": 151.2196,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-8452-3259",
-      "train_number": "615U",
-      "lat": -33.95218,
-      "lon": 151.13696,
+      "id": "TNSW-7590-3330",
+      "train_number": "616B",
+      "lat": -33.890211,
+      "lon": 151.200209,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-1772-1470",
-      "train_number": "514A",
-      "lat": -33.951778,
-      "lon": 150.787216,
+      "id": "TNSW-3422-3007",
+      "train_number": "80-A",
+      "lat": -33.887365,
+      "lon": 151.202855,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-8335-6375",
-      "train_number": "716A",
-      "lat": -33.951729,
-      "lon": 150.787216,
+      "id": "TNSW-7699-6822",
+      "train_number": "71AB",
+      "lat": -33.863437,
+      "lon": 151.063373,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-5056-8870",
-      "train_number": "713A",
-      "lat": -33.951679,
-      "lon": 150.787216,
+      "id": "TNSW-1528-3629",
+      "train_number": "Y410",
+      "lat": -33.820439,
+      "lon": 151.089114,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-1381-5518",
-      "train_number": "90-A",
-      "lat": -33.951561,
-      "lon": 150.787247,
+      "id": "8138",
+      "train_number": "T106",
+      "lat": -33.993407,
+      "lon": 150.86912,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-4617-7036",
-      "train_number": "91-A",
-      "lat": -33.952049,
-      "lon": 150.792267,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-5302-5432",
-      "train_number": "785-",
-      "lat": -33.952705,
-      "lon": 150.797919,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "FIE004",
-      "train_number": "8148",
-      "lat": -33.777843,
-      "lon": 150.637893,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QL004",
-      "train_number": "8964",
-      "lat": -34.19792,
-      "lon": 151.00736,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QL015",
-      "train_number": "1WB7",
-      "lat": -33.880057,
-      "lon": 151.06828,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4408",
-      "train_number": "1491",
-      "lat": -33.900033,
-      "lon": 151.069973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR10",
-      "train_number": "1SB6",
-      "lat": -33.864913,
-      "lon": 151.07296,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-5142-5360",
-      "train_number": "604R",
-      "lat": -33.97094,
-      "lon": 151.08102,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-2903-6522",
-      "train_number": "811A",
-      "lat": -33.863876,
-      "lon": 151.060677,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "PB5",
-      "train_number": "D925",
-      "lat": -34.44602,
-      "lon": 150.88144,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "PB3",
-      "train_number": "T922",
-      "lat": -34.460467,
-      "lon": 150.885187,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-3174-7162",
-      "train_number": "785Z",
+      "id": "TNSW-4939-8537",
+      "train_number": "711A",
       "lat": -33.97247,
       "lon": 150.89274,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-3337-5492",
-      "train_number": "71CB",
-      "lat": -33.765999,
-      "lon": 150.906464,
+      "id": "TNSW-8501-6168",
+      "train_number": "705B",
+      "lat": -33.967057,
+      "lon": 150.899173,
       "heading": 0.0,
       "speed": 0.0
     },
@@ -390,991 +830,639 @@
       "id": "1103",
       "train_number": "T248",
       "lat": -33.96483,
-      "lon": 150.914293,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "PB7",
-      "train_number": "T921",
-      "lat": -34.449993,
-      "lon": 150.88144,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "G513",
-      "train_number": "1243",
-      "lat": -34.534057,
-      "lon": 150.37868,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR53",
-      "train_number": "7SM2",
-      "lat": -34.343843,
-      "lon": 150.561627,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4411",
-      "train_number": "7WM7",
-      "lat": -34.127307,
-      "lon": 150.743373,
+      "lon": 150.91428,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "TNSW-8053-1359",
       "train_number": "707A",
-      "lat": -33.9519,
-      "lon": 150.787186,
+      "lat": -33.922818,
+      "lon": 150.929411,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-9092-4594",
-      "train_number": "92-A",
-      "lat": -33.951839,
-      "lon": 150.787201,
+      "id": "GM27",
+      "train_number": "T276",
+      "lat": -33.860273,
+      "lon": 150.979067,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-8462-9653",
-      "train_number": "719A",
-      "lat": -33.9515,
-      "lon": 150.785309,
+      "id": "PB3",
+      "train_number": "T922",
+      "lat": -34.460597,
+      "lon": 150.88564,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4411",
+      "train_number": "7WM7",
+      "lat": -34.304723,
+      "lon": 150.59164,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-9776-3848",
+      "train_number": "702C",
+      "lat": -34.07191,
+      "lon": 150.79704,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-2207-9117",
+      "train_number": "702A",
+      "lat": -34.067291,
+      "lon": 150.809738,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QL004",
+      "train_number": "8964",
+      "lat": -34.47231,
+      "lon": 150.885573,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "PB7",
+      "train_number": "T921",
+      "lat": -34.446003,
+      "lon": 150.882613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-5938-2775",
+      "train_number": "4--D",
+      "lat": -34.0555,
+      "lon": 150.824585,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "CM3303",
       "train_number": "7MS1",
-      "lat": -34.21259,
-      "lon": 150.595627,
+      "lat": -34.079507,
+      "lon": 150.749853,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "ACD6058",
-      "train_number": "6BM9",
-      "lat": -34.770497,
-      "lon": 149.361267,
+      "id": "TNSW-6652-7105",
+      "train_number": "321A",
+      "lat": -34.31563,
+      "lon": 150.920803,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "SSR101",
-      "train_number": "2277",
-      "lat": -34.764643,
-      "lon": 150.032307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CEY007",
-      "train_number": "1285",
-      "lat": -34.75068,
-      "lon": 150.023093,
+      "id": "XP2008",
+      "train_number": "ST22",
+      "lat": -34.77664,
+      "lon": 149.164213,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "VL352",
       "train_number": "2343",
-      "lat": -34.740043,
-      "lon": 149.747547,
+      "lat": -34.74955,
+      "lon": 149.2848,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TT127",
-      "train_number": "GR417",
-      "lat": -32.78655,
-      "lon": 151.643227,
+      "id": "NR53",
+      "train_number": "7SM2",
+      "lat": -34.663507,
+      "lon": 150.281093,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "HM2753",
-      "train_number": "V700",
-      "lat": -32.887043,
-      "lon": 151.70996,
+      "id": "G513",
+      "train_number": "1243",
+      "lat": -34.50926,
+      "lon": 150.336427,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "6044",
-      "train_number": "MB952",
-      "lat": -32.87257,
-      "lon": 151.733773,
+      "id": "SSR101",
+      "train_number": "2278",
+      "lat": -34.758827,
+      "lon": 150.029547,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "5005",
-      "train_number": "BW240",
-      "lat": -32.868103,
-      "lon": 151.756787,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XRN022",
-      "train_number": "MO194",
-      "lat": -32.870167,
-      "lon": 151.760787,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACB4401",
-      "train_number": "8456",
-      "lat": -32.90393,
-      "lon": 151.76888,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "PHC001",
-      "train_number": "3591",
-      "lat": -32.937797,
-      "lon": 151.64948,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "5009",
-      "train_number": "BW962",
-      "lat": -32.83646,
-      "lon": 151.687013,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TNSW-4836-6165",
-      "train_number": "N687",
-      "lat": -32.94155,
-      "lon": 151.69793,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9303",
-      "train_number": "BE942",
-      "lat": -31.983237,
-      "lon": 150.867987,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8236",
-      "train_number": "4539",
-      "lat": -31.982477,
-      "lon": 150.867933,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9302",
-      "train_number": "WH957",
-      "lat": -31.918513,
-      "lon": 150.8796,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9313",
-      "train_number": "BE537",
-      "lat": -31.767207,
-      "lon": 150.811,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT07",
-      "train_number": "PNBKUP",
-      "lat": -31.73841,
-      "lon": 150.788467,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT05",
-      "train_number": "PNBKDN",
-      "lat": -31.738313,
-      "lon": 150.787827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "6028",
-      "train_number": "MB956",
-      "lat": -31.649757,
-      "lon": 150.725947,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9323",
-      "train_number": "NB545",
-      "lat": -32.110283,
-      "lon": 150.869347,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8235",
-      "train_number": "5434",
-      "lat": -31.764463,
-      "lon": 150.794093,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT114",
-      "train_number": "GR415",
-      "lat": -32.671673,
-      "lon": 151.37036,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8242",
-      "train_number": "4527",
-      "lat": -32.671597,
-      "lon": 151.370333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT03",
-      "train_number": "GR465",
-      "lat": -32.671207,
-      "lon": 151.370453,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CM3313",
-      "train_number": "5192",
-      "lat": -32.659347,
-      "lon": 151.323813,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9206",
-      "train_number": "WK983",
-      "lat": -32.634327,
-      "lon": 151.106907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9304",
-      "train_number": "MB909",
-      "lat": -32.554237,
-      "lon": 151.154773,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9310",
-      "train_number": "BE938",
-      "lat": -32.66166,
-      "lon": 151.29268,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9015",
-      "train_number": "MT945",
-      "lat": -32.659567,
-      "lon": 151.336333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "6045",
-      "train_number": "MP970",
-      "lat": -32.65897,
-      "lon": 151.329933,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "9311",
-      "train_number": "MB936",
-      "lat": -32.399377,
-      "lon": 151.03412,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "LDP006",
-      "train_number": "HV985",
-      "lat": -32.394357,
-      "lon": 151.006187,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT202",
-      "train_number": "ND367",
-      "lat": -32.38941,
-      "lon": 150.99932,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XRN027",
-      "train_number": "ER404",
-      "lat": -32.346213,
-      "lon": 150.987627,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "5030",
-      "train_number": "BW131",
-      "lat": -32.33189,
-      "lon": 150.922667,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8230",
-      "train_number": "5432",
-      "lat": -32.314217,
-      "lon": 150.98272,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "5021",
-      "train_number": "BW346",
-      "lat": -32.45922,
-      "lon": 151.079773,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "TT115",
-      "train_number": "HV974",
-      "lat": -32.493283,
-      "lon": 151.13744,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR92",
-      "train_number": "7BM4",
-      "lat": -31.213113,
-      "lon": 152.834907,
+      "id": "ACD6058",
+      "train_number": "6BM9",
+      "lat": -34.783567,
+      "lon": 148.94876,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "NR8",
       "train_number": "7BS4",
-      "lat": -29.716193,
-      "lon": 152.943653,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GCLR-Bombardier Flexity 2 (15)",
-      "train_number": "GCR1",
-      "lat": -28.028191,
-      "lon": 153.429749,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GCLR-5",
-      "train_number": "GCR1",
-      "lat": -27.92602,
-      "lon": 153.339188,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1582",
-      "train_number": "1582",
-      "lat": -27.61293,
-      "lon": 152.760559,
+      "lat": -30.06028,
+      "lon": 152.986293,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "XP2019",
       "train_number": "NT31",
-      "lat": -28.506667,
-      "lon": 152.968787,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GCLR-Bombardier Flexity 2 (05)",
-      "train_number": "GCR1",
-      "lat": -27.970631,
-      "lon": 153.398056,
+      "lat": -28.191907,
+      "lon": 152.886187,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "GCLR-Bombardier Flexity 2 (06)",
       "train_number": "GCR1",
-      "lat": -27.97052,
-      "lon": 153.39682,
+      "lat": -28.005951,
+      "lon": 153.429092,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GCLR-Bombardier Flexity 2 (15)",
+      "train_number": "GCR1",
+      "lat": -27.963461,
+      "lon": 153.384842,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "GCLR-Bombardier Flexity 2 (05)",
+      "train_number": "GCR1",
+      "lat": -27.996309,
+      "lon": 153.429169,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6045",
+      "train_number": "MP970",
+      "lat": -32.73997,
+      "lon": 151.557053,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "LDP007",
       "train_number": "WK978",
-      "lat": -32.720357,
-      "lon": 151.414653,
+      "lat": -32.75208,
+      "lon": 151.598147,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "1107",
-      "train_number": "5116",
-      "lat": -33.10757,
-      "lon": 151.491987,
+      "id": "TNSW-9499-8536",
+      "train_number": "N689",
+      "lat": -32.9415,
+      "lon": 151.66276,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "6004",
-      "train_number": "ER436",
-      "lat": -33.04469,
-      "lon": 151.52488,
+      "id": "5009",
+      "train_number": "BW962",
+      "lat": -32.836473,
+      "lon": 151.687027,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "HM2754",
-      "train_number": "V703",
-      "lat": -32.744943,
-      "lon": 151.5874,
+      "id": "XRN023",
+      "train_number": "MN139",
+      "lat": -32.858443,
+      "lon": 151.696733,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-2098-9321",
-      "train_number": "N704",
-      "lat": -33.34824,
-      "lon": 151.377075,
+      "id": "CM3313",
+      "train_number": "5192",
+      "lat": -32.858403,
+      "lon": 151.696733,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-9093-7905",
-      "train_number": "N601",
-      "lat": -33.48922,
-      "lon": 151.319092,
+      "id": "TNSW-3008-3484",
+      "train_number": "Y496",
+      "lat": -33.018349,
+      "lon": 151.527863,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-1528-3629",
-      "train_number": "Y410",
-      "lat": -33.497028,
-      "lon": 151.306595,
+      "id": "PHC001",
+      "train_number": "3591",
+      "lat": -32.87791,
+      "lon": 151.705107,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "QE003",
-      "train_number": "6BW7",
-      "lat": -33.882987,
-      "lon": 151.069147,
+      "id": "HM2703",
+      "train_number": "V800",
+      "lat": -32.928033,
+      "lon": 151.726613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT107",
+      "train_number": "GR449",
+      "lat": -32.86683,
+      "lon": 151.75296,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XRN022",
+      "train_number": "MO194",
+      "lat": -32.867133,
+      "lon": 151.75392,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "HM2706",
+      "train_number": "V807",
+      "lat": -32.922473,
+      "lon": 151.75548,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR98",
+      "train_number": "7SB3",
+      "lat": -32.898767,
+      "lon": 151.761867,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "5042",
+      "train_number": "WG914",
+      "lat": -32.874567,
+      "lon": 151.742747,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACB4401",
+      "train_number": "8456",
+      "lat": -32.909207,
+      "lon": 151.770547,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-3149-6617",
+      "train_number": "N712",
+      "lat": -32.920231,
+      "lon": 151.750977,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-3987-6291",
+      "train_number": "71AA",
+      "lat": -33.86359,
+      "lon": 151.063171,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-1205-4111",
+      "train_number": "70AA",
+      "lat": -33.86351,
+      "lon": 151.063324,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QL015",
+      "train_number": "1WB7",
+      "lat": -33.73533,
+      "lon": 151.07488,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "QL008",
       "train_number": "T963",
-      "lat": -33.882843,
-      "lon": 151.069147,
+      "lat": -33.734977,
+      "lon": 151.0752,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "XRN016",
       "train_number": "UL146",
-      "lat": -32.437903,
-      "lon": 151.056587,
+      "lat": -32.44822,
+      "lon": 151.06092,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "XRN021",
       "train_number": "RV116",
-      "lat": -32.418883,
-      "lon": 151.046413,
+      "lat": -32.433677,
+      "lon": 151.055747,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9311",
+      "train_number": "MB936",
+      "lat": -32.418037,
+      "lon": 151.045347,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TT202",
+      "train_number": "ND367",
+      "lat": -32.392067,
+      "lon": 151.003027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8230",
+      "train_number": "5432",
+      "lat": -32.335803,
+      "lon": 150.98364,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "XRN005",
       "train_number": "JU125",
-      "lat": -32.585023,
-      "lon": 151.043733,
+      "lat": -32.575563,
+      "lon": 151.02212,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "NR30",
-      "train_number": "6KB8",
-      "lat": -32.335937,
-      "lon": 151.938853,
+      "id": "TNSW-9093-7905",
+      "train_number": "N601",
+      "lat": -33.24736,
+      "lon": 151.44875,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TT122",
-      "train_number": "BG343",
-      "lat": -32.28784,
-      "lon": 150.827867,
+      "id": "9310",
+      "train_number": "BE938",
+      "lat": -32.71838,
+      "lon": 151.483693,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TNSW-3150-4577",
+      "train_number": "N408",
+      "lat": -33.10904,
+      "lon": 151.48808,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "1107",
+      "train_number": "5116",
+      "lat": -33.23613,
+      "lon": 151.461267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8242",
+      "train_number": "4527",
+      "lat": -32.671527,
+      "lon": 151.37048,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "9206",
+      "train_number": "WK983",
+      "lat": -32.63252,
+      "lon": 151.110627,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "XP2013",
       "train_number": "NT34",
-      "lat": -32.28197,
-      "lon": 151.94448,
+      "lat": -32.572697,
+      "lon": 151.62048,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "5025",
-      "train_number": "MP905",
-      "lat": -32.25466,
-      "lon": 150.827973,
+      "id": "NR92",
+      "train_number": "7BM4",
+      "lat": -31.63046,
+      "lon": 152.708493,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TT128",
-      "train_number": "MR218",
-      "lat": -32.273733,
-      "lon": 150.858133,
+      "id": "NR30",
+      "train_number": "6KB8",
+      "lat": -32.01697,
+      "lon": 151.967253,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "XRN011",
-      "train_number": "UL127",
-      "lat": -32.270367,
-      "lon": 150.870333,
+      "id": "TT114",
+      "train_number": "GR415",
+      "lat": -32.671657,
+      "lon": 151.370347,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-4939-8537",
-      "train_number": "711A",
-      "lat": -33.951729,
-      "lon": 150.785278,
+      "id": "TT127",
+      "train_number": "GR417",
+      "lat": -32.671707,
+      "lon": 151.37028,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-7858-8467",
-      "train_number": "715A",
-      "lat": -33.951611,
-      "lon": 150.785294,
+      "id": "TNSW-4280-9424",
+      "train_number": "611A",
+      "lat": -34.056128,
+      "lon": 151.151297,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TNSW-2345-2698",
-      "train_number": "16-A",
-      "lat": -33.951561,
-      "lon": 150.785294,
+      "id": "CF4403",
+      "train_number": "2188",
+      "lat": -33.92279,
+      "lon": 151.1716,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "5039",
-      "train_number": "AT762",
-      "lat": -32.336793,
-      "lon": 150.721893,
+      "id": "TNSW-4902-8396",
+      "train_number": "613A",
+      "lat": -33.88369,
+      "lon": 151.20602,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "TT103",
-      "train_number": "MR387",
-      "lat": -32.30784,
-      "lon": 150.780547,
+      "id": "TNSW-5142-5360",
+      "train_number": "604R",
+      "lat": -33.883591,
+      "lon": 151.206039,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "XRN001",
-      "train_number": "UL244",
-      "lat": -32.320887,
-      "lon": 150.745453,
+      "id": "TNSW-6767-3809",
+      "train_number": "127B",
+      "lat": -33.65347,
+      "lon": 151.13679,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "GWA002",
-      "train_number": "6AD1",
-      "lat": -22.635235,
-      "lon": 133.8474,
+      "id": "TNSW-6187-9246",
+      "train_number": "127C",
+      "lat": -33.62352,
+      "lon": 151.15313,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "GWA004",
-      "train_number": "7DA2",
-      "lat": -21.71746,
-      "lon": 134.208747,
+      "id": "9015",
+      "train_number": "MT945",
+      "lat": -32.633113,
+      "lon": 151.10724,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "QR5400",
-      "train_number": "C81T",
-      "lat": -22.604416,
-      "lon": 149.64736,
+      "id": "XRN025",
+      "train_number": "JU102",
+      "lat": -32.62883,
+      "lon": 151.117267,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "ACD6050",
-      "train_number": "5MP1",
-      "lat": -30.844367,
-      "lon": 119.712,
+      "id": "TT03",
+      "train_number": "MR121",
+      "lat": -32.50792,
+      "lon": 151.151787,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "NR48",
-      "train_number": "7PM5",
-      "lat": -30.874413,
-      "lon": 120.5712,
+      "id": "8132",
+      "train_number": "7MC5",
+      "lat": -36.004407,
+      "lon": 145.99896,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "CF4432",
-      "train_number": "5MP9",
-      "lat": -30.894453,
-      "lon": 120.866373,
+      "id": "XP2000",
+      "train_number": "ST21",
+      "lat": -35.670443,
+      "lon": 147.037307,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "NR5",
-      "train_number": "6SP5",
-      "lat": -31.010587,
-      "lon": 125.943253,
+      "id": "CLP9",
+      "train_number": "7MC4",
+      "lat": -35.563713,
+      "lon": 147.039067,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "ACD6049",
-      "train_number": "7PS1",
-      "lat": -31.004547,
-      "lon": 126.103067,
+      "id": "NR46",
+      "train_number": "6BM4",
+      "lat": -36.291637,
+      "lon": 146.388613,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "NR105",
-      "train_number": "6PM6",
-      "lat": -30.785567,
-      "lon": 128.782653,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACD6052",
-      "train_number": "6PM1",
-      "lat": -30.498227,
-      "lon": 132.28504,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR97",
-      "train_number": "7MP7",
-      "lat": -30.57462,
-      "lon": 132.898907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR57",
-      "train_number": "6PM7",
-      "lat": -30.581587,
-      "lon": 133.688667,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GWU015",
-      "train_number": "9612",
-      "lat": -29.509667,
-      "lon": 134.546147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GWA009",
-      "train_number": "7AD1",
-      "lat": -30.854153,
-      "lon": 134.98648,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR76",
-      "train_number": "6PS7",
-      "lat": -31.041933,
-      "lon": 135.768813,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR52",
-      "train_number": "6MP5",
-      "lat": -32.46772,
-      "lon": 137.767173,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACD6057",
-      "train_number": "6MP1",
-      "lat": -32.469117,
-      "lon": 137.768067,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR45",
-      "train_number": "6NY3",
-      "lat": -32.46968,
-      "lon": 137.768347,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GWU012",
-      "train_number": "9614",
-      "lat": -32.479133,
-      "lon": 137.77092,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR95",
-      "train_number": "5PS6",
-      "lat": -33.159363,
-      "lon": 138.614333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "SCT009",
-      "train_number": "7GP1",
-      "lat": -32.046107,
-      "lon": 141.935307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR50",
-      "train_number": "7YN2",
-      "lat": -32.064687,
-      "lon": 141.970133,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CSR023",
-      "train_number": "6MP9",
-      "lat": -31.1744,
-      "lon": 136.15928,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR112",
-      "train_number": "7SP7",
-      "lat": -31.207257,
-      "lon": 136.494787,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GWA005",
-      "train_number": "6DA2",
-      "lat": -31.938567,
-      "lon": 137.374347,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACD6055",
-      "train_number": "8102",
-      "lat": -32.35573,
-      "lon": 137.610373,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D9N8",
-      "train_number": "D9N8",
-      "lat": -27.464911,
-      "lon": 153.018555,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DM21",
-      "train_number": "DM21",
-      "lat": -27.445551,
-      "lon": 153.037643,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D001",
-      "train_number": "D001",
-      "lat": -27.444611,
-      "lon": 153.03746,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY79",
-      "train_number": "DY79",
-      "lat": -27.22587,
-      "lon": 153.074463,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1161",
-      "train_number": "1161",
-      "lat": -27.089041,
-      "lon": 152.955688,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY81",
-      "train_number": "DY81",
-      "lat": -27.254049,
-      "lon": 153.00676,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "SO2",
-      "train_number": "W57T",
-      "lat": -23.467304,
-      "lon": 150.534836,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACD6048",
-      "train_number": "6SP1",
-      "lat": -30.662413,
-      "lon": 129.9688,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "SCT001",
-      "train_number": "6PM9",
-      "lat": -30.64994,
-      "lon": 130.082587,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR69",
-      "train_number": "6MP4",
-      "lat": -30.615017,
-      "lon": 130.395493,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "GWA008",
-      "train_number": "1DW4",
-      "lat": -12.513327,
-      "lon": 130.962147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4429",
-      "train_number": "7PG1",
-      "lat": -31.573143,
-      "lon": 116.48284,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR17",
-      "train_number": "5MP5",
-      "lat": -31.621023,
-      "lon": 117.831253,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACB4403",
-      "train_number": "6426",
-      "lat": -31.491676,
-      "lon": 118.229668,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR27",
-      "train_number": "7PA8",
-      "lat": -31.067483,
-      "lon": 119.338827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4006",
-      "train_number": "5029",
-      "lat": -31.406389,
-      "lon": 118.415985,
+      "id": "8177",
+      "train_number": "7MC5",
+      "lat": -36.00431,
+      "lon": 145.99892,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "MM-736M",
-      "train_number": "CGB",
-      "lat": -37.818321,
-      "lon": 144.966736,
+      "train_number": "UFD",
+      "lat": -37.6651,
+      "lon": 144.946396,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "MM-486M",
-      "train_number": "WIL",
-      "lat": -37.818546,
-      "lon": 144.966812,
+      "id": "MM-542M",
+      "train_number": "UFD",
+      "lat": -37.818733,
+      "lon": 144.96524,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-522M",
+      "train_number": "CGB",
+      "lat": -37.818243,
+      "lon": 144.965672,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-612M",
+      "train_number": "FKN",
+      "lat": -37.818699,
+      "lon": 144.966003,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-280M",
+      "train_number": "MDD",
+      "lat": -37.789452,
+      "lon": 144.995239,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-794M",
+      "train_number": "FKN",
+      "lat": -37.86504,
+      "lon": 145.027985,
       "heading": 0.0,
       "speed": 0.0
     },
@@ -1387,223 +1475,63 @@
       "speed": 0.0
     },
     {
-      "id": "MM-982M",
-      "train_number": "LIL",
-      "lat": -37.826462,
-      "lon": 145.064087,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-956M",
-      "train_number": "LIL",
-      "lat": -37.811852,
-      "lon": 145.250397,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-966M",
-      "train_number": "BEG",
-      "lat": -37.878433,
-      "lon": 145.293518,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XP2000",
-      "train_number": "ST21",
-      "lat": -35.119943,
-      "lon": 147.36544,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8220",
-      "train_number": "3339",
-      "lat": -34.118787,
-      "lon": 147.367533,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8134",
-      "train_number": "8M51",
-      "lat": -34.906677,
-      "lon": 147.562373,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4422",
-      "train_number": "8364",
-      "lat": -34.492447,
-      "lon": 147.86992,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8139",
-      "train_number": "3330",
-      "lat": -34.64193,
-      "lon": 148.030213,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XP2008",
-      "train_number": "ST22",
-      "lat": -34.699583,
-      "lon": 148.655907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4431",
-      "train_number": "5PM9",
-      "lat": -34.62478,
-      "lon": 138.545693,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR21",
-      "train_number": "7XM4",
-      "lat": -35.02802,
-      "lon": 138.593733,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACD6061",
-      "train_number": "7MP1",
-      "lat": -35.50227,
-      "lon": 139.75068,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR85",
-      "train_number": "7MP5",
-      "lat": -35.87341,
-      "lon": 140.041053,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MRL001",
-      "train_number": "7CM4",
-      "lat": -36.515573,
-      "lon": 146.054947,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8132",
-      "train_number": "7MC5",
-      "lat": -36.157293,
-      "lon": 145.886493,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CSR020",
-      "train_number": "7MB9",
-      "lat": -36.084097,
-      "lon": 146.717013,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR46",
-      "train_number": "6BM4",
-      "lat": -36.01329,
-      "lon": 146.984173,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CLP9",
-      "train_number": "7MC4",
-      "lat": -35.69949,
-      "lon": 147.031467,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR2",
-      "train_number": "7MB4",
-      "lat": -35.417227,
-      "lon": 147.051627,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-82M",
-      "train_number": "MDD",
-      "lat": -37.789452,
-      "lon": 144.995239,
+      "id": "MM-894M",
+      "train_number": "HBE",
+      "lat": -37.777992,
+      "lon": 145.032578,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "MM-160M",
       "train_number": "HBE",
-      "lat": -37.789421,
-      "lon": 144.995316,
+      "lat": -37.753288,
+      "lon": 145.065704,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "MM-272M",
-      "train_number": "HBE",
-      "lat": -37.710857,
-      "lon": 145.114258,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-542M",
-      "train_number": "UFD",
-      "lat": -37.699352,
-      "lon": 144.958664,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QL003",
-      "train_number": "7MW5",
-      "lat": -37.061723,
-      "lon": 145.114013,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-280M",
+      "id": "MM-82M",
       "train_number": "MDD",
-      "lat": -37.652123,
-      "lon": 145.035782,
+      "lat": -37.602474,
+      "lon": 145.100937,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "MM-9923M",
       "train_number": "SUY",
-      "lat": -37.702557,
-      "lon": 144.775162,
+      "lat": -37.768322,
+      "lon": 144.817764,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "MM-9919M",
+      "id": "MM-9932M",
       "train_number": "SUY",
-      "lat": -37.802654,
-      "lon": 144.897537,
+      "lat": -37.78376,
+      "lon": 144.829346,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-366M",
+      "train_number": "WIL",
+      "lat": -37.843014,
+      "lon": 144.883606,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "MM-804M",
+      "train_number": "WIL",
+      "lat": -37.816422,
+      "lon": 144.889633,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-486M",
       "train_number": "WIL",
       "lat": -37.867859,
       "lon": 144.905609,
@@ -1611,26 +1539,10 @@
       "speed": 0.0
     },
     {
-      "id": "MM-764M",
-      "train_number": "CGB",
-      "lat": -37.753361,
-      "lon": 144.916657,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-9914M",
-      "train_number": "PKM",
-      "lat": -38.084362,
-      "lon": 145.506699,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-9960M",
-      "train_number": "PKM",
-      "lat": -37.990307,
-      "lon": 145.210297,
+      "id": "MM-651M",
+      "train_number": "FKN",
+      "lat": -37.996353,
+      "lon": 145.079971,
       "heading": 0.0,
       "speed": 0.0
     },
@@ -1643,426 +1555,226 @@
       "speed": 0.0
     },
     {
+      "id": "MM-814M",
+      "train_number": "FKN",
+      "lat": -37.974476,
+      "lon": 145.060028,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-9914M",
+      "train_number": "PKM",
+      "lat": -37.966076,
+      "lon": 145.175461,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-620M",
+      "train_number": "SHM",
+      "lat": -37.942585,
+      "lon": 145.005463,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-9919M",
+      "train_number": "PKM",
+      "lat": -37.941231,
+      "lon": 145.142487,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-982M",
+      "train_number": "LIL",
+      "lat": -37.757156,
+      "lon": 145.345871,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-9960M",
+      "train_number": "PKM",
+      "lat": -38.084362,
+      "lon": 145.506699,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QL003",
+      "train_number": "7MW5",
+      "lat": -36.740857,
+      "lon": 145.5778,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MRL001",
+      "train_number": "7CM4",
+      "lat": -36.661373,
+      "lon": 145.671827,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "MM-956M",
+      "train_number": "BEG",
+      "lat": -37.907707,
+      "lon": 145.34227,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
       "id": "MM-884M",
       "train_number": "BEG",
-      "lat": -37.908634,
-      "lon": 145.35553,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-651M",
-      "train_number": "FKN",
-      "lat": -38.036636,
-      "lon": 145.107666,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-612M",
-      "train_number": "FKN",
-      "lat": -37.966255,
-      "lon": 145.054199,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-836M",
-      "train_number": "SHM",
-      "lat": -37.936237,
-      "lon": 144.999374,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "MM-9932M",
-      "train_number": "PKM",
-      "lat": -37.910091,
-      "lon": 145.101074,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4151",
-      "train_number": "UNREG",
-      "lat": -28.777029,
-      "lon": 114.590775,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2503",
-      "train_number": "UNREG",
-      "lat": -28.776791,
-      "lon": 114.59919,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4170",
-      "train_number": "UNREG",
-      "lat": -28.776617,
-      "lon": 114.601448,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4142",
-      "train_number": "UNREG",
-      "lat": -28.776447,
-      "lon": 114.601982,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4169",
-      "train_number": "UNREG",
-      "lat": -28.810013,
-      "lon": 114.715607,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4152",
-      "train_number": "UNREG",
-      "lat": -28.809927,
-      "lon": 114.715782,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4172",
-      "train_number": "UNREG",
-      "lat": -28.625854,
-      "lon": 115.358727,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4171",
-      "train_number": "UNREG",
-      "lat": -28.625668,
-      "lon": 115.3591,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4141",
-      "train_number": "UNREG",
-      "lat": -28.621254,
-      "lon": 115.368538,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4147",
-      "train_number": "UNREG",
-      "lat": -28.815033,
-      "lon": 114.718384,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4148",
-      "train_number": "UNREG",
-      "lat": -29.192436,
-      "lon": 116.750565,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4174",
-      "train_number": "UNREG",
-      "lat": -29.185493,
-      "lon": 116.750572,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACN4149",
-      "train_number": "UNREG",
-      "lat": -29.185627,
-      "lon": 116.750977,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "AC4301",
-      "train_number": "UNREG",
-      "lat": -30.780161,
-      "lon": 121.417793,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4015",
-      "train_number": "UNREG",
-      "lat": -30.775944,
-      "lon": 121.425537,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4007",
-      "train_number": "UNREG",
-      "lat": -30.77569,
-      "lon": 121.42588,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4014",
-      "train_number": "UNREG",
-      "lat": -30.775465,
-      "lon": 121.426254,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "AC4308",
-      "train_number": "UNREG",
-      "lat": -30.774401,
-      "lon": 121.42791,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4016",
-      "train_number": "UNREG",
-      "lat": -30.773947,
-      "lon": 121.429153,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4004",
-      "train_number": "UNREG",
-      "lat": -28.939926,
-      "lon": 121.516708,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4005",
-      "train_number": "UNREG",
-      "lat": -28.939537,
-      "lon": 121.516724,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "AC4303",
-      "train_number": "UNREG",
-      "lat": -30.969677,
-      "lon": 121.526764,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4003",
-      "train_number": "UNREG",
-      "lat": -30.970167,
-      "lon": 121.527031,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "AC4302",
-      "train_number": "UNREG",
-      "lat": -30.979395,
-      "lon": 121.532425,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4011",
-      "train_number": "UNREG",
-      "lat": -30.979057,
-      "lon": 121.532234,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2507",
-      "train_number": "UNREG",
-      "lat": -31.873613,
-      "lon": 116.03418,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2516",
-      "train_number": "UNREG",
-      "lat": -31.873291,
-      "lon": 116.034019,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4001",
-      "train_number": "UNREG",
-      "lat": -31.434977,
-      "lon": 118.36026,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "Q4012",
-      "train_number": "UNREG",
-      "lat": -31.434896,
-      "lon": 118.360481,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "ACC6032",
-      "train_number": "UNREG",
-      "lat": -31.411027,
-      "lon": 118.415613,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2501",
-      "train_number": "UNREG",
-      "lat": -31.242373,
-      "lon": 116.941948,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR86",
-      "train_number": "UNREG",
-      "lat": -33.885407,
-      "lon": 151.05516,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "C506",
-      "train_number": "UNREG",
-      "lat": -33.95852,
-      "lon": 151.21896,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "5007",
-      "train_number": "UNREG",
-      "lat": -32.66316,
-      "lon": 151.314307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "1104",
-      "train_number": "UNREG",
-      "lat": -33.108237,
-      "lon": 151.489893,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "6023",
-      "train_number": "UNREG",
-      "lat": -32.90392,
-      "lon": 151.76888,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "5010",
-      "train_number": "UNREG",
-      "lat": -32.874503,
-      "lon": 151.771147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XP2004",
-      "train_number": "UNREG",
-      "lat": -33.916753,
-      "lon": 151.161253,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4410",
-      "train_number": "UNREG",
-      "lat": -34.751143,
-      "lon": 150.0232,
+      "lat": -37.893219,
+      "lon": 145.314117,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "44202",
       "train_number": "UNREG",
-      "lat": -34.476867,
-      "lon": 150.901307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "1108",
-      "train_number": "UNREG",
-      "lat": -34.476573,
-      "lon": 150.90176,
+      "lat": -34.4757,
+      "lon": 150.90244,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "H5",
       "train_number": "UNREG",
-      "lat": -34.443883,
-      "lon": 150.88644,
+      "lat": -34.444337,
+      "lon": 150.886813,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "8138",
+      "id": "C506",
       "train_number": "UNREG",
-      "lat": -34.03168,
-      "lon": 150.841347,
+      "lat": -33.963443,
+      "lon": 151.219693,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XP2004",
+      "train_number": "UNREG",
+      "lat": -33.91675,
+      "lon": 151.1616,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "XP2012",
       "train_number": "UNREG",
-      "lat": -33.916783,
-      "lon": 151.162693,
+      "lat": -33.916737,
+      "lon": 151.161533,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "GWU009",
+      "id": "S317",
       "train_number": "UNREG",
-      "lat": -32.4179,
-      "lon": 151.044667,
+      "lat": -33.860007,
+      "lon": 150.97952,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "1104",
+      "train_number": "UNREG",
+      "lat": -33.235883,
+      "lon": 151.461387,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6023",
+      "train_number": "UNREG",
+      "lat": -32.909317,
+      "lon": 151.770627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "LDP002",
+      "train_number": "UNREG",
+      "lat": -32.867017,
+      "lon": 151.753453,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6044",
+      "train_number": "UNREG",
+      "lat": -32.823043,
+      "lon": 151.680667,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "HM2704",
+      "train_number": "UNREG",
+      "lat": -32.78247,
+      "lon": 151.638613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "5007",
+      "train_number": "UNREG",
+      "lat": -32.735853,
+      "lon": 151.547027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4410",
+      "train_number": "UNREG",
+      "lat": -34.754097,
+      "lon": 150.02388,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "TE2803",
+      "train_number": "UNREG",
+      "lat": -34.547603,
+      "lon": 150.371587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "1108",
+      "train_number": "UNREG",
+      "lat": -34.476713,
+      "lon": 150.90068,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XRN014",
+      "train_number": "UNREG",
+      "lat": -32.274183,
+      "lon": 150.857293,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "6012",
+      "train_number": "UNREG",
+      "lat": -30.95549,
+      "lon": 150.19748,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "RL307",
       "train_number": "UNREG",
-      "lat": -30.350197,
-      "lon": 149.764187,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8254",
-      "train_number": "UNREG",
-      "lat": -29.49589,
-      "lon": 149.852707,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR4",
-      "train_number": "UNREG",
-      "lat": -27.573773,
-      "lon": 153.029333,
+      "lat": -30.281737,
+      "lon": 149.590133,
       "heading": 0.0,
       "speed": 0.0
     },
@@ -2075,6 +1787,334 @@
       "speed": 0.0
     },
     {
+      "id": "8179",
+      "train_number": "UNREG",
+      "lat": -34.643037,
+      "lon": 148.029027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8139",
+      "train_number": "UNREG",
+      "lat": -34.639007,
+      "lon": 148.03316,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XP2016",
+      "train_number": "UNREG",
+      "lat": -34.777273,
+      "lon": 149.163053,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "XP2007",
+      "train_number": "UNREG",
+      "lat": -35.66908,
+      "lon": 147.037587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "NR83",
+      "train_number": "UNREG",
+      "lat": -36.28626,
+      "lon": 146.393387,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QL014",
+      "train_number": "UNREG",
+      "lat": -31.941743,
+      "lon": 148.62436,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "8222",
+      "train_number": "UNREG",
+      "lat": -34.006773,
+      "lon": 147.303107,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CLP12",
+      "train_number": "UNREG",
+      "lat": -35.555563,
+      "lon": 147.03836,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "QBX004",
+      "train_number": "UNREG",
+      "lat": -34.648077,
+      "lon": 147.990267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4147",
+      "train_number": "UNREG",
+      "lat": -28.721512,
+      "lon": 115.003365,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4169",
+      "train_number": "UNREG",
+      "lat": -28.718021,
+      "lon": 115.01329,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4152",
+      "train_number": "UNREG",
+      "lat": -28.718,
+      "lon": 115.013351,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4141",
+      "train_number": "UNREG",
+      "lat": -28.691244,
+      "lon": 115.077339,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4171",
+      "train_number": "UNREG",
+      "lat": -28.688543,
+      "lon": 115.067314,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4172",
+      "train_number": "UNREG",
+      "lat": -28.688528,
+      "lon": 115.066902,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4007",
+      "train_number": "UNREG",
+      "lat": -30.776966,
+      "lon": 121.423538,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4003",
+      "train_number": "UNREG",
+      "lat": -30.776915,
+      "lon": 121.423424,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "AC4303",
+      "train_number": "UNREG",
+      "lat": -30.776716,
+      "lon": 121.423813,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4015",
+      "train_number": "UNREG",
+      "lat": -30.775885,
+      "lon": 121.425545,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "AC4308",
+      "train_number": "UNREG",
+      "lat": -30.774483,
+      "lon": 121.42778,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4016",
+      "train_number": "UNREG",
+      "lat": -30.773954,
+      "lon": 121.429138,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2501",
+      "train_number": "UNREG",
+      "lat": -31.142145,
+      "lon": 117.267555,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACC6031",
+      "train_number": "UNREG",
+      "lat": -32.442757,
+      "lon": 121.649818,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACC6032",
+      "train_number": "UNREG",
+      "lat": -31.369487,
+      "lon": 118.8968,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4011",
+      "train_number": "UNREG",
+      "lat": -30.782492,
+      "lon": 121.413368,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "AC4301",
+      "train_number": "UNREG",
+      "lat": -30.780262,
+      "lon": 121.417641,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "AC4302",
+      "train_number": "UNREG",
+      "lat": -30.782688,
+      "lon": 121.41304,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4012",
+      "train_number": "UNREG",
+      "lat": -31.481201,
+      "lon": 118.259903,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4001",
+      "train_number": "UNREG",
+      "lat": -31.481228,
+      "lon": 118.259583,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4148",
+      "train_number": "UNREG",
+      "lat": -29.19128,
+      "lon": 116.752609,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4149",
+      "train_number": "UNREG",
+      "lat": -29.185619,
+      "lon": 116.74781,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "ACN4174",
+      "train_number": "UNREG",
+      "lat": -29.185516,
+      "lon": 116.748222,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4004",
+      "train_number": "UNREG",
+      "lat": -28.941168,
+      "lon": 121.516823,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "Q4005",
+      "train_number": "UNREG",
+      "lat": -28.9408,
+      "lon": 121.516777,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "3VL55",
+      "train_number": "UNREG",
+      "lat": -37.80549,
+      "lon": 144.930587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "AC4304",
+      "train_number": "UNREG",
+      "lat": -33.868702,
+      "lon": 121.905296,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "AC4305",
+      "train_number": "UNREG",
+      "lat": -33.852898,
+      "lon": 121.881981,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2511",
+      "train_number": "UNREG",
+      "lat": -33.242603,
+      "lon": 116.079369,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "S3309",
+      "train_number": "UNREG",
+      "lat": -33.242599,
+      "lon": 116.079384,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CSR015",
+      "train_number": "UNREG",
+      "lat": -34.707153,
+      "lon": 138.6016,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "CF4412",
+      "train_number": "UNREG",
+      "lat": -36.740813,
+      "lon": 145.577813,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
       "id": "AC4306",
       "train_number": "UNREG",
       "lat": -32.250851,
@@ -2083,18 +2123,18 @@
       "speed": 0.0
     },
     {
-      "id": "ACC6030",
+      "id": "P2515",
       "train_number": "UNREG",
-      "lat": -32.238529,
-      "lon": 115.784706,
+      "lat": -32.243031,
+      "lon": 115.78418,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "S3306",
+      "id": "ACC6030",
       "train_number": "UNREG",
-      "lat": -32.234913,
-      "lon": 115.784409,
+      "lat": -32.238529,
+      "lon": 115.784706,
       "heading": 0.0,
       "speed": 0.0
     },
@@ -2115,2610 +2155,2722 @@
       "speed": 0.0
     },
     {
-      "id": "QL014",
-      "train_number": "UNREG",
-      "lat": -32.173797,
-      "lon": 148.63184,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
       "id": "S3301",
       "train_number": "UNREG",
-      "lat": -32.219986,
-      "lon": 115.7854,
+      "lat": -32.189827,
+      "lon": 115.780586,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "ACC6031",
+      "id": "S3306",
       "train_number": "UNREG",
-      "lat": -32.18919,
-      "lon": 121.781921,
+      "lat": -32.268414,
+      "lon": 115.96566,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2516",
+      "train_number": "UNREG",
+      "lat": -32.116215,
+      "lon": 115.814308,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2507",
+      "train_number": "UNREG",
+      "lat": -32.116459,
+      "lon": 115.814003,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "S3304",
       "train_number": "UNREG",
-      "lat": -33.201744,
-      "lon": 115.854759,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2513",
-      "train_number": "UNREG",
-      "lat": -33.174522,
-      "lon": 115.862831,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2508",
-      "train_number": "UNREG",
-      "lat": -32.992195,
-      "lon": 115.894104,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "S3305",
-      "train_number": "UNREG",
-      "lat": -32.650448,
-      "lon": 115.949204,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2502",
-      "train_number": "UNREG",
-      "lat": -32.649055,
-      "lon": 115.91526,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "P2506",
-      "train_number": "UNREG",
-      "lat": -33.318623,
-      "lon": 115.667336,
+      "lat": -33.31694,
+      "lon": 115.666039,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "ACN4173",
       "train_number": "UNREG",
-      "lat": -33.257355,
-      "lon": 116.037994,
+      "lat": -33.27227,
+      "lon": 115.988663,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2513",
+      "train_number": "UNREG",
+      "lat": -32.919159,
+      "lon": 115.911087,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2502",
+      "train_number": "UNREG",
+      "lat": -32.650707,
+      "lon": 115.950249,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2506",
+      "train_number": "UNREG",
+      "lat": -33.320549,
+      "lon": 115.673096,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "P2508",
+      "train_number": "UNREG",
+      "lat": -33.317062,
+      "lon": 115.798172,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "S3305",
+      "train_number": "UNREG",
+      "lat": -32.649513,
+      "lon": 115.941948,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "S3307",
       "train_number": "UNREG",
-      "lat": -33.252453,
-      "lon": 115.850525,
+      "lat": -33.256584,
+      "lon": 116.041557,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "P2511",
+      "id": "ACN4151",
       "train_number": "UNREG",
-      "lat": -33.242603,
-      "lon": 116.079369,
+      "lat": -28.783327,
+      "lon": 114.590157,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "S3309",
+      "id": "ACN4170",
       "train_number": "UNREG",
-      "lat": -33.242596,
-      "lon": 116.079399,
+      "lat": -28.77747,
+      "lon": 114.586952,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "AC4304",
+      "id": "P2503",
       "train_number": "UNREG",
-      "lat": -33.868698,
-      "lon": 121.905296,
+      "lat": -28.777239,
+      "lon": 114.596214,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "2207",
+      "id": "ACN4142",
       "train_number": "UNREG",
-      "lat": -34.833473,
-      "lon": 138.51532,
+      "lat": -28.777189,
+      "lon": 114.587799,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "8179",
-      "train_number": "UNREG",
-      "lat": -34.641777,
-      "lon": 148.0304,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XP2016",
-      "train_number": "UNREG",
-      "lat": -34.700607,
-      "lon": 148.655813,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "8222",
-      "train_number": "UNREG",
-      "lat": -34.116157,
-      "lon": 147.36568,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "QBX004",
-      "train_number": "UNREG",
-      "lat": -34.49295,
-      "lon": 147.869547,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "AC4305",
-      "train_number": "UNREG",
-      "lat": -33.85289,
-      "lon": 121.881966,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "3VR77",
-      "train_number": "UNREG",
-      "lat": -37.812793,
-      "lon": 144.94752,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "3VL55",
-      "train_number": "UNREG",
-      "lat": -37.80568,
-      "lon": 144.930093,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "SCT002",
-      "train_number": "UNREG",
-      "lat": -36.084003,
-      "lon": 146.717427,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "NR83",
-      "train_number": "UNREG",
-      "lat": -36.013693,
-      "lon": 146.984053,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CF4412",
-      "train_number": "UNREG",
-      "lat": -37.061887,
-      "lon": 145.11396,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "XP2007",
-      "train_number": "UNREG",
-      "lat": -35.120183,
-      "lon": 147.36696,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "CLP12",
-      "train_number": "UNREG",
-      "lat": -35.692657,
-      "lon": 147.032827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "marker_0",
-      "train_number": "marker_0",
-      "lat": -27.25659,
-      "lon": 153.000153,
+      "id": "marker_1",
+      "train_number": "marker_1",
+      "lat": -23.593268,
+      "lon": 150.166859,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "marker_3",
       "train_number": "marker_3",
-      "lat": -27.9701,
-      "lon": 153.394196,
+      "lat": -22.148864,
+      "lon": 149.532793,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "marker_5",
       "train_number": "marker_5",
-      "lat": -27.97156,
-      "lon": 153.40419,
+      "lat": -33.713673,
+      "lon": 151.09924,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "marker_8",
       "train_number": "marker_8",
-      "lat": -22.609919,
-      "lon": 149.651361,
+      "lat": -33.962397,
+      "lon": 151.21956,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "marker_9",
       "train_number": "marker_9",
-      "lat": -23.470557,
-      "lon": 150.53626,
+      "lat": -33.962603,
+      "lon": 151.219613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_10",
+      "train_number": "marker_10",
+      "lat": -33.861157,
+      "lon": 150.977533,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "marker_12",
       "train_number": "marker_12",
-      "lat": -33.94514,
-      "lon": 151.14067,
+      "lat": -32.28839,
+      "lon": 150.831787,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "marker_14",
-      "train_number": "marker_14",
-      "lat": -33.864241,
-      "lon": 151.066779,
+      "id": "marker_15",
+      "train_number": "marker_15",
+      "lat": -32.282917,
+      "lon": 150.954653,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "marker_16",
-      "train_number": "marker_16",
-      "lat": -33.48532,
-      "lon": 151.32355,
+      "id": "marker_17",
+      "train_number": "marker_17",
+      "lat": -33.236107,
+      "lon": 151.461267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_19",
+      "train_number": "marker_19",
+      "lat": -32.6717,
+      "lon": 151.370307,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_21",
+      "train_number": "marker_21",
+      "lat": -32.671653,
+      "lon": 151.370347,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_22",
+      "train_number": "marker_22",
+      "lat": -32.734097,
+      "lon": 151.540507,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_24",
+      "train_number": "marker_24",
+      "lat": -32.025393,
+      "lon": 151.966427,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_26",
+      "train_number": "marker_26",
+      "lat": -31.649777,
+      "lon": 150.725947,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_28",
+      "train_number": "marker_28",
+      "lat": -31.726267,
+      "lon": 150.784213,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_31",
+      "train_number": "marker_31",
+      "lat": -32.43252,
+      "lon": 150.14048,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_33",
+      "train_number": "marker_33",
+      "lat": -32.351077,
+      "lon": 150.607027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_34",
+      "train_number": "marker_34",
+      "lat": -32.3487,
+      "lon": 150.70752,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_37",
+      "train_number": "marker_37",
+      "lat": -33.40515,
+      "lon": 150.105107,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_39",
+      "train_number": "marker_39",
+      "lat": -34.07943,
+      "lon": 150.750293,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_41",
+      "train_number": "marker_41",
+      "lat": -34.7835,
+      "lon": 148.967027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_43",
+      "train_number": "marker_43",
+      "lat": -34.760457,
+      "lon": 150.031627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_44",
+      "train_number": "marker_44",
+      "lat": -34.64971,
+      "lon": 148.000907,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_47",
+      "train_number": "marker_47",
+      "lat": -34.009743,
+      "lon": 147.30508,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_49",
+      "train_number": "marker_49",
+      "lat": -33.131717,
+      "lon": 147.59264,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_50",
+      "train_number": "marker_50",
+      "lat": -34.010297,
+      "lon": 147.305413,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_52",
+      "train_number": "marker_52",
+      "lat": -35.56641,
+      "lon": 147.039253,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_54",
+      "train_number": "marker_54",
+      "lat": -36.661397,
+      "lon": 145.671827,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_57",
+      "train_number": "marker_57",
+      "lat": -36.004307,
+      "lon": 145.99892,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_59",
+      "train_number": "marker_59",
+      "lat": -36.27924,
+      "lon": 146.3994,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_61",
+      "train_number": "marker_61",
+      "lat": -32.482113,
+      "lon": 137.77152,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_63",
+      "train_number": "marker_63",
+      "lat": -32.469697,
+      "lon": 137.768347,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_65",
+      "train_number": "marker_65",
+      "lat": -32.462323,
+      "lon": 137.763947,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_67",
+      "train_number": "marker_67",
+      "lat": -31.638213,
+      "lon": 116.79368,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_68",
+      "train_number": "marker_68",
+      "lat": -30.713947,
+      "lon": 129.485787,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_71",
+      "train_number": "marker_71",
+      "lat": -30.488927,
+      "lon": 132.35428,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_72",
+      "train_number": "marker_72",
+      "lat": -31.120687,
+      "lon": 135.950267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_76",
+      "train_number": "marker_76",
+      "lat": -30.851517,
+      "lon": 120.42244,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "marker_77",
+      "train_number": "marker_77",
+      "lat": -31.005757,
+      "lon": 125.09412,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_0",
       "train_number": "arrow_0",
-      "lat": -34.833473,
-      "lon": 138.51532,
+      "lat": -30.703467,
+      "lon": 134.331627,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_1",
       "train_number": "arrow_1",
-      "lat": -34.64193,
-      "lon": 148.030213,
+      "lat": -30.628573,
+      "lon": 134.51864,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_2",
       "train_number": "arrow_2",
-      "lat": -34.641777,
-      "lon": 148.0304,
+      "lat": -29.808087,
+      "lon": 134.53868,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_3",
       "train_number": "arrow_3",
-      "lat": -34.751143,
-      "lon": 150.0232,
+      "lat": -31.107503,
+      "lon": 135.905773,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_4",
       "train_number": "arrow_4",
-      "lat": -34.75068,
-      "lon": 150.023093,
+      "lat": -31.165497,
+      "lon": 136.12464,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_5",
       "train_number": "arrow_5",
-      "lat": -34.764643,
-      "lon": 150.032307,
+      "lat": -31.11754,
+      "lon": 135.933973,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_6",
       "train_number": "arrow_6",
-      "lat": -34.62478,
-      "lon": 138.545693,
+      "lat": -35.316553,
+      "lon": 139.50936,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_7",
       "train_number": "arrow_7",
-      "lat": -31.041933,
-      "lon": 135.768813,
+      "lat": -35.142343,
+      "lon": 139.33048,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_8",
       "train_number": "arrow_8",
-      "lat": -32.35573,
-      "lon": 137.610373,
+      "lat": -35.004183,
+      "lon": 138.80492,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_9",
       "train_number": "arrow_9",
-      "lat": -32.469117,
-      "lon": 137.768067,
+      "lat": -34.707153,
+      "lon": 138.6016,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_10",
       "train_number": "arrow_10",
-      "lat": -32.479133,
-      "lon": 137.77092,
+      "lat": -34.695803,
+      "lon": 138.591573,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_11",
       "train_number": "arrow_11",
-      "lat": -32.46772,
-      "lon": 137.767173,
+      "lat": -32.935293,
+      "lon": 139.104,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_12",
       "train_number": "arrow_12",
-      "lat": -32.46968,
-      "lon": 137.768347,
+      "lat": -32.346213,
+      "lon": 137.603773,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_13",
       "train_number": "arrow_13",
-      "lat": -31.207257,
-      "lon": 136.494787,
+      "lat": -32.46913,
+      "lon": 137.768093,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_14",
       "train_number": "arrow_14",
-      "lat": -31.1744,
-      "lon": 136.15928,
+      "lat": -32.39728,
+      "lon": 137.731267,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_15",
       "train_number": "arrow_15",
-      "lat": -33.868698,
-      "lon": 121.905296,
+      "lat": -32.469713,
+      "lon": 137.768307,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_16",
       "train_number": "arrow_16",
-      "lat": -31.010587,
-      "lon": 125.943253,
+      "lat": -32.483507,
+      "lon": 137.770707,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_17",
       "train_number": "arrow_17",
-      "lat": -31.004547,
-      "lon": 126.103067,
+      "lat": -32.4599,
+      "lon": 137.762507,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_18",
       "train_number": "arrow_18",
-      "lat": -30.662413,
-      "lon": 129.9688,
+      "lat": -13.09505,
+      "lon": 131.098627,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_19",
       "train_number": "arrow_19",
-      "lat": -30.64994,
-      "lon": 130.082587,
+      "lat": -30.490807,
+      "lon": 132.340827,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_20",
       "train_number": "arrow_20",
-      "lat": -32.18919,
-      "lon": 121.781921,
+      "lat": -30.48921,
+      "lon": 132.3526,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_21",
       "train_number": "arrow_21",
-      "lat": -33.85289,
-      "lon": 121.881966,
+      "lat": -22.186102,
+      "lon": 133.93272,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_22",
       "train_number": "arrow_22",
-      "lat": -30.780161,
-      "lon": 121.417793,
+      "lat": -28.9408,
+      "lon": 121.516777,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_23",
       "train_number": "arrow_23",
-      "lat": -30.774401,
-      "lon": 121.42791,
+      "lat": -28.941168,
+      "lon": 121.516823,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_24",
       "train_number": "arrow_24",
-      "lat": -30.969677,
-      "lon": 121.526764,
+      "lat": -30.662437,
+      "lon": 129.968813,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_25",
       "train_number": "arrow_25",
-      "lat": -30.970167,
-      "lon": 121.527031,
+      "lat": -30.572563,
+      "lon": 130.7664,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_26",
       "train_number": "arrow_26",
-      "lat": -30.979057,
-      "lon": 121.532234,
+      "lat": -30.633613,
+      "lon": 130.2302,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_27",
       "train_number": "arrow_27",
-      "lat": -30.979395,
-      "lon": 121.532425,
+      "lat": -30.71378,
+      "lon": 129.4874,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_28",
       "train_number": "arrow_28",
-      "lat": -31.067483,
-      "lon": 119.338827,
+      "lat": -30.776966,
+      "lon": 121.423538,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_29",
       "train_number": "arrow_29",
-      "lat": -30.844367,
-      "lon": 119.712,
+      "lat": -30.776739,
+      "lon": 121.423889,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_30",
       "train_number": "arrow_30",
-      "lat": -30.874413,
-      "lon": 120.5712,
+      "lat": -30.775885,
+      "lon": 121.425545,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_31",
       "train_number": "arrow_31",
-      "lat": -30.894453,
-      "lon": 120.866373,
+      "lat": -30.774483,
+      "lon": 121.42778,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_32",
       "train_number": "arrow_32",
-      "lat": -31.621023,
-      "lon": 117.831253,
+      "lat": -30.773954,
+      "lon": 121.429138,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_33",
       "train_number": "arrow_33",
-      "lat": -31.434977,
-      "lon": 118.36026,
+      "lat": -30.780262,
+      "lon": 121.417641,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_34",
       "train_number": "arrow_34",
-      "lat": -31.434896,
-      "lon": 118.360481,
+      "lat": -30.95799,
+      "lon": 126.88564,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_35",
       "train_number": "arrow_35",
-      "lat": -31.938567,
-      "lon": 137.374347,
+      "lat": -31.005517,
+      "lon": 125.075547,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_36",
       "train_number": "arrow_36",
-      "lat": -31.73841,
-      "lon": 150.788467,
+      "lat": -30.515713,
+      "lon": 149.907947,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_37",
       "train_number": "arrow_37",
-      "lat": -31.411027,
-      "lon": 118.415613,
+      "lat": -30.281737,
+      "lon": 149.590133,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_38",
       "train_number": "arrow_38",
-      "lat": -31.491676,
-      "lon": 118.229668,
+      "lat": -30.281537,
+      "lon": 149.589613,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_39",
       "train_number": "arrow_39",
-      "lat": -31.406389,
-      "lon": 118.415985,
+      "lat": -29.83436,
+      "lon": 149.79232,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_40",
+      "train_number": "arrow_40",
+      "lat": -30.955663,
+      "lon": 150.19784,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_41",
+      "train_number": "arrow_41",
+      "lat": -30.99189,
+      "lon": 148.362213,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_42",
+      "train_number": "arrow_42",
+      "lat": -30.61996,
+      "lon": 150.076427,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_43",
+      "train_number": "arrow_43",
+      "lat": -30.95549,
+      "lon": 150.19748,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_44",
+      "train_number": "arrow_44",
+      "lat": -32.215473,
+      "lon": 150.89988,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_45",
       "train_number": "arrow_45",
-      "lat": -31.213113,
-      "lon": 152.834907,
+      "lat": -31.768257,
+      "lon": 150.83848,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_46",
       "train_number": "arrow_46",
-      "lat": -29.716193,
-      "lon": 152.943653,
+      "lat": -31.67264,
+      "lon": 150.74536,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_47",
       "train_number": "arrow_47",
-      "lat": -28.506667,
-      "lon": 152.968787,
+      "lat": -32.248993,
+      "lon": 150.895253,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_48",
       "train_number": "arrow_48",
-      "lat": -27.464911,
-      "lon": 153.018555,
+      "lat": -31.44886,
+      "lon": 150.660827,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_49",
       "train_number": "arrow_49",
-      "lat": -27.445551,
-      "lon": 153.037643,
+      "lat": -32.026327,
+      "lon": 150.867627,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_50",
       "train_number": "arrow_50",
-      "lat": -27.444611,
-      "lon": 153.03746,
+      "lat": -31.764,
+      "lon": 150.81748,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_51",
       "train_number": "arrow_51",
-      "lat": -27.22587,
-      "lon": 153.074463,
+      "lat": -32.274183,
+      "lon": 150.857293,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_52",
       "train_number": "arrow_52",
-      "lat": -27.089041,
-      "lon": 152.955688,
+      "lat": -32.273837,
+      "lon": 150.85784,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_53",
       "train_number": "arrow_53",
-      "lat": -24.990292,
-      "lon": 152.77064,
+      "lat": -32.33508,
+      "lon": 150.90256,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_54",
       "train_number": "arrow_54",
-      "lat": -27.254049,
-      "lon": 153.00676,
+      "lat": -32.278673,
+      "lon": 150.91668,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_55",
       "train_number": "arrow_55",
-      "lat": -28.028191,
-      "lon": 153.429749,
+      "lat": -32.37148,
+      "lon": 150.46012,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_56",
       "train_number": "arrow_56",
-      "lat": -27.92602,
-      "lon": 153.339188,
+      "lat": -32.312523,
+      "lon": 150.714667,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_57",
       "train_number": "arrow_57",
-      "lat": -27.61293,
-      "lon": 152.760559,
+      "lat": -32.315803,
+      "lon": 150.75408,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_58",
       "train_number": "arrow_58",
-      "lat": -27.573773,
-      "lon": 153.029333,
+      "lat": -31.941743,
+      "lon": 148.62436,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_59",
       "train_number": "arrow_59",
-      "lat": -27.970631,
-      "lon": 153.398056,
+      "lat": -31.94169,
+      "lon": 148.624387,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_60",
       "train_number": "arrow_60",
-      "lat": -27.97052,
-      "lon": 153.39682,
+      "lat": -32.273377,
+      "lon": 149.76332,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_61",
       "train_number": "arrow_61",
-      "lat": -33.951729,
-      "lon": 150.785278,
+      "lat": -32.347237,
+      "lon": 150.70952,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_62",
       "train_number": "arrow_62",
-      "lat": -33.951611,
-      "lon": 150.785294,
+      "lat": -31.64977,
+      "lon": 150.725947,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_63",
       "train_number": "arrow_63",
-      "lat": -33.951561,
-      "lon": 150.785294,
+      "lat": -32.28836,
+      "lon": 150.83188,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_64",
       "train_number": "arrow_64",
-      "lat": -33.9515,
-      "lon": 150.785309,
+      "lat": -32.282973,
+      "lon": 150.954747,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_65",
       "train_number": "arrow_65",
-      "lat": -33.9519,
-      "lon": 150.787186,
+      "lat": -32.335803,
+      "lon": 150.98364,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_66",
       "train_number": "arrow_66",
-      "lat": -33.951839,
-      "lon": 150.787201,
+      "lat": -32.375657,
+      "lon": 151.024733,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_67",
       "train_number": "arrow_67",
-      "lat": -31.649757,
-      "lon": 150.725947,
+      "lat": -31.721333,
+      "lon": 150.783973,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_68",
       "train_number": "arrow_68",
-      "lat": -33.837933,
-      "lon": 148.697333,
+      "lat": -32.43568,
+      "lon": 150.1452,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_69",
       "train_number": "arrow_69",
-      "lat": -33.585709,
-      "lon": 150.257523,
+      "lat": -32.3508,
+      "lon": 150.599533,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_70",
       "train_number": "arrow_70",
-      "lat": -33.478039,
-      "lon": 150.245316,
+      "lat": -22.140948,
+      "lon": 149.531679,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_71",
       "train_number": "arrow_71",
-      "lat": -32.336793,
-      "lon": 150.721893,
+      "lat": -23.599606,
+      "lon": 150.166603,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_72",
       "train_number": "arrow_72",
-      "lat": -32.323017,
-      "lon": 149.899973,
+      "lat": -32.572697,
+      "lon": 151.62048,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_73",
       "train_number": "arrow_73",
-      "lat": -33.5583,
-      "lon": 150.261795,
+      "lat": -24.990292,
+      "lon": 152.77064,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_74",
       "train_number": "arrow_74",
-      "lat": -31.221067,
-      "lon": 150.408413,
+      "lat": -28.191907,
+      "lon": 152.886187,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_75",
       "train_number": "arrow_75",
-      "lat": -30.350197,
-      "lon": 149.764187,
+      "lat": -27.963461,
+      "lon": 153.384842,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_76",
       "train_number": "arrow_76",
-      "lat": -30.349203,
-      "lon": 149.763853,
+      "lat": -30.06028,
+      "lon": 152.986293,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_77",
       "train_number": "arrow_77",
-      "lat": -29.985723,
-      "lon": 149.791907,
+      "lat": -31.63046,
+      "lon": 152.708493,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_78",
       "train_number": "arrow_78",
-      "lat": -29.49648,
-      "lon": 149.853,
+      "lat": -28.005951,
+      "lon": 153.429092,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_79",
       "train_number": "arrow_79",
-      "lat": -29.49589,
-      "lon": 149.852707,
+      "lat": -27.996309,
+      "lon": 153.429169,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_80",
       "train_number": "arrow_80",
-      "lat": -30.970517,
-      "lon": 150.238333,
+      "lat": -32.01697,
+      "lon": 151.967253,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_81",
       "train_number": "arrow_81",
-      "lat": -30.514583,
-      "lon": 149.90348,
+      "lat": -32.575563,
+      "lon": 151.02212,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_82",
       "train_number": "arrow_82",
-      "lat": -31.0482,
-      "lon": 148.349307,
+      "lat": -32.44822,
+      "lon": 151.06092,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_83",
       "train_number": "arrow_83",
-      "lat": -34.118787,
-      "lon": 147.367533,
+      "lat": -32.433677,
+      "lon": 151.055747,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_84",
       "train_number": "arrow_84",
-      "lat": -34.906677,
-      "lon": 147.562373,
+      "lat": -32.418037,
+      "lon": 151.045347,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_85",
       "train_number": "arrow_85",
-      "lat": -34.700607,
-      "lon": 148.655813,
+      "lat": -32.392067,
+      "lon": 151.003027,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_86",
       "train_number": "arrow_86",
-      "lat": -34.740043,
-      "lon": 149.747547,
+      "lat": -32.39165,
+      "lon": 151.002307,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_87",
       "train_number": "arrow_87",
-      "lat": -36.084097,
-      "lon": 146.717013,
+      "lat": -32.633113,
+      "lon": 151.10724,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_88",
       "train_number": "arrow_88",
-      "lat": -36.084003,
-      "lon": 146.717427,
+      "lat": -32.63252,
+      "lon": 151.110627,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_89",
       "train_number": "arrow_89",
-      "lat": -36.013693,
-      "lon": 146.984053,
+      "lat": -32.62883,
+      "lon": 151.117267,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_90",
       "train_number": "arrow_90",
-      "lat": -36.01329,
-      "lon": 146.984173,
+      "lat": -32.50792,
+      "lon": 151.151787,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_91",
       "train_number": "arrow_91",
-      "lat": -35.69949,
-      "lon": 147.031467,
+      "lat": -32.671527,
+      "lon": 151.37048,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_92",
       "train_number": "arrow_92",
-      "lat": -35.417227,
-      "lon": 147.051627,
+      "lat": -32.475143,
+      "lon": 151.13132,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_93",
       "train_number": "arrow_93",
-      "lat": -33.081773,
-      "lon": 147.29356,
+      "lat": -32.558013,
+      "lon": 151.157507,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_94",
       "train_number": "arrow_94",
-      "lat": -28.810013,
-      "lon": 114.715607,
+      "lat": -32.671657,
+      "lon": 151.370347,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_95",
       "train_number": "arrow_95",
-      "lat": -28.809927,
-      "lon": 114.715782,
+      "lat": -32.671707,
+      "lon": 151.37028,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_96",
       "train_number": "arrow_96",
-      "lat": -28.815033,
-      "lon": 114.718384,
+      "lat": -32.75208,
+      "lon": 151.598147,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_97",
       "train_number": "arrow_97",
-      "lat": -28.625854,
-      "lon": 115.358727,
+      "lat": -32.823043,
+      "lon": 151.680667,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_98",
       "train_number": "arrow_98",
-      "lat": -28.625668,
-      "lon": 115.3591,
+      "lat": -32.836473,
+      "lon": 151.687027,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_99",
       "train_number": "arrow_99",
-      "lat": -28.621254,
-      "lon": 115.368538,
+      "lat": -32.858443,
+      "lon": 151.696733,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_100",
       "train_number": "arrow_100",
-      "lat": -29.192436,
-      "lon": 116.750565,
+      "lat": -32.858403,
+      "lon": 151.696733,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_101",
       "train_number": "arrow_101",
-      "lat": -29.185493,
-      "lon": 116.750572,
+      "lat": -33.922818,
+      "lon": 150.929411,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_102",
       "train_number": "arrow_102",
-      "lat": -29.185627,
-      "lon": 116.750977,
+      "lat": -33.7738,
+      "lon": 150.919613,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_103",
       "train_number": "arrow_103",
-      "lat": -28.939926,
-      "lon": 121.516708,
+      "lat": -33.767361,
+      "lon": 150.901321,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_104",
       "train_number": "arrow_104",
-      "lat": -28.939537,
-      "lon": 121.516724,
+      "lat": -33.75824,
+      "lon": 150.72003,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_111",
-      "train_number": "arrow_111",
-      "lat": -28.777029,
-      "lon": 114.590775,
+      "id": "arrow_105",
+      "train_number": "arrow_105",
+      "lat": -34.07191,
+      "lon": 150.79704,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_112",
-      "train_number": "arrow_112",
-      "lat": -28.776791,
-      "lon": 114.59919,
+      "id": "arrow_106",
+      "train_number": "arrow_106",
+      "lat": -34.067291,
+      "lon": 150.809738,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_113",
-      "train_number": "arrow_113",
-      "lat": -28.776617,
-      "lon": 114.601448,
+      "id": "arrow_107",
+      "train_number": "arrow_107",
+      "lat": -33.993407,
+      "lon": 150.86912,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_114",
-      "train_number": "arrow_114",
-      "lat": -28.776447,
-      "lon": 114.601982,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_115",
-      "train_number": "arrow_115",
-      "lat": -30.498227,
-      "lon": 132.28504,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_116",
-      "train_number": "arrow_116",
-      "lat": -29.509667,
-      "lon": 134.546147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_117",
-      "train_number": "arrow_117",
-      "lat": -22.635235,
-      "lon": 133.8474,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_118",
-      "train_number": "arrow_118",
-      "lat": -21.71746,
-      "lon": 134.208747,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_119",
-      "train_number": "arrow_119",
-      "lat": -12.513327,
-      "lon": 130.962147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_120",
-      "train_number": "arrow_120",
-      "lat": -30.57462,
-      "lon": 132.898907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_121",
-      "train_number": "arrow_121",
-      "lat": -30.581587,
-      "lon": 133.688667,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_122",
-      "train_number": "arrow_122",
-      "lat": -30.775944,
-      "lon": 121.425537,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_123",
-      "train_number": "arrow_123",
-      "lat": -30.77569,
-      "lon": 121.42588,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_124",
-      "train_number": "arrow_124",
-      "lat": -30.775465,
-      "lon": 121.426254,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_125",
-      "train_number": "arrow_125",
-      "lat": -30.773947,
-      "lon": 121.429153,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_126",
-      "train_number": "arrow_126",
-      "lat": -30.785567,
-      "lon": 128.782653,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_127",
-      "train_number": "arrow_127",
-      "lat": -30.854153,
-      "lon": 134.98648,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_128",
-      "train_number": "arrow_128",
-      "lat": -30.615017,
-      "lon": 130.395493,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_129",
-      "train_number": "arrow_129",
-      "lat": -32.110283,
-      "lon": 150.869347,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_130",
-      "train_number": "arrow_130",
-      "lat": -31.983237,
-      "lon": 150.867987,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_131",
-      "train_number": "arrow_131",
-      "lat": -31.982477,
-      "lon": 150.867933,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_132",
-      "train_number": "arrow_132",
-      "lat": -22.604416,
-      "lon": 149.64736,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_133",
-      "train_number": "arrow_133",
-      "lat": -23.467304,
-      "lon": 150.534836,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_134",
-      "train_number": "arrow_134",
-      "lat": -33.95852,
-      "lon": 151.21896,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_135",
-      "train_number": "arrow_135",
-      "lat": -33.958653,
-      "lon": 151.21904,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_136",
-      "train_number": "arrow_136",
-      "lat": -33.958,
-      "lon": 151.219173,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_137",
-      "train_number": "arrow_137",
-      "lat": -33.967593,
-      "lon": 151.220733,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_138",
-      "train_number": "arrow_138",
-      "lat": -33.880057,
-      "lon": 151.06828,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_139",
-      "train_number": "arrow_139",
-      "lat": -33.900033,
-      "lon": 151.069973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_140",
-      "train_number": "arrow_140",
-      "lat": -33.97094,
-      "lon": 151.08102,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_141",
-      "train_number": "arrow_141",
-      "lat": -33.916753,
-      "lon": 151.161253,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_142",
-      "train_number": "arrow_142",
-      "lat": -33.916783,
-      "lon": 151.162693,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_143",
-      "train_number": "arrow_143",
-      "lat": -33.922573,
-      "lon": 151.17108,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_144",
-      "train_number": "arrow_144",
-      "lat": -33.95218,
-      "lon": 151.13696,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_145",
-      "train_number": "arrow_145",
-      "lat": -32.66166,
-      "lon": 151.29268,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_146",
-      "train_number": "arrow_146",
-      "lat": -32.634327,
-      "lon": 151.106907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_147",
-      "train_number": "arrow_147",
-      "lat": -32.554237,
-      "lon": 151.154773,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_148",
-      "train_number": "arrow_148",
-      "lat": -32.437903,
-      "lon": 151.056587,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_149",
-      "train_number": "arrow_149",
-      "lat": -32.45922,
-      "lon": 151.079773,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_150",
-      "train_number": "arrow_150",
-      "lat": -32.493283,
-      "lon": 151.13744,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_151",
-      "train_number": "arrow_151",
-      "lat": -32.585023,
-      "lon": 151.043733,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_152",
-      "train_number": "arrow_152",
-      "lat": -34.460467,
-      "lon": 150.885187,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_153",
-      "train_number": "arrow_153",
-      "lat": -34.44602,
-      "lon": 150.88144,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_154",
-      "train_number": "arrow_154",
-      "lat": -34.443883,
-      "lon": 150.88644,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_155",
-      "train_number": "arrow_155",
-      "lat": -34.19792,
-      "lon": 151.00736,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_156",
-      "train_number": "arrow_156",
-      "lat": -34.05606,
-      "lon": 151.15148,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_157",
-      "train_number": "arrow_157",
-      "lat": -34.449993,
-      "lon": 150.88144,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_158",
-      "train_number": "arrow_158",
-      "lat": -32.346213,
-      "lon": 150.987627,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_159",
-      "train_number": "arrow_159",
-      "lat": -32.33189,
-      "lon": 150.922667,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_160",
-      "train_number": "arrow_160",
-      "lat": -32.314217,
-      "lon": 150.98272,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_161",
-      "train_number": "arrow_161",
-      "lat": -32.273733,
-      "lon": 150.858133,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_162",
-      "train_number": "arrow_162",
-      "lat": -32.270367,
-      "lon": 150.870333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_163",
-      "train_number": "arrow_163",
-      "lat": -32.25466,
-      "lon": 150.827973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_164",
-      "train_number": "arrow_164",
-      "lat": -32.920212,
-      "lon": 151.751007,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_165",
-      "train_number": "arrow_165",
-      "lat": -32.90393,
-      "lon": 151.76888,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_166",
-      "train_number": "arrow_166",
-      "lat": -32.90392,
-      "lon": 151.76888,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_167",
-      "train_number": "arrow_167",
-      "lat": -32.898793,
-      "lon": 151.761827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_168",
-      "train_number": "arrow_168",
-      "lat": -32.874503,
-      "lon": 151.771147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_169",
-      "train_number": "arrow_169",
-      "lat": -32.87257,
-      "lon": 151.733773,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_170",
-      "train_number": "arrow_170",
-      "lat": -32.870983,
-      "lon": 151.74196,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_171",
-      "train_number": "arrow_171",
-      "lat": -32.870167,
-      "lon": 151.760787,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_172",
-      "train_number": "arrow_172",
-      "lat": -32.868103,
-      "lon": 151.756787,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_173",
-      "train_number": "arrow_173",
-      "lat": -32.86676,
-      "lon": 151.752053,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_174",
-      "train_number": "arrow_174",
-      "lat": -32.78655,
-      "lon": 151.643227,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_175",
-      "train_number": "arrow_175",
-      "lat": -32.83646,
-      "lon": 151.687013,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_176",
-      "train_number": "arrow_176",
-      "lat": -33.2854,
-      "lon": 151.42519,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_177",
-      "train_number": "arrow_177",
-      "lat": -33.108237,
-      "lon": 151.489893,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_178",
-      "train_number": "arrow_178",
-      "lat": -32.9416,
-      "lon": 151.69795,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_179",
-      "train_number": "arrow_179",
-      "lat": -32.887043,
-      "lon": 151.70996,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_180",
-      "train_number": "arrow_180",
-      "lat": -33.10757,
-      "lon": 151.491987,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_181",
-      "train_number": "arrow_181",
-      "lat": -33.04469,
-      "lon": 151.52488,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_182",
-      "train_number": "arrow_182",
-      "lat": -32.937797,
-      "lon": 151.64948,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_183",
-      "train_number": "arrow_183",
-      "lat": -32.94155,
-      "lon": 151.69793,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_184",
-      "train_number": "arrow_184",
-      "lat": -32.720357,
-      "lon": 151.414653,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_185",
-      "train_number": "arrow_185",
-      "lat": -32.744943,
-      "lon": 151.5874,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_186",
-      "train_number": "arrow_186",
-      "lat": -32.335937,
-      "lon": 151.938853,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_187",
-      "train_number": "arrow_187",
-      "lat": -32.28197,
-      "lon": 151.94448,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_188",
-      "train_number": "arrow_188",
-      "lat": -33.48922,
-      "lon": 151.319092,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_189",
-      "train_number": "arrow_189",
-      "lat": -33.34824,
-      "lon": 151.377075,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_190",
-      "train_number": "arrow_190",
-      "lat": -32.671673,
-      "lon": 151.37036,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_191",
-      "train_number": "arrow_191",
-      "lat": -32.671597,
-      "lon": 151.370333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_192",
-      "train_number": "arrow_192",
-      "lat": -32.671207,
-      "lon": 151.370453,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_193",
-      "train_number": "arrow_193",
-      "lat": -33.497028,
-      "lon": 151.306595,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_194",
-      "train_number": "arrow_194",
-      "lat": -32.66316,
-      "lon": 151.314307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_195",
-      "train_number": "arrow_195",
-      "lat": -32.659567,
-      "lon": 151.336333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_196",
-      "train_number": "arrow_196",
-      "lat": -32.659347,
-      "lon": 151.323813,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_197",
-      "train_number": "arrow_197",
-      "lat": -32.65897,
-      "lon": 151.329933,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_198",
-      "train_number": "arrow_198",
-      "lat": -38.084362,
-      "lon": 145.506699,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_199",
-      "train_number": "arrow_199",
-      "lat": -37.908634,
-      "lon": 145.35553,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_200",
-      "train_number": "arrow_200",
-      "lat": -36.515573,
-      "lon": 146.054947,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_201",
-      "train_number": "arrow_201",
-      "lat": -36.157293,
-      "lon": 145.886493,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_202",
-      "train_number": "arrow_202",
-      "lat": -37.878433,
-      "lon": 145.293518,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_203",
-      "train_number": "arrow_203",
-      "lat": -37.826889,
-      "lon": 145.059097,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_204",
-      "train_number": "arrow_204",
-      "lat": -37.826462,
-      "lon": 145.064087,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_205",
-      "train_number": "arrow_205",
-      "lat": -37.811852,
-      "lon": 145.250397,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_206",
-      "train_number": "arrow_206",
-      "lat": -38.036636,
-      "lon": 145.107666,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_207",
-      "train_number": "arrow_207",
-      "lat": -37.990307,
-      "lon": 145.210297,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_208",
-      "train_number": "arrow_208",
-      "lat": -37.989994,
-      "lon": 145.209412,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_209",
-      "train_number": "arrow_209",
-      "lat": -37.966255,
-      "lon": 145.054199,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_210",
-      "train_number": "arrow_210",
-      "lat": -37.936237,
-      "lon": 144.999374,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_211",
-      "train_number": "arrow_211",
-      "lat": -37.910091,
-      "lon": 145.101074,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_212",
-      "train_number": "arrow_212",
-      "lat": -37.789452,
-      "lon": 144.995239,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_213",
-      "train_number": "arrow_213",
-      "lat": -37.789421,
-      "lon": 144.995316,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_214",
-      "train_number": "arrow_214",
-      "lat": -37.699352,
-      "lon": 144.958664,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_215",
-      "train_number": "arrow_215",
-      "lat": -37.061723,
-      "lon": 145.114013,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_216",
-      "train_number": "arrow_216",
-      "lat": -37.061887,
-      "lon": 145.11396,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_217",
-      "train_number": "arrow_217",
-      "lat": -37.710857,
-      "lon": 145.114258,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_218",
-      "train_number": "arrow_218",
-      "lat": -37.652123,
-      "lon": 145.035782,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_219",
-      "train_number": "arrow_219",
-      "lat": -37.867859,
-      "lon": 144.905609,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_220",
-      "train_number": "arrow_220",
-      "lat": -37.80568,
-      "lon": 144.930093,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_221",
-      "train_number": "arrow_221",
-      "lat": -37.812793,
-      "lon": 144.94752,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_222",
-      "train_number": "arrow_222",
-      "lat": -37.818321,
-      "lon": 144.966736,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_223",
-      "train_number": "arrow_223",
-      "lat": -37.818546,
-      "lon": 144.966812,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_224",
-      "train_number": "arrow_224",
-      "lat": -37.702557,
-      "lon": 144.775162,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_225",
-      "train_number": "arrow_225",
-      "lat": -37.802654,
-      "lon": 144.897537,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_226",
-      "train_number": "arrow_226",
-      "lat": -37.753361,
-      "lon": 144.916657,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_227",
-      "train_number": "arrow_227",
-      "lat": -32.30784,
-      "lon": 150.780547,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_228",
-      "train_number": "arrow_228",
-      "lat": -32.28784,
-      "lon": 150.827867,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_229",
-      "train_number": "arrow_229",
-      "lat": -31.918513,
-      "lon": 150.8796,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_230",
-      "train_number": "arrow_230",
-      "lat": -31.767207,
-      "lon": 150.811,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_231",
-      "train_number": "arrow_231",
-      "lat": -31.764463,
-      "lon": 150.794093,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_232",
-      "train_number": "arrow_232",
-      "lat": -31.738313,
-      "lon": 150.787827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_233",
-      "train_number": "arrow_233",
-      "lat": -34.492447,
-      "lon": 147.86992,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_234",
-      "train_number": "arrow_234",
-      "lat": -34.699583,
-      "lon": 148.655907,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_235",
-      "train_number": "arrow_235",
-      "lat": -34.770497,
-      "lon": 149.361267,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_236",
-      "train_number": "arrow_236",
-      "lat": -34.534057,
-      "lon": 150.37868,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_237",
-      "train_number": "arrow_237",
-      "lat": -34.476867,
-      "lon": 150.901307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_238",
-      "train_number": "arrow_238",
-      "lat": -34.476573,
-      "lon": 150.90176,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_239",
-      "train_number": "arrow_239",
-      "lat": -34.49295,
-      "lon": 147.869547,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_240",
-      "train_number": "arrow_240",
-      "lat": -33.765999,
-      "lon": 150.906464,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_241",
-      "train_number": "arrow_241",
-      "lat": -33.96483,
-      "lon": 150.914293,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_242",
-      "train_number": "arrow_242",
-      "lat": -33.885407,
-      "lon": 151.05516,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_243",
-      "train_number": "arrow_243",
-      "lat": -33.882987,
-      "lon": 151.069147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_244",
-      "train_number": "arrow_244",
-      "lat": -33.882843,
-      "lon": 151.069147,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_245",
-      "train_number": "arrow_245",
-      "lat": -33.864913,
-      "lon": 151.07296,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_246",
-      "train_number": "arrow_246",
-      "lat": -33.863876,
-      "lon": 151.060677,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_247",
-      "train_number": "arrow_247",
-      "lat": -33.951778,
-      "lon": 150.787216,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_248",
-      "train_number": "arrow_248",
-      "lat": -33.951729,
-      "lon": 150.787216,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_249",
-      "train_number": "arrow_249",
-      "lat": -33.951679,
-      "lon": 150.787216,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_250",
-      "train_number": "arrow_250",
-      "lat": -33.951561,
-      "lon": 150.787247,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_251",
-      "train_number": "arrow_251",
-      "lat": -32.418883,
-      "lon": 151.046413,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_252",
-      "train_number": "arrow_252",
-      "lat": -32.4179,
-      "lon": 151.044667,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_253",
-      "train_number": "arrow_253",
-      "lat": -32.399377,
-      "lon": 151.03412,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_254",
-      "train_number": "arrow_254",
-      "lat": -32.398057,
-      "lon": 150.66844,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_255",
-      "train_number": "arrow_255",
-      "lat": -32.394357,
-      "lon": 151.006187,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_256",
-      "train_number": "arrow_256",
-      "lat": -32.38941,
-      "lon": 150.99932,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_257",
-      "train_number": "arrow_257",
-      "lat": -32.320887,
-      "lon": 150.745453,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_258",
-      "train_number": "arrow_258",
-      "lat": -34.03168,
-      "lon": 150.841347,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_259",
-      "train_number": "arrow_259",
+      "id": "arrow_108",
+      "train_number": "arrow_108",
       "lat": -33.97247,
       "lon": 150.89274,
       "heading": 0.0,
       "speed": 0.0
     },
     {
+      "id": "arrow_109",
+      "train_number": "arrow_109",
+      "lat": -33.96483,
+      "lon": 150.91428,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_110",
+      "train_number": "arrow_110",
+      "lat": -34.0555,
+      "lon": 150.824585,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_111",
+      "train_number": "arrow_111",
+      "lat": -34.079507,
+      "lon": 150.749853,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_112",
+      "train_number": "arrow_112",
+      "lat": -33.967057,
+      "lon": 150.899173,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_113",
+      "train_number": "arrow_113",
+      "lat": -34.446003,
+      "lon": 150.882613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_114",
+      "train_number": "arrow_114",
+      "lat": -34.47231,
+      "lon": 150.885573,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_115",
+      "train_number": "arrow_115",
+      "lat": -34.460597,
+      "lon": 150.88564,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_116",
+      "train_number": "arrow_116",
+      "lat": -34.444337,
+      "lon": 150.886813,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_117",
+      "train_number": "arrow_117",
+      "lat": -34.476713,
+      "lon": 150.90068,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_118",
+      "train_number": "arrow_118",
+      "lat": -34.4757,
+      "lon": 150.90244,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_119",
+      "train_number": "arrow_119",
+      "lat": -34.31563,
+      "lon": 150.920803,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_122",
+      "train_number": "arrow_122",
+      "lat": -33.585709,
+      "lon": 150.257523,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_123",
+      "train_number": "arrow_123",
+      "lat": -34.50926,
+      "lon": 150.336427,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_124",
+      "train_number": "arrow_124",
+      "lat": -34.547603,
+      "lon": 150.371587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_125",
+      "train_number": "arrow_125",
+      "lat": -33.750617,
+      "lon": 150.698481,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_126",
+      "train_number": "arrow_126",
+      "lat": -33.47892,
+      "lon": 150.164063,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_127",
+      "train_number": "arrow_127",
+      "lat": -33.410873,
+      "lon": 150.110867,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_128",
+      "train_number": "arrow_128",
+      "lat": -34.646663,
+      "lon": 147.994707,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_129",
+      "train_number": "arrow_129",
+      "lat": -34.663507,
+      "lon": 150.281093,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_130",
+      "train_number": "arrow_130",
+      "lat": -34.304723,
+      "lon": 150.59164,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_131",
+      "train_number": "arrow_131",
+      "lat": -33.837933,
+      "lon": 148.697333,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_132",
+      "train_number": "arrow_132",
+      "lat": -34.777273,
+      "lon": 149.163053,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_133",
+      "train_number": "arrow_133",
+      "lat": -34.754097,
+      "lon": 150.02388,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_134",
+      "train_number": "arrow_134",
+      "lat": -34.77664,
+      "lon": 149.164213,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_135",
+      "train_number": "arrow_135",
+      "lat": -34.74955,
+      "lon": 149.2848,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_136",
+      "train_number": "arrow_136",
+      "lat": -34.758827,
+      "lon": 150.029547,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_137",
+      "train_number": "arrow_137",
+      "lat": -34.783567,
+      "lon": 148.94876,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_138",
+      "train_number": "arrow_138",
+      "lat": -37.86504,
+      "lon": 145.027985,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_139",
+      "train_number": "arrow_139",
+      "lat": -37.826889,
+      "lon": 145.059097,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_140",
+      "train_number": "arrow_140",
+      "lat": -37.777992,
+      "lon": 145.032578,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_141",
+      "train_number": "arrow_141",
+      "lat": -37.753288,
+      "lon": 145.065704,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_142",
+      "train_number": "arrow_142",
+      "lat": -37.602474,
+      "lon": 145.100937,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_143",
+      "train_number": "arrow_143",
+      "lat": -37.80549,
+      "lon": 144.930587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_144",
+      "train_number": "arrow_144",
+      "lat": -37.818733,
+      "lon": 144.96524,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_145",
+      "train_number": "arrow_145",
+      "lat": -37.818243,
+      "lon": 144.965672,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_146",
+      "train_number": "arrow_146",
+      "lat": -37.818699,
+      "lon": 144.966003,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_147",
+      "train_number": "arrow_147",
+      "lat": -37.789452,
+      "lon": 144.995239,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_148",
+      "train_number": "arrow_148",
+      "lat": -37.6651,
+      "lon": 144.946396,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_149",
+      "train_number": "arrow_149",
+      "lat": -37.996353,
+      "lon": 145.079971,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_150",
+      "train_number": "arrow_150",
+      "lat": -37.989994,
+      "lon": 145.209412,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_151",
+      "train_number": "arrow_151",
+      "lat": -37.974476,
+      "lon": 145.060028,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_152",
+      "train_number": "arrow_152",
+      "lat": -37.966076,
+      "lon": 145.175461,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_153",
+      "train_number": "arrow_153",
+      "lat": -37.942585,
+      "lon": 145.005463,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_154",
+      "train_number": "arrow_154",
+      "lat": -37.941231,
+      "lon": 145.142487,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_155",
+      "train_number": "arrow_155",
+      "lat": -33.029703,
+      "lon": 146.79184,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_156",
+      "train_number": "arrow_156",
+      "lat": -32.236303,
+      "lon": 148.24536,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_157",
+      "train_number": "arrow_157",
+      "lat": -32.233957,
+      "lon": 148.240147,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_158",
+      "train_number": "arrow_158",
+      "lat": -31.960977,
+      "lon": 141.466013,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_159",
+      "train_number": "arrow_159",
+      "lat": -32.282833,
+      "lon": 142.35264,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_160",
+      "train_number": "arrow_160",
+      "lat": -35.160993,
+      "lon": 147.30112,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_161",
+      "train_number": "arrow_161",
+      "lat": -35.069967,
+      "lon": 147.414147,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_162",
+      "train_number": "arrow_162",
+      "lat": -34.643037,
+      "lon": 148.029027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_163",
+      "train_number": "arrow_163",
+      "lat": -34.639007,
+      "lon": 148.03316,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_164",
+      "train_number": "arrow_164",
+      "lat": -34.00654,
+      "lon": 147.302973,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_165",
+      "train_number": "arrow_165",
+      "lat": -33.129853,
+      "lon": 147.57708,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_166",
+      "train_number": "arrow_166",
+      "lat": -34.006773,
+      "lon": 147.303107,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_167",
+      "train_number": "arrow_167",
+      "lat": -34.648077,
+      "lon": 147.990267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_168",
+      "train_number": "arrow_168",
+      "lat": -36.004407,
+      "lon": 145.99896,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_169",
+      "train_number": "arrow_169",
+      "lat": -36.28626,
+      "lon": 146.393387,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_170",
+      "train_number": "arrow_170",
+      "lat": -35.66908,
+      "lon": 147.037587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_171",
+      "train_number": "arrow_171",
+      "lat": -35.563713,
+      "lon": 147.039067,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_172",
+      "train_number": "arrow_172",
+      "lat": -35.670443,
+      "lon": 147.037307,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_173",
+      "train_number": "arrow_173",
+      "lat": -36.291637,
+      "lon": 146.388613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_174",
+      "train_number": "arrow_174",
+      "lat": -36.00431,
+      "lon": 145.99892,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_175",
+      "train_number": "arrow_175",
+      "lat": -35.555563,
+      "lon": 147.03836,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_176",
+      "train_number": "arrow_176",
+      "lat": -37.757156,
+      "lon": 145.345871,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_177",
+      "train_number": "arrow_177",
+      "lat": -38.084362,
+      "lon": 145.506699,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_178",
+      "train_number": "arrow_178",
+      "lat": -36.740857,
+      "lon": 145.5778,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_179",
+      "train_number": "arrow_179",
+      "lat": -36.740813,
+      "lon": 145.577813,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_180",
+      "train_number": "arrow_180",
+      "lat": -36.661373,
+      "lon": 145.671827,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_181",
+      "train_number": "arrow_181",
+      "lat": -37.907707,
+      "lon": 145.34227,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_182",
+      "train_number": "arrow_182",
+      "lat": -37.893219,
+      "lon": 145.314117,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_183",
+      "train_number": "arrow_183",
+      "lat": -37.768322,
+      "lon": 144.817764,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_184",
+      "train_number": "arrow_184",
+      "lat": -37.78376,
+      "lon": 144.829346,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_185",
+      "train_number": "arrow_185",
+      "lat": -37.843014,
+      "lon": 144.883606,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_186",
+      "train_number": "arrow_186",
+      "lat": -37.816422,
+      "lon": 144.889633,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_187",
+      "train_number": "arrow_187",
+      "lat": -37.867859,
+      "lon": 144.905609,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_188",
+      "train_number": "arrow_188",
+      "lat": -33.890211,
+      "lon": 151.200209,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_189",
+      "train_number": "arrow_189",
+      "lat": -33.887365,
+      "lon": 151.202855,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_190",
+      "train_number": "arrow_190",
+      "lat": -33.88369,
+      "lon": 151.20602,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_191",
+      "train_number": "arrow_191",
+      "lat": -33.883591,
+      "lon": 151.206039,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_192",
+      "train_number": "arrow_192",
+      "lat": -32.87791,
+      "lon": 151.705107,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_193",
+      "train_number": "arrow_193",
+      "lat": -32.874567,
+      "lon": 151.742747,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_194",
+      "train_number": "arrow_194",
+      "lat": -32.86683,
+      "lon": 151.75296,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_195",
+      "train_number": "arrow_195",
+      "lat": -32.867017,
+      "lon": 151.753453,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_196",
+      "train_number": "arrow_196",
+      "lat": -32.867133,
+      "lon": 151.75392,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_197",
+      "train_number": "arrow_197",
+      "lat": -32.78247,
+      "lon": 151.638613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_198",
+      "train_number": "arrow_198",
+      "lat": -32.928033,
+      "lon": 151.726613,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_199",
+      "train_number": "arrow_199",
+      "lat": -32.922473,
+      "lon": 151.75548,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_200",
+      "train_number": "arrow_200",
+      "lat": -32.909317,
+      "lon": 151.770627,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_201",
+      "train_number": "arrow_201",
+      "lat": -32.898767,
+      "lon": 151.761867,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_202",
+      "train_number": "arrow_202",
+      "lat": -32.909207,
+      "lon": 151.770547,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_203",
+      "train_number": "arrow_203",
+      "lat": -32.9415,
+      "lon": 151.66276,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_204",
+      "train_number": "arrow_204",
+      "lat": -32.920231,
+      "lon": 151.750977,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_205",
+      "train_number": "arrow_205",
+      "lat": -33.235883,
+      "lon": 151.461387,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_206",
+      "train_number": "arrow_206",
+      "lat": -33.10904,
+      "lon": 151.48808,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_207",
+      "train_number": "arrow_207",
+      "lat": -32.73997,
+      "lon": 151.557053,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_208",
+      "train_number": "arrow_208",
+      "lat": -32.71838,
+      "lon": 151.483693,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_209",
+      "train_number": "arrow_209",
+      "lat": -33.24736,
+      "lon": 151.44875,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_210",
+      "train_number": "arrow_210",
+      "lat": -33.018349,
+      "lon": 151.527863,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_211",
+      "train_number": "arrow_211",
+      "lat": -33.23613,
+      "lon": 151.461267,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_212",
+      "train_number": "arrow_212",
+      "lat": -32.735853,
+      "lon": 151.547027,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_213",
+      "train_number": "arrow_213",
+      "lat": -33.734977,
+      "lon": 151.0752,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_214",
+      "train_number": "arrow_214",
+      "lat": -33.65347,
+      "lon": 151.13679,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_215",
+      "train_number": "arrow_215",
+      "lat": -33.62352,
+      "lon": 151.15313,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_216",
+      "train_number": "arrow_216",
+      "lat": -33.73533,
+      "lon": 151.07488,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_217",
+      "train_number": "arrow_217",
+      "lat": -33.660467,
+      "lon": 151.128253,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_218",
+      "train_number": "arrow_218",
+      "lat": -33.734723,
+      "lon": 151.075427,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_219",
+      "train_number": "arrow_219",
+      "lat": -33.578301,
+      "lon": 151.188505,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_220",
+      "train_number": "arrow_220",
+      "lat": -33.704463,
+      "lon": 151.09796,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_221",
+      "train_number": "arrow_221",
+      "lat": -33.698315,
+      "lon": 151.099643,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_222",
+      "train_number": "arrow_222",
+      "lat": -33.860273,
+      "lon": 150.979067,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_223",
+      "train_number": "arrow_223",
+      "lat": -33.86359,
+      "lon": 151.063171,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_224",
+      "train_number": "arrow_224",
+      "lat": -33.86351,
+      "lon": 151.063324,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_225",
+      "train_number": "arrow_225",
+      "lat": -33.863437,
+      "lon": 151.063373,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_226",
+      "train_number": "arrow_226",
+      "lat": -33.820439,
+      "lon": 151.089114,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_227",
+      "train_number": "arrow_227",
+      "lat": -33.860007,
+      "lon": 150.97952,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_228",
+      "train_number": "arrow_228",
+      "lat": -34.056128,
+      "lon": 151.151297,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_229",
+      "train_number": "arrow_229",
+      "lat": -33.92279,
+      "lon": 151.1716,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_230",
+      "train_number": "arrow_230",
+      "lat": -33.916737,
+      "lon": 151.161533,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_231",
+      "train_number": "arrow_231",
+      "lat": -33.91675,
+      "lon": 151.1616,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_232",
+      "train_number": "arrow_232",
+      "lat": -33.962497,
+      "lon": 151.2196,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_233",
+      "train_number": "arrow_233",
+      "lat": -33.962897,
+      "lon": 151.21948,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_234",
+      "train_number": "arrow_234",
+      "lat": -33.963443,
+      "lon": 151.219693,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_235",
+      "train_number": "arrow_235",
+      "lat": -28.688528,
+      "lon": 115.066902,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_236",
+      "train_number": "arrow_236",
+      "lat": -28.688543,
+      "lon": 115.067314,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_237",
+      "train_number": "arrow_237",
+      "lat": -29.185619,
+      "lon": 116.74781,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_238",
+      "train_number": "arrow_238",
+      "lat": -29.185516,
+      "lon": 116.748222,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_239",
+      "train_number": "arrow_239",
+      "lat": -29.19128,
+      "lon": 116.752609,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_240",
+      "train_number": "arrow_240",
+      "lat": -28.691244,
+      "lon": 115.077339,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_241",
+      "train_number": "arrow_241",
+      "lat": -30.8609,
+      "lon": 120.649707,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_242",
+      "train_number": "arrow_242",
+      "lat": -30.853523,
+      "lon": 121.119373,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_243",
+      "train_number": "arrow_243",
+      "lat": -30.782688,
+      "lon": 121.41304,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_244",
+      "train_number": "arrow_244",
+      "lat": -30.782492,
+      "lon": 121.413368,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_245",
+      "train_number": "arrow_245",
+      "lat": -30.776915,
+      "lon": 121.423424,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_246",
+      "train_number": "arrow_246",
+      "lat": -30.776716,
+      "lon": 121.423813,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_247",
+      "train_number": "arrow_247",
+      "lat": -30.84595,
+      "lon": 120.410507,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_248",
+      "train_number": "arrow_248",
+      "lat": -31.369487,
+      "lon": 118.8968,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_249",
+      "train_number": "arrow_249",
+      "lat": -30.94037,
+      "lon": 119.373693,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_250",
+      "train_number": "arrow_250",
+      "lat": -30.829223,
+      "lon": 119.595587,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_251",
+      "train_number": "arrow_251",
+      "lat": -31.364115,
+      "lon": 118.907364,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_252",
+      "train_number": "arrow_252",
+      "lat": -31.382545,
+      "lon": 118.497101,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_253",
+      "train_number": "arrow_253",
+      "lat": -31.481201,
+      "lon": 118.259903,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_254",
+      "train_number": "arrow_254",
+      "lat": -31.481228,
+      "lon": 118.259583,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_255",
+      "train_number": "arrow_255",
+      "lat": -32.919159,
+      "lon": 115.911087,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_256",
+      "train_number": "arrow_256",
+      "lat": -32.650707,
+      "lon": 115.950249,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_257",
+      "train_number": "arrow_257",
+      "lat": -31.648583,
+      "lon": 117.2704,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_258",
+      "train_number": "arrow_258",
+      "lat": -32.649513,
+      "lon": 115.941948,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_259",
+      "train_number": "arrow_259",
+      "lat": -31.142145,
+      "lon": 117.267555,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
       "id": "arrow_260",
       "train_number": "arrow_260",
-      "lat": -33.952705,
-      "lon": 150.797919,
+      "lat": -31.6446,
+      "lon": 116.802627,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_261",
       "train_number": "arrow_261",
-      "lat": -33.952049,
-      "lon": 150.792267,
+      "lat": -32.116215,
+      "lon": 115.814308,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_262",
       "train_number": "arrow_262",
-      "lat": -34.127307,
-      "lon": 150.743373,
+      "lat": -32.116459,
+      "lon": 115.814003,
       "heading": 0.0,
       "speed": 0.0
     },
     {
       "id": "arrow_263",
       "train_number": "arrow_263",
-      "lat": -34.343843,
-      "lon": 150.561627,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_264",
-      "train_number": "arrow_264",
-      "lat": -34.21259,
-      "lon": 150.595627,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_265",
-      "train_number": "arrow_265",
-      "lat": -34.116157,
-      "lon": 147.36568,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_266",
-      "train_number": "arrow_266",
-      "lat": -33.159363,
-      "lon": 138.614333,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_267",
-      "train_number": "arrow_267",
-      "lat": -33.143757,
-      "lon": 148.099427,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_268",
-      "train_number": "arrow_268",
-      "lat": -33.529877,
-      "lon": 149.883973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_269",
-      "train_number": "arrow_269",
-      "lat": -33.777843,
-      "lon": 150.637893,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_270",
-      "train_number": "arrow_270",
-      "lat": -33.708412,
-      "lon": 150.585613,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_271",
-      "train_number": "arrow_271",
-      "lat": -32.046107,
-      "lon": 141.935307,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_272",
-      "train_number": "arrow_272",
-      "lat": -32.293667,
-      "lon": 148.198693,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_273",
-      "train_number": "arrow_273",
-      "lat": -32.173797,
-      "lon": 148.63184,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_274",
-      "train_number": "arrow_274",
-      "lat": -32.173777,
-      "lon": 148.631853,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_275",
-      "train_number": "arrow_275",
-      "lat": -32.064687,
-      "lon": 141.970133,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_276",
-      "train_number": "arrow_276",
-      "lat": -35.02802,
-      "lon": 138.593733,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_277",
-      "train_number": "arrow_277",
-      "lat": -35.50227,
-      "lon": 139.75068,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_278",
-      "train_number": "arrow_278",
-      "lat": -35.87341,
-      "lon": 140.041053,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_279",
-      "train_number": "arrow_279",
-      "lat": -35.120183,
-      "lon": 147.36696,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_280",
-      "train_number": "arrow_280",
-      "lat": -35.692657,
-      "lon": 147.032827,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_281",
-      "train_number": "arrow_281",
-      "lat": -35.119943,
-      "lon": 147.36544,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_282",
-      "train_number": "arrow_282",
-      "lat": -31.873613,
-      "lon": 116.03418,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_283",
-      "train_number": "arrow_283",
-      "lat": -31.873291,
-      "lon": 116.034019,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_284",
-      "train_number": "arrow_284",
-      "lat": -31.573143,
-      "lon": 116.48284,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_285",
-      "train_number": "arrow_285",
-      "lat": -31.242373,
-      "lon": 116.941948,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_286",
-      "train_number": "arrow_286",
-      "lat": -33.201744,
-      "lon": 115.854759,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_287",
-      "train_number": "arrow_287",
-      "lat": -33.174522,
-      "lon": 115.862831,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_288",
-      "train_number": "arrow_288",
-      "lat": -32.992195,
-      "lon": 115.894104,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_289",
-      "train_number": "arrow_289",
-      "lat": -32.650448,
-      "lon": 115.949204,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_290",
-      "train_number": "arrow_290",
-      "lat": -32.649055,
-      "lon": 115.91526,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_291",
-      "train_number": "arrow_291",
       "lat": -32.250851,
       "lon": 115.762154,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_292",
-      "train_number": "arrow_292",
+      "id": "arrow_264",
+      "train_number": "arrow_264",
+      "lat": -32.189827,
+      "lon": 115.780586,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_265",
+      "train_number": "arrow_265",
+      "lat": -32.243031,
+      "lon": 115.78418,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_266",
+      "train_number": "arrow_266",
       "lat": -32.238529,
       "lon": 115.784706,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_293",
-      "train_number": "arrow_293",
-      "lat": -32.234913,
-      "lon": 115.784409,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_294",
-      "train_number": "arrow_294",
-      "lat": -32.233284,
-      "lon": 115.784973,
-      "heading": 0.0,
-      "speed": 0.0
-    },
-    {
-      "id": "arrow_295",
-      "train_number": "arrow_295",
+      "id": "arrow_267",
+      "train_number": "arrow_267",
       "lat": -32.232941,
       "lon": 115.784874,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_296",
-      "train_number": "arrow_296",
-      "lat": -32.219986,
-      "lon": 115.7854,
+      "id": "arrow_268",
+      "train_number": "arrow_268",
+      "lat": -32.233284,
+      "lon": 115.784973,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_297",
-      "train_number": "arrow_297",
-      "lat": -33.318623,
-      "lon": 115.667336,
+      "id": "arrow_269",
+      "train_number": "arrow_269",
+      "lat": -32.442757,
+      "lon": 121.649818,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_298",
-      "train_number": "arrow_298",
-      "lat": -33.257355,
-      "lon": 116.037994,
+      "id": "arrow_270",
+      "train_number": "arrow_270",
+      "lat": -32.268414,
+      "lon": 115.96566,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_299",
-      "train_number": "arrow_299",
-      "lat": -33.252453,
-      "lon": 115.850525,
+      "id": "arrow_271",
+      "train_number": "arrow_271",
+      "lat": -33.868702,
+      "lon": 121.905296,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_300",
-      "train_number": "arrow_300",
+      "id": "arrow_272",
+      "train_number": "arrow_272",
+      "lat": -33.852898,
+      "lon": 121.881981,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_273",
+      "train_number": "arrow_273",
+      "lat": -33.31694,
+      "lon": 115.666039,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_274",
+      "train_number": "arrow_274",
       "lat": -33.242603,
       "lon": 116.079369,
       "heading": 0.0,
       "speed": 0.0
     },
     {
-      "id": "arrow_301",
-      "train_number": "arrow_301",
-      "lat": -33.242596,
-      "lon": 116.079399,
+      "id": "arrow_275",
+      "train_number": "arrow_275",
+      "lat": -33.242599,
+      "lon": 116.079384,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_276",
+      "train_number": "arrow_276",
+      "lat": -33.27227,
+      "lon": 115.988663,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_277",
+      "train_number": "arrow_277",
+      "lat": -33.320549,
+      "lon": 115.673096,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_278",
+      "train_number": "arrow_278",
+      "lat": -33.317062,
+      "lon": 115.798172,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_279",
+      "train_number": "arrow_279",
+      "lat": -33.256584,
+      "lon": 116.041557,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_280",
+      "train_number": "arrow_280",
+      "lat": -28.777189,
+      "lon": 114.587799,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_281",
+      "train_number": "arrow_281",
+      "lat": -28.777239,
+      "lon": 114.596214,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_282",
+      "train_number": "arrow_282",
+      "lat": -28.721512,
+      "lon": 115.003365,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_283",
+      "train_number": "arrow_283",
+      "lat": -28.718021,
+      "lon": 115.01329,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_284",
+      "train_number": "arrow_284",
+      "lat": -28.718,
+      "lon": 115.013351,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_285",
+      "train_number": "arrow_285",
+      "lat": -28.77747,
+      "lon": 114.586952,
+      "heading": 0.0,
+      "speed": 0.0
+    },
+    {
+      "id": "arrow_286",
+      "train_number": "arrow_286",
+      "lat": -28.783327,
+      "lon": 114.590157,
       "heading": 0.0,
       "speed": 0.0
     }
