@@ -22,6 +22,7 @@ class TrainScraper:
         self.driver = None
         
     def setup_driver(self):
+        """Configure Chrome driver with anti-detection measures"""
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
@@ -29,7 +30,7 @@ class TrainScraper:
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
         
-        # Add random user agent to look more like a real browser
+        # Random user agent to avoid detection
         user_agents = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
@@ -40,7 +41,7 @@ class TrainScraper:
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
-        # Speed optimizations but with realistic delays
+        # Speed optimizations
         chrome_options.add_argument('--disable-images')
         chrome_options.add_argument('--disable-extensions')
         
@@ -50,11 +51,13 @@ class TrainScraper:
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
     def save_cookies(self):
+        """Save session cookies for next run"""
         with open(COOKIE_FILE, "wb") as f:
             pickle.dump(self.driver.get_cookies(), f)
-        print("✅ Cookies saved")
+        print("✅ Cookies saved for next run")
     
     def load_cookies(self):
+        """Load saved cookies to skip login"""
         if os.path.exists(COOKIE_FILE):
             try:
                 with open(COOKIE_FILE, "rb") as f:
@@ -66,18 +69,32 @@ class TrainScraper:
                         self.driver.add_cookie(cookie)
                     except:
                         pass
-                print("✅ Cookies loaded")
+                print("✅ Loaded saved session")
                 return True
             except:
                 pass
         return False
     
-    def random_delay(self, min_sec=1, max_sec=3):
+    def random_delay(self, min_sec=0.5, max_sec=2):
         """Add random delays to simulate human behavior"""
-        delay = random.uniform(min_sec, max_sec)
-        time.sleep(delay)
+        time.sleep(random.uniform(min_sec, max_sec))
+    
+    def check_session_valid(self):
+        """Verify we're still logged in"""
+        try:
+            self.driver.get(TF_LOGIN_URL)
+            self.random_delay(2, 3)
+            # If we're redirected to login page, session expired
+            if "login" in self.driver.current_url.lower():
+                print("⚠️ Session expired")
+                return False
+            print("✅ Session still valid")
+            return True
+        except:
+            return False
     
     def login(self):
+        """Perform login with human-like typing"""
         print("\n📌 Logging in...")
         self.driver.get(TF_LOGIN_URL)
         self.random_delay(2, 4)
@@ -87,6 +104,7 @@ class TrainScraper:
             print("✅ Already logged in")
             return True
         
+        # Find username field
         username = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "useR_name"))
         )
@@ -98,6 +116,7 @@ class TrainScraper:
         
         self.random_delay(0.5, 1.5)
         
+        # Find password field
         password = self.driver.find_element(By.ID, "pasS_word")
         for char in TF_PASSWORD:
             password.send_keys(char)
@@ -125,7 +144,7 @@ class TrainScraper:
         
         self.random_delay(3, 5)
         
-        # Close warning
+        # Close warning popup
         self.driver.execute_script("""
             var paths = document.getElementsByTagName('path');
             for(var i = 0; i < paths.length; i++) {
@@ -141,11 +160,12 @@ class TrainScraper:
         """)
         print("✅ Warning page closed")
         
+        # Save cookies for next run
         self.save_cookies()
         return True
     
     def zoom_to_australia(self):
-        # Add random delay before zooming
+        """Zoom map to show all of Australia"""
         self.random_delay(2, 4)
         
         self.driver.execute_script("""
@@ -159,6 +179,7 @@ class TrainScraper:
         print("🌏 Zoomed to Australia")
     
     def extract_trains(self):
+        """Extract train data from OpenLayers sources"""
         script = """
         var allTrains = [];
         var seenIds = new Set();
@@ -209,6 +230,7 @@ class TrainScraper:
         return self.driver.execute_script(script)
     
     def webmercator_to_latlon(self, x, y):
+        """Convert Web Mercator coordinates to latitude/longitude"""
         try:
             x = float(x)
             y = float(y)
@@ -220,6 +242,7 @@ class TrainScraper:
             return None, None
     
     def filter_australian_trains(self, raw_trains):
+        """Filter trains to Australia only and convert coordinates"""
         australian_trains = []
         seen_ids = set()
         
@@ -241,6 +264,7 @@ class TrainScraper:
         return australian_trains
     
     def run(self):
+        """Main execution method"""
         print("=" * 60)
         print("🚂 RAILOPS - TRAIN SCRAPER")
         print(f"📅 {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -251,35 +275,44 @@ class TrainScraper:
             return [], "Missing credentials"
         
         try:
+            # Setup browser
             self.setup_driver()
             
-            # Try cookie login first
+            # Try to load saved session first
             if self.load_cookies():
                 self.driver.get(TF_LOGIN_URL)
                 self.random_delay(2, 4)
-                if "login" in self.driver.current_url.lower():
-                    print("⚠️ Cookies expired, logging in again")
+                
+                # Check if session is still valid
+                if not self.check_session_valid():
+                    print("⚠️ Session expired, logging in again")
                     if not self.login():
                         return [], "Login failed"
             else:
+                # No saved session, do full login
                 if not self.login():
                     return [], "Login failed"
             
-            # Critical wait times - this is what makes it work!
+            # CRITICAL: Wait for map to stabilize
             print("\n⏳ Waiting 30 seconds for map to stabilize...")
             time.sleep(30)
             
+            # Zoom to Australia
             self.zoom_to_australia()
             
+            # CRITICAL: Wait for trains to load
             print("⏳ Waiting 60 seconds for trains to load...")
             time.sleep(60)
             
+            # Extract train data
             print("\n🔍 Extracting trains...")
             raw_trains = self.extract_trains()
             print(f"✅ Extracted {len(raw_trains)} raw positions")
             
+            # Filter to Australia only
             australian_trains = self.filter_australian_trains(raw_trains)
             
+            # Show sample
             if australian_trains:
                 print(f"\n📋 Sample train:")
                 print(f"   ID: {australian_trains[0]['id']}")
@@ -290,23 +323,49 @@ class TrainScraper:
             
         except Exception as e:
             print(f"\n❌ Error: {e}")
+            import traceback
+            traceback.print_exc()
             return [], f"error: {type(e).__name__}"
         finally:
             if self.driver:
-                # Add random delay before closing to seem more human
-                self.random_delay(1, 3)
+                # Small delay before closing
+                self.random_delay(1, 2)
                 self.driver.quit()
                 print("👋 Browser closed")
+                print("💾 Session saved for next run")
 
 def write_output(trains, note=""):
+    """Write trains to JSON file"""
     payload = {
         "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
         "note": note,
         "trains": trains or []
     }
+    
+    # Create backup if file exists
+    if os.path.exists(OUT_FILE):
+        backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        try:
+            with open(OUT_FILE, 'r') as src:
+                with open(backup_name, 'w') as dst:
+                    dst.write(src.read())
+            print(f"💾 Backup created: {backup_name}")
+        except:
+            pass
+    
+    # Write new data
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
+    
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
+    
+    # Clean up old backups (keep last 5)
+    backups = sorted([f for f in os.listdir('.') if f.startswith('trains_backup_')])
+    for old_backup in backups[:-5]:
+        try:
+            os.remove(old_backup)
+        except:
+            pass
 
 def main():
     scraper = TrainScraper()
