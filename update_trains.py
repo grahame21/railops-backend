@@ -234,10 +234,33 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Capture ALL possible identifiers
-                            var locoNumber = props.loco || props.Loco || props.unit || props.Unit || '';
-                            var trainId = props.train_id || props.trainId || props.train_number || props.trainNumber || 
-                                         props.service || props.Service || props.name || props.NAME || '';
+                            // Log ALL property names for debugging
+                            console.log('Feature ' + sourceName + '_' + index + ' properties:', Object.keys(props));
+                            
+                            // Check ALL possible loco number fields
+                            var locoNumber = props.loco || props.Loco || 
+                                            props.unit || props.Unit || 
+                                            props.engine || props.Engine ||
+                                            props.locoid || props.LocoId ||
+                                            props.locomotive || props.Locomotive ||
+                                            props.engine_number || props.EngineNumber ||
+                                            props.road_number || props.RoadNumber ||
+                                            props.reporting_marks || props.ReportingMarks ||
+                                            '';
+                            
+                            // Check ALL possible train ID fields
+                            var trainId = props.train_id || props.trainId || 
+                                         props.train_number || props.trainNumber || 
+                                         props.service || props.Service || 
+                                         props.name || props.NAME ||
+                                         props.id || props.ID ||
+                                         props.train || props.Train ||
+                                         '';
+                            
+                            // Log what we found
+                            if (locoNumber || trainId) {
+                                console.log('Found - Loco:', locoNumber, 'Train ID:', trainId);
+                            }
                             
                             // Use loco as primary ID if available, otherwise use train ID
                             var primaryId = locoNumber || trainId || sourceName + '_' + index;
@@ -273,9 +296,13 @@ class TrainScraper:
                                 allTrains.push(trainData);
                             }
                         }
-                    } catch(e) {}
+                    } catch(e) {
+                        console.log('Error processing feature:', e);
+                    }
                 });
-            } catch(e) {}
+            } catch(e) {
+                console.log('Error accessing source:', e);
+            }
         });
         
         return allTrains;
