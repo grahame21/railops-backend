@@ -2,14 +2,14 @@ name: Update Train Data
 
 on:
   schedule:
-    # Run every 30 minutes (adjust as needed)
-    - cron: '*/30 * * * *'
+    # Run every 2 minutes
+    - cron: '*/2 * * * *'
   workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5  # Shorter timeout since runs are frequent
     
     steps:
     - uses: actions/checkout@v4
