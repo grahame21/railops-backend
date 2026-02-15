@@ -22,7 +22,6 @@ class TrainScraper:
         self.driver = None
         
     def setup_driver(self):
-        """Configure Chrome driver with anti-detection measures"""
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
@@ -30,34 +29,26 @@ class TrainScraper:
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
         
-        # Random user agent to avoid detection
         user_agents = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         ]
         chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
         
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
-        # Speed optimizations
-        chrome_options.add_argument('--disable-images')
-        chrome_options.add_argument('--disable-extensions')
+        # Enable performance logging to see what's happening
+        chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL', 'browser': 'ALL'})
         
         self.driver = webdriver.Chrome(options=chrome_options)
-        
-        # Hide webdriver property
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
     def save_cookies(self):
-        """Save session cookies for next run"""
         with open(COOKIE_FILE, "wb") as f:
             pickle.dump(self.driver.get_cookies(), f)
-        print("✅ Cookies saved for next run")
+        print("✅ Cookies saved")
     
     def load_cookies(self):
-        """Load saved cookies to skip login"""
         if os.path.exists(COOKIE_FILE):
             try:
                 with open(COOKIE_FILE, "rb") as f:
@@ -69,64 +60,137 @@ class TrainScraper:
                         self.driver.add_cookie(cookie)
                     except:
                         pass
-                print("✅ Loaded saved session")
+                print("✅ Cookies loaded")
                 return True
             except:
                 pass
         return False
     
     def random_delay(self, min_sec=0.5, max_sec=2):
-        """Add random delays to simulate human behavior"""
         time.sleep(random.uniform(min_sec, max_sec))
     
+    def debug_page_state(self):
+        """Print detailed debug info about the page"""
+        print("\n🔍 DEBUG: Checking page state...")
+        
+        # Check current URL
+        current_url = self.driver.current_url
+        print(f"   Current URL: {current_url}")
+        
+        # Check page title
+        page_title = self.driver.title
+        print(f"   Page title: {page_title}")
+        
+        # Check for any error messages on the page
+        try:
+            error_elements = self.driver.find_elements(By.CSS_SELECTOR, '.error, .alert, .warning, [class*="error"]')
+            if error_elements:
+                print(f"   ⚠️ Found {len(error_elements)} error elements on page")
+                for el in error_elements[:3]:
+                    print(f"      - {el.text[:100]}")
+        except:
+            pass
+        
+        # Check console logs for errors
+        try:
+            logs = self.driver.get_log('browser')
+            error_logs = [log for log in logs if log['level'] == 'SEVERE']
+            if error_logs:
+                print(f"   ⚠️ Found {len(error_logs)} browser errors:")
+                for log in error_logs[:3]:
+                    print(f"      - {log['message'][:100]}")
+        except:
+            pass
+        
+        # Check what train sources exist
+        script = """
+        var sources = {
+            'regTrainsSource': typeof window.regTrainsSource !== 'undefined',
+            'unregTrainsSource': typeof window.unregTrainsSource !== 'undefined',
+            'markerSource': typeof window.markerSource !== 'undefined',
+            'arrowMarkersSource': typeof window.arrowMarkersSource !== 'undefined',
+            'map': typeof window.map !== 'undefined',
+            'currentTrains': typeof window.currentTrains !== 'undefined'
+        };
+        
+        var counts = {};
+        if (window.regTrainsSource && window.regTrainsSource.getFeatures) {
+            counts.regTrainsSource = window.regTrainsSource.getFeatures().length;
+        }
+        if (window.unregTrainsSource && window.unregTrainsSource.getFeatures) {
+            counts.unregTrainsSource = window.unregTrainsSource.getFeatures().length;
+        }
+        if (window.markerSource && window.markerSource.getFeatures) {
+            counts.markerSource = window.markerSource.getFeatures().length;
+        }
+        if (window.arrowMarkersSource && window.arrowMarkersSource.getFeatures) {
+            counts.arrowMarkersSource = window.arrowMarkersSource.getFeatures().length;
+        }
+        
+        return {sources: sources, counts: counts};
+        """
+        
+        try:
+            debug = self.driver.execute_script(script)
+            print(f"\n   OpenLayers sources:")
+            for source, exists in debug['sources'].items():
+                if exists:
+                    count = debug['counts'].get(source, 'N/A')
+                    print(f"      ✅ {source}: {count} features")
+                else:
+                    print(f"      ❌ {source}: not found")
+        except Exception as e:
+            print(f"   Error checking sources: {e}")
+    
     def check_session_valid(self):
-        """Verify we're still logged in"""
         try:
             self.driver.get(TF_LOGIN_URL)
             self.random_delay(2, 3)
-            # If we're redirected to login page, session expired
             if "login" in self.driver.current_url.lower():
                 print("⚠️ Session expired")
                 return False
-            print("✅ Session still valid")
+            print("✅ Session valid")
             return True
         except:
             return False
     
     def login(self):
-        """Perform login with human-like typing"""
         print("\n📌 Logging in...")
         self.driver.get(TF_LOGIN_URL)
         self.random_delay(2, 4)
         
-        # Check if already logged in
         if "home/nextlevel" in self.driver.current_url and "login" not in self.driver.current_url.lower():
             print("✅ Already logged in")
             return True
         
-        # Find username field
-        username = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.ID, "useR_name"))
-        )
-        # Type like a human
-        for char in TF_USERNAME:
-            username.send_keys(char)
-            time.sleep(random.uniform(0.05, 0.15))
-        print("✅ Username entered")
+        try:
+            username = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, "useR_name"))
+            )
+            for char in TF_USERNAME:
+                username.send_keys(char)
+                time.sleep(random.uniform(0.05, 0.15))
+            print("✅ Username entered")
+        except:
+            print("❌ Could not find username field")
+            return False
         
         self.random_delay(0.5, 1.5)
         
-        # Find password field
-        password = self.driver.find_element(By.ID, "pasS_word")
-        for char in TF_PASSWORD:
-            password.send_keys(char)
-            time.sleep(random.uniform(0.05, 0.15))
-        print("✅ Password entered")
+        try:
+            password = self.driver.find_element(By.ID, "pasS_word")
+            for char in TF_PASSWORD:
+                password.send_keys(char)
+                time.sleep(random.uniform(0.05, 0.15))
+            print("✅ Password entered")
+        except:
+            print("❌ Could not find password field")
+            return False
         
         self.random_delay(1, 2)
         
-        # Click login button
-        self.driver.execute_script("""
+        # Click login
+        clicked = self.driver.execute_script("""
             var tables = document.getElementsByClassName('popup_table');
             for(var i = 0; i < tables.length; i++) {
                 if(tables[i].className.includes('login')) {
@@ -134,17 +198,32 @@ class TrainScraper:
                     for(var j = 0; j < elements.length; j++) {
                         if(elements[j].textContent.trim() === 'Log In') {
                             elements[j].click();
-                            return;
+                            return true;
                         }
                     }
                 }
             }
+            return false;
         """)
-        print("✅ Login button clicked")
+        
+        if clicked:
+            print("✅ Login button clicked")
+        else:
+            print("⚠️ Could not find login button, trying alternative")
+            # Try alternative click method
+            self.driver.execute_script("""
+                var inputs = document.querySelectorAll('input[type="submit"], input[type="button"]');
+                for(var i = 0; i < inputs.length; i++) {
+                    if(inputs[i].value.includes('Log') || inputs[i].value.includes('Sign')) {
+                        inputs[i].click();
+                        return;
+                    }
+                }
+            """)
         
         self.random_delay(3, 5)
         
-        # Close warning popup
+        # Close warning
         self.driver.execute_script("""
             var paths = document.getElementsByTagName('path');
             for(var i = 0; i < paths.length; i++) {
@@ -160,38 +239,51 @@ class TrainScraper:
         """)
         print("✅ Warning page closed")
         
-        # Save cookies for next run
         self.save_cookies()
         return True
     
     def zoom_to_australia(self):
-        """Zoom map to show all of Australia"""
         self.random_delay(2, 4)
         
-        self.driver.execute_script("""
+        result = self.driver.execute_script("""
             if (window.map) {
-                var australia = [112, -44, 154, -10];
-                var proj = window.map.getView().getProjection();
-                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+                try {
+                    var australia = [112, -44, 154, -10];
+                    var proj = window.map.getView().getProjection();
+                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                    window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+                    return true;
+                } catch(e) {
+                    console.log('Zoom error:', e);
+                    return false;
+                }
             }
+            return false;
         """)
-        print("🌏 Zoomed to Australia")
+        
+        if result:
+            print("🌏 Zoomed to Australia")
+        else:
+            print("⚠️ Could not zoom map")
     
     def extract_trains(self):
-        """Extract train data from OpenLayers sources"""
         script = """
         var allTrains = [];
         var seenIds = new Set();
         
         var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
+        var sourceStats = {};
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
-            if (!source || !source.getFeatures) return;
+            if (!source || typeof source.getFeatures !== 'function') {
+                sourceStats[sourceName] = 'not found';
+                return;
+            }
             
             try {
                 var features = source.getFeatures();
+                sourceStats[sourceName] = features.length + ' features';
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -219,18 +311,32 @@ class TrainScraper:
                                 });
                             }
                         }
-                    } catch(e) {}
+                    } catch(e) {
+                        console.log('Error processing feature:', e);
+                    }
                 });
-            } catch(e) {}
+            } catch(e) {
+                sourceStats[sourceName] = 'error: ' + e.toString();
+            }
         });
         
-        return allTrains;
+        return {
+            trains: allTrains,
+            stats: sourceStats
+        };
         """
         
-        return self.driver.execute_script(script)
+        try:
+            result = self.driver.execute_script(script)
+            print(f"\n📊 Source statistics:")
+            for source, stat in result['stats'].items():
+                print(f"   {source}: {stat}")
+            return result['trains']
+        except Exception as e:
+            print(f"❌ Error extracting trains: {e}")
+            return []
     
     def webmercator_to_latlon(self, x, y):
-        """Convert Web Mercator coordinates to latitude/longitude"""
         try:
             x = float(x)
             y = float(y)
@@ -242,7 +348,6 @@ class TrainScraper:
             return None, None
     
     def filter_australian_trains(self, raw_trains):
-        """Filter trains to Australia only and convert coordinates"""
         australian_trains = []
         seen_ids = set()
         
@@ -264,7 +369,6 @@ class TrainScraper:
         return australian_trains
     
     def run(self):
-        """Main execution method"""
         print("=" * 60)
         print("🚂 RAILOPS - TRAIN SCRAPER")
         print(f"📅 {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -275,46 +379,51 @@ class TrainScraper:
             return [], "Missing credentials"
         
         try:
-            # Setup browser
             self.setup_driver()
             
-            # Try to load saved session first
             if self.load_cookies():
                 self.driver.get(TF_LOGIN_URL)
                 self.random_delay(2, 4)
                 
-                # Check if session is still valid
+                # Debug page state before login check
+                self.debug_page_state()
+                
                 if not self.check_session_valid():
                     print("⚠️ Session expired, logging in again")
                     if not self.login():
                         return [], "Login failed"
             else:
-                # No saved session, do full login
                 if not self.login():
                     return [], "Login failed"
             
-            # CRITICAL: Wait for map to stabilize
+            # Debug after login
+            self.debug_page_state()
+            
             print("\n⏳ Waiting 30 seconds for map to stabilize...")
             time.sleep(30)
             
-            # Zoom to Australia
             self.zoom_to_australia()
             
-            # CRITICAL: Wait for trains to load
             print("⏳ Waiting 60 seconds for trains to load...")
             time.sleep(60)
             
-            # Extract train data
+            # Debug again before extraction
+            self.debug_page_state()
+            
             print("\n🔍 Extracting trains...")
             raw_trains = self.extract_trains()
-            print(f"✅ Extracted {len(raw_trains)} raw positions")
+            print(f"\n✅ Extracted {len(raw_trains)} raw positions")
             
-            # Filter to Australia only
+            if len(raw_trains) > 0:
+                print(f"\n📋 First raw train sample:")
+                print(json.dumps(raw_trains[0], indent=2))
+            
             australian_trains = self.filter_australian_trains(raw_trains)
             
-            # Show sample
+            print(f"\n✅ Australian trains: {len(australian_trains)}")
+            
             if australian_trains:
-                print(f"\n📋 Sample train:")
+                print(f"\n📋 First Australian train:")
                 print(f"   ID: {australian_trains[0]['id']}")
                 print(f"   Location: {australian_trains[0]['lat']:.4f}, {australian_trains[0]['lon']:.4f}")
                 print(f"   Speed: {australian_trains[0]['speed']} km/h")
@@ -328,21 +437,17 @@ class TrainScraper:
             return [], f"error: {type(e).__name__}"
         finally:
             if self.driver:
-                # Small delay before closing
                 self.random_delay(1, 2)
                 self.driver.quit()
                 print("👋 Browser closed")
-                print("💾 Session saved for next run")
 
 def write_output(trains, note=""):
-    """Write trains to JSON file"""
     payload = {
         "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
         "note": note,
         "trains": trains or []
     }
     
-    # Create backup if file exists
     if os.path.exists(OUT_FILE):
         backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         try:
@@ -353,13 +458,10 @@ def write_output(trains, note=""):
         except:
             pass
     
-    # Write new data
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
-    
     print(f"📝 Output: {len(trains or [])} trains, status: {note}")
     
-    # Clean up old backups (keep last 5)
     backups = sorted([f for f in os.listdir('.') if f.startswith('trains_backup_')])
     for old_backup in backups[:-5]:
         try:
