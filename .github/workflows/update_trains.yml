@@ -2,8 +2,8 @@ name: Update Train Data
 
 on:
   schedule:
-    # Run every 3 minutes
-    - cron: '*/3 * * * *'
+    # Run every 4 minutes
+    - cron: '*/4 * * * *'
   workflow_dispatch:
 
 jobs:
