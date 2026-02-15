@@ -178,6 +178,85 @@ class TrainScraper:
         except:
             print("⚠️ Couldn't zoom map")
     
+    def debug_map_features(self):
+        """Debug what features are actually in the map sources"""
+        print("\n🔍 Debugging map features...")
+        
+        script = """
+        var debug = {
+            'regTrainsSource': [],
+            'unregTrainsSource': [],
+            'markerSource': [],
+            'arrowMarkersSource': []
+        };
+        
+        function inspectSource(source, sourceName) {
+            if (!source || typeof source.getFeatures !== 'function') return [];
+            
+            var features = [];
+            try {
+                var feats = source.getFeatures();
+                feats.forEach(function(feature, index) {
+                    try {
+                        var props = feature.getProperties();
+                        var geom = feature.getGeometry();
+                        var featureInfo = {
+                            'index': index,
+                            'type': geom ? geom.getType() : 'unknown',
+                            'props': {}
+                        };
+                        
+                        if (geom && geom.getType() === 'Point') {
+                            featureInfo.coords = geom.getCoordinates();
+                        }
+                        
+                        // Get a few key properties
+                        var propNames = ['id', 'ID', 'loco', 'Loco', 'unit', 'Unit', 
+                                       'name', 'NAME', 'service', 'Service'];
+                        propNames.forEach(function(name) {
+                            if (props[name] !== undefined) {
+                                featureInfo.props[name] = props[name];
+                            }
+                        });
+                        
+                        features.push(featureInfo);
+                    } catch(e) {
+                        features.push({'error': String(e)});
+                    }
+                });
+            } catch(e) {}
+            return features;
+        }
+        
+        debug.regTrainsSource = inspectSource(window.regTrainsSource, 'regTrainsSource');
+        debug.unregTrainsSource = inspectSource(window.unregTrainsSource, 'unregTrainsSource');
+        debug.markerSource = inspectSource(window.markerSource, 'markerSource');
+        debug.arrowMarkersSource = inspectSource(window.arrowMarkersSource, 'arrowMarkersSource');
+        
+        return debug;
+        """
+        
+        try:
+            debug_info = self.driver.execute_script(script)
+            
+            total_features = 0
+            for source_name, features in debug_info.items():
+                if features:
+                    print(f"\n   {source_name}: {len(features)} features")
+                    for feat in features[:3]:  # Show first 3 features
+                        print(f"      - Type: {feat.get('type', 'unknown')}")
+                        if 'coords' in feat:
+                            print(f"        Coords: {feat['coords']}")
+                        if feat.get('props'):
+                            print(f"        Props: {feat['props']}")
+                    total_features += len(features)
+            
+            print(f"\n   Total features: {total_features}")
+            return debug_info
+        except Exception as e:
+            print(f"❌ Error debugging features: {e}")
+            return None
+    
     def wait_for_trains_simple(self, max_wait=30):
         """Simple wait for trains to appear in the map sources"""
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
@@ -201,18 +280,6 @@ class TrainScraper:
                 
                 if feature_count > 0:
                     print(f"\n✅ Map has {feature_count} features loaded")
-                    return True
-                
-                # Also check currentTrains
-                train_check = self.driver.execute_script("""
-                    if (window.currentTrains && Array.isArray(window.currentTrains)) {
-                        return window.currentTrains.length;
-                    }
-                    return 0;
-                """)
-                
-                if train_check > 0:
-                    print(f"\n✅ currentTrains has {train_check} entries")
                     return True
                 
             except (StaleElementReferenceException, JavascriptException):
@@ -245,6 +312,16 @@ class TrainScraper:
                         
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
+                            
+                            // Skip if coordinates are obviously not in Australia
+                            // (This is a rough filter - actual filtering happens later)
+                            var x = coords[0];
+                            var y = coords[1];
+                            
+                            // If it's Web Mercator, rough Australia bounds
+                            if (Math.abs(x) > 180) {
+                                if (x < 12000000 || x > 17000000) return; // Rough Australia Web Mercator bounds
+                            }
                             
                             var id = props.id || props.ID || props.loco || props.Loco || 
                                     props.unit || props.Unit || props.name || props.NAME ||
@@ -301,30 +378,58 @@ class TrainScraper:
         var trains = [];
         
         try {
-            if (window.currentTrains && Array.isArray(window.currentTrains)) {
-                window.currentTrains.forEach(function(item, index) {
-                    try {
-                        // Try different coordinate formats
-                        var lat = item.lat || item.latitude || (item.coords && item.coords[1]);
-                        var lon = item.lon || item.longitude || (item.coords && item.coords[0]);
-                        
-                        if (lat && lon) {
-                            var id = item.id || item.ID || item.trainId || item.unit || 
-                                    item.loco || 'train_' + index;
-                            var trainNumber = item.service || item.trainNumber || item.name || 
-                                             item.number || item.train_number || '';
+            if (window.currentTrains) {
+                console.log('currentTrains type:', typeof window.currentTrains);
+                
+                // Handle if it's an array
+                if (Array.isArray(window.currentTrains)) {
+                    window.currentTrains.forEach(function(item, index) {
+                        try {
+                            var lat = item.lat || item.latitude || (item.coords && item.coords[1]);
+                            var lon = item.lon || item.longitude || (item.coords && item.coords[0]);
                             
-                            trains.push({
-                                'id': String(id).trim(),
-                                'train_number': String(trainNumber).trim() || String(id).trim(),
-                                'x': parseFloat(lon),
-                                'y': parseFloat(lat),
-                                'heading': parseFloat(item.heading || item.direction || 0),
-                                'speed': parseFloat(item.speed || item.velocity || 0)
-                            });
-                        }
-                    } catch(e) {}
-                });
+                            if (lat && lon) {
+                                var id = item.id || item.ID || item.trainId || item.unit || 
+                                        item.loco || 'train_' + index;
+                                var trainNumber = item.service || item.trainNumber || item.name || 
+                                                 item.number || item.train_number || '';
+                                
+                                trains.push({
+                                    'id': String(id).trim(),
+                                    'train_number': String(trainNumber).trim() || String(id).trim(),
+                                    'x': parseFloat(lon),
+                                    'y': parseFloat(lat),
+                                    'heading': parseFloat(item.heading || item.direction || 0),
+                                    'speed': parseFloat(item.speed || item.velocity || 0)
+                                });
+                            }
+                        } catch(e) {}
+                    });
+                }
+                // Handle if it's an object with train IDs as keys
+                else if (typeof window.currentTrains === 'object') {
+                    for (var key in window.currentTrains) {
+                        try {
+                            var item = window.currentTrains[key];
+                            var lat = item.lat || item.latitude || (item.coords && item.coords[1]);
+                            var lon = item.lon || item.longitude || (item.coords && item.coords[0]);
+                            
+                            if (lat && lon) {
+                                var id = item.id || item.ID || key;
+                                var trainNumber = item.service || item.trainNumber || item.name || '';
+                                
+                                trains.push({
+                                    'id': String(id).trim(),
+                                    'train_number': String(trainNumber).trim() || String(id).trim(),
+                                    'x': parseFloat(lon),
+                                    'y': parseFloat(lat),
+                                    'heading': parseFloat(item.heading || item.direction || 0),
+                                    'speed': parseFloat(item.speed || item.velocity || 0)
+                                });
+                            }
+                        } catch(e) {}
+                    }
+                }
             }
         } catch(e) {}
         
@@ -356,33 +461,44 @@ class TrainScraper:
         australian_trains = []
         seen_ids = set()
         
-        for t in raw_trains:
+        print("\n🔍 Filtering trains to Australia...")
+        
+        for i, t in enumerate(raw_trains):
             x = t.get('x')
             y = t.get('y')
             
             if x is None or y is None:
+                print(f"   Train {i}: Missing coordinates")
                 continue
             
             # Check if coordinates are likely Web Mercator (large numbers)
             if abs(x) > 180 or abs(y) > 90:
                 lat, lon = self.webmercator_to_latlon(x, y)
+                coord_type = "Web Mercator"
             else:
                 # Already in lat/lon
                 lat, lon = float(y), float(x)
+                coord_type = "Lat/Lon"
             
-            if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                train_id = t.get('id', 'unknown')
+            if lat and lon:
+                in_australia = -45 <= lat <= -9 and 110 <= lon <= 155
+                print(f"   Train {i}: {coord_type} -> ({lat:.4f}, {lon:.4f}) - {'IN' if in_australia else 'OUT'} Australia")
                 
-                if train_id not in seen_ids:
-                    seen_ids.add(train_id)
-                    australian_trains.append({
-                        'id': train_id,
-                        'train_number': t.get('train_number', train_id),
-                        'lat': lat,
-                        'lon': lon,
-                        'heading': round(float(t.get('heading', 0)), 1),
-                        'speed': round(float(t.get('speed', 0)), 1)
-                    })
+                if in_australia:
+                    train_id = t.get('id', 'unknown')
+                    
+                    if train_id not in seen_ids:
+                        seen_ids.add(train_id)
+                        australian_trains.append({
+                            'id': train_id,
+                            'train_number': t.get('train_number', train_id),
+                            'lat': lat,
+                            'lon': lon,
+                            'heading': round(float(t.get('heading', 0)), 1),
+                            'speed': round(float(t.get('speed', 0)), 1)
+                        })
+            else:
+                print(f"   Train {i}: Invalid coordinates ({x}, {y})")
         
         return australian_trains
     
@@ -426,6 +542,9 @@ class TrainScraper:
             # Zoom to Australia
             self.zoom_to_australia()
             
+            # Debug what's in the map sources
+            self.debug_map_features()
+            
             # Wait for trains to load
             self.wait_for_trains_simple(max_wait=45)
             
@@ -441,7 +560,7 @@ class TrainScraper:
                 trains_from_map = self.extract_trains_from_map_features()
                 raw_trains.extend(trains_from_map)
             
-            # Filter to Australia
+            # Filter to Australia with detailed logging
             australian_trains = self.filter_australian_trains(raw_trains)
             
             print(f"\n✅ Australian trains: {len(australian_trains)}")
