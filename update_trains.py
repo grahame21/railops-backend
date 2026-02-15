@@ -57,106 +57,59 @@ class TrainScraper:
                         self.driver.add_cookie(cookie)
                     except:
                         pass
-                print("✅ Loaded saved cookies")
+                print("✅ Cookies loaded")
                 return True
             except:
                 pass
         return False
     
-    def random_delay(self, min_sec=0.5, max_sec=2):
+    def random_delay(self, min_sec=1, max_sec=3):
         time.sleep(random.uniform(min_sec, max_sec))
     
-    def verify_logged_in(self):
-        """Verify we're actually logged in and seeing the map with trains"""
-        print("\n🔍 Verifying login status...")
-        
-        # Check if we're on the login page
-        current_url = self.driver.current_url
-        page_source = self.driver.page_source.lower()
-        
-        if "login" in current_url.lower() or "login" in page_source and "password" in page_source:
-            print("❌ On login page - not logged in")
-            return False
-        
-        # Check if map exists
-        map_exists = self.driver.execute_script("return typeof window.map !== 'undefined'")
-        if not map_exists:
-            print("❌ Map not found - not fully loaded")
-            return False
-        
-        # Check if train sources exist and have data
-        script = """
-        var hasTrains = false;
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
-        var counts = {};
-        
-        sources.forEach(function(name) {
-            if (window[name] && window[name].getFeatures) {
-                counts[name] = window[name].getFeatures().length;
-                if (counts[name] > 0) hasTrains = true;
-            } else {
-                counts[name] = 'not found';
-            }
-        });
-        
-        return {
-            hasTrains: hasTrains,
-            counts: counts,
-            mapExists: typeof window.map !== 'undefined'
-        };
-        """
-        
+    def check_session_valid(self):
         try:
-            result = self.driver.execute_script(script)
-            print(f"   Map exists: {result['mapExists']}")
-            print(f"   Train sources: {result['counts']}")
-            
-            if result['hasTrains']:
-                print("✅ Verified: trains are loading!")
-                return True
-            else:
-                print("⚠️ Logged in but no trains yet - might need more time")
-                return True  # Still logged in, just waiting for trains
+            self.driver.get(TF_LOGIN_URL)
+            self.random_delay(2, 4)
+            if "login" in self.driver.current_url.lower():
+                print("⚠️ Session expired")
+                return False
+            print("✅ Session valid")
+            return True
         except:
-            pass
-        
-        return True  # Assume logged in if we passed previous checks
+            return False
     
     def force_fresh_login(self):
-        """Delete old cookies and do a completely fresh login"""
         print("\n🔐 Performing fresh login...")
         
-        # Delete old cookie file if it exists
         if os.path.exists(COOKIE_FILE):
             os.remove(COOKIE_FILE)
             print("🗑️ Removed old cookies")
         
-        # Clear browser cookies
         self.driver.delete_all_cookies()
-        
-        # Go to login page
         self.driver.get(TF_LOGIN_URL)
         self.random_delay(2, 4)
         
         try:
-            # Wait for login form
             username = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
             )
             username.clear()
-            username.send_keys(TF_USERNAME)
+            for char in TF_USERNAME:
+                username.send_keys(char)
+                time.sleep(random.uniform(0.05, 0.15))
             print("✅ Username entered")
             
             self.random_delay(0.5, 1.5)
             
             password = self.driver.find_element(By.ID, "pasS_word")
             password.clear()
-            password.send_keys(TF_PASSWORD)
+            for char in TF_PASSWORD:
+                password.send_keys(char)
+                time.sleep(random.uniform(0.05, 0.15))
             print("✅ Password entered")
             
             self.random_delay(1, 2)
             
-            # Click login button
             self.driver.execute_script("""
                 var tables = document.getElementsByClassName('popup_table');
                 for(var i = 0; i < tables.length; i++) {
@@ -174,10 +127,8 @@ class TrainScraper:
             """)
             print("✅ Login button clicked")
             
-            # Wait for login to process
             time.sleep(5)
             
-            # Close warning if it appears
             self.driver.execute_script("""
                 var paths = document.getElementsByTagName('path');
                 for(var i = 0; i < paths.length; i++) {
@@ -193,53 +144,37 @@ class TrainScraper:
             """)
             print("✅ Warning closed")
             
-            # Wait for map to load
             time.sleep(5)
             
-            # Verify login worked
-            if self.verify_logged_in():
-                print("✅ Fresh login successful!")
-                self.save_cookies()
-                return True
-            else:
-                print("❌ Fresh login failed")
-                return False
-                
+            self.save_cookies()
+            return True
+            
         except Exception as e:
             print(f"❌ Login error: {e}")
             return False
     
     def login(self):
-        """Main login method with verification"""
-        # First try with existing cookies
         if self.load_cookies():
             self.driver.get(TF_LOGIN_URL)
             self.random_delay(3, 5)
-            
-            if self.verify_logged_in():
+            if self.check_session_valid():
                 print("✅ Session valid")
                 return True
             else:
                 print("⚠️ Saved session invalid, doing fresh login")
                 return self.force_fresh_login()
         else:
-            # No saved cookies, do fresh login
             return self.force_fresh_login()
     
     def zoom_to_australia(self):
         self.random_delay(2, 4)
-        
         self.driver.execute_script("""
             if (window.map) {
-                try {
-                    var australia = [112, -44, 154, -10];
-                    var proj = window.map.getView().getProjection();
-                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                    window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
-                    return true;
-                } catch(e) {}
+                var australia = [112, -44, 154, -10];
+                var proj = window.map.getView().getProjection();
+                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
             }
-            return false;
         """)
         print("🌏 Zoomed to Australia")
     
@@ -252,7 +187,7 @@ class TrainScraper:
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
-            if (!source || typeof source.getFeatures !== 'function') return;
+            if (!source || !source.getFeatures) return;
             
             try {
                 var features = source.getFeatures();
@@ -338,15 +273,8 @@ class TrainScraper:
         try:
             self.setup_driver()
             
-            # Login with verification
             if not self.login():
                 return [], "Login failed"
-            
-            # Verify we're actually logged in and seeing the map
-            if not self.verify_logged_in():
-                print("⚠️ Login verification failed, retrying...")
-                if not self.force_fresh_login():
-                    return [], "Login failed"
             
             print("\n⏳ Waiting 30 seconds for map to stabilize...")
             time.sleep(30)
