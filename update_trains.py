@@ -178,83 +178,244 @@ class TrainScraper:
         except:
             print("⚠️ Couldn't zoom map")
     
+    def wait_for_trains(self, max_wait=30):
+        """Wait for trains to appear in currentTrains variable"""
+        print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
+        
+        script = """
+        function checkTrains() {
+            if (window.currentTrains && Array.isArray(window.currentTrains) && window.currentTrains.length > 0) {
+                return {
+                    'loaded': true,
+                    'count': window.currentTrains.length,
+                    'sample': window.currentTrains.slice(0, 2)
+                };
+            }
+            
+            // Check alternative variables
+            var altVars = ['trains', 'trainData', 'trainList', 'locomotives', 'trainPositions'];
+            for (var i = 0; i < altVars.length; i++) {
+                var name = altVars[i];
+                if (window[name] && Array.isArray(window[name]) && window[name].length > 0) {
+                    return {
+                        'loaded': true,
+                        'count': window[name].length,
+                        'using': name,
+                        'sample': window[name].slice(0, 2)
+                    };
+                }
+            }
+            
+            return {'loaded': false, 'count': 0};
+        }
+        return checkTrains();
+        """
+        
+        start_time = time.time()
+        while time.time() - start_time < max_wait:
+            result = self.driver.execute_script(script)
+            if result.get('loaded'):
+                using = result.get('using', 'currentTrains')
+                print(f"✅ Trains loaded! Found {result['count']} trains in {using}")
+                if result.get('sample'):
+                    print(f"📊 Sample train structure: {json.dumps(result['sample'], indent=2)}")
+                return True
+            
+            # Also check map features as backup
+            feature_count = self.check_map_features_count()
+            if feature_count > 0:
+                print(f"✅ Map has {feature_count} features loaded")
+                return True
+            
+            time.sleep(2)
+            print(".", end="", flush=True)
+        
+        print("\n⚠️ Timeout waiting for trains")
+        return False
+    
+    def check_map_features_count(self):
+        """Check how many features are in map sources"""
+        script = """
+        var total = 0;
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
+        sources.forEach(function(name) {
+            if (window[name] && window[name].getFeatures) {
+                total += window[name].getFeatures().length;
+            }
+        });
+        return total;
+        """
+        try:
+            return self.driver.execute_script(script)
+        except:
+            return 0
+    
+    def inspect_currentTrains_structure(self):
+        """Inspect the structure of currentTrains to understand its format"""
+        print("\n🔍 Inspecting currentTrains structure...")
+        
+        script = """
+        var info = {
+            'exists': false,
+            'type': null,
+            'length': 0,
+            'keys': [],
+            'sample': null,
+            'first_item_keys': []
+        };
+        
+        if (window.currentTrains !== undefined) {
+            info.exists = true;
+            info.type = typeof window.currentTrains;
+            
+            if (Array.isArray(window.currentTrains)) {
+                info.length = window.currentTrains.length;
+                if (info.length > 0) {
+                    info.sample = window.currentTrains[0];
+                    info.first_item_keys = Object.keys(window.currentTrains[0]);
+                }
+            } else if (typeof window.currentTrains === 'object') {
+                info.keys = Object.keys(window.currentTrains);
+                if (info.keys.length > 0) {
+                    info.sample = window.currentTrains[info.keys[0]];
+                }
+            }
+        }
+        
+        // Also check other possible variables
+        var otherVars = {};
+        var altNames = ['trains', 'trainData', 'trainList', 'locomotives', 'trainPositions'];
+        altNames.forEach(function(name) {
+            if (window[name] !== undefined) {
+                otherVars[name] = {
+                    'type': typeof window[name],
+                    'length': Array.isArray(window[name]) ? window[name].length : 'n/a'
+                };
+            }
+        });
+        
+        return {
+            'currentTrains': info,
+            'otherVars': otherVars
+        };
+        """
+        
+        try:
+            result = self.driver.execute_script(script)
+            print(f"   currentTrains exists: {result['currentTrains']['exists']}")
+            if result['currentTrains']['exists']:
+                print(f"   Type: {result['currentTrains']['type']}")
+                print(f"   Length: {result['currentTrains']['length']}")
+                if result['currentTrains']['first_item_keys']:
+                    print(f"   First item keys: {result['currentTrains']['first_item_keys']}")
+                if result['currentTrains']['sample']:
+                    print(f"   Sample: {json.dumps(result['currentTrains']['sample'], indent=2)}")
+            
+            if result['otherVars']:
+                print(f"\n   Other train variables found:")
+                for name, info in result['otherVars'].items():
+                    print(f"      {name}: {info}")
+            
+            return result
+        except Exception as e:
+            print(f"❌ Error inspecting structure: {e}")
+            return None
+    
     def extract_trains_from_currentTrains(self):
         """Extract train data from the currentTrains global variable"""
         print("\n🔍 Extracting trains from currentTrains variable...")
         
         script = """
-        var trains = [];
-        
-        if (window.currentTrains && Array.isArray(window.currentTrains)) {
-            console.log('Found currentTrains with ' + window.currentTrains.length + ' entries');
-            
-            window.currentTrains.forEach(function(train, index) {
+        function extractFromArray(arr, sourceName) {
+            var trains = [];
+            arr.forEach(function(item, index) {
                 try {
-                    // Extract coordinates - they might be in different formats
-                    var lat = train.lat || train.latitude || (train.coords && train.coords[1]);
-                    var lon = train.lon || train.longitude || (train.coords && train.coords[0]);
+                    // Handle different possible structures
+                    var lat = null;
+                    var lon = null;
                     
-                    // If coordinates are in Web Mercator (likely large numbers), flag them
-                    var isWebMercator = lat && lon && (Math.abs(lat) > 180 || Math.abs(lon) > 180);
+                    // Check various possible coordinate locations
+                    if (item.lat !== undefined && item.lon !== undefined) {
+                        lat = item.lat;
+                        lon = item.lon;
+                    } else if (item.latitude !== undefined && item.longitude !== undefined) {
+                        lat = item.latitude;
+                        lon = item.longitude;
+                    } else if (item.coords && Array.isArray(item.coords) && item.coords.length >= 2) {
+                        lon = item.coords[0];
+                        lat = item.coords[1];
+                    } else if (item.geometry && item.geometry.coordinates) {
+                        lon = item.geometry.coordinates[0];
+                        lat = item.geometry.coordinates[1];
+                    } else if (item.position && item.position.lat !== undefined) {
+                        lat = item.position.lat;
+                        lon = item.position.lon;
+                    }
                     
-                    // Extract ID
-                    var id = train.id || train.ID || train.trainId || train.unit || 
-                            train.loco || 'train_' + index;
-                    
-                    // Extract train number/name
-                    var trainNumber = train.service || train.trainNumber || train.name || 
-                                      train.number || train.displayName || '';
-                    
-                    // Extract heading/direction
-                    var heading = train.heading || train.direction || train.bearing || 0;
-                    
-                    // Extract speed
-                    var speed = train.speed || train.velocity || 0;
-                    
-                    trains.push({
-                        'id': String(id).trim(),
-                        'train_number': String(trainNumber).trim() || String(id).trim(),
-                        'x': parseFloat(lon),
-                        'y': parseFloat(lat),
-                        'heading': parseFloat(heading),
-                        'speed': parseFloat(speed),
-                        'is_webmercator': isWebMercator
-                    });
+                    if (lat !== null && lon !== null) {
+                        // Extract ID
+                        var id = item.id || item.ID || item.trainId || item.unit || 
+                                item.loco || item.train_id || sourceName + '_' + index;
+                        
+                        // Extract train number
+                        var trainNumber = item.service || item.trainNumber || item.name || 
+                                         item.number || item.train_number || item.displayName || '';
+                        
+                        // Extract heading
+                        var heading = item.heading || item.direction || item.bearing || 0;
+                        
+                        // Extract speed
+                        var speed = item.speed || item.velocity || 0;
+                        
+                        trains.push({
+                            'id': String(id).trim(),
+                            'train_number': String(trainNumber).trim() || String(id).trim(),
+                            'x': parseFloat(lon),
+                            'y': parseFloat(lat),
+                            'heading': parseFloat(heading),
+                            'speed': parseFloat(speed)
+                        });
+                    }
                 } catch(e) {
-                    console.log('Error processing train:', e);
+                    console.log('Error processing train item:', e);
                 }
             });
-        } else {
-            console.log('currentTrains not found or not an array');
-            
-            // Try alternative variable names
+            return trains;
+        }
+        
+        var allTrains = [];
+        
+        // Try currentTrains first
+        if (window.currentTrains) {
+            if (Array.isArray(window.currentTrains)) {
+                allTrains = extractFromArray(window.currentTrains, 'currentTrains');
+            } else if (typeof window.currentTrains === 'object') {
+                // Might be an object with train IDs as keys
+                var trainsArray = [];
+                for (var key in window.currentTrains) {
+                    if (window.currentTrains.hasOwnProperty(key)) {
+                        var item = window.currentTrains[key];
+                        if (item && typeof item === 'object') {
+                            trainsArray.push(item);
+                        }
+                    }
+                }
+                allTrains = extractFromArray(trainsArray, 'currentTrains_obj');
+            }
+        }
+        
+        // If still no trains, try other variables
+        if (allTrains.length === 0) {
             var altNames = ['trains', 'trainData', 'trainList', 'locomotives', 'trainPositions'];
             altNames.forEach(function(name) {
-                if (window[name] && Array.isArray(window[name])) {
-                    console.log('Found alternative: ' + name);
-                    window[name].forEach(function(train, index) {
-                        // Same extraction logic as above
-                        var lat = train.lat || train.latitude || (train.coords && train.coords[1]);
-                        var lon = train.lon || train.longitude || (train.coords && train.coords[0]);
-                        
-                        if (lat && lon) {
-                            var id = train.id || train.ID || name + '_' + index;
-                            trains.push({
-                                'id': String(id).trim(),
-                                'train_number': String(train.service || train.name || id).trim(),
-                                'x': parseFloat(lon),
-                                'y': parseFloat(lat),
-                                'heading': parseFloat(train.heading || 0),
-                                'speed': parseFloat(train.speed || 0),
-                                'is_webmercator': Math.abs(lat) > 180 || Math.abs(lon) > 180
-                            });
-                        }
-                    });
+                if (window[name] && Array.isArray(window[name]) && window[name].length > 0) {
+                    var extracted = extractFromArray(window[name], name);
+                    allTrains = allTrains.concat(extracted);
                 }
             });
         }
         
-        return trains;
+        return allTrains;
         """
         
         try:
@@ -266,20 +427,17 @@ class TrainScraper:
             return []
     
     def extract_trains_from_map_features(self):
-        """Original method to extract from OpenLayers sources"""
+        """Extract from OpenLayers sources"""
         script = """
+        var allTrains = [];
+        var seenIds = new Set();
+        
         function extractFromSource(source, sourceName) {
-            var trains = [];
-            if (!source) return trains;
+            if (!source || typeof source.getFeatures !== 'function') return [];
             
+            var trains = [];
             try {
-                var features = [];
-                if (typeof source.getFeatures === 'function') {
-                    features = source.getFeatures();
-                } else if (source.getSource && typeof source.getSource().getFeatures === 'function') {
-                    features = source.getSource().getFeatures();
-                }
-                
+                var features = source.getFeatures();
                 features.forEach(function(feature, index) {
                     try {
                         var props = feature.getProperties();
@@ -290,20 +448,23 @@ class TrainScraper:
                             
                             var id = props.id || props.ID || props.loco || props.Loco || 
                                     props.unit || props.Unit || props.name || props.NAME ||
-                                    'feature_' + index;
+                                    sourceName + '_' + index;
                             
-                            var trainNumber = props.service || props.Service || 
-                                             props.trainNumber || props.train_number || '';
-                            
-                            trains.push({
-                                'id': String(id).trim(),
-                                'train_number': String(trainNumber).trim() || String(id).trim(),
-                                'x': coords[0],
-                                'y': coords[1],
-                                'heading': props.heading || props.Heading || 0,
-                                'speed': props.speed || props.Speed || 0,
-                                'source': sourceName
-                            });
+                            if (!seenIds.has(id)) {
+                                seenIds.add(id);
+                                
+                                var trainNumber = props.service || props.Service || 
+                                                 props.trainNumber || props.train_number || '';
+                                
+                                trains.push({
+                                    'id': String(id).trim(),
+                                    'train_number': String(trainNumber).trim() || String(id).trim(),
+                                    'x': coords[0],
+                                    'y': coords[1],
+                                    'heading': props.heading || props.Heading || 0,
+                                    'speed': props.speed || props.Speed || 0
+                                });
+                            }
                         }
                     } catch(e) {}
                 });
@@ -311,19 +472,11 @@ class TrainScraper:
             return trains;
         }
         
-        var allTrains = [];
-        var seenIds = new Set();
-        
         var sourceNames = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
         sourceNames.forEach(function(name) {
             if (window[name]) {
                 var trains = extractFromSource(window[name], name);
-                trains.forEach(function(train) {
-                    if (!seenIds.has(train.id)) {
-                        seenIds.add(train.id);
-                        allTrains.push(train);
-                    }
-                });
+                allTrains = allTrains.concat(trains);
             }
         });
         
@@ -358,14 +511,12 @@ class TrainScraper:
         for t in raw_trains:
             x = t.get('x')
             y = t.get('y')
-            is_webmercator = t.get('is_webmercator', False)
             
             if x is None or y is None:
                 continue
             
-            # Determine coordinate system
-            if is_webmercator or (abs(x) > 180 or abs(y) > 90):
-                # Likely Web Mercator
+            # Check if coordinates are likely Web Mercator (large numbers)
+            if abs(x) > 180 or abs(y) > 90:
                 lat, lon = self.webmercator_to_latlon(x, y)
             else:
                 # Already in lat/lon
@@ -427,9 +578,14 @@ class TrainScraper:
             # Zoom to Australia
             self.zoom_to_australia()
             
-            # Wait for trains to load
-            print("⏳ Waiting for trains to populate...")
-            time.sleep(10)
+            # Inspect the structure of currentTrains
+            self.inspect_currentTrains_structure()
+            
+            # Wait for trains to load with timeout
+            trains_loaded = self.wait_for_trains(max_wait=30)
+            
+            if not trains_loaded:
+                print("⚠️ Trains didn't load, but will try extraction anyway")
             
             # Try primary method - extract from currentTrains
             raw_trains = self.extract_trains_from_currentTrains()
