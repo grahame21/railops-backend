@@ -232,7 +232,7 @@ class TrainScraper:
                         var props = feature.getProperties();
                         var geom = feature.getGeometry();
                         
-                        // Log ALL property names for debugging
+                        // Track ALL property names
                         var propNames = Object.keys(props);
                         propNames.forEach(function(name) {
                             allProperties[name] = (allProperties[name] || 0) + 1;
@@ -245,7 +245,7 @@ class TrainScraper:
                             var locoNumber = '';
                             var trainId = '';
                             
-                            // First pass - look for obvious loco fields
+                            // Check all possible loco fields
                             var locoCandidates = ['loco', 'Loco', 'unit', 'Unit', 'engine', 'Engine', 
                                                  'locoid', 'LocoId', 'locomotive', 'Locomotive',
                                                  'engine_number', 'EngineNumber', 'road_number', 'RoadNumber',
@@ -255,11 +255,10 @@ class TrainScraper:
                             locoCandidates.forEach(function(candidate) {
                                 if (props[candidate] && !locoNumber) {
                                     locoNumber = String(props[candidate]);
-                                    console.log('Found loco in:', candidate, '=', locoNumber);
                                 }
                             });
                             
-                            // Second pass - look for train ID
+                            // Check all possible train ID fields
                             var trainCandidates = ['train_id', 'trainId', 'train_number', 'trainNumber',
                                                   'service', 'Service', 'name', 'NAME', 'id', 'ID',
                                                   'train', 'Train', 'service_code', 'ServiceCode',
@@ -268,11 +267,21 @@ class TrainScraper:
                             trainCandidates.forEach(function(candidate) {
                                 if (props[candidate] && !trainId) {
                                     trainId = String(props[candidate]);
-                                    console.log('Found train ID in:', candidate, '=', trainId);
                                 }
                             });
                             
-                            // If we still don't have an ID, use source+index
+                            // If no ID found, try any property that looks like an identifier
+                            if (!locoNumber && !trainId) {
+                                for (var key in props) {
+                                    var val = props[key];
+                                    if (val && typeof val === 'string' && val.length > 2 && val.length < 20) {
+                                        // This might be an identifier
+                                        if (!trainId) trainId = val;
+                                    }
+                                }
+                            }
+                            
+                            // Use loco as primary if available
                             var primaryId = locoNumber || trainId || sourceName + '_' + index;
                             
                             var trainData = {
@@ -295,7 +304,7 @@ class TrainScraper:
                                 'y': coords[1]
                             };
                             
-                            // Skip markerSource trains without real identifiers
+                            // Skip markerSource without real IDs
                             if (sourceName === 'markerSource' && !locoNumber && !trainId) {
                                 return;
                             }
@@ -306,24 +315,31 @@ class TrainScraper:
                                 allTrains.push(trainData);
                             }
                         }
-                    } catch(e) {
-                        console.log('Error processing feature:', e);
-                    }
+                    } catch(e) {}
                 });
-            } catch(e) {
-                console.log('Error accessing source:', e);
-            }
+            } catch(e) {}
         });
         
-        // Log all unique property names found
-        console.log('🔍 ALL PROPERTIES FOUND:', JSON.stringify(allProperties, null, 2));
-        
-        return allTrains;
+        // Return both trains and property list
+        return {
+            'trains': allTrains,
+            'properties': allProperties
+        };
         """
         
         try:
-            trains = self.driver.execute_script(script)
+            result = self.driver.execute_script(script)
+            trains = result.get('trains', [])
+            properties = result.get('properties', {})
+            
             print(f"   ✅ Extracted {len(trains)} trains from OpenLayers sources")
+            print(f"\n📊 ALL PROPERTIES FOUND IN TRAIN DATA:")
+            if properties:
+                for prop, count in sorted(properties.items()):
+                    print(f"   - {prop}: appears in {count} features")
+            else:
+                print("   No properties found - train data might be empty")
+            
             return trains
         except Exception as e:
             print(f"   ❌ Error extracting trains: {e}")
