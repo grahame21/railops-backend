@@ -216,6 +216,7 @@ class TrainScraper:
         script = """
         var allTrains = [];
         var seenIds = new Set();
+        var allProperties = {}; // Track all property names we see
         
         var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource'];
         
@@ -231,38 +232,47 @@ class TrainScraper:
                         var props = feature.getProperties();
                         var geom = feature.getGeometry();
                         
+                        // Log ALL property names for debugging
+                        var propNames = Object.keys(props);
+                        propNames.forEach(function(name) {
+                            allProperties[name] = (allProperties[name] || 0) + 1;
+                        });
+                        
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Log ALL property names for debugging
-                            console.log('Feature ' + sourceName + '_' + index + ' properties:', Object.keys(props));
+                            // Try to find loco number in ANY property
+                            var locoNumber = '';
+                            var trainId = '';
                             
-                            // Check ALL possible loco number fields
-                            var locoNumber = props.loco || props.Loco || 
-                                            props.unit || props.Unit || 
-                                            props.engine || props.Engine ||
-                                            props.locoid || props.LocoId ||
-                                            props.locomotive || props.Locomotive ||
-                                            props.engine_number || props.EngineNumber ||
-                                            props.road_number || props.RoadNumber ||
-                                            props.reporting_marks || props.ReportingMarks ||
-                                            '';
+                            // First pass - look for obvious loco fields
+                            var locoCandidates = ['loco', 'Loco', 'unit', 'Unit', 'engine', 'Engine', 
+                                                 'locoid', 'LocoId', 'locomotive', 'Locomotive',
+                                                 'engine_number', 'EngineNumber', 'road_number', 'RoadNumber',
+                                                 'reporting_marks', 'ReportingMarks', 'power', 'Power',
+                                                 'consist', 'Consist', 'traction', 'Traction'];
                             
-                            // Check ALL possible train ID fields
-                            var trainId = props.train_id || props.trainId || 
-                                         props.train_number || props.trainNumber || 
-                                         props.service || props.Service || 
-                                         props.name || props.NAME ||
-                                         props.id || props.ID ||
-                                         props.train || props.Train ||
-                                         '';
+                            locoCandidates.forEach(function(candidate) {
+                                if (props[candidate] && !locoNumber) {
+                                    locoNumber = String(props[candidate]);
+                                    console.log('Found loco in:', candidate, '=', locoNumber);
+                                }
+                            });
                             
-                            // Log what we found
-                            if (locoNumber || trainId) {
-                                console.log('Found - Loco:', locoNumber, 'Train ID:', trainId);
-                            }
+                            // Second pass - look for train ID
+                            var trainCandidates = ['train_id', 'trainId', 'train_number', 'trainNumber',
+                                                  'service', 'Service', 'name', 'NAME', 'id', 'ID',
+                                                  'train', 'Train', 'service_code', 'ServiceCode',
+                                                  'trip', 'Trip', 'run', 'Run', 'trip_number', 'TripNumber'];
                             
-                            // Use loco as primary ID if available, otherwise use train ID
+                            trainCandidates.forEach(function(candidate) {
+                                if (props[candidate] && !trainId) {
+                                    trainId = String(props[candidate]);
+                                    console.log('Found train ID in:', candidate, '=', trainId);
+                                }
+                            });
+                            
+                            // If we still don't have an ID, use source+index
                             var primaryId = locoNumber || trainId || sourceName + '_' + index;
                             
                             var trainData = {
@@ -305,6 +315,9 @@ class TrainScraper:
             }
         });
         
+        // Log all unique property names found
+        console.log('🔍 ALL PROPERTIES FOUND:', JSON.stringify(allProperties, null, 2));
+        
         return allTrains;
         """
         
@@ -334,6 +347,7 @@ class TrainScraper:
         
         real_count = 0
         generic_count = 0
+        loco_count = 0
         
         for t in raw_trains:
             x = t.get('x', 0)
@@ -347,6 +361,8 @@ class TrainScraper:
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
                 
+                if t.get('loco'):
+                    loco_count += 1
                 if t.get('loco') or t.get('train_id'):
                     real_count += 1
                 else:
@@ -375,6 +391,7 @@ class TrainScraper:
                     })
         
         print(f"\n📊 Train Statistics:")
+        print(f"   Trains with loco numbers: {loco_count}")
         print(f"   Real train IDs: {real_count}")
         print(f"   Generic IDs: {generic_count}")
         
