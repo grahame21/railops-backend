@@ -2,7 +2,7 @@ name: Update Train Data
 
 on:
   schedule:
-    # Run every 10 minutes (adjust as needed)
+    # Run every 10 minutes
     - cron: '*/10 * * * *'
   workflow_dispatch:
   # Also run on push to main to test changes
@@ -17,19 +17,18 @@ jobs:
     timeout-minutes: 10  # Prevent hanging jobs
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4  # Also update checkout to v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5  # Update to v5
       with:
         python-version: '3.10'
-        cache: 'pip'  # Cache dependencies
+        cache: 'pip'
     
     - name: Install Chrome and dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable xvfb
-        # Get Chrome version for matching ChromeDriver
         google-chrome --version
     
     - name: Install Python dependencies
@@ -58,7 +57,7 @@ jobs:
     
     - name: Upload backup as artifact (on failure)
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Updated to v4
       with:
         name: train-backups
         path: trains_backup_*.json
