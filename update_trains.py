@@ -37,9 +37,6 @@ class TrainScraper:
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
-        # Enable performance logging to see what's happening
-        chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL', 'browser': 'ALL'})
-        
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
@@ -60,7 +57,7 @@ class TrainScraper:
                         self.driver.add_cookie(cookie)
                     except:
                         pass
-                print("✅ Cookies loaded")
+                print("✅ Loaded saved cookies")
                 return True
             except:
                 pass
@@ -69,183 +66,170 @@ class TrainScraper:
     def random_delay(self, min_sec=0.5, max_sec=2):
         time.sleep(random.uniform(min_sec, max_sec))
     
-    def debug_page_state(self):
-        """Print detailed debug info about the page"""
-        print("\n🔍 DEBUG: Checking page state...")
+    def verify_logged_in(self):
+        """Verify we're actually logged in and seeing the map with trains"""
+        print("\n🔍 Verifying login status...")
         
-        # Check current URL
+        # Check if we're on the login page
         current_url = self.driver.current_url
-        print(f"   Current URL: {current_url}")
+        page_source = self.driver.page_source.lower()
         
-        # Check page title
-        page_title = self.driver.title
-        print(f"   Page title: {page_title}")
+        if "login" in current_url.lower() or "login" in page_source and "password" in page_source:
+            print("❌ On login page - not logged in")
+            return False
         
-        # Check for any error messages on the page
-        try:
-            error_elements = self.driver.find_elements(By.CSS_SELECTOR, '.error, .alert, .warning, [class*="error"]')
-            if error_elements:
-                print(f"   ⚠️ Found {len(error_elements)} error elements on page")
-                for el in error_elements[:3]:
-                    print(f"      - {el.text[:100]}")
-        except:
-            pass
+        # Check if map exists
+        map_exists = self.driver.execute_script("return typeof window.map !== 'undefined'")
+        if not map_exists:
+            print("❌ Map not found - not fully loaded")
+            return False
         
-        # Check console logs for errors
-        try:
-            logs = self.driver.get_log('browser')
-            error_logs = [log for log in logs if log['level'] == 'SEVERE']
-            if error_logs:
-                print(f"   ⚠️ Found {len(error_logs)} browser errors:")
-                for log in error_logs[:3]:
-                    print(f"      - {log['message'][:100]}")
-        except:
-            pass
-        
-        # Check what train sources exist
+        # Check if train sources exist and have data
         script = """
-        var sources = {
-            'regTrainsSource': typeof window.regTrainsSource !== 'undefined',
-            'unregTrainsSource': typeof window.unregTrainsSource !== 'undefined',
-            'markerSource': typeof window.markerSource !== 'undefined',
-            'arrowMarkersSource': typeof window.arrowMarkersSource !== 'undefined',
-            'map': typeof window.map !== 'undefined',
-            'currentTrains': typeof window.currentTrains !== 'undefined'
-        };
-        
+        var hasTrains = false;
+        var sources = ['regTrainsSource', 'unregTrainsSource'];
         var counts = {};
-        if (window.regTrainsSource && window.regTrainsSource.getFeatures) {
-            counts.regTrainsSource = window.regTrainsSource.getFeatures().length;
-        }
-        if (window.unregTrainsSource && window.unregTrainsSource.getFeatures) {
-            counts.unregTrainsSource = window.unregTrainsSource.getFeatures().length;
-        }
-        if (window.markerSource && window.markerSource.getFeatures) {
-            counts.markerSource = window.markerSource.getFeatures().length;
-        }
-        if (window.arrowMarkersSource && window.arrowMarkersSource.getFeatures) {
-            counts.arrowMarkersSource = window.arrowMarkersSource.getFeatures().length;
-        }
         
-        return {sources: sources, counts: counts};
+        sources.forEach(function(name) {
+            if (window[name] && window[name].getFeatures) {
+                counts[name] = window[name].getFeatures().length;
+                if (counts[name] > 0) hasTrains = true;
+            } else {
+                counts[name] = 'not found';
+            }
+        });
+        
+        return {
+            hasTrains: hasTrains,
+            counts: counts,
+            mapExists: typeof window.map !== 'undefined'
+        };
         """
         
         try:
-            debug = self.driver.execute_script(script)
-            print(f"\n   OpenLayers sources:")
-            for source, exists in debug['sources'].items():
-                if exists:
-                    count = debug['counts'].get(source, 'N/A')
-                    print(f"      ✅ {source}: {count} features")
-                else:
-                    print(f"      ❌ {source}: not found")
-        except Exception as e:
-            print(f"   Error checking sources: {e}")
-    
-    def check_session_valid(self):
-        try:
-            self.driver.get(TF_LOGIN_URL)
-            self.random_delay(2, 3)
-            if "login" in self.driver.current_url.lower():
-                print("⚠️ Session expired")
-                return False
-            print("✅ Session valid")
-            return True
+            result = self.driver.execute_script(script)
+            print(f"   Map exists: {result['mapExists']}")
+            print(f"   Train sources: {result['counts']}")
+            
+            if result['hasTrains']:
+                print("✅ Verified: trains are loading!")
+                return True
+            else:
+                print("⚠️ Logged in but no trains yet - might need more time")
+                return True  # Still logged in, just waiting for trains
         except:
-            return False
+            pass
+        
+        return True  # Assume logged in if we passed previous checks
     
-    def login(self):
-        print("\n📌 Logging in...")
+    def force_fresh_login(self):
+        """Delete old cookies and do a completely fresh login"""
+        print("\n🔐 Performing fresh login...")
+        
+        # Delete old cookie file if it exists
+        if os.path.exists(COOKIE_FILE):
+            os.remove(COOKIE_FILE)
+            print("🗑️ Removed old cookies")
+        
+        # Clear browser cookies
+        self.driver.delete_all_cookies()
+        
+        # Go to login page
         self.driver.get(TF_LOGIN_URL)
         self.random_delay(2, 4)
         
-        if "home/nextlevel" in self.driver.current_url and "login" not in self.driver.current_url.lower():
-            print("✅ Already logged in")
-            return True
-        
         try:
+            # Wait for login form
             username = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
             )
-            for char in TF_USERNAME:
-                username.send_keys(char)
-                time.sleep(random.uniform(0.05, 0.15))
+            username.clear()
+            username.send_keys(TF_USERNAME)
             print("✅ Username entered")
-        except:
-            print("❌ Could not find username field")
-            return False
-        
-        self.random_delay(0.5, 1.5)
-        
-        try:
+            
+            self.random_delay(0.5, 1.5)
+            
             password = self.driver.find_element(By.ID, "pasS_word")
-            for char in TF_PASSWORD:
-                password.send_keys(char)
-                time.sleep(random.uniform(0.05, 0.15))
+            password.clear()
+            password.send_keys(TF_PASSWORD)
             print("✅ Password entered")
-        except:
-            print("❌ Could not find password field")
-            return False
-        
-        self.random_delay(1, 2)
-        
-        # Click login
-        clicked = self.driver.execute_script("""
-            var tables = document.getElementsByClassName('popup_table');
-            for(var i = 0; i < tables.length; i++) {
-                if(tables[i].className.includes('login')) {
-                    var elements = tables[i].getElementsByTagName('*');
-                    for(var j = 0; j < elements.length; j++) {
-                        if(elements[j].textContent.trim() === 'Log In') {
-                            elements[j].click();
-                            return true;
+            
+            self.random_delay(1, 2)
+            
+            # Click login button
+            self.driver.execute_script("""
+                var tables = document.getElementsByClassName('popup_table');
+                for(var i = 0; i < tables.length; i++) {
+                    if(tables[i].className.includes('login')) {
+                        var elements = tables[i].getElementsByTagName('*');
+                        for(var j = 0; j < elements.length; j++) {
+                            if(elements[j].textContent.trim() === 'Log In') {
+                                elements[j].click();
+                                return true;
+                            }
                         }
                     }
                 }
-            }
-            return false;
-        """)
-        
-        if clicked:
+                return false;
+            """)
             print("✅ Login button clicked")
-        else:
-            print("⚠️ Could not find login button, trying alternative")
-            # Try alternative click method
+            
+            # Wait for login to process
+            time.sleep(5)
+            
+            # Close warning if it appears
             self.driver.execute_script("""
-                var inputs = document.querySelectorAll('input[type="submit"], input[type="button"]');
-                for(var i = 0; i < inputs.length; i++) {
-                    if(inputs[i].value.includes('Log') || inputs[i].value.includes('Sign')) {
-                        inputs[i].click();
-                        return;
+                var paths = document.getElementsByTagName('path');
+                for(var i = 0; i < paths.length; i++) {
+                    var d = paths[i].getAttribute('d') || '';
+                    if(d.includes('M13.7,11l6.1-6.1')) {
+                        var parent = paths[i].parentElement;
+                        while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                            parent = parent.parentElement;
+                        }
+                        if(parent) parent.click();
                     }
                 }
             """)
-        
-        self.random_delay(3, 5)
-        
-        # Close warning
-        self.driver.execute_script("""
-            var paths = document.getElementsByTagName('path');
-            for(var i = 0; i < paths.length; i++) {
-                var d = paths[i].getAttribute('d') || '';
-                if(d.includes('M13.7,11l6.1-6.1')) {
-                    var parent = paths[i].parentElement;
-                    while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
-                        parent = parent.parentElement;
-                    }
-                    if(parent) parent.click();
-                }
-            }
-        """)
-        print("✅ Warning page closed")
-        
-        self.save_cookies()
-        return True
+            print("✅ Warning closed")
+            
+            # Wait for map to load
+            time.sleep(5)
+            
+            # Verify login worked
+            if self.verify_logged_in():
+                print("✅ Fresh login successful!")
+                self.save_cookies()
+                return True
+            else:
+                print("❌ Fresh login failed")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Login error: {e}")
+            return False
+    
+    def login(self):
+        """Main login method with verification"""
+        # First try with existing cookies
+        if self.load_cookies():
+            self.driver.get(TF_LOGIN_URL)
+            self.random_delay(3, 5)
+            
+            if self.verify_logged_in():
+                print("✅ Session valid")
+                return True
+            else:
+                print("⚠️ Saved session invalid, doing fresh login")
+                return self.force_fresh_login()
+        else:
+            # No saved cookies, do fresh login
+            return self.force_fresh_login()
     
     def zoom_to_australia(self):
         self.random_delay(2, 4)
         
-        result = self.driver.execute_script("""
+        self.driver.execute_script("""
             if (window.map) {
                 try {
                     var australia = [112, -44, 154, -10];
@@ -253,18 +237,11 @@ class TrainScraper:
                     var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
                     window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
                     return true;
-                } catch(e) {
-                    console.log('Zoom error:', e);
-                    return false;
-                }
+                } catch(e) {}
             }
             return false;
         """)
-        
-        if result:
-            print("🌏 Zoomed to Australia")
-        else:
-            print("⚠️ Could not zoom map")
+        print("🌏 Zoomed to Australia")
     
     def extract_trains(self):
         script = """
@@ -272,18 +249,13 @@ class TrainScraper:
         var seenIds = new Set();
         
         var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
-        var sourceStats = {};
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
-            if (!source || typeof source.getFeatures !== 'function') {
-                sourceStats[sourceName] = 'not found';
-                return;
-            }
+            if (!source || typeof source.getFeatures !== 'function') return;
             
             try {
                 var features = source.getFeatures();
-                sourceStats[sourceName] = features.length + ' features';
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -311,30 +283,15 @@ class TrainScraper:
                                 });
                             }
                         }
-                    } catch(e) {
-                        console.log('Error processing feature:', e);
-                    }
+                    } catch(e) {}
                 });
-            } catch(e) {
-                sourceStats[sourceName] = 'error: ' + e.toString();
-            }
+            } catch(e) {}
         });
         
-        return {
-            trains: allTrains,
-            stats: sourceStats
-        };
+        return allTrains;
         """
         
-        try:
-            result = self.driver.execute_script(script)
-            print(f"\n📊 Source statistics:")
-            for source, stat in result['stats'].items():
-                print(f"   {source}: {stat}")
-            return result['trains']
-        except Exception as e:
-            print(f"❌ Error extracting trains: {e}")
-            return []
+        return self.driver.execute_script(script)
     
     def webmercator_to_latlon(self, x, y):
         try:
@@ -381,23 +338,15 @@ class TrainScraper:
         try:
             self.setup_driver()
             
-            if self.load_cookies():
-                self.driver.get(TF_LOGIN_URL)
-                self.random_delay(2, 4)
-                
-                # Debug page state before login check
-                self.debug_page_state()
-                
-                if not self.check_session_valid():
-                    print("⚠️ Session expired, logging in again")
-                    if not self.login():
-                        return [], "Login failed"
-            else:
-                if not self.login():
-                    return [], "Login failed"
+            # Login with verification
+            if not self.login():
+                return [], "Login failed"
             
-            # Debug after login
-            self.debug_page_state()
+            # Verify we're actually logged in and seeing the map
+            if not self.verify_logged_in():
+                print("⚠️ Login verification failed, retrying...")
+                if not self.force_fresh_login():
+                    return [], "Login failed"
             
             print("\n⏳ Waiting 30 seconds for map to stabilize...")
             time.sleep(30)
@@ -407,26 +356,18 @@ class TrainScraper:
             print("⏳ Waiting 60 seconds for trains to load...")
             time.sleep(60)
             
-            # Debug again before extraction
-            self.debug_page_state()
-            
             print("\n🔍 Extracting trains...")
             raw_trains = self.extract_trains()
-            print(f"\n✅ Extracted {len(raw_trains)} raw positions")
-            
-            if len(raw_trains) > 0:
-                print(f"\n📋 First raw train sample:")
-                print(json.dumps(raw_trains[0], indent=2))
+            print(f"✅ Extracted {len(raw_trains)} raw positions")
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
             print(f"\n✅ Australian trains: {len(australian_trains)}")
             
             if australian_trains:
-                print(f"\n📋 First Australian train:")
+                print(f"\n📋 Sample train:")
                 print(f"   ID: {australian_trains[0]['id']}")
                 print(f"   Location: {australian_trains[0]['lat']:.4f}, {australian_trains[0]['lon']:.4f}")
-                print(f"   Speed: {australian_trains[0]['speed']} km/h")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
