@@ -29,9 +29,6 @@ class TrainScraper:
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
         
-        # Enable performance logging
-        chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL', 'browser': 'ALL'})
-        
         user_agents = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         ]
@@ -181,353 +178,164 @@ class TrainScraper:
         """)
         print("🌏 Zoomed to Australia")
     
-    def find_all_sources(self):
-        """Find ALL possible sources that might contain train data"""
-        print("\n🔍 Searching for train data sources...")
+    def extract_trains_direct(self):
+        """Direct extraction of train data from OpenLayers sources"""
+        print("\n🔍 Extracting trains directly from sources...")
         
         script = """
-        var results = {
-            'sources': [],
-            'window_props': [],
-            'map_layers': [],
-            'data_vars': [],
-            'feature_counts': {}
-        };
+        var allTrains = [];
+        var seenIds = new Set();
         
-        // 1. Check all OpenLayers sources
-        var sourceNames = [
-            'regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource',
-            'trainSource', 'trainsSource', 'locomotiveSource', 'vehicleSource',
-            'railSource', 'railTrainsSource', 'liveTrainsSource', 'trainLayerSource',
-            'vectorSource', 'pointSource', 'featureSource', 'trainVectorSource',
-            'trainMarkers', 'trainPoints', 'trainFeatures', 'allTrains',
-            'positionSource', 'locationsSource', 'trackingSource'
-        ];
+        // Get all train sources
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource'];
         
-        sourceNames.forEach(function(name) {
-            if (window[name]) {
-                results.sources.push(name);
-                try {
-                    if (window[name].getFeatures) {
-                        var count = window[name].getFeatures().length;
-                        results.feature_counts[name] = count;
-                    } else if (window[name].length !== undefined) {
-                        results.feature_counts[name] = window[name].length;
-                    }
-                } catch(e) {}
-            }
-        });
-        
-        // 2. Check all window properties for train-related data
-        for (var key in window) {
-            if (key.toLowerCase().includes('train') || key.toLowerCase().includes('loco') || 
-                key.toLowerCase().includes('rail') || key.toLowerCase().includes('engine') ||
-                key.toLowerCase().includes('locomotive') || key.toLowerCase().includes('service')) {
-                try {
-                    var value = window[key];
-                    results.window_props.push(key);
-                    if (value && typeof value === 'object') {
-                        if (Array.isArray(value)) {
-                            results.feature_counts['window.' + key] = value.length;
-                        } else if (value.length !== undefined) {
-                            results.feature_counts['window.' + key] = value.length;
-                        }
-                    }
-                } catch(e) {}
-            }
-        }
-        
-        // 3. Check map layers
-        if (window.map && window.map.getLayers) {
+        sources.forEach(function(sourceName) {
+            var source = window[sourceName];
+            if (!source || !source.getFeatures) return;
+            
             try {
-                var layers = window.map.getLayers();
-                layers.forEach(function(layer, index) {
+                var features = source.getFeatures();
+                console.log(sourceName + ' has ' + features.length + ' features');
+                
+                features.forEach(function(feature, index) {
                     try {
-                        var layerName = layer.get('name') || 'layer_' + index;
-                        results.map_layers.push(layerName);
-                        var source = layer.getSource();
-                        if (source && source.getFeatures) {
-                            var count = source.getFeatures().length;
-                            results.feature_counts['map.' + layerName] = count;
+                        var props = feature.getProperties();
+                        var geom = feature.getGeometry();
+                        
+                        if (geom && geom.getType() === 'Point') {
+                            var coords = geom.getCoordinates();
+                            
+                            // Extract ALL available properties
+                            var trainData = {
+                                'id': props.id || props.ID || props.loco || props.Loco || 
+                                      props.unit || props.Unit || props.name || sourceName + '_' + index,
+                                'train_number': props.train_number || props.service || props.name || '',
+                                'loco': props.loco || props.Loco || '',
+                                'unit': props.unit || props.Unit || '',
+                                'operator': props.operator || props.Operator || '',
+                                'origin': props.origin || props.from || '',
+                                'destination': props.destination || props.to || '',
+                                'speed': props.speed || props.Speed || 0,
+                                'heading': props.heading || props.Heading || 0,
+                                'eta': props.eta || props.ETA || '',
+                                'status': props.status || props.Status || '',
+                                'type': props.type || props.Type || '',
+                                'cars': props.cars || props.Cars || 0,
+                                'x': coords[0],
+                                'y': coords[1]
+                            };
+                            
+                            // Create a unique ID
+                            var uniqueId = trainData.id;
+                            if (!seenIds.has(uniqueId)) {
+                                seenIds.add(uniqueId);
+                                allTrains.push(trainData);
+                            }
                         }
-                    } catch(e) {}
+                    } catch(e) {
+                        console.log('Error processing feature:', e);
+                    }
                 });
             } catch(e) {}
-        }
-        
-        // 4. Look for any global data objects
-        var commonDataVars = [
-            'trainData', 'trains', 'locomotives', 'positions', 'trainPositions',
-            'liveTrains', 'trainList', 'trainArray', 'railTrains', 'currentTrains',
-            'allTrains', 'trainCollection', 'locomotiveData', 'serviceData',
-            'trainInfo', 'trainDetails', 'locomotiveList'
-        ];
-        
-        commonDataVars.forEach(function(name) {
-            if (window[name]) {
-                results.data_vars.push(name);
-                if (Array.isArray(window[name])) {
-                    results.feature_counts['data.' + name] = window[name].length;
-                } else if (window[name] && typeof window[name] === 'object') {
-                    // Count properties if it's an object
-                    var count = 0;
-                    for (var prop in window[name]) count++;
-                    results.feature_counts['data.' + name + '_props'] = count;
-                }
-            }
         });
         
-        // 5. Look for any script tags with JSON data
-        var scripts = document.querySelectorAll('script[type="application/json"], script:not([src])');
-        scripts.forEach(function(script, index) {
-            try {
-                var content = script.textContent;
-                if (content && (content.includes('train') || content.includes('loco') || 
-                    content.includes('position') || content.includes('track'))) {
-                    results.feature_counts['script_' + index + '_length'] = content.length;
-                }
-            } catch(e) {}
-        });
-        
-        return results;
+        return allTrains;
         """
         
         try:
-            sources = self.driver.execute_script(script)
-            
-            print(f"\n📊 Source Analysis:")
-            print(f"   OpenLayers sources found: {len(sources.get('sources', []))}")
-            for src in sources.get('sources', []):
-                count = sources.get('feature_counts', {}).get(src, 'unknown')
-                print(f"      - {src}: {count} features")
-            
-            if sources.get('window_props'):
-                print(f"\n   Train-related window properties: {len(sources.get('window_props', []))}")
-                for prop in sources.get('window_props', [])[:10]:  # Show first 10
-                    count = sources.get('feature_counts', {}).get('window.' + prop, 'unknown')
-                    print(f"      - window.{prop}: {count}")
-            
-            if sources.get('map_layers'):
-                print(f"\n   Map layers: {len(sources.get('map_layers', []))}")
-                for layer in sources.get('map_layers', [])[:5]:
-                    count = sources.get('feature_counts', {}).get('map.' + layer, 'unknown')
-                    print(f"      - {layer}: {count}")
-            
-            if sources.get('data_vars'):
-                print(f"\n   Data variables: {len(sources.get('data_vars', []))}")
-                for var in sources.get('data_vars', []):
-                    count = sources.get('feature_counts', {}).get('data.' + var, 
-                           sources.get('feature_counts', {}).get('data.' + var + '_props', 'unknown'))
-                    print(f"      - {var}: {count}")
-            
-            return sources
+            trains = self.driver.execute_script(script)
+            print(f"   ✅ Extracted {len(trains)} trains from OpenLayers sources")
+            return trains
         except Exception as e:
-            print(f"❌ Error finding sources: {e}")
-            return {}
-    
-    def extract_from_source(self, source_name):
-        """Extract data from a specific source"""
-        script = f"""
-        var trains = [];
-        var source = window.{source_name};
-        
-        if (!source) return trains;
-        
-        try {{
-            // Handle different source types
-            var features = [];
-            if (source.getFeatures) {{
-                features = source.getFeatures();
-            }} else if (Array.isArray(source)) {{
-                features = source;
-            }} else if (source.features) {{
-                features = source.features;
-            }}
-            
-            features.forEach(function(item, index) {{
-                try {{
-                    var props = item.getProperties ? item.getProperties() : item;
-                    var coords = null;
-                    
-                    // Get coordinates
-                    if (item.getGeometry) {{
-                        var geom = item.getGeometry();
-                        if (geom && geom.getType() === 'Point') {{
-                            coords = geom.getCoordinates();
-                        }}
-                    }} else if (item.lat !== undefined && item.lon !== undefined) {{
-                        coords = [item.lon, item.lat];
-                    }} else if (item.latitude !== undefined && item.longitude !== undefined) {{
-                        coords = [item.longitude, item.latitude];
-                    }}
-                    
-                    if (coords) {{
-                        var trainData = {{
-                            'id': props.id || props.ID || props.loco || props.Loco || 
-                                   props.unit || props.Unit || props.train_number || 
-                                   props.service || source_name + '_' + index,
-                            'train_number': props.train_number || props.service || props.name || '',
-                            'loco': props.loco || props.Loco || props.unit || props.Unit || '',
-                            'operator': props.operator || props.Operator || '',
-                            'origin': props.origin || props.Origin || props.from || props.From || '',
-                            'destination': props.destination || props.Destination || props.to || props.To || '',
-                            'speed': props.speed || props.Speed || 0,
-                            'heading': props.heading || props.Heading || props.direction || 0,
-                            'eta': props.eta || props.ETA || '',
-                            'status': props.status || props.Status || '',
-                            'type': props.type || props.Type || '',
-                            'cars': props.cars || props.Cars || props.carriages || 0,
-                            'length': props.length || props.Length || '',
-                            'weight': props.weight || props.Weight || '',
-                            'line': props.line || props.Line || props.route || '',
-                            'track': props.track || props.Track || props.platform || '',
-                            'next_stop': props.next_stop || props.NextStop || '',
-                            'x': coords[0],
-                            'y': coords[1]
-                        }};
-                        trains.push(trainData);
-                    }}
-                }} catch(e) {{}}
-            }});
-        }} catch(e) {{}}
-        
-        return trains;
-        """
-        
-        try:
-            return self.driver.execute_script(script)
-        except:
+            print(f"   ❌ Error extracting trains: {e}")
             return []
     
-    def check_current_trains(self):
-        """Specifically check and extract from currentTrains"""
-        print("\n🔍 Checking currentTrains...")
+    def extract_from_current_trains_safe(self):
+        """Safely extract data from currentTrains avoiding circular references"""
+        print("\n🔍 Extracting from currentTrains...")
         
-        script = """
-        var result = {
-            'exists': false,
-            'type': null,
-            'length': 0,
-            'sample': null,
-            'keys': []
-        };
-        
-        if (window.currentTrains !== undefined) {
-            result.exists = true;
-            result.type = typeof window.currentTrains;
-            
-            if (Array.isArray(window.currentTrains)) {
-                result.length = window.currentTrains.length;
-                if (result.length > 0) {
-                    result.sample = window.currentTrains[0];
-                    result.keys = Object.keys(window.currentTrains[0]);
-                }
-            } else if (typeof window.currentTrains === 'object') {
-                // Count properties
-                var count = 0;
-                for (var key in window.currentTrains) {
-                    count++;
-                    if (count === 1) {
-                        result.keys = Object.keys(window.currentTrains[key]);
-                    }
-                }
-                result.length = count;
-                if (count > 0) {
-                    // Get first item
-                    for (var key in window.currentTrains) {
-                        result.sample = window.currentTrains[key];
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-        """
-        
-        try:
-            info = self.driver.execute_script(script)
-            print(f"   currentTrains exists: {info.get('exists')}")
-            print(f"   Type: {info.get('type')}")
-            print(f"   Length/items: {info.get('length')}")
-            if info.get('keys'):
-                print(f"   Available fields: {info.get('keys')}")
-            if info.get('sample'):
-                print(f"   Sample: {json.dumps(info.get('sample'), indent=2)}")
-            return info
-        except Exception as e:
-            print(f"   Error checking currentTrains: {e}")
-            return None
-    
-    def extract_from_current_trains(self):
-        """Extract train data from currentTrains"""
         script = """
         var trains = [];
         var data = window.currentTrains;
         
         if (!data) return trains;
         
-        function extractFromItem(item) {
+        // Helper to safely extract simple values
+        function safeExtract(obj) {
+            if (!obj || typeof obj !== 'object') return null;
+            
             try {
-                // Try to get coordinates from various possible locations
-                var lat = item.lat || item.latitude || 
-                         (item.coords && item.coords[1]) || 
-                         (item.position && item.position.lat) ||
-                         (item.location && item.location.lat);
-                         
-                var lon = item.lon || item.longitude || 
-                         (item.coords && item.coords[0]) || 
-                         (item.position && item.position.lon) ||
-                         (item.location && item.location.lon);
+                // Get coordinates - try multiple possible locations
+                var lat = null, lon = null;
                 
-                if (lat === undefined || lon === undefined) return null;
+                if (obj.lat !== undefined && obj.lon !== undefined) {
+                    lat = obj.lat;
+                    lon = obj.lon;
+                } else if (obj.latitude !== undefined && obj.longitude !== undefined) {
+                    lat = obj.latitude;
+                    lon = obj.longitude;
+                } else if (obj.coords && Array.isArray(obj.coords) && obj.coords.length >= 2) {
+                    lon = obj.coords[0];
+                    lat = obj.coords[1];
+                } else if (obj.geometry && obj.geometry.coordinates) {
+                    lon = obj.geometry.coordinates[0];
+                    lat = obj.geometry.coordinates[1];
+                } else if (obj.position) {
+                    lat = obj.position.lat || obj.position.latitude;
+                    lon = obj.position.lon || obj.position.longitude;
+                }
                 
-                // Extract all available fields
+                if (lat === null || lon === null) return null;
+                
+                // Safely extract other properties (avoid circular refs)
                 return {
-                    'id': item.id || item.ID || item.loco || item.unit || 
-                          item.train_number || item.service || 'unknown',
-                    'train_number': item.train_number || item.service || item.name || '',
-                    'loco': item.loco || item.Loco || item.unit || item.Unit || '',
-                    'operator': item.operator || item.Operator || '',
-                    'origin': item.origin || item.Origin || item.from || item.From || '',
-                    'destination': item.destination || item.Destination || item.to || item.To || '',
-                    'speed': item.speed || item.Speed || item.velocity || 0,
-                    'heading': item.heading || item.Heading || item.direction || item.bearing || 0,
-                    'eta': item.eta || item.ETA || item.estimated_arrival || '',
-                    'etd': item.etd || item.ETD || '',
-                    'status': item.status || item.Status || '',
-                    'type': item.type || item.Type || item.train_type || '',
-                    'cars': item.cars || item.Cars || item.carriages || 0,
-                    'length': item.length || item.Length || '',
-                    'weight': item.weight || item.Weight || '',
-                    'line': item.line || item.Line || item.route || '',
-                    'track': item.track || item.Track || item.platform || '',
-                    'next_stop': item.next_stop || item.NextStop || '',
-                    'departure': item.departure || item.Departure || '',
-                    'arrival': item.arrival || item.Arrival || '',
-                    'late': item.late || item.Late || item.delay || 0,
-                    'service_code': item.service_code || item.serviceNumber || '',
-                    'consist': item.consist || item.Consist || '',
-                    'load': item.load || item.Load || '',
-                    'flags': item.flags || item.Flags || '',
-                    'notes': item.notes || item.Notes || '',
+                    'id': String(obj.id || obj.ID || obj.loco || obj.unit || obj.train_number || 'unknown'),
+                    'train_number': String(obj.train_number || obj.service || obj.name || ''),
+                    'loco': String(obj.loco || obj.Loco || ''),
+                    'unit': String(obj.unit || obj.Unit || ''),
+                    'operator': String(obj.operator || obj.Operator || ''),
+                    'origin': String(obj.origin || obj.from || ''),
+                    'destination': String(obj.destination || obj.to || ''),
+                    'speed': parseFloat(obj.speed || obj.Speed || 0),
+                    'heading': parseFloat(obj.heading || obj.Heading || obj.direction || 0),
+                    'eta': String(obj.eta || obj.ETA || ''),
+                    'status': String(obj.status || obj.Status || ''),
+                    'type': String(obj.type || obj.Type || ''),
+                    'cars': parseInt(obj.cars || obj.Cars || 0),
                     'x': parseFloat(lon),
                     'y': parseFloat(lat)
                 };
             } catch(e) {
-                console.log('Error extracting item:', e);
+                console.log('Error extracting object:', e);
                 return null;
             }
         }
         
+        // Handle array
         if (Array.isArray(data)) {
             data.forEach(function(item) {
-                var train = extractFromItem(item);
+                var train = safeExtract(item);
                 if (train) trains.push(train);
             });
-        } else if (typeof data === 'object') {
+        } 
+        // Handle object with numeric keys (likely an array-like object)
+        else if (typeof data === 'object') {
+            // Check if it's an object with numeric keys (like a sparse array)
+            var hasNumericKeys = false;
             for (var key in data) {
-                var train = extractFromItem(data[key]);
-                if (train) trains.push(train);
+                if (!isNaN(parseInt(key))) {
+                    hasNumericKeys = true;
+                    var train = safeExtract(data[key]);
+                    if (train) trains.push(train);
+                }
+            }
+            
+            // If no numeric keys, try to extract from values
+            if (!hasNumericKeys) {
+                for (var key in data) {
+                    var train = safeExtract(data[key]);
+                    if (train) trains.push(train);
+                }
             }
         }
         
@@ -558,11 +366,10 @@ class TrainScraper:
         seen_ids = set()
         
         for t in raw_trains:
-            # Check if coordinates are in lat/lon or Web Mercator
             x = t.get('x', 0)
             y = t.get('y', 0)
             
-            # If values are large, they're Web Mercator
+            # Convert coordinates if needed
             if abs(x) > 180 or abs(y) > 90:
                 lat, lon = self.webmercator_to_latlon(x, y)
             else:
@@ -570,35 +377,22 @@ class TrainScraper:
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
-                if train_id not in seen_ids:
+                if train_id not in seen_ids and not 'arrow' in train_id.lower():
                     seen_ids.add(train_id)
                     australian_trains.append({
                         'id': train_id,
                         'train_number': t.get('train_number', ''),
                         'loco': t.get('loco', ''),
+                        'unit': t.get('unit', ''),
                         'operator': t.get('operator', ''),
                         'origin': t.get('origin', ''),
                         'destination': t.get('destination', ''),
                         'speed': round(float(t.get('speed', 0)), 1),
                         'heading': round(float(t.get('heading', 0)), 1),
                         'eta': t.get('eta', ''),
-                        'etd': t.get('etd', ''),
                         'status': t.get('status', ''),
                         'type': t.get('type', ''),
                         'cars': t.get('cars', 0),
-                        'length': t.get('length', ''),
-                        'weight': t.get('weight', ''),
-                        'line': t.get('line', ''),
-                        'track': t.get('track', ''),
-                        'next_stop': t.get('next_stop', ''),
-                        'departure': t.get('departure', ''),
-                        'arrival': t.get('arrival', ''),
-                        'late': t.get('late', 0),
-                        'service_code': t.get('service_code', ''),
-                        'consist': t.get('consist', ''),
-                        'load': t.get('load', ''),
-                        'flags': t.get('flags', ''),
-                        'notes': t.get('notes', ''),
                         'lat': lat,
                         'lon': lon
                     })
@@ -629,48 +423,27 @@ class TrainScraper:
             print("⏳ Waiting 60 seconds for trains to load...")
             time.sleep(60)
             
-            # Find all possible data sources
-            sources = self.find_all_sources()
+            # Extract trains using direct method
+            raw_trains = self.extract_trains_direct()
             
-            all_raw_trains = []
+            # Also try currentTrains
+            current_trains = self.extract_from_current_trains_safe()
+            raw_trains.extend(current_trains)
             
-            # Check OpenLayers sources
-            for source in sources.get('sources', []):
-                count = sources.get('feature_counts', {}).get(source, 0)
-                if count and count > 0 and 'arrow' not in source.lower():
-                    print(f"\n📦 Extracting from {source} ({count} features)...")
-                    trains = self.extract_from_source(source)
-                    all_raw_trains.extend(trains)
-                    print(f"   → Extracted {len(trains)} trains")
+            print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
             
-            # Check currentTrains specifically
-            current_trains_info = self.check_current_trains()
-            if current_trains_info and current_trains_info.get('length', 0) > 0:
-                current_trains_data = self.extract_from_current_trains()
-                all_raw_trains.extend(current_trains_data)
+            australian_trains = self.filter_australian_trains(raw_trains)
             
-            print(f"\n✅ Total raw positions extracted: {len(all_raw_trains)}")
-            
-            australian_trains = self.filter_australian_trains(all_raw_trains)
-            
-            print(f"\n✅ Australian trains: {len(australian_trains)}")
+            print(f"\n✅ Australian trains after filtering: {len(australian_trains)}")
             
             if australian_trains:
-                print(f"\n📋 Sample real train data:")
+                print(f"\n📋 Sample train data:")
                 sample = australian_trains[0]
-                print(f"   ID: {sample['id']}")
-                print(f"   Train Number: {sample['train_number']}")
-                print(f"   Loco: {sample['loco']}")
-                print(f"   Operator: {sample['operator']}")
-                print(f"   Origin: {sample['origin']}")
-                print(f"   Destination: {sample['destination']}")
-                print(f"   Speed: {sample['speed']} km/h")
-                print(f"   Heading: {sample['heading']}°")
-                print(f"   ETA: {sample['eta']}")
-                print(f"   Status: {sample['status']}")
-                print(f"   Type: {sample['type']}")
-                print(f"   Cars: {sample['cars']}")
-                print(f"   Location: {sample['lat']:.4f}, {sample['lon']:.4f}")
+                for key, value in sample.items():
+                    if key not in ['lat', 'lon']:
+                        print(f"   {key}: {value}")
+                print(f"   lat: {sample['lat']:.4f}")
+                print(f"   lon: {sample['lon']:.4f}")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
