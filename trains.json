@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-02-15T16:10:30.362567Z",
-  "note": "ok - 414 trains",
+  "lastUpdated": "2026-02-15T16:49:45.622756Z",
+  "note": "ok - 437 trains",
   "trains": [
     {
       "id": "regTrainsSource_0",
@@ -13,8 +13,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.168967,
-      "lon": 150.892653
+      "lat": -34.556643,
+      "lon": 150.366987
     },
     {
       "id": "regTrainsSource_1",
@@ -27,8 +27,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.86387,
-      "lon": 151.065566
+      "lat": -34.54851,
+      "lon": 150.371093
     },
     {
       "id": "regTrainsSource_2",
@@ -41,8 +41,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.4226,
-      "lon": 151.341843
+      "lat": -34.5672,
+      "lon": 150.624093
     },
     {
       "id": "regTrainsSource_3",
@@ -55,8 +55,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.39063,
-      "lon": 150.132147
+      "lat": -34.550623,
+      "lon": 150.633053
     },
     {
       "id": "regTrainsSource_4",
@@ -69,8 +69,106 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -23.864485,
-      "lon": 151.17468
+      "lat": -34.778987,
+      "lon": 150.70088
+    },
+    {
+      "id": "regTrainsSource_5",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.672501,
+      "lon": 150.854782
+    },
+    {
+      "id": "regTrainsSource_6",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.710306,
+      "lon": 150.32678
+    },
+    {
+      "id": "regTrainsSource_7",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.418127,
+      "lon": 149.843867
+    },
+    {
+      "id": "regTrainsSource_8",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -36.090193,
+      "lon": 146.70256
+    },
+    {
+      "id": "regTrainsSource_9",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.45184,
+      "lon": 147.531213
+    },
+    {
+      "id": "regTrainsSource_10",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.479167,
+      "lon": 147.806293
+    },
+    {
+      "id": "regTrainsSource_11",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.057127,
+      "lon": 147.82684
     },
     {
       "id": "regTrainsSource_12",
@@ -83,8 +181,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -16.545277,
-      "lon": 132.814587
+      "lat": -33.547747,
+      "lon": 147.944773
     },
     {
       "id": "regTrainsSource_13",
@@ -97,8 +195,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -14.034332,
-      "lon": 131.947973
+      "lat": -35.47648,
+      "lon": 147.03192
     },
     {
       "id": "regTrainsSource_14",
@@ -111,11 +209,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.52321,
-      "lon": 132.671533
+      "lat": -34.778887,
+      "lon": 149.37196
     },
     {
-      "id": "regTrainsSource_19",
+      "id": "regTrainsSource_15",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -125,11 +223,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.840453,
-      "lon": 120.216573
+      "lat": -34.74432,
+      "lon": 150.01808
     },
     {
-      "id": "regTrainsSource_20",
+      "id": "regTrainsSource_16",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -139,11 +237,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.939718,
-      "lon": 121.516754
+      "lat": -34.762373,
+      "lon": 150.033387
     },
     {
-      "id": "regTrainsSource_21",
+      "id": "regTrainsSource_17",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -153,2013 +251,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.017083,
-      "lon": 123.0534
+      "lat": -34.636047,
+      "lon": 150.319933
     },
     {
-      "id": "regTrainsSource_22",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.031457,
-      "lon": 123.552787
-    },
-    {
-      "id": "regTrainsSource_23",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.829637,
-      "lon": 121.314053
-    },
-    {
-      "id": "regTrainsSource_24",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.862313,
-      "lon": 120.445547
-    },
-    {
-      "id": "regTrainsSource_25",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.780527,
-      "lon": 121.41703
-    },
-    {
-      "id": "regTrainsSource_26",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.437603,
-      "lon": 118.352791
-    },
-    {
-      "id": "regTrainsSource_27",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.499267,
-      "lon": 118.204307
-    },
-    {
-      "id": "regTrainsSource_28",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.37824,
-      "lon": 118.510773
-    },
-    {
-      "id": "regTrainsSource_29",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.826663,
-      "lon": 116.02344
-    },
-    {
-      "id": "regTrainsSource_30",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.64475,
-      "lon": 117.228773
-    },
-    {
-      "id": "regTrainsSource_31",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.482113,
-      "lon": 137.770973
-    },
-    {
-      "id": "regTrainsSource_32",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.482817,
-      "lon": 137.77108
-    },
-    {
-      "id": "regTrainsSource_33",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.53977,
-      "lon": 137.102573
-    },
-    {
-      "id": "regTrainsSource_34",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.558173,
-      "lon": 133.542493
-    },
-    {
-      "id": "regTrainsSource_35",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.487833,
-      "lon": 131.477453
-    },
-    {
-      "id": "regTrainsSource_36",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.718487,
-      "lon": 134.473773
-    },
-    {
-      "id": "regTrainsSource_37",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.482793,
-      "lon": 137.770773
-    },
-    {
-      "id": "regTrainsSource_38",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.227363,
-      "lon": 136.662973
-    },
-    {
-      "id": "regTrainsSource_39",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.531823,
-      "lon": 132.694973
-    },
-    {
-      "id": "regTrainsSource_40",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.516287,
-      "lon": 149.9102
-    },
-    {
-      "id": "regTrainsSource_41",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.86944,
-      "lon": 151.721107
-    },
-    {
-      "id": "regTrainsSource_42",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.867253,
-      "lon": 151.7546
-    },
-    {
-      "id": "regTrainsSource_43",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.45173,
-      "lon": 149.88292
-    },
-    {
-      "id": "regTrainsSource_44",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.48203,
-      "lon": 149.89712
-    },
-    {
-      "id": "regTrainsSource_45",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.704763,
-      "lon": 150.039773
-    },
-    {
-      "id": "regTrainsSource_46",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.343237,
-      "lon": 149.87608
-    },
-    {
-      "id": "regTrainsSource_47",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.95486,
-      "lon": 150.196773
-    },
-    {
-      "id": "regTrainsSource_48",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.830123,
-      "lon": 143.526013
-    },
-    {
-      "id": "regTrainsSource_49",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.74357,
-      "lon": 147.767773
-    },
-    {
-      "id": "regTrainsSource_50",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.18681,
-      "lon": 148.696627
-    },
-    {
-      "id": "regTrainsSource_51",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.322793,
-      "lon": 148.05552
-    },
-    {
-      "id": "regTrainsSource_52",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.930323,
-      "lon": 151.72456
-    },
-    {
-      "id": "regTrainsSource_53",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.920212,
-      "lon": 151.751007
-    },
-    {
-      "id": "regTrainsSource_54",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.90324,
-      "lon": 151.75428
-    },
-    {
-      "id": "regTrainsSource_55",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.87327,
-      "lon": 151.740147
-    },
-    {
-      "id": "regTrainsSource_56",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.92707,
-      "lon": 151.728027
-    },
-    {
-      "id": "regTrainsSource_57",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.878873,
-      "lon": 151.707987
-    },
-    {
-      "id": "regTrainsSource_58",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.90266,
-      "lon": 151.765787
-    },
-    {
-      "id": "regTrainsSource_59",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.490677,
-      "lon": 151.136973
-    },
-    {
-      "id": "regTrainsSource_60",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.61159,
-      "lon": 151.20776
-    },
-    {
-      "id": "regTrainsSource_61",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.395987,
-      "lon": 151.008453
-    },
-    {
-      "id": "regTrainsSource_62",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.50046,
-      "lon": 151.142547
-    },
-    {
-      "id": "regTrainsSource_63",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.402533,
-      "lon": 151.01268
-    },
-    {
-      "id": "regTrainsSource_64",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.632533,
-      "lon": 151.110667
-    },
-    {
-      "id": "regTrainsSource_65",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.665613,
-      "lon": 150.7394
-    },
-    {
-      "id": "regTrainsSource_66",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.66511,
-      "lon": 150.73908
-    },
-    {
-      "id": "regTrainsSource_67",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.72599,
-      "lon": 150.78444
-    },
-    {
-      "id": "regTrainsSource_68",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.130887,
-      "lon": 150.874533
-    },
-    {
-      "id": "regTrainsSource_69",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.78989,
-      "lon": 150.898
-    },
-    {
-      "id": "regTrainsSource_70",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.983273,
-      "lon": 150.867973
-    },
-    {
-      "id": "regTrainsSource_71",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.12194,
-      "lon": 150.871667
-    },
-    {
-      "id": "regTrainsSource_72",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.398133,
-      "lon": 150.668227
-    },
-    {
-      "id": "regTrainsSource_73",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.286597,
-      "lon": 150.824187
-    },
-    {
-      "id": "regTrainsSource_74",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.36019,
-      "lon": 151.012893
-    },
-    {
-      "id": "regTrainsSource_75",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.273097,
-      "lon": 150.852387
-    },
-    {
-      "id": "regTrainsSource_76",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.29553,
-      "lon": 150.809373
-    },
-    {
-      "id": "regTrainsSource_77",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.263327,
-      "lon": 150.887507
-    },
-    {
-      "id": "regTrainsSource_78",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.38873,
-      "lon": 150.998427
-    },
-    {
-      "id": "regTrainsSource_79",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.874743,
-      "lon": 151.771773
-    },
-    {
-      "id": "regTrainsSource_80",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.87472,
-      "lon": 151.771227
-    },
-    {
-      "id": "regTrainsSource_81",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.950703,
-      "lon": 152.849267
-    },
-    {
-      "id": "regTrainsSource_82",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -29.12224,
-      "lon": 152.943867
-    },
-    {
-      "id": "regTrainsSource_83",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.868387,
-      "lon": 151.75504
-    },
-    {
-      "id": "regTrainsSource_84",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -28.414533,
-      "lon": 152.974773
-    },
-    {
-      "id": "regTrainsSource_85",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.21187,
-      "lon": 151.942427
-    },
-    {
-      "id": "regTrainsSource_86",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.83733,
-      "lon": 151.68716
-    },
-    {
-      "id": "regTrainsSource_87",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.79066,
-      "lon": 151.648027
-    },
-    {
-      "id": "regTrainsSource_88",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.837033,
-      "lon": 151.68732
-    },
-    {
-      "id": "regTrainsSource_89",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.73529,
-      "lon": 151.545133
-    },
-    {
-      "id": "regTrainsSource_90",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.783847,
-      "lon": 151.639973
-    },
-    {
-      "id": "regTrainsSource_91",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.705433,
-      "lon": 151.403773
-    },
-    {
-      "id": "regTrainsSource_92",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.67167,
-      "lon": 151.370347
-    },
-    {
-      "id": "regTrainsSource_93",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.67126,
-      "lon": 151.370573
-    },
-    {
-      "id": "regTrainsSource_94",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.671093,
-      "lon": 151.370627
-    },
-    {
-      "id": "regTrainsSource_95",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.66359,
-      "lon": 151.350173
-    },
-    {
-      "id": "regTrainsSource_96",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.718303,
-      "lon": 151.467693
-    },
-    {
-      "id": "regTrainsSource_97",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.960047,
-      "lon": 150.922587
-    },
-    {
-      "id": "regTrainsSource_98",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.921337,
-      "lon": 151.169533
-    },
-    {
-      "id": "regTrainsSource_99",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.967657,
-      "lon": 151.220773
-    },
-    {
-      "id": "regTrainsSource_100",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.899093,
-      "lon": 151.06956
-    },
-    {
-      "id": "regTrainsSource_101",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.926343,
-      "lon": 150.926333
-    },
-    {
-      "id": "regTrainsSource_102",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.873687,
-      "lon": 151.066133
-    },
-    {
-      "id": "regTrainsSource_103",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.05368,
-      "lon": 151.045507
-    },
-    {
-      "id": "regTrainsSource_104",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.998887,
-      "lon": 150.862973
-    },
-    {
-      "id": "regTrainsSource_105",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.916987,
-      "lon": 151.16536
-    },
-    {
-      "id": "regTrainsSource_106",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.271627,
-      "lon": 151.43132
-    },
-    {
-      "id": "regTrainsSource_107",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.127743,
-      "lon": 151.483027
-    },
-    {
-      "id": "regTrainsSource_108",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.08381,
-      "lon": 151.50086
-    },
-    {
-      "id": "regTrainsSource_109",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.04536,
-      "lon": 151.525373
-    },
-    {
-      "id": "regTrainsSource_110",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.01302,
-      "lon": 151.54206
-    },
-    {
-      "id": "regTrainsSource_111",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.837933,
-      "lon": 148.697333
-    },
-    {
-      "id": "regTrainsSource_112",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.585999,
-      "lon": 150.257507
-    },
-    {
-      "id": "regTrainsSource_113",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.584999,
-      "lon": 150.257904
-    },
-    {
-      "id": "regTrainsSource_114",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.151623,
-      "lon": 149.1144
-    },
-    {
-      "id": "regTrainsSource_115",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.72375,
-      "lon": 150.45425
-    },
-    {
-      "id": "regTrainsSource_116",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.585011,
-      "lon": 150.257843
-    },
-    {
-      "id": "regTrainsSource_117",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.46769,
-      "lon": 150.245053
-    },
-    {
-      "id": "regTrainsSource_118",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.555083,
-      "lon": 150.263693
-    },
-    {
-      "id": "regTrainsSource_119",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.914037,
-      "lon": 151.156787
-    },
-    {
-      "id": "regTrainsSource_120",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.883422,
-      "lon": 151.207525
-    },
-    {
-      "id": "regTrainsSource_121",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.665313,
-      "lon": 151.304427
-    },
-    {
-      "id": "regTrainsSource_122",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.663687,
-      "lon": 151.247707
-    },
-    {
-      "id": "regTrainsSource_123",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.48532,
-      "lon": 151.32355
-    },
-    {
-      "id": "regTrainsSource_124",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.431278,
-      "lon": 151.334396
-    },
-    {
-      "id": "regTrainsSource_125",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.07191,
-      "lon": 150.79704
-    },
-    {
-      "id": "regTrainsSource_126",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.070572,
-      "lon": 150.804174
-    },
-    {
-      "id": "regTrainsSource_127",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.744663,
-      "lon": 150.676757
-    },
-    {
-      "id": "regTrainsSource_128",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.49181,
-      "lon": 150.792526
-    },
-    {
-      "id": "regTrainsSource_129",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.18138,
-      "lon": 150.676667
-    },
-    {
-      "id": "regTrainsSource_130",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.12648,
-      "lon": 150.743867
-    },
-    {
-      "id": "regTrainsSource_131",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.520937,
-      "lon": 150.706027
-    },
-    {
-      "id": "regTrainsSource_132",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.459827,
-      "lon": 150.885187
-    },
-    {
-      "id": "regTrainsSource_133",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.447407,
-      "lon": 150.89116
-    },
-    {
-      "id": "regTrainsSource_134",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.59539,
-      "lon": 150.843467
-    },
-    {
-      "id": "regTrainsSource_135",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.753693,
-      "lon": 150.023893
-    },
-    {
-      "id": "regTrainsSource_136",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.51608,
-      "lon": 150.353027
-    },
-    {
-      "id": "regTrainsSource_137",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.509667,
-      "lon": 150.336853
-    },
-    {
-      "id": "regTrainsSource_138",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.43385,
-      "lon": 150.487507
-    },
-    {
-      "id": "regTrainsSource_139",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.376137,
-      "lon": 150.53304
-    },
-    {
-      "id": "regTrainsSource_140",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.543507,
-      "lon": 150.373893
-    },
-    {
-      "id": "regTrainsSource_141",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.669727,
-      "lon": 150.227667
-    },
-    {
-      "id": "regTrainsSource_142",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.640743,
-      "lon": 145.190781
-    },
-    {
-      "id": "regTrainsSource_143",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -36.362447,
-      "lon": 146.304747
-    },
-    {
-      "id": "regTrainsSource_144",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -36.815697,
-      "lon": 145.354787
-    },
-    {
-      "id": "regTrainsSource_145",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -41.15388,
-      "lon": 146.186257
-    },
-    {
-      "id": "regTrainsSource_146",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.195053,
-      "lon": 150.635053
-    },
-    {
-      "id": "regTrainsSource_147",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.06371,
-      "lon": 150.81446
-    },
-    {
-      "id": "regTrainsSource_148",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.468677,
-      "lon": 150.880533
-    },
-    {
-      "id": "regTrainsSource_149",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.42587,
-      "lon": 150.888494
-    },
-    {
-      "id": "regTrainsSource_150",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.957963,
-      "lon": 150.910547
-    },
-    {
-      "id": "regTrainsSource_151",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.85599,
-      "lon": 150.614827
-    },
-    {
-      "id": "regTrainsSource_152",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.808813,
-      "lon": 148.916493
-    },
-    {
-      "id": "regTrainsSource_153",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.695337,
-      "lon": 138.591147
-    },
-    {
-      "id": "regTrainsSource_154",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.823143,
-      "lon": 138.591667
-    },
-    {
-      "id": "regTrainsSource_155",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -35.46516,
-      "lon": 139.6722
-    },
-    {
-      "id": "regTrainsSource_156",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -35.553417,
-      "lon": 139.781907
-    },
-    {
-      "id": "regTrainsSource_157",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.695507,
-      "lon": 138.591293
-    },
-    {
-      "id": "regTrainsSource_158",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -38.11298,
-      "lon": 144.35112
-    },
-    {
-      "id": "regTrainsSource_159",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.797917,
-      "lon": 144.85316
-    },
-    {
-      "id": "regTrainsSource_160",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.804447,
-      "lon": 144.916533
-    },
-    {
-      "id": "regTrainsSource_161",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.70156,
-      "lon": 144.910547
-    },
-    {
-      "id": "regTrainsSource_162",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.434607,
-      "lon": 145.002307
-    },
-    {
-      "id": "regTrainsSource_163",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.87865,
-      "lon": 143.177413
-    },
-    {
-      "id": "regTrainsSource_164",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -37.803017,
-      "lon": 144.920707
-    },
-    {
-      "id": "regTrainsSource_165",
+      "id": "regTrainsSource_18",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -2173,7 +269,7 @@
       "lon": 147.240037
     },
     {
-      "id": "regTrainsSource_166",
+      "id": "regTrainsSource_19",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -2187,6 +283,2064 @@
       "lon": 147.222866
     },
     {
+      "id": "regTrainsSource_20",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -41.089794,
+      "lon": 146.015518
+    },
+    {
+      "id": "regTrainsSource_21",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -41.768121,
+      "lon": 147.361422
+    },
+    {
+      "id": "regTrainsSource_22",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -41.4679,
+      "lon": 147.186099
+    },
+    {
+      "id": "regTrainsSource_23",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -42.546493,
+      "lon": 147.369879
+    },
+    {
+      "id": "regTrainsSource_24",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -41.598386,
+      "lon": 147.267233
+    },
+    {
+      "id": "regTrainsSource_25",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -37.761833,
+      "lon": 144.832987
+    },
+    {
+      "id": "regTrainsSource_26",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -37.640743,
+      "lon": 145.190781
+    },
+    {
+      "id": "regTrainsSource_27",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -37.774173,
+      "lon": 144.82276
+    },
+    {
+      "id": "regTrainsSource_28",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.888573,
+      "lon": 144.027187
+    },
+    {
+      "id": "regTrainsSource_29",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -37.940834,
+      "lon": 145.143204
+    },
+    {
+      "id": "regTrainsSource_30",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -36.595937,
+      "lon": 145.839133
+    },
+    {
+      "id": "regTrainsSource_31",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -38.048143,
+      "lon": 143.693733
+    },
+    {
+      "id": "regTrainsSource_32",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -37.893673,
+      "lon": 144.67552
+    },
+    {
+      "id": "regTrainsSource_33",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -37.846757,
+      "lon": 144.88136
+    },
+    {
+      "id": "regTrainsSource_34",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -38.100483,
+      "lon": 145.282028
+    },
+    {
+      "id": "regTrainsSource_35",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -35.678877,
+      "lon": 139.8418
+    },
+    {
+      "id": "regTrainsSource_36",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -35.24844,
+      "lon": 139.450307
+    },
+    {
+      "id": "regTrainsSource_37",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.833793,
+      "lon": 138.515147
+    },
+    {
+      "id": "regTrainsSource_38",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.69537,
+      "lon": 138.591147
+    },
+    {
+      "id": "regTrainsSource_39",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.816313,
+      "lon": 137.972547
+    },
+    {
+      "id": "regTrainsSource_40",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.482123,
+      "lon": 137.770973
+    },
+    {
+      "id": "regTrainsSource_41",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.695477,
+      "lon": 138.591253
+    },
+    {
+      "id": "regTrainsSource_42",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.250567,
+      "lon": 136.802067
+    },
+    {
+      "id": "regTrainsSource_43",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.48282,
+      "lon": 137.770773
+    },
+    {
+      "id": "regTrainsSource_44",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.183823,
+      "lon": 136.205573
+    },
+    {
+      "id": "regTrainsSource_45",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.772533,
+      "lon": 150.85552
+    },
+    {
+      "id": "regTrainsSource_46",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.76576,
+      "lon": 150.83132
+    },
+    {
+      "id": "regTrainsSource_47",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.445313,
+      "lon": 150.66008
+    },
+    {
+      "id": "regTrainsSource_48",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.968683,
+      "lon": 150.234453
+    },
+    {
+      "id": "regTrainsSource_49",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.227457,
+      "lon": 149.808627
+    },
+    {
+      "id": "regTrainsSource_50",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.658,
+      "lon": 150.0168
+    },
+    {
+      "id": "regTrainsSource_51",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.39366,
+      "lon": 151.00524
+    },
+    {
+      "id": "regTrainsSource_52",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.3471,
+      "lon": 150.98848
+    },
+    {
+      "id": "regTrainsSource_53",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.470747,
+      "lon": 151.126427
+    },
+    {
+      "id": "regTrainsSource_54",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.277833,
+      "lon": 150.90848
+    },
+    {
+      "id": "regTrainsSource_55",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.29192,
+      "lon": 150.9732
+    },
+    {
+      "id": "regTrainsSource_56",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.502107,
+      "lon": 151.143933
+    },
+    {
+      "id": "regTrainsSource_57",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.40316,
+      "lon": 151.017893
+    },
+    {
+      "id": "regTrainsSource_58",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.339973,
+      "lon": 149.875373
+    },
+    {
+      "id": "regTrainsSource_59",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.671597,
+      "lon": 151.370373
+    },
+    {
+      "id": "regTrainsSource_60",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.652263,
+      "lon": 151.23268
+    },
+    {
+      "id": "regTrainsSource_61",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.671087,
+      "lon": 151.370667
+    },
+    {
+      "id": "regTrainsSource_62",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.67168,
+      "lon": 151.370333
+    },
+    {
+      "id": "regTrainsSource_63",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.658533,
+      "lon": 151.287
+    },
+    {
+      "id": "regTrainsSource_64",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.715093,
+      "lon": 151.41028
+    },
+    {
+      "id": "regTrainsSource_65",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.630847,
+      "lon": 151.114147
+    },
+    {
+      "id": "regTrainsSource_66",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.186637,
+      "lon": 148.692853
+    },
+    {
+      "id": "regTrainsSource_67",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.470583,
+      "lon": 150.246293
+    },
+    {
+      "id": "regTrainsSource_68",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.698997,
+      "lon": 149.0244
+    },
+    {
+      "id": "regTrainsSource_69",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.405567,
+      "lon": 150.084227
+    },
+    {
+      "id": "regTrainsSource_70",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.58815,
+      "lon": 150.25696
+    },
+    {
+      "id": "regTrainsSource_71",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.393393,
+      "lon": 150.67952
+    },
+    {
+      "id": "regTrainsSource_72",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.10338,
+      "lon": 150.86844
+    },
+    {
+      "id": "regTrainsSource_73",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.878473,
+      "lon": 150.88188
+    },
+    {
+      "id": "regTrainsSource_74",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.288107,
+      "lon": 150.828333
+    },
+    {
+      "id": "regTrainsSource_75",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.33459,
+      "lon": 150.71
+    },
+    {
+      "id": "regTrainsSource_76",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.423073,
+      "lon": 150.299707
+    },
+    {
+      "id": "regTrainsSource_77",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.110753,
+      "lon": 150.86944
+    },
+    {
+      "id": "regTrainsSource_78",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.65347,
+      "lon": 151.13679
+    },
+    {
+      "id": "regTrainsSource_79",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.2854,
+      "lon": 151.42519
+    },
+    {
+      "id": "regTrainsSource_80",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.285394,
+      "lon": 151.424904
+    },
+    {
+      "id": "regTrainsSource_81",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.281792,
+      "lon": 151.426529
+    },
+    {
+      "id": "regTrainsSource_82",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.38219,
+      "lon": 151.37009
+    },
+    {
+      "id": "regTrainsSource_83",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.837933,
+      "lon": 148.697333
+    },
+    {
+      "id": "regTrainsSource_84",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.771521,
+      "lon": 150.831104
+    },
+    {
+      "id": "regTrainsSource_85",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.767853,
+      "lon": 150.809653
+    },
+    {
+      "id": "regTrainsSource_86",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.83831,
+      "lon": 151.019745
+    },
+    {
+      "id": "regTrainsSource_87",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.861141,
+      "lon": 151.041443
+    },
+    {
+      "id": "regTrainsSource_88",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.86351,
+      "lon": 151.063324
+    },
+    {
+      "id": "regTrainsSource_89",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.863728,
+      "lon": 151.06375
+    },
+    {
+      "id": "regTrainsSource_90",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.91317,
+      "lon": 150.93507
+    },
+    {
+      "id": "regTrainsSource_91",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.953051,
+      "lon": 151.007967
+    },
+    {
+      "id": "regTrainsSource_92",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.810081,
+      "lon": 150.99195
+    },
+    {
+      "id": "regTrainsSource_93",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.917801,
+      "lon": 151.034393
+    },
+    {
+      "id": "regTrainsSource_94",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.886456,
+      "lon": 150.953282
+    },
+    {
+      "id": "regTrainsSource_95",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.0189,
+      "lon": 150.845667
+    },
+    {
+      "id": "regTrainsSource_96",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.98472,
+      "lon": 150.8789
+    },
+    {
+      "id": "regTrainsSource_97",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.971818,
+      "lon": 150.869992
+    },
+    {
+      "id": "regTrainsSource_98",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.167637,
+      "lon": 150.732347
+    },
+    {
+      "id": "regTrainsSource_99",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.95436,
+      "lon": 150.80843
+    },
+    {
+      "id": "regTrainsSource_100",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.952049,
+      "lon": 150.792267
+    },
+    {
+      "id": "regTrainsSource_101",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.066455,
+      "lon": 150.810903
+    },
+    {
+      "id": "regTrainsSource_102",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.44806,
+      "lon": 150.891147
+    },
+    {
+      "id": "regTrainsSource_103",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.27563,
+      "lon": 150.95337
+    },
+    {
+      "id": "regTrainsSource_104",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.343423,
+      "lon": 150.561387
+    },
+    {
+      "id": "regTrainsSource_105",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.42149,
+      "lon": 150.498027
+    },
+    {
+      "id": "regTrainsSource_106",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.477307,
+      "lon": 150.903109
+    },
+    {
+      "id": "regTrainsSource_107",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.47717,
+      "lon": 150.90263
+    },
+    {
+      "id": "regTrainsSource_108",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.523177,
+      "lon": 150.375573
+    },
+    {
+      "id": "regTrainsSource_109",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.469593,
+      "lon": 150.42004
+    },
+    {
+      "id": "regTrainsSource_110",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.46054,
+      "lon": 150.879627
+    },
+    {
+      "id": "regTrainsSource_111",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.47751,
+      "lon": 150.899547
+    },
+    {
+      "id": "regTrainsSource_112",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.486149,
+      "lon": 150.79718
+    },
+    {
+      "id": "regTrainsSource_113",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.721407,
+      "lon": 151.446027
+    },
+    {
+      "id": "regTrainsSource_114",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -24.099387,
+      "lon": 151.411893
+    },
+    {
+      "id": "regTrainsSource_115",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.27029,
+      "lon": 151.431946
+    },
+    {
+      "id": "regTrainsSource_116",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.88369,
+      "lon": 151.20602
+    },
+    {
+      "id": "regTrainsSource_117",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.696349,
+      "lon": 151.100362
+    },
+    {
+      "id": "regTrainsSource_118",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.67164,
+      "lon": 151.11484
+    },
+    {
+      "id": "regTrainsSource_119",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.707756,
+      "lon": 151.09722
+    },
+    {
+      "id": "regTrainsSource_120",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.870733,
+      "lon": 151.76224
+    },
+    {
+      "id": "regTrainsSource_121",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.869417,
+      "lon": 151.720773
+    },
+    {
+      "id": "regTrainsSource_122",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.87001,
+      "lon": 151.72
+    },
+    {
+      "id": "regTrainsSource_123",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.83734,
+      "lon": 151.68716
+    },
+    {
+      "id": "regTrainsSource_124",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.863663,
+      "lon": 151.727733
+    },
+    {
+      "id": "regTrainsSource_125",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.86676,
+      "lon": 151.75348
+    },
+    {
+      "id": "regTrainsSource_126",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.861717,
+      "lon": 151.69824
+    },
+    {
+      "id": "regTrainsSource_127",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.837143,
+      "lon": 151.68724
+    },
+    {
+      "id": "regTrainsSource_128",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.873067,
+      "lon": 151.74728
+    },
+    {
+      "id": "regTrainsSource_129",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.920212,
+      "lon": 151.751007
+    },
+    {
+      "id": "regTrainsSource_130",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.916663,
+      "lon": 151.743053
+    },
+    {
+      "id": "regTrainsSource_131",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.967323,
+      "lon": 151.601493
+    },
+    {
+      "id": "regTrainsSource_132",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.925103,
+      "lon": 151.731573
+    },
+    {
+      "id": "regTrainsSource_133",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.92644,
+      "lon": 151.729027
+    },
+    {
+      "id": "regTrainsSource_134",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.390287,
+      "lon": 151.000533
+    },
+    {
+      "id": "regTrainsSource_135",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.35236,
+      "lon": 152.773773
+    },
+    {
+      "id": "regTrainsSource_136",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -28.670377,
+      "lon": 153.002293
+    },
+    {
+      "id": "regTrainsSource_137",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.837023,
+      "lon": 151.687333
+    },
+    {
+      "id": "regTrainsSource_138",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -28.10845,
+      "lon": 152.914827
+    },
+    {
+      "id": "regTrainsSource_139",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.486727,
+      "lon": 151.719053
+    },
+    {
+      "id": "regTrainsSource_140",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.817327,
+      "lon": 151.678347
+    },
+    {
+      "id": "regTrainsSource_141",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.043397,
+      "lon": 151.523947
+    },
+    {
+      "id": "regTrainsSource_142",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.97708,
+      "lon": 151.579293
+    },
+    {
+      "id": "regTrainsSource_143",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.741147,
+      "lon": 151.583973
+    },
+    {
+      "id": "regTrainsSource_144",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.727263,
+      "lon": 151.521413
+    },
+    {
+      "id": "regTrainsSource_145",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.759947,
+      "lon": 151.61212
+    },
+    {
+      "id": "regTrainsSource_146",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.141579,
+      "lon": 151.481522
+    },
+    {
+      "id": "regTrainsSource_147",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.134991,
+      "lon": 150.99469
+    },
+    {
+      "id": "regTrainsSource_148",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.134541,
+      "lon": 150.994415
+    },
+    {
+      "id": "regTrainsSource_149",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.923023,
+      "lon": 151.17192
+    },
+    {
+      "id": "regTrainsSource_150",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.920633,
+      "lon": 151.171587
+    },
+    {
+      "id": "regTrainsSource_151",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.724063,
+      "lon": 151.08552
+    },
+    {
+      "id": "regTrainsSource_152",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.91008,
+      "lon": 151.104707
+    },
+    {
+      "id": "regTrainsSource_153",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.908873,
+      "lon": 151.0846
+    },
+    {
+      "id": "regTrainsSource_154",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.193733,
+      "lon": 150.63528
+    },
+    {
+      "id": "regTrainsSource_155",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.06354,
+      "lon": 150.81435
+    },
+    {
+      "id": "regTrainsSource_156",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.750413,
+      "lon": 150.698227
+    },
+    {
+      "id": "regTrainsSource_157",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.75022,
+      "lon": 150.697507
+    },
+    {
+      "id": "regTrainsSource_158",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.75003,
+      "lon": 150.69617
+    },
+    {
+      "id": "regTrainsSource_159",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.760289,
+      "lon": 150.642336
+    },
+    {
+      "id": "regTrainsSource_160",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.960007,
+      "lon": 115.990907
+    },
+    {
+      "id": "regTrainsSource_161",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.435467,
+      "lon": 118.372667
+    },
+    {
+      "id": "regTrainsSource_162",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.377098,
+      "lon": 118.746582
+    },
+    {
+      "id": "regTrainsSource_163",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.434327,
+      "lon": 118.361947
+    },
+    {
+      "id": "regTrainsSource_164",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.90693,
+      "lon": 115.989293
+    },
+    {
+      "id": "regTrainsSource_165",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.642327,
+      "lon": 116.653853
+    },
+    {
+      "id": "regTrainsSource_166",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.040813,
+      "lon": 135.763573
+    },
+    {
       "id": "regTrainsSource_167",
       "train_number": "",
       "loco": "",
@@ -2197,8 +2351,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -41.55626,
-      "lon": 147.222388
+      "lat": -30.566557,
+      "lon": 133.0496
     },
     {
       "id": "regTrainsSource_168",
@@ -2211,8 +2365,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.290217,
-      "lon": 147.45664
+      "lat": -30.574127,
+      "lon": 132.83972
     },
     {
       "id": "regTrainsSource_169",
@@ -2225,8 +2379,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.62849,
-      "lon": 148.030733
+      "lat": -30.85728,
+      "lon": 134.923053
     },
     {
       "id": "regTrainsSource_170",
@@ -2239,8 +2393,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -35.091137,
-      "lon": 147.393973
+      "lat": -13.592993,
+      "lon": 131.723827
     },
     {
       "id": "regTrainsSource_171",
@@ -2253,8 +2407,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -41.566,
-      "lon": 147.237122
+      "lat": -16.125365,
+      "lon": 132.819533
     },
     {
       "id": "regTrainsSource_172",
@@ -2267,8 +2421,232 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -42.432275,
-      "lon": 147.378404
+      "lat": -30.45865,
+      "lon": 131.852467
+    },
+    {
+      "id": "regTrainsSource_173",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.4917,
+      "lon": 132.334427
+    },
+    {
+      "id": "regTrainsSource_174",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.780525,
+      "lon": 121.41703
+    },
+    {
+      "id": "regTrainsSource_175",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -28.940981,
+      "lon": 121.5168
+    },
+    {
+      "id": "regTrainsSource_176",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.848813,
+      "lon": 120.416573
+    },
+    {
+      "id": "regTrainsSource_177",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.025177,
+      "lon": 124.2522
+    },
+    {
+      "id": "regTrainsSource_178",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.972357,
+      "lon": 122.36356
+    },
+    {
+      "id": "regTrainsSource_179",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.90683,
+      "lon": 120.831213
+    },
+    {
+      "id": "regTrainsSource_180",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.852977,
+      "lon": 119.976933
+    },
+    {
+      "id": "unregTrainsSource_0",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.44853,
+      "lon": 150.891253
+    },
+    {
+      "id": "unregTrainsSource_1",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.44831,
+      "lon": 150.89124
+    },
+    {
+      "id": "unregTrainsSource_2",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.477623,
+      "lon": 150.89988
+    },
+    {
+      "id": "unregTrainsSource_3",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.343453,
+      "lon": 150.56136
+    },
+    {
+      "id": "unregTrainsSource_4",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.54771,
+      "lon": 147.94484
+    },
+    {
+      "id": "unregTrainsSource_5",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -34.778083,
+      "lon": 149.370933
+    },
+    {
+      "id": "unregTrainsSource_6",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.91693,
+      "lon": 151.16168
+    },
+    {
+      "id": "unregTrainsSource_7",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.887143,
+      "lon": 151.061667
     },
     {
       "id": "unregTrainsSource_8",
@@ -2281,8 +2659,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.93039,
-      "lon": 151.7244
+      "lat": -32.976743,
+      "lon": 151.57892
     },
     {
       "id": "unregTrainsSource_9",
@@ -2295,8 +2673,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.927197,
-      "lon": 151.727667
+      "lat": -32.712683,
+      "lon": 151.408907
     },
     {
       "id": "unregTrainsSource_10",
@@ -2309,8 +2687,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.869157,
-      "lon": 151.76452
+      "lat": -32.86706,
+      "lon": 151.7544
     },
     {
       "id": "unregTrainsSource_11",
@@ -2323,8 +2701,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.867117,
-      "lon": 151.75464
+      "lat": -32.390173,
+      "lon": 151.000427
     },
     {
       "id": "unregTrainsSource_12",
@@ -2337,8 +2715,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.83023,
-      "lon": 151.683387
+      "lat": -32.330847,
+      "lon": 150.984573
     },
     {
       "id": "unregTrainsSource_13",
@@ -2351,8 +2729,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.663553,
-      "lon": 151.24732
+      "lat": -32.33724,
+      "lon": 149.87756
     },
     {
       "id": "unregTrainsSource_14",
@@ -2365,8 +2743,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.26032,
-      "lon": 150.850387
+      "lat": -32.111333,
+      "lon": 150.869493
     },
     {
       "id": "unregTrainsSource_15",
@@ -2379,11 +2757,25 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -29.834703,
-      "lon": 149.793347
+      "lat": -30.227543,
+      "lon": 149.80856
     },
     {
       "id": "unregTrainsSource_16",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.44652,
+      "lon": 150.660107
+    },
+    {
+      "id": "unregTrainsSource_17",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -2397,20 +2789,6 @@
       "lon": 152.77064
     },
     {
-      "id": "unregTrainsSource_17",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.333343,
-      "lon": 149.87552
-    },
-    {
       "id": "unregTrainsSource_18",
       "train_number": "",
       "loco": "",
@@ -2421,134 +2799,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.263487,
-      "lon": 150.887453
-    },
-    {
-      "id": "unregTrainsSource_19",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.48182,
-      "lon": 149.897
-    },
-    {
-      "id": "unregTrainsSource_20",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.38861,
-      "lon": 150.998173
-    },
-    {
-      "id": "unregTrainsSource_21",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.725933,
-      "lon": 150.78444
-    },
-    {
-      "id": "unregTrainsSource_22",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.916927,
-      "lon": 151.16116
-    },
-    {
-      "id": "unregTrainsSource_23",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.530893,
-      "lon": 149.27192
-    },
-    {
-      "id": "unregTrainsSource_24",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.530707,
-      "lon": 149.27112
-    },
-    {
-      "id": "unregTrainsSource_25",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.97874,
-      "lon": 151.579547
-    },
-    {
-      "id": "unregTrainsSource_26",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.12551,
-      "lon": 150.744333
-    },
-    {
-      "id": "unregTrainsSource_27",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.627917,
-      "lon": 148.029867
+      "lat": -27.575168,
+      "lon": 153.032253
     },
     {
       "id": "unregTrainsSource_28",
@@ -2561,8 +2813,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.28968,
-      "lon": 147.456387
+      "lat": -37.760253,
+      "lon": 144.834413
     },
     {
       "id": "unregTrainsSource_29",
@@ -2575,8 +2827,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.448003,
-      "lon": 150.89124
+      "lat": -37.815443,
+      "lon": 144.95008
     },
     {
       "id": "unregTrainsSource_30",
@@ -2589,8 +2841,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.44747,
-      "lon": 150.891227
+      "lat": -37.815593,
+      "lon": 144.950213
     },
     {
       "id": "unregTrainsSource_31",
@@ -2603,8 +2855,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.808917,
-      "lon": 148.91484
+      "lat": -34.4792,
+      "lon": 147.806533
     },
     {
       "id": "unregTrainsSource_32",
@@ -2617,8 +2869,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -35.089863,
-      "lon": 147.394587
+      "lat": -34.451713,
+      "lon": 147.531093
     },
     {
       "id": "unregTrainsSource_33",
@@ -2631,8 +2883,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.97727,
-      "lon": 137.582
+      "lat": -35.482837,
+      "lon": 147.03244
     },
     {
       "id": "unregTrainsSource_34",
@@ -2645,8 +2897,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.83409,
-      "lon": 138.515027
+      "lat": -37.84761,
+      "lon": 144.878853
     },
     {
       "id": "unregTrainsSource_35",
@@ -2659,8 +2911,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.86972,
-      "lon": 138.576053
+      "lat": -31.550947,
+      "lon": 116.422714
     },
     {
       "id": "unregTrainsSource_36",
@@ -2673,8 +2925,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.811707,
-      "lon": 144.946373
+      "lat": -31.147497,
+      "lon": 117.093224
     },
     {
       "id": "unregTrainsSource_37",
@@ -2687,8 +2939,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.813113,
-      "lon": 144.94832
+      "lat": -31.377094,
+      "lon": 118.74633
     },
     {
       "id": "unregTrainsSource_38",
@@ -2701,8 +2953,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.17971,
-      "lon": 136.182293
+      "lat": -31.433907,
+      "lon": 118.363933
     },
     {
       "id": "unregTrainsSource_39",
@@ -2715,8 +2967,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.701477,
-      "lon": 144.9106
+      "lat": -28.810364,
+      "lon": 114.723129
     },
     {
       "id": "unregTrainsSource_40",
@@ -2729,8 +2981,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.813703,
-      "lon": 144.949867
+      "lat": -28.811253,
+      "lon": 114.724998
     },
     {
       "id": "unregTrainsSource_41",
@@ -2743,8 +2995,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.650467,
-      "lon": 115.949204
+      "lat": -28.810719,
+      "lon": 114.714172
     },
     {
       "id": "unregTrainsSource_42",
@@ -2757,8 +3009,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.437742,
-      "lon": 118.352501
+      "lat": -28.687813,
+      "lon": 115.170929
     },
     {
       "id": "unregTrainsSource_43",
@@ -2771,8 +3023,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.930957,
-      "lon": 115.99364
+      "lat": -28.687851,
+      "lon": 115.170738
     },
     {
       "id": "unregTrainsSource_44",
@@ -2785,8 +3037,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.771919,
-      "lon": 116.065781
+      "lat": -28.747204,
+      "lon": 114.849541
     },
     {
       "id": "unregTrainsSource_45",
@@ -2799,8 +3051,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.269012,
-      "lon": 116.89917
+      "lat": -28.687874,
+      "lon": 115.170509
     },
     {
       "id": "unregTrainsSource_46",
@@ -2813,8 +3065,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.649059,
-      "lon": 115.916527
+      "lat": -28.738274,
+      "lon": 114.852066
     },
     {
       "id": "unregTrainsSource_47",
@@ -2827,8 +3079,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.382057,
-      "lon": 118.498642
+      "lat": -28.68638,
+      "lon": 115.181625
     },
     {
       "id": "unregTrainsSource_48",
@@ -2841,8 +3093,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.233765,
-      "lon": 115.785187
+      "lat": -33.230309,
+      "lon": 115.906548
     },
     {
       "id": "unregTrainsSource_49",
@@ -2855,8 +3107,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.233219,
-      "lon": 115.784927
+      "lat": -32.919159,
+      "lon": 115.911087
     },
     {
       "id": "unregTrainsSource_50",
@@ -2869,8 +3121,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.182152,
-      "lon": 115.775719
+      "lat": -32.64957,
+      "lon": 115.942131
     },
     {
       "id": "unregTrainsSource_51",
@@ -2883,8 +3135,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.810352,
-      "lon": 114.723129
+      "lat": -32.650585,
+      "lon": 115.949745
     },
     {
       "id": "unregTrainsSource_52",
@@ -2897,8 +3149,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.257969,
-      "lon": 115.755707
+      "lat": -29.185619,
+      "lon": 116.747795
     },
     {
       "id": "unregTrainsSource_53",
@@ -2911,8 +3163,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.810553,
-      "lon": 114.723434
+      "lat": -29.185507,
+      "lon": 116.748207
     },
     {
       "id": "unregTrainsSource_54",
@@ -2925,8 +3177,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.980749,
-      "lon": 115.983231
+      "lat": -29.191267,
+      "lon": 116.752609
     },
     {
       "id": "unregTrainsSource_55",
@@ -2939,8 +3191,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.282394,
-      "lon": 115.819344
+      "lat": -33.854305,
+      "lon": 121.88195
     },
     {
       "id": "unregTrainsSource_56",
@@ -2953,8 +3205,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.980982,
-      "lon": 115.982925
+      "lat": -33.853943,
+      "lon": 121.881958
     },
     {
       "id": "unregTrainsSource_57",
@@ -2967,8 +3219,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.593357,
-      "lon": 115.427383
+      "lat": -33.872845,
+      "lon": 121.89859
     },
     {
       "id": "unregTrainsSource_58",
@@ -2981,8 +3233,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.593504,
-      "lon": 115.42717
+      "lat": -33.872837,
+      "lon": 121.899101
     },
     {
       "id": "unregTrainsSource_59",
@@ -2995,8 +3247,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.59362,
-      "lon": 115.426987
+      "lat": -33.849689,
+      "lon": 121.881752
     },
     {
       "id": "unregTrainsSource_60",
@@ -3009,8 +3261,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.587835,
-      "lon": 115.436203
+      "lat": -33.854847,
+      "lon": 121.881844
     },
     {
       "id": "unregTrainsSource_61",
@@ -3023,8 +3275,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.849663,
-      "lon": 121.881744
+      "lat": -30.780745,
+      "lon": 121.41671
     },
     {
       "id": "unregTrainsSource_62",
@@ -3037,8 +3289,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.856487,
-      "lon": 121.881767
+      "lat": -30.77634,
+      "lon": 121.424477
     },
     {
       "id": "unregTrainsSource_63",
@@ -3051,8 +3303,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.856113,
-      "lon": 121.881775
+      "lat": -30.776117,
+      "lon": 121.424843
     },
     {
       "id": "unregTrainsSource_64",
@@ -3065,8 +3317,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.853928,
-      "lon": 121.881943
+      "lat": -28.940613,
+      "lon": 121.516754
     },
     {
       "id": "unregTrainsSource_65",
@@ -3079,39 +3331,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.854282,
-      "lon": 121.881989
+      "lat": -30.774538,
+      "lon": 121.427856
     },
     {
       "id": "unregTrainsSource_66",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.854843,
-      "lon": 121.881844
-    },
-    {
-      "id": "unregTrainsSource_67",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -28.939344,
-      "lon": 121.516747
-    },
-    {
-      "id": "unregTrainsSource_68",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3125,6 +3349,34 @@
       "lon": 121.428261
     },
     {
+      "id": "unregTrainsSource_67",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.86672,
+      "lon": 121.08324
+    },
+    {
+      "id": "unregTrainsSource_68",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.233765,
+      "lon": 115.785187
+    },
+    {
       "id": "unregTrainsSource_69",
       "train_number": "",
       "loco": "",
@@ -3135,8 +3387,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.774532,
-      "lon": 121.427872
+      "lat": -32.233219,
+      "lon": 115.784927
     },
     {
       "id": "unregTrainsSource_70",
@@ -3149,8 +3401,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.780428,
-      "lon": 121.417419
+      "lat": -32.230499,
+      "lon": 115.784401
     },
     {
       "id": "unregTrainsSource_71",
@@ -3163,8 +3415,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.780733,
-      "lon": 121.416687
+      "lat": -32.191521,
+      "lon": 115.796013
     },
     {
       "id": "unregTrainsSource_72",
@@ -3177,8 +3429,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.776115,
-      "lon": 121.424835
+      "lat": -32.228085,
+      "lon": 115.784859
     },
     {
       "id": "unregTrainsSource_73",
@@ -3191,8 +3443,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.77632,
-      "lon": 121.424484
+      "lat": -32.196575,
+      "lon": 115.791412
     },
     {
       "id": "unregTrainsSource_74",
@@ -3205,8 +3457,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.343811,
-      "lon": 115.718712
+      "lat": -32.257977,
+      "lon": 115.755699
     },
     {
       "id": "unregTrainsSource_75",
@@ -3219,8 +3471,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.919147,
-      "lon": 115.911102
+      "lat": -31.90461,
+      "lon": 115.98936
     },
     {
       "id": "unregTrainsSource_76",
@@ -3233,8 +3485,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.24852,
-      "lon": 116.082657
+      "lat": -33.346096,
+      "lon": 115.713509
     },
     {
       "id": "unregTrainsSource_77",
@@ -3247,8 +3499,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.32056,
-      "lon": 115.673096
+      "lat": -33.343826,
+      "lon": 115.718727
     },
     {
       "id": "unregTrainsSource_78",
@@ -3261,8 +3513,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.237553,
-      "lon": 115.880333
+      "lat": -33.342529,
+      "lon": 115.722191
     },
     {
       "id": "unregTrainsSource_79",
@@ -3275,8 +3527,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.215538,
-      "lon": 115.850601
+      "lat": -33.328617,
+      "lon": 115.686966
     },
     {
       "id": "unregTrainsSource_80",
@@ -3289,8 +3541,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.007774,
-      "lon": 115.891838
+      "lat": -33.321793,
+      "lon": 115.791489
     },
     {
       "id": "unregTrainsSource_81",
@@ -3303,8 +3555,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.371792,
-      "lon": 116.242676
+      "lat": -33.328873,
+      "lon": 116.094467
     },
     {
       "id": "unregTrainsSource_82",
@@ -3317,8 +3569,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -29.192581,
-      "lon": 116.749367
+      "lat": -28.77669,
+      "lon": 114.600639
     },
     {
       "id": "unregTrainsSource_83",
@@ -3331,8 +3583,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -29.18597,
-      "lon": 116.751717
+      "lat": -28.777185,
+      "lon": 114.592094
     },
     {
       "id": "unregTrainsSource_84",
@@ -3345,8 +3597,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -29.185793,
-      "lon": 116.75135
+      "lat": -28.776695,
+      "lon": 114.60083
     },
     {
       "id": "unregTrainsSource_85",
@@ -3359,11 +3611,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.815325,
-      "lon": 114.722794
+      "lat": -28.777088,
+      "lon": 114.589584
     },
     {
-      "id": "unregTrainsSource_86",
+      "id": "markerSource_1",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3373,11 +3625,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.777092,
-      "lon": 114.589401
+      "lat": -34.627283,
+      "lon": 150.324093
     },
     {
-      "id": "unregTrainsSource_87",
+      "id": "markerSource_3",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3387,11 +3639,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.77718,
-      "lon": 114.593475
+      "lat": -34.56996,
+      "lon": 150.626693
     },
     {
-      "id": "unregTrainsSource_88",
+      "id": "markerSource_4",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3401,11 +3653,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.81151,
-      "lon": 114.684914
+      "lat": -32.42553,
+      "lon": 150.291533
     },
     {
-      "id": "unregTrainsSource_89",
+      "id": "markerSource_7",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3415,11 +3667,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.81278,
-      "lon": 114.713188
+      "lat": -30.96303,
+      "lon": 150.222547
     },
     {
-      "id": "unregTrainsSource_90",
+      "id": "markerSource_9",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3429,22 +3681,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.776678,
-      "lon": 114.600601
-    },
-    {
-      "id": "unregTrainsSource_91",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -28.776688,
-      "lon": 114.600876
+      "lat": -32.337063,
+      "lon": 149.877453
     },
     {
       "id": "markerSource_11",
@@ -3457,11 +3695,165 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.795893,
-      "lon": 151.654133
+      "lat": -30.65717,
+      "lon": 150.014533
     },
     {
       "id": "markerSource_12",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.340113,
+      "lon": 149.8752
+    },
+    {
+      "id": "markerSource_14",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.402323,
+      "lon": 150.09492
+    },
+    {
+      "id": "markerSource_16",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.23472,
+      "lon": 149.807667
+    },
+    {
+      "id": "markerSource_19",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.23972,
+      "lon": 149.808867
+    },
+    {
+      "id": "markerSource_21",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.425087,
+      "lon": 149.853413
+    },
+    {
+      "id": "markerSource_23",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.872847,
+      "lon": 151.747253
+    },
+    {
+      "id": "markerSource_25",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.867117,
+      "lon": 151.754693
+    },
+    {
+      "id": "markerSource_27",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.724817,
+      "lon": 151.506733
+    },
+    {
+      "id": "markerSource_28",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.723213,
+      "lon": 151.440947
+    },
+    {
+      "id": "markerSource_31",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.710893,
+      "lon": 151.407973
+    },
+    {
+      "id": "markerSource_32",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.710607,
+      "lon": 151.40784
+    },
+    {
+      "id": "markerSource_35",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3475,7 +3867,7 @@
       "lon": 151.68716
     },
     {
-      "id": "markerSource_15",
+      "id": "markerSource_36",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3485,11 +3877,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.837,
-      "lon": 151.687373
+      "lat": -32.837037,
+      "lon": 151.687333
     },
     {
-      "id": "markerSource_16",
+      "id": "markerSource_39",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3499,11 +3891,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.877463,
-      "lon": 151.70528
+      "lat": -32.81198,
+      "lon": 151.673013
     },
     {
-      "id": "markerSource_19",
+      "id": "markerSource_40",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3513,11 +3905,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.732877,
-      "lon": 151.537213
+      "lat": -32.837163,
+      "lon": 151.687253
     },
     {
-      "id": "markerSource_21",
+      "id": "markerSource_42",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3527,11 +3919,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.780673,
-      "lon": 151.636373
+      "lat": -32.92588,
+      "lon": 151.73052
     },
     {
-      "id": "markerSource_23",
+      "id": "markerSource_44",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3541,11 +3933,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.873453,
-      "lon": 151.740533
+      "lat": -32.921133,
+      "lon": 151.737173
     },
     {
-      "id": "markerSource_25",
+      "id": "markerSource_46",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3555,50 +3947,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.868523,
-      "lon": 151.75536
-    },
-    {
-      "id": "markerSource_26",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.200693,
-      "lon": 151.942333
-    },
-    {
-      "id": "markerSource_28",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.9028,
-      "lon": 151.765347
-    },
-    {
-      "id": "markerSource_47",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.950787,
-      "lon": 152.853307
+      "lat": -32.479717,
+      "lon": 151.73048
     },
     {
       "id": "markerSource_48",
@@ -3611,11 +3961,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -29.13381,
-      "lon": 152.94172
+      "lat": -32.9279,
+      "lon": 151.726933
     },
     {
-      "id": "markerSource_50",
+      "id": "markerSource_51",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3625,11 +3975,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.138963,
-      "lon": 151.479547
+      "lat": -31.34437,
+      "lon": 152.77864
     },
     {
-      "id": "markerSource_53",
+      "id": "markerSource_52",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3639,11 +3989,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.04544,
-      "lon": 151.525427
+      "lat": -28.681057,
+      "lon": 153.001707
     },
     {
-      "id": "markerSource_55",
+      "id": "markerSource_54",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3653,11 +4003,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.610153,
-      "lon": 151.205987
+      "lat": -28.123027,
+      "lon": 152.916787
     },
     {
-      "id": "markerSource_57",
+      "id": "markerSource_56",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3667,11 +4017,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.48624,
-      "lon": 151.13596
+      "lat": -27.575008,
+      "lon": 153.031947
     },
     {
-      "id": "markerSource_58",
+      "id": "markerSource_59",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3681,11 +4031,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.500387,
-      "lon": 151.142533
+      "lat": -32.87347,
+      "lon": 151.703307
     },
     {
-      "id": "markerSource_60",
+      "id": "markerSource_61",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3695,11 +4045,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.63258,
-      "lon": 151.110573
+      "lat": -32.8681,
+      "lon": 151.722773
     },
     {
-      "id": "markerSource_63",
+      "id": "markerSource_62",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3709,8 +4059,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.662487,
-      "lon": 151.244147
+      "lat": -32.866393,
+      "lon": 151.72328
     },
     {
       "id": "markerSource_65",
@@ -3723,8 +4073,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.662637,
-      "lon": 151.244547
+      "lat": -32.976123,
+      "lon": 151.605467
     },
     {
       "id": "markerSource_67",
@@ -3737,11 +4087,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.66389,
-      "lon": 151.296413
+      "lat": -32.738937,
+      "lon": 151.57628
     },
     {
-      "id": "markerSource_69",
+      "id": "markerSource_68",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3751,8 +4101,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.701883,
-      "lon": 151.399387
+      "lat": -32.765923,
+      "lon": 151.61904
     },
     {
       "id": "markerSource_71",
@@ -3765,8 +4115,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.671667,
-      "lon": 151.37036
+      "lat": -32.671663,
+      "lon": 151.370347
     },
     {
       "id": "markerSource_73",
@@ -3779,11 +4129,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.671277,
-      "lon": 151.37064
+      "lat": -32.671033,
+      "lon": 151.370573
     },
     {
-      "id": "markerSource_74",
+      "id": "markerSource_75",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3793,11 +4143,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.421187,
-      "lon": 152.971547
+      "lat": -24.088054,
+      "lon": 151.397121
     },
     {
-      "id": "markerSource_77",
+      "id": "markerSource_76",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3807,8 +4157,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.66244,
-      "lon": 151.346253
+      "lat": -24.094228,
+      "lon": 151.403833
     },
     {
       "id": "markerSource_78",
@@ -3821,22 +4171,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.71881,
-      "lon": 151.461973
-    },
-    {
-      "id": "markerSource_81",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.784267,
-      "lon": 150.88888
+      "lat": -34.070488,
+      "lon": 150.80414
     },
     {
       "id": "markerSource_82",
@@ -3849,11 +4185,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.731023,
-      "lon": 150.782467
+      "lat": -33.953264,
+      "lon": 150.801216
     },
     {
-      "id": "markerSource_84",
+      "id": "markerSource_83",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3863,8 +4199,22 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.73096,
-      "lon": 150.782453
+      "lat": -33.952335,
+      "lon": 150.794933
+    },
+    {
+      "id": "markerSource_85",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.77352,
+      "lon": 150.64276
     },
     {
       "id": "markerSource_87",
@@ -3877,11 +4227,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.14096,
-      "lon": 150.88028
+      "lat": -33.77165,
+      "lon": 150.84497
     },
     {
-      "id": "markerSource_89",
+      "id": "markerSource_88",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3891,11 +4241,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.98327,
-      "lon": 150.867987
+      "lat": -34.442083,
+      "lon": 150.47284
     },
     {
-      "id": "markerSource_90",
+      "id": "markerSource_92",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3905,8 +4255,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.121933,
-      "lon": 150.87168
+      "lat": -34.333577,
+      "lon": 150.561333
     },
     {
       "id": "markerSource_93",
@@ -3919,11 +4269,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.26954,
-      "lon": 150.85176
+      "lat": -34.33355,
+      "lon": 150.561307
     },
     {
-      "id": "markerSource_95",
+      "id": "markerSource_94",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3933,8 +4283,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.268003,
-      "lon": 150.891507
+      "lat": -34.481767,
+      "lon": 150.41396
     },
     {
       "id": "markerSource_97",
@@ -3947,11 +4297,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.267917,
-      "lon": 150.891347
+      "lat": -33.709544,
+      "lon": 150.316356
     },
     {
-      "id": "markerSource_98",
+      "id": "markerSource_99",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3961,11 +4311,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.29922,
-      "lon": 150.804427
+      "lat": -32.3361,
+      "lon": 150.7138
     },
     {
-      "id": "markerSource_100",
+      "id": "markerSource_101",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -3975,8 +4325,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.286657,
-      "lon": 150.82404
+      "lat": -32.288057,
+      "lon": 150.828227
     },
     {
       "id": "markerSource_103",
@@ -3989,8 +4339,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.388573,
-      "lon": 150.998093
+      "lat": -34.481651,
+      "lon": 150.802063
     },
     {
       "id": "markerSource_105",
@@ -4003,8 +4353,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.388687,
-      "lon": 150.99832
+      "lat": -34.162193,
+      "lon": 150.73516
     },
     {
       "id": "markerSource_107",
@@ -4017,11 +4367,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.396043,
-      "lon": 151.008533
+      "lat": -33.744663,
+      "lon": 150.676757
     },
     {
-      "id": "markerSource_108",
+      "id": "markerSource_109",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4031,11 +4381,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.402607,
-      "lon": 151.012587
+      "lat": -31.46092,
+      "lon": 150.671827
     },
     {
-      "id": "markerSource_111",
+      "id": "markerSource_110",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4045,8 +4395,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.369223,
-      "lon": 151.020427
+      "lat": -31.461767,
+      "lon": 150.67296
     },
     {
       "id": "markerSource_112",
@@ -4059,11 +4409,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -23.855292,
-      "lon": 151.16857
+      "lat": -33.749237,
+      "lon": 150.692299
     },
     {
-      "id": "markerSource_114",
+      "id": "markerSource_115",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4073,11 +4423,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -23.860202,
-      "lon": 151.171173
+      "lat": -34.775313,
+      "lon": 150.726253
     },
     {
-      "id": "markerSource_118",
+      "id": "markerSource_117",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4087,8 +4437,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.123927,
-      "lon": 150.744827
+      "lat": -34.550613,
+      "lon": 150.633013
     },
     {
       "id": "markerSource_119",
@@ -4101,8 +4451,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.122883,
-      "lon": 150.74492
+      "lat": -34.5548,
+      "lon": 150.36804
     },
     {
       "id": "markerSource_121",
@@ -4115,8 +4465,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.918937,
-      "lon": 150.933907
+      "lat": -34.545153,
+      "lon": 150.37284
     },
     {
       "id": "markerSource_123",
@@ -4129,22 +4479,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.904323,
-      "lon": 151.073107
-    },
-    {
-      "id": "markerSource_125",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.877173,
-      "lon": 151.067387
+      "lat": -34.522777,
+      "lon": 150.373653
     },
     {
       "id": "markerSource_126",
@@ -4157,8 +4493,22 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.91637,
-      "lon": 151.165
+      "lat": -33.808331,
+      "lon": 150.98732
+    },
+    {
+      "id": "markerSource_127",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.807787,
+      "lon": 150.981683
     },
     {
       "id": "markerSource_129",
@@ -4171,11 +4521,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.46624,
-      "lon": 151.3185
+      "lat": -31.873467,
+      "lon": 150.883493
     },
     {
-      "id": "markerSource_130",
+      "id": "markerSource_131",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4185,11 +4535,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.28223,
-      "lon": 151.426373
+      "lat": -31.772483,
+      "lon": 150.855307
     },
     {
-      "id": "markerSource_132",
+      "id": "markerSource_133",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4199,11 +4549,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.473209,
-      "lon": 151.322342
+      "lat": -32.343277,
+      "lon": 150.986227
     },
     {
-      "id": "markerSource_134",
+      "id": "markerSource_135",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4213,11 +4563,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.44622,
-      "lon": 151.32838
+      "lat": -32.28907,
+      "lon": 150.967773
     },
     {
-      "id": "markerSource_136",
+      "id": "markerSource_137",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4227,11 +4577,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.057797,
-      "lon": 151.034973
+      "lat": -32.27552,
+      "lon": 150.901667
     },
     {
-      "id": "markerSource_138",
+      "id": "markerSource_139",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4241,8 +4591,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.00334,
-      "lon": 150.85792
+      "lat": -32.65013,
+      "lon": 151.231347
     },
     {
       "id": "markerSource_141",
@@ -4255,8 +4605,22 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.517527,
-      "lon": 150.70604
+      "lat": -32.656053,
+      "lon": 151.27768
+    },
+    {
+      "id": "markerSource_142",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -32.63093,
+      "lon": 151.113987
     },
     {
       "id": "markerSource_144",
@@ -4269,11 +4633,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.44714,
-      "lon": 150.891227
+      "lat": -33.70321,
+      "lon": 151.09848
     },
     {
-      "id": "markerSource_145",
+      "id": "markerSource_147",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4283,11 +4647,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.446583,
-      "lon": 150.891133
+      "lat": -33.37331,
+      "lon": 151.376572
     },
     {
-      "id": "markerSource_146",
+      "id": "markerSource_148",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4297,22 +4661,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.446737,
-      "lon": 150.8912
-    },
-    {
-      "id": "markerSource_149",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.58376,
-      "lon": 150.843213
+      "lat": -33.170349,
+      "lon": 151.486282
     },
     {
       "id": "markerSource_150",
@@ -4325,8 +4675,22 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.495251,
-      "lon": 150.790344
+      "lat": -33.661174,
+      "lon": 151.127221
+    },
+    {
+      "id": "markerSource_152",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.7032,
+      "lon": 151.0984
     },
     {
       "id": "markerSource_153",
@@ -4339,22 +4703,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.427207,
-      "lon": 150.493893
-    },
-    {
-      "id": "markerSource_155",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -34.372037,
-      "lon": 150.54336
+      "lat": -33.734197,
+      "lon": 151.076027
     },
     {
       "id": "markerSource_156",
@@ -4367,11 +4717,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.186333,
-      "lon": 150.664027
+      "lat": -33.912943,
+      "lon": 151.120787
     },
     {
-      "id": "markerSource_158",
+      "id": "markerSource_157",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4381,11 +4731,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.856117,
-      "lon": 150.614187
+      "lat": -33.90595,
+      "lon": 151.075173
     },
     {
-      "id": "markerSource_160",
+      "id": "markerSource_161",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4395,8 +4745,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.74568,
-      "lon": 150.67147
+      "lat": -32.489087,
+      "lon": 151.13652
     },
     {
       "id": "markerSource_163",
@@ -4409,8 +4759,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.718445,
-      "lon": 150.431358
+      "lat": -32.393777,
+      "lon": 151.0054
     },
     {
       "id": "markerSource_164",
@@ -4423,8 +4773,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.467593,
-      "lon": 150.24508
+      "lat": -32.502053,
+      "lon": 151.143867
     },
     {
       "id": "markerSource_166",
@@ -4437,11 +4787,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.568423,
-      "lon": 150.258867
+      "lat": -32.402983,
+      "lon": 151.017693
     },
     {
-      "id": "markerSource_169",
+      "id": "markerSource_168",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4451,11 +4801,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.69631,
-      "lon": 150.040653
+      "lat": -33.95427,
+      "lon": 150.99808
     },
     {
-      "id": "markerSource_171",
+      "id": "markerSource_170",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4465,11 +4815,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.486417,
-      "lon": 149.899187
+      "lat": -33.91627,
+      "lon": 150.934441
     },
     {
-      "id": "markerSource_173",
+      "id": "markerSource_172",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4479,8 +4829,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.45172,
-      "lon": 149.88292
+      "lat": -33.8949,
+      "lon": 150.93879
     },
     {
       "id": "markerSource_174",
@@ -4493,8 +4843,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.489633,
-      "lon": 149.90068
+      "lat": -33.888359,
+      "lon": 150.946213
     },
     {
       "id": "markerSource_177",
@@ -4507,8 +4857,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.383123,
-      "lon": 150.132387
+      "lat": -33.771867,
+      "lon": 150.83384
     },
     {
       "id": "markerSource_179",
@@ -4521,11 +4871,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.333267,
-      "lon": 149.87552
+      "lat": -32.118183,
+      "lon": 150.87052
     },
     {
-      "id": "markerSource_180",
+      "id": "markerSource_181",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4535,8 +4885,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.34325,
-      "lon": 149.876187
+      "lat": -32.100873,
+      "lon": 150.868093
     },
     {
       "id": "markerSource_182",
@@ -4549,11 +4899,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.67264,
-      "lon": 150.211627
+      "lat": -32.119347,
+      "lon": 150.870853
     },
     {
-      "id": "markerSource_184",
+      "id": "markerSource_185",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4563,11 +4913,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.543527,
-      "lon": 150.373867
+      "lat": -34.031113,
+      "lon": 147.811133
     },
     {
-      "id": "markerSource_186",
+      "id": "markerSource_187",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4577,8 +4927,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.808973,
-      "lon": 148.914547
+      "lat": -33.54169,
+      "lon": 147.95272
     },
     {
       "id": "markerSource_188",
@@ -4591,11 +4941,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.809113,
-      "lon": 148.912507
+      "lat": -33.54165,
+      "lon": 147.952773
     },
     {
-      "id": "markerSource_190",
+      "id": "markerSource_191",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4605,8 +4955,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.3228,
-      "lon": 148.055507
+      "lat": -34.480703,
+      "lon": 147.818387
     },
     {
       "id": "markerSource_193",
@@ -4619,8 +4969,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.186793,
-      "lon": 148.696547
+      "lat": -34.480663,
+      "lon": 147.818147
     },
     {
       "id": "markerSource_195",
@@ -4633,11 +4983,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.728487,
-      "lon": 147.773947
+      "lat": -34.445387,
+      "lon": 147.528093
     },
     {
-      "id": "markerSource_198",
+      "id": "markerSource_196",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4647,8 +4997,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.629573,
-      "lon": 148.03232
+      "lat": -34.44524,
+      "lon": 147.528027
     },
     {
       "id": "markerSource_199",
@@ -4661,11 +5011,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.630173,
-      "lon": 148.03328
+      "lat": -34.695523,
+      "lon": 138.591307
     },
     {
-      "id": "markerSource_202",
+      "id": "markerSource_201",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4675,8 +5025,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -35.081397,
-      "lon": 147.40332
+      "lat": -34.764767,
+      "lon": 149.357453
     },
     {
       "id": "markerSource_203",
@@ -4689,11 +5039,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -35.080823,
-      "lon": 147.404547
+      "lat": -34.745397,
+      "lon": 150.01836
     },
     {
-      "id": "markerSource_206",
+      "id": "markerSource_204",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4703,8 +5053,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.286193,
-      "lon": 147.454773
+      "lat": -34.765283,
+      "lon": 149.356187
     },
     {
       "id": "markerSource_207",
@@ -4717,11 +5067,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.285507,
-      "lon": 147.45444
+      "lat": -32.887303,
+      "lon": 144.013427
     },
     {
-      "id": "markerSource_208",
+      "id": "markerSource_209",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4731,8 +5081,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -42.427164,
-      "lon": 147.380883
+      "lat": -32.70915,
+      "lon": 149.035893
     },
     {
       "id": "markerSource_210",
@@ -4745,11 +5095,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -42.429752,
-      "lon": 147.379628
+      "lat": -32.4821,
+      "lon": 137.771
     },
     {
-      "id": "markerSource_214",
+      "id": "markerSource_212",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4759,8 +5109,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -41.153455,
-      "lon": 146.189718
+      "lat": -32.48281,
+      "lon": 137.770773
     },
     {
       "id": "markerSource_215",
@@ -4773,8 +5123,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -41.15302,
-      "lon": 146.193269
+      "lat": -31.044687,
+      "lon": 135.78128
     },
     {
       "id": "markerSource_217",
@@ -4787,8 +5137,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -41.560323,
-      "lon": 147.23143
+      "lat": -31.25583,
+      "lon": 136.811347
     },
     {
       "id": "markerSource_218",
@@ -4801,11 +5151,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -41.562765,
-      "lon": 147.23514
+      "lat": -30.852133,
+      "lon": 134.913947
     },
     {
-      "id": "markerSource_221",
+      "id": "markerSource_220",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4815,8 +5165,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.6939,
-      "lon": 144.915827
+      "lat": -31.182377,
+      "lon": 136.21668
     },
     {
       "id": "markerSource_223",
@@ -4829,11 +5179,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.418773,
-      "lon": 145.00524
+      "lat": -30.45866,
+      "lon": 131.85248
     },
     {
-      "id": "markerSource_224",
+      "id": "markerSource_225",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4843,11 +5193,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -36.8238,
-      "lon": 145.344813
+      "lat": -30.56763,
+      "lon": 132.82716
     },
     {
-      "id": "markerSource_226",
+      "id": "markerSource_227",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4857,11 +5207,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.69381,
-      "lon": 144.9158
+      "lat": -30.56326,
+      "lon": 133.060293
     },
     {
-      "id": "markerSource_229",
+      "id": "markerSource_228",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4871,11 +5221,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.825687,
-      "lon": 143.516253
+      "lat": -30.491643,
+      "lon": 132.334813
     },
     {
-      "id": "markerSource_230",
+      "id": "markerSource_231",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4885,11 +5235,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -36.371443,
-      "lon": 146.28596
+      "lat": -41.593346,
+      "lon": 147.260813
     },
     {
-      "id": "markerSource_233",
+      "id": "markerSource_232",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4899,11 +5249,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.870423,
-      "lon": 143.166653
+      "lat": -41.556434,
+      "lon": 147.222866
     },
     {
-      "id": "markerSource_235",
+      "id": "markerSource_234",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4913,11 +5263,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.80301,
-      "lon": 144.920707
+      "lat": -41.59583,
+      "lon": 147.263978
     },
     {
-      "id": "markerSource_236",
+      "id": "markerSource_237",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4927,8 +5277,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -37.81371,
-      "lon": 144.94988
+      "lat": -37.886567,
+      "lon": 144.69308
     },
     {
       "id": "markerSource_239",
@@ -4941,8 +5291,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -14.041977,
-      "lon": 131.955493
+      "lat": -37.842673,
+      "lon": 144.8834
     },
     {
       "id": "markerSource_241",
@@ -4955,11 +5305,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.523197,
-      "lon": 132.671493
+      "lat": -37.768753,
+      "lon": 144.8262
     },
     {
-      "id": "markerSource_243",
+      "id": "markerSource_242",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4969,11 +5319,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.5607,
-      "lon": 133.5586
+      "lat": -37.8442,
+      "lon": 144.88348
     },
     {
-      "id": "markerSource_245",
+      "id": "markerSource_244",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4983,11 +5333,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -35.56197,
-      "lon": 139.788147
+      "lat": -36.600603,
+      "lon": 145.825787
     },
     {
-      "id": "markerSource_247",
+      "id": "markerSource_246",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -4997,11 +5347,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -35.461223,
-      "lon": 139.6646
+      "lat": -36.10282,
+      "lon": 146.679987
     },
     {
-      "id": "markerSource_249",
+      "id": "markerSource_248",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5011,11 +5361,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -34.695503,
-      "lon": 138.591293
+      "lat": -35.45842,
+      "lon": 147.03044
     },
     {
-      "id": "markerSource_251",
+      "id": "markerSource_250",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5025,8 +5375,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.482803,
-      "lon": 137.770747
+      "lat": -35.46477,
+      "lon": 147.03096
     },
     {
       "id": "markerSource_253",
@@ -5039,11 +5389,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.48252,
-      "lon": 137.77124
+      "lat": -35.66908,
+      "lon": 139.835093
     },
     {
-      "id": "markerSource_254",
+      "id": "markerSource_255",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5053,8 +5403,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.482117,
-      "lon": 137.770973
+      "lat": -35.253877,
+      "lon": 139.455293
     },
     {
       "id": "markerSource_257",
@@ -5067,8 +5417,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.54605,
-      "lon": 137.109667
+      "lat": -38.098579,
+      "lon": 145.279434
     },
     {
       "id": "markerSource_259",
@@ -5081,8 +5431,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.181253,
-      "lon": 136.19084
+      "lat": -38.042083,
+      "lon": 143.673427
     },
     {
       "id": "markerSource_260",
@@ -5095,11 +5445,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.235053,
-      "lon": 136.67152
+      "lat": -38.099689,
+      "lon": 145.280762
     },
     {
-      "id": "markerSource_263",
+      "id": "markerSource_262",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5109,11 +5459,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.030773,
-      "lon": 123.521267
+      "lat": -41.472437,
+      "lon": 147.187643
     },
     {
-      "id": "markerSource_264",
+      "id": "markerSource_265",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5123,8 +5473,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.490057,
-      "lon": 131.459227
+      "lat": -41.09234,
+      "lon": 146.021703
     },
     {
       "id": "markerSource_266",
@@ -5137,8 +5487,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.717553,
-      "lon": 134.460573
+      "lat": -41.091131,
+      "lon": 146.018639
     },
     {
       "id": "markerSource_268",
@@ -5151,11 +5501,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.533227,
-      "lon": 132.69828
+      "lat": -41.470013,
+      "lon": 147.188038
     },
     {
-      "id": "markerSource_270",
+      "id": "markerSource_271",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5165,11 +5515,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.649055,
-      "lon": 115.910835
+      "lat": -42.542708,
+      "lon": 147.369688
     },
     {
-      "id": "markerSource_273",
+      "id": "markerSource_274",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5179,8 +5529,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.649055,
-      "lon": 115.913612
+      "lat": -41.76669,
+      "lon": 147.356832
     },
     {
       "id": "markerSource_275",
@@ -5193,8 +5543,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.650589,
-      "lon": 115.950081
+      "lat": -41.764271,
+      "lon": 147.353277
     },
     {
       "id": "markerSource_276",
@@ -5207,120 +5557,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -32.997341,
-      "lon": 115.893051
-    },
-    {
-      "id": "markerSource_278",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.780537,
-      "lon": 121.417023
-    },
-    {
-      "id": "markerSource_280",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.780437,
-      "lon": 121.417412
-    },
-    {
-      "id": "markerSource_283",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.776104,
-      "lon": 121.424843
-    },
-    {
-      "id": "markerSource_284",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.776329,
-      "lon": 121.424492
-    },
-    {
-      "id": "markerSource_287",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.972891,
-      "lon": 115.988052
-    },
-    {
-      "id": "markerSource_288",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.932783,
-      "lon": 115.99304
-    },
-    {
-      "id": "markerSource_290",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.973221,
-      "lon": 115.987968
-    },
-    {
-      "id": "markerSource_293",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.82356,
-      "lon": 121.3266
+      "lat": -42.54461,
+      "lon": 147.371089
     },
     {
       "id": "markerSource_294",
@@ -5333,8 +5571,36 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -30.780737,
-      "lon": 121.416687
+      "lat": -28.686228,
+      "lon": 115.182816
+    },
+    {
+      "id": "markerSource_295",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -28.686203,
+      "lon": 115.183044
+    },
+    {
+      "id": "markerSource_296",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -28.686165,
+      "lon": 115.183243
     },
     {
       "id": "markerSource_297",
@@ -5347,22 +5613,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.37271,
-      "lon": 118.528573
-    },
-    {
-      "id": "markerSource_299",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -30.8658,
-      "lon": 120.45812
+      "lat": -28.683876,
+      "lon": 115.193733
     },
     {
       "id": "markerSource_300",
@@ -5375,11 +5627,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.379776,
-      "lon": 118.505928
+      "lat": -28.746252,
+      "lon": 114.84243
     },
     {
-      "id": "markerSource_303",
+      "id": "markerSource_301",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5389,11 +5641,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.245693,
-      "lon": 116.082405
+      "lat": -28.745331,
+      "lon": 114.849953
     },
     {
-      "id": "markerSource_305",
+      "id": "markerSource_304",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5403,8 +5655,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.367058,
-      "lon": 116.243599
+      "lat": -28.777067,
+      "lon": 114.592186
     },
     {
       "id": "markerSource_306",
@@ -5417,8 +5669,22 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.369644,
-      "lon": 116.244164
+      "lat": -28.776693,
+      "lon": 114.600845
+    },
+    {
+      "id": "markerSource_308",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -28.808844,
+      "lon": 114.718216
     },
     {
       "id": "markerSource_309",
@@ -5431,92 +5697,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.82067,
-      "lon": 116.02532
-    },
-    {
-      "id": "markerSource_311",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.646393,
-      "lon": 117.246653
-    },
-    {
-      "id": "markerSource_312",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.778927,
-      "lon": 116.055122
-    },
-    {
-      "id": "markerSource_314",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.275158,
-      "lon": 116.896782
-    },
-    {
-      "id": "markerSource_318",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.276535,
-      "lon": 115.830681
-    },
-    {
-      "id": "markerSource_319",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -32.272446,
-      "lon": 115.841393
-    },
-    {
-      "id": "markerSource_320",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -33.320572,
-      "lon": 115.673096
+      "lat": -28.77709,
+      "lon": 114.5896
     },
     {
       "id": "markerSource_323",
@@ -5529,8 +5711,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.196327,
-      "lon": 115.856361
+      "lat": -34.07191,
+      "lon": 150.79704
     },
     {
       "id": "markerSource_325",
@@ -5543,11 +5725,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.238091,
-      "lon": 115.889099
+      "lat": -33.989895,
+      "lon": 150.873084
     },
     {
-      "id": "markerSource_326",
+      "id": "markerSource_328",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5557,8 +5739,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -33.205696,
-      "lon": 115.853546
+      "lat": -33.96933,
+      "lon": 150.85896
     },
     {
       "id": "markerSource_329",
@@ -5571,36 +5753,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.588711,
-      "lon": 115.434792
-    },
-    {
-      "id": "markerSource_330",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -28.584721,
-      "lon": 115.441185
-    },
-    {
-      "id": "markerSource_331",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -28.584604,
-      "lon": 115.441368
+      "lat": -34.460083,
+      "lon": 150.88044
     },
     {
       "id": "markerSource_332",
@@ -5613,11 +5767,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.584444,
-      "lon": 115.441597
+      "lat": -34.467251,
+      "lon": 150.828568
     },
     {
-      "id": "markerSource_347",
+      "id": "markerSource_334",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5627,11 +5781,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.776583,
-      "lon": 114.599823
+      "lat": -34.477367,
+      "lon": 150.898107
     },
     {
-      "id": "markerSource_349",
+      "id": "markerSource_336",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5641,8 +5795,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.776592,
-      "lon": 114.600029
+      "lat": -34.47766,
+      "lon": 150.90044
     },
     {
       "id": "markerSource_350",
@@ -5655,8 +5809,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.809519,
-      "lon": 114.721764
+      "lat": -30.774536,
+      "lon": 121.427864
     },
     {
       "id": "markerSource_352",
@@ -5669,8 +5823,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.504903,
-      "lon": 118.195613
+      "lat": -30.774326,
+      "lon": 121.428268
     },
     {
       "id": "markerSource_354",
@@ -5683,11 +5837,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.440577,
-      "lon": 118.344543
+      "lat": -30.97004,
+      "lon": 122.399587
     },
     {
-      "id": "markerSource_356",
+      "id": "markerSource_355",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5697,8 +5851,36 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.440454,
-      "lon": 118.344826
+      "lat": -31.026487,
+      "lon": 124.23396
+    },
+    {
+      "id": "markerSource_358",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.858957,
+      "lon": 119.988747
+    },
+    {
+      "id": "markerSource_360",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -30.842163,
+      "lon": 120.402333
     },
     {
       "id": "markerSource_362",
@@ -5711,8 +5893,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.588863,
-      "lon": 115.43457
+      "lat": -30.89757,
+      "lon": 120.857507
     },
     {
       "id": "markerSource_363",
@@ -5725,8 +5907,78 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.58898,
-      "lon": 115.434387
+      "lat": -30.862082,
+      "lon": 121.095978
+    },
+    {
+      "id": "markerSource_366",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.438693,
+      "lon": 118.3876
+    },
+    {
+      "id": "markerSource_369",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.37524,
+      "lon": 118.735161
+    },
+    {
+      "id": "markerSource_370",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.375206,
+      "lon": 118.734932
+    },
+    {
+      "id": "markerSource_371",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.433844,
+      "lon": 118.367447
+    },
+    {
+      "id": "markerSource_373",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.562757,
+      "lon": 116.420517
     },
     {
       "id": "markerSource_375",
@@ -5739,11 +5991,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.57847,
-      "lon": 115.449951
+      "lat": -31.149145,
+      "lon": 117.090538
     },
     {
-      "id": "markerSource_376",
+      "id": "markerSource_377",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5753,11 +6005,11 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.281778,
-      "lon": 116.893913
+      "lat": -31.641567,
+      "lon": 116.661787
     },
     {
-      "id": "markerSource_378",
+      "id": "markerSource_380",
       "train_number": "",
       "loco": "",
       "operator": "",
@@ -5767,22 +6019,8 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -28.583187,
-      "lon": 115.443611
-    },
-    {
-      "id": "markerSource_381",
-      "train_number": "",
-      "loco": "",
-      "operator": "",
-      "origin": "",
-      "destination": "",
-      "speed": 0.0,
-      "heading": 0.0,
-      "eta": "",
-      "status": "",
-      "lat": -31.963638,
-      "lon": 115.990242
+      "lat": -32.257984,
+      "lon": 115.755707
     },
     {
       "id": "markerSource_382",
@@ -5795,8 +6033,92 @@
       "heading": 0.0,
       "eta": "",
       "status": "",
-      "lat": -31.963306,
-      "lon": 115.990326
+      "lat": -32.191154,
+      "lon": 115.796333
+    },
+    {
+      "id": "markerSource_383",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.902947,
+      "lon": 115.98948
+    },
+    {
+      "id": "markerSource_385",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -31.907243,
+      "lon": 115.98924
+    },
+    {
+      "id": "markerSource_388",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.341766,
+      "lon": 115.727112
+    },
+    {
+      "id": "markerSource_390",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.328793,
+      "lon": 115.690872
+    },
+    {
+      "id": "markerSource_392",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.31739,
+      "lon": 115.797737
+    },
+    {
+      "id": "markerSource_393",
+      "train_number": "",
+      "loco": "",
+      "operator": "",
+      "origin": "",
+      "destination": "",
+      "speed": 0.0,
+      "heading": 0.0,
+      "eta": "",
+      "status": "",
+      "lat": -33.331387,
+      "lon": 116.097923
     }
   ]
 }
