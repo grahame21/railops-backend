@@ -20,6 +20,7 @@ TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 class TrainScraper:
     def __init__(self):
         self.driver = None
+        self.all_train_details = {}  # Store additional details
         
     def setup_driver(self):
         chrome_options = Options()
@@ -28,6 +29,9 @@ class TrainScraper:
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        
+        # Enable performance logging to capture network requests
+        chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL', 'browser': 'ALL'})
         
         user_agents = [
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -178,6 +182,67 @@ class TrainScraper:
         """)
         print("🌏 Zoomed to Australia")
     
+    def capture_network_data(self):
+        """Capture network requests that might contain train data"""
+        print("\n📡 Checking for train data APIs...")
+        try:
+            logs = self.driver.get_log('performance')
+            api_calls = []
+            
+            for log in logs:
+                try:
+                    message = json.loads(log['message'])
+                    if 'Network.response' in message['message']['method']:
+                        url = message['message']['params'].get('request', {}).get('url', '')
+                        if any(x in url.lower() for x in ['train', 'loco', 'position', 'data']):
+                            api_calls.append(url)
+                            print(f"   Found API: {url}")
+                except:
+                    pass
+            return api_calls
+        except:
+            return []
+    
+    def extract_hover_data(self):
+        """Try to extract data that appears on hover"""
+        print("\n🖱️ Attempting to extract hover data...")
+        
+        script = """
+        var hoverData = {};
+        
+        // Look for any hidden elements that might contain train data
+        var tooltips = document.querySelectorAll('.tooltip, .popup, [class*="hover"], [class*="tooltip"]');
+        
+        tooltips.forEach(function(el) {
+            if (el.textContent && el.textContent.includes('Train')) {
+                console.log('Found tooltip:', el.textContent);
+            }
+        });
+        
+        // Check for any data attributes on map elements
+        var markers = document.querySelectorAll('[class*="marker"], [class*="train"]');
+        markers.forEach(function(marker, index) {
+            var data = {};
+            for (var attr of marker.attributes) {
+                if (attr.name.startsWith('data-')) {
+                    data[attr.name] = attr.value;
+                }
+            }
+            if (Object.keys(data).length > 0) {
+                hoverData['marker_' + index] = data;
+            }
+        });
+        
+        return hoverData;
+        """
+        
+        try:
+            hover_data = self.driver.execute_script(script)
+            print(f"   Found {len(hover_data)} elements with data attributes")
+            return hover_data
+        except:
+            return {}
+    
     def extract_trains(self):
         """Extract ALL train data from OpenLayers sources"""
         script = """
@@ -202,10 +267,10 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Log ALL properties to console for debugging
-                            console.log('Feature properties:', Object.keys(props));
+                            // Log ALL properties to console
+                            console.log('Feature properties for ' + sourceName + '_' + index + ':', Object.keys(props));
                             
-                            // Extract EVERY possible property
+                            // Extract ALL possible properties
                             var trainData = {
                                 // Core identifiers
                                 'id': props.id || '',
@@ -214,6 +279,7 @@ class TrainScraper:
                                 'train_number': props.train_number || props.trainNumber || props.service || props.Service || '',
                                 'name': props.name || props.NAME || '',
                                 'display_name': props.display_name || props.DisplayName || '',
+                                'reporting_id': props.reporting_id || props.ReportingId || '',
                                 
                                 // Operations
                                 'operator': props.operator || props.Operator || props.oper || props.Oper || '',
@@ -272,7 +338,7 @@ class TrainScraper:
                             var uniqueId = trainData.loco || trainData.unit || trainData.train_number || trainData.id;
                             
                             // If we have a real ID, use it
-                            if (uniqueId && !uniqueId.toString().includes('Source_')) {
+                            if (uniqueId && !uniqueId.toString().includes('Source_') && !uniqueId.toString().includes('arrow')) {
                                 if (!seenIds.has(uniqueId)) {
                                     seenIds.add(uniqueId);
                                     trainData.is_generic = false;
@@ -287,10 +353,7 @@ class TrainScraper:
                                     seenIds.add(genericId);
                                     trainData.is_generic = true;
                                     trainData.display_id = genericId;
-                                    trainData.loco = '';
-                                    trainData.unit = '';
-                                    trainData.train_number = '';
-                                    allTrains.push(trainData);
+                                    // Don't add generic trains to output
                                 }
                             }
                         }
@@ -322,85 +385,80 @@ class TrainScraper:
         seen_ids = set()
         
         real_count = 0
-        generic_count = 0
         
         for t in raw_trains:
             lat, lon = self.webmercator_to_latlon(t['x'], t['y'])
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('display_id', '')
                 
-                # Count statistics
-                if t.get('is_generic'):
-                    generic_count += 1
-                    # Skip adding generic trains to output
-                    continue
-                else:
+                # Only include real trains
+                if not t.get('is_generic'):
                     real_count += 1
-                
-                if train_id not in seen_ids:
-                    seen_ids.add(train_id)
                     
-                    # Build comprehensive train object with ALL available data
-                    train = {
-                        # Core identifiers
-                        'id': train_id,
-                        'loco': t.get('loco', ''),
-                        'unit': t.get('unit', ''),
-                        'train_number': t.get('train_number', ''),
-                        'name': t.get('name', ''),
-                        'display_name': t.get('display_name', ''),
+                    if train_id not in seen_ids:
+                        seen_ids.add(train_id)
                         
-                        # Operations
-                        'operator': t.get('operator', ''),
-                        'origin': t.get('origin', ''),
-                        'destination': t.get('destination', ''),
-                        
-                        # Movement
-                        'speed': round(float(t.get('speed', 0)), 1),
-                        'heading': round(float(t.get('heading', 0)), 1),
-                        
-                        # Timing
-                        'eta': t.get('eta', ''),
-                        'etd': t.get('etd', ''),
-                        'departure': t.get('departure', ''),
-                        'arrival': t.get('arrival', ''),
-                        'scheduled': t.get('scheduled', ''),
-                        'late': t.get('late', ''),
-                        
-                        # Train composition
-                        'service_code': t.get('service_code', ''),
-                        'consist': t.get('consist', ''),
-                        'length': t.get('length', ''),
-                        'weight': t.get('weight', ''),
-                        'cars': t.get('cars', ''),
-                        'load': t.get('load', ''),
-                        
-                        # Classification
-                        'type': t.get('type', ''),
-                        'class': t.get('class', ''),
-                        'subtype': t.get('subtype', ''),
-                        'status': t.get('status', ''),
-                        'line': t.get('line', ''),
-                        
-                        # Location
-                        'location': t.get('location', ''),
-                        'track': t.get('track', ''),
-                        'next_stop': t.get('next_stop', ''),
-                        
-                        # Metadata
-                        'flags': t.get('flags', ''),
-                        'notes': t.get('notes', ''),
-                        'source': t.get('source_name', ''),
-                        
-                        # Coordinates
-                        'lat': lat,
-                        'lon': lon
-                    }
-                    australian_trains.append(train)
+                        # Build comprehensive train object with ALL available data
+                        train = {
+                            # Core identifiers
+                            'id': train_id,
+                            'loco': t.get('loco', ''),
+                            'unit': t.get('unit', ''),
+                            'train_number': t.get('train_number', ''),
+                            'name': t.get('name', ''),
+                            'display_name': t.get('display_name', ''),
+                            'reporting_id': t.get('reporting_id', ''),
+                            
+                            # Operations
+                            'operator': t.get('operator', ''),
+                            'origin': t.get('origin', ''),
+                            'destination': t.get('destination', ''),
+                            
+                            # Movement
+                            'speed': round(float(t.get('speed', 0)), 1),
+                            'heading': round(float(t.get('heading', 0)), 1),
+                            
+                            # Timing
+                            'eta': t.get('eta', ''),
+                            'etd': t.get('etd', ''),
+                            'departure': t.get('departure', ''),
+                            'arrival': t.get('arrival', ''),
+                            'scheduled': t.get('scheduled', ''),
+                            'late': t.get('late', ''),
+                            
+                            # Train composition
+                            'service_code': t.get('service_code', ''),
+                            'consist': t.get('consist', ''),
+                            'length': t.get('length', ''),
+                            'weight': t.get('weight', ''),
+                            'cars': t.get('cars', ''),
+                            'load': t.get('load', ''),
+                            
+                            # Classification
+                            'type': t.get('type', ''),
+                            'class': t.get('class', ''),
+                            'subtype': t.get('subtype', ''),
+                            'status': t.get('status', ''),
+                            'line': t.get('line', ''),
+                            
+                            # Location
+                            'location': t.get('location', ''),
+                            'track': t.get('track', ''),
+                            'next_stop': t.get('next_stop', ''),
+                            
+                            # Metadata
+                            'flags': t.get('flags', ''),
+                            'notes': t.get('notes', ''),
+                            'source': t.get('source_name', ''),
+                            
+                            # Coordinates
+                            'lat': lat,
+                            'lon': lon
+                        }
+                        australian_trains.append(train)
         
         print(f"\n📊 Train Statistics:")
         print(f"   Real trains with IDs: {real_count}")
-        print(f"   Generic markers ignored: {generic_count}")
         
         return australian_trains
     
@@ -428,7 +486,13 @@ class TrainScraper:
             print("⏳ Waiting 60 seconds for trains to load...")
             time.sleep(60)
             
-            print("\n🔍 Extracting trains...")
+            # Try to capture network data
+            api_calls = self.capture_network_data()
+            
+            # Try to extract hover data
+            hover_data = self.extract_hover_data()
+            
+            print("\n🔍 Extracting trains from map...")
             raw_trains = self.extract_trains()
             print(f"✅ Extracted {len(raw_trains)} raw positions")
             
