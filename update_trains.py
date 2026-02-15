@@ -5,19 +5,11 @@ import time
 import math
 import pickle
 import random
-import sys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-# Print debug info immediately
-print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER STARTING")
-print(f"Python version: {sys.version}")
-print(f"Time: {datetime.datetime.now()}")
-print("=" * 60)
 
 OUT_FILE = "trains.json"
 COOKIE_FILE = "trainfinder_cookies.pkl"
@@ -25,16 +17,11 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-print(f"Username configured: {'Yes' if TF_USERNAME else 'No'}")
-print(f"Password configured: {'Yes' if TF_PASSWORD else 'No'}")
-
 class TrainScraper:
     def __init__(self):
         self.driver = None
-        print("✅ TrainScraper initialized")
         
     def setup_driver(self):
-        print("\n🔧 Setting up Chrome driver...")
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
@@ -50,22 +37,13 @@ class TrainScraper:
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
-        try:
-            self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            print("✅ Chrome driver setup successful")
-            return True
-        except Exception as e:
-            print(f"❌ Failed to setup Chrome driver: {e}")
-            return False
+        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
     def save_cookies(self):
-        try:
-            with open(COOKIE_FILE, "wb") as f:
-                pickle.dump(self.driver.get_cookies(), f)
-            print("✅ Cookies saved")
-        except Exception as e:
-            print(f"❌ Failed to save cookies: {e}")
+        with open(COOKIE_FILE, "wb") as f:
+            pickle.dump(self.driver.get_cookies(), f)
+        print("✅ Cookies saved")
     
     def load_cookies(self):
         if os.path.exists(COOKIE_FILE):
@@ -81,8 +59,8 @@ class TrainScraper:
                         pass
                 print("✅ Cookies loaded")
                 return True
-            except Exception as e:
-                print(f"⚠️ Could not load cookies: {e}")
+            except:
+                pass
         return False
     
     def random_delay(self, min_sec=0.5, max_sec=2):
@@ -97,8 +75,7 @@ class TrainScraper:
                 return False
             print("✅ Session valid")
             return True
-        except Exception as e:
-            print(f"⚠️ Session check error: {e}")
+        except:
             return False
     
     def force_fresh_login(self):
@@ -181,7 +158,7 @@ class TrainScraper:
             self.driver.get(TF_LOGIN_URL)
             self.random_delay(3, 5)
             if self.check_session_valid():
-                print("✅ Using saved session")
+                print("✅ Session valid")
                 return True
             else:
                 print("⚠️ Saved session invalid, doing fresh login")
@@ -191,21 +168,18 @@ class TrainScraper:
     
     def zoom_to_australia(self):
         self.random_delay(2, 4)
-        try:
-            self.driver.execute_script("""
-                if (window.map) {
-                    var australia = [112, -44, 154, -10];
-                    var proj = window.map.getView().getProjection();
-                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                    window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
-                }
-            """)
-            print("🌏 Zoomed to Australia")
-        except Exception as e:
-            print(f"⚠️ Could not zoom: {e}")
+        self.driver.execute_script("""
+            if (window.map) {
+                var australia = [112, -44, 154, -10];
+                var proj = window.map.getView().getProjection();
+                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+            }
+        """)
+        print("🌏 Zoomed to Australia")
     
     def extract_trains_direct(self):
-        """Direct extraction of train data from OpenLayers sources"""
+        """Extract train data with real IDs prioritized"""
         print("\n🔍 Extracting trains directly from sources...")
         
         script = """
@@ -230,11 +204,21 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Extract available properties
+                            // PRIORITIZE REAL TRAIN IDENTIFIERS
+                            var realId = props.loco || props.Loco || 
+                                        props.unit || props.Unit || 
+                                        props.train_number || props.trainNumber || 
+                                        props.service || props.Service || 
+                                        props.name || props.NAME;
+                            
+                            // Use real ID if available, otherwise use source+index
+                            var trainId = realId ? String(realId).trim() : sourceName + '_' + index;
+                            
+                            // Extract ALL available properties
                             var trainData = {
-                                'id': props.id || props.ID || props.loco || props.Loco || 
-                                      props.unit || props.Unit || props.name || sourceName + '_' + index,
-                                'train_number': props.train_number || props.service || props.name || '',
+                                'id': trainId,
+                                'display_id': realId ? String(realId).trim() : trainId,
+                                'train_number': props.train_number || props.trainNumber || props.service || '',
                                 'loco': props.loco || props.Loco || '',
                                 'unit': props.unit || props.Unit || '',
                                 'operator': props.operator || props.Operator || '',
@@ -244,14 +228,14 @@ class TrainScraper:
                                 'heading': props.heading || props.Heading || 0,
                                 'eta': props.eta || props.ETA || '',
                                 'status': props.status || props.Status || '',
+                                'type': props.type || props.Type || '',
+                                'cars': props.cars || props.Cars || 0,
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            // Create a unique ID
-                            var uniqueId = trainData.id;
-                            if (!seenIds.has(uniqueId)) {
-                                seenIds.add(uniqueId);
+                            if (!seenIds.has(trainId)) {
+                                seenIds.add(trainId);
                                 allTrains.push(trainData);
                             }
                         }
@@ -286,6 +270,9 @@ class TrainScraper:
         australian_trains = []
         seen_ids = set()
         
+        real_count = 0
+        generic_count = 0
+        
         for t in raw_trains:
             x = t.get('x', 0)
             y = t.get('y', 0)
@@ -297,12 +284,21 @@ class TrainScraper:
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
+                
+                # Count real vs generic
+                if '_Source_' in train_id or '_source_' in train_id.lower() or 'marker' in train_id.lower():
+                    generic_count += 1
+                else:
+                    real_count += 1
+                
                 if train_id not in seen_ids:
                     seen_ids.add(train_id)
                     australian_trains.append({
                         'id': train_id,
+                        'display_id': t.get('display_id', train_id),
                         'train_number': t.get('train_number', ''),
                         'loco': t.get('loco', ''),
+                        'unit': t.get('unit', ''),
                         'operator': t.get('operator', ''),
                         'origin': t.get('origin', ''),
                         'destination': t.get('destination', ''),
@@ -310,9 +306,15 @@ class TrainScraper:
                         'heading': round(float(t.get('heading', 0)), 1),
                         'eta': t.get('eta', ''),
                         'status': t.get('status', ''),
+                        'type': t.get('type', ''),
+                        'cars': t.get('cars', 0),
                         'lat': lat,
                         'lon': lon
                     })
+        
+        print(f"\n📊 Train Statistics:")
+        print(f"   Real train IDs: {real_count}")
+        print(f"   Generic IDs: {generic_count}")
         
         return australian_trains
     
@@ -326,10 +328,9 @@ class TrainScraper:
             print("❌ Missing credentials")
             return [], "Missing credentials"
         
-        if not self.setup_driver():
-            return [], "Failed to setup driver"
-        
         try:
+            self.setup_driver()
+            
             if not self.login():
                 return [], "Login failed"
             
@@ -348,30 +349,37 @@ class TrainScraper:
             if raw_trains:
                 print(f"\n📋 First raw train sample:")
                 sample = raw_trains[0]
-                for key, value in sample.items():
-                    if key not in ['x', 'y']:
-                        print(f"   {key}: {value}")
-                print(f"   x: {sample.get('x')}")
-                print(f"   y: {sample.get('y')}")
+                print(f"   ID: {sample.get('id')}")
+                print(f"   Display ID: {sample.get('display_id')}")
+                print(f"   Speed: {sample.get('speed')}")
+                print(f"   Location: ({sample.get('x')}, {sample.get('y')})")
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
             print(f"\n✅ Australian trains after filtering: {len(australian_trains)}")
             
+            if australian_trains:
+                print(f"\n📋 Sample Australian train:")
+                sample = australian_trains[0]
+                print(f"   ID: {sample['id']}")
+                print(f"   Display ID: {sample['display_id']}")
+                print(f"   Speed: {sample['speed']} km/h")
+                print(f"   Location: {sample['lat']:.4f}, {sample['lon']:.4f}")
+            
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
         except Exception as e:
-            print(f"\n❌ Error in run: {e}")
+            print(f"\n❌ Error: {e}")
             import traceback
             traceback.print_exc()
             return [], f"error: {type(e).__name__}"
         finally:
             if self.driver:
+                self.random_delay(1, 2)
                 self.driver.quit()
                 print("👋 Browser closed")
 
 def write_output(trains, note=""):
-    print(f"\n📝 Writing output: {len(trains)} trains, status: {note}")
     payload = {
         "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
         "note": note,
@@ -385,27 +393,29 @@ def write_output(trains, note=""):
                 with open(backup_name, 'w') as dst:
                     dst.write(src.read())
             print(f"💾 Backup created: {backup_name}")
-        except Exception as e:
-            print(f"⚠️ Could not create backup: {e}")
+        except:
+            pass
     
-    try:
-        with open(OUT_FILE, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, indent=2)
-        print(f"✅ Output written to {OUT_FILE}")
-    except Exception as e:
-        print(f"❌ Failed to write output: {e}")
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+    print(f"📝 Output: {len(trains or [])} trains, status: {note}")
+    
+    backups = sorted([f for f in os.listdir('.') if f.startswith('trains_backup_')])
+    for old_backup in backups[:-5]:
+        try:
+            os.remove(old_backup)
+        except:
+            pass
 
 def main():
-    print("\n🚀 Starting main function...")
     scraper = TrainScraper()
     trains, note = scraper.run()
     write_output(trains, note)
-    print("\n🏁 Script completed")
     
     if "error" in note:
-        sys.exit(1)
+        exit(1)
     else:
-        sys.exit(0)
+        exit(0)
 
 if __name__ == "__main__":
     main()
