@@ -426,8 +426,36 @@ class TrainScraper:
             # Extract trains using direct method
             raw_trains = self.extract_trains_direct()
             
+            # Show raw train data for debugging
+            if raw_trains:
+                print(f"\n📋 Raw train sample (first 3):")
+                for i, train in enumerate(raw_trains[:3]):
+                    print(f"   Train {i}:")
+                    print(f"      ID: {train.get('id')}")
+                    print(f"      X: {train.get('x')}")
+                    print(f"      Y: {train.get('y')}")
+                    print(f"      Speed: {train.get('speed')}")
+                    print(f"      Heading: {train.get('heading')}")
+                    print(f"      Operator: {train.get('operator')}")
+                    print(f"      Origin: {train.get('origin')}")
+                    print(f"      Destination: {train.get('destination')}")
+            else:
+                print("\n⚠️ No raw trains extracted from OpenLayers sources")
+            
             # Also try currentTrains
             current_trains = self.extract_from_current_trains_safe()
+            if current_trains:
+                print(f"\n📋 CurrentTrains sample (first 3):")
+                for i, train in enumerate(current_trains[:3]):
+                    print(f"   Train {i}:")
+                    print(f"      ID: {train.get('id')}")
+                    print(f"      X: {train.get('x')}")
+                    print(f"      Y: {train.get('y')}")
+                    print(f"      Speed: {train.get('speed')}")
+                    print(f"      Heading: {train.get('heading')}")
+            else:
+                print("\n⚠️ No trains extracted from currentTrains")
+            
             raw_trains.extend(current_trains)
             
             print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
@@ -437,7 +465,7 @@ class TrainScraper:
             print(f"\n✅ Australian trains after filtering: {len(australian_trains)}")
             
             if australian_trains:
-                print(f"\n📋 Sample train data:")
+                print(f"\n📋 Sample Australian train data:")
                 sample = australian_trains[0]
                 for key, value in sample.items():
                     if key not in ['lat', 'lon']:
