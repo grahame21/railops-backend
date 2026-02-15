@@ -2,19 +2,14 @@ name: Update Train Data
 
 on:
   schedule:
-    # Run every 10 minutes
-    - cron: '*/10 * * * *'
+    # Run every 30 minutes (adjust as needed)
+    - cron: '*/30 * * * *'
   workflow_dispatch:
-  # Also run on push to main to test changes
-  push:
-    branches: [ main ]
-    paths:
-      - 'update_trains.py'
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 10  # Prevent hanging jobs
+    timeout-minutes: 10
     
     steps:
     - uses: actions/checkout@v4
@@ -29,12 +24,11 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable xvfb
-        google-chrome --version
     
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
-        pip install selenium webdriver-manager requests
+        pip install selenium requests
     
     - name: Run train scraper
       env:
@@ -54,11 +48,3 @@ jobs:
           git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           git push
         fi
-    
-    - name: Upload backup as artifact (on failure)
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: train-backups
-        path: trains_backup_*.json
-        retention-days: 7
