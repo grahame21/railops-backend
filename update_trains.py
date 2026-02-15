@@ -4,6 +4,7 @@ import datetime
 import time
 import math
 import pickle
+import random
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -27,15 +28,25 @@ class TrainScraper:
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--window-size=1920,1080')
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        
+        # Add random user agent to look more like a real browser
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        ]
+        chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
+        
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
-        # Speed optimizations
+        # Speed optimizations but with realistic delays
         chrome_options.add_argument('--disable-images')
         chrome_options.add_argument('--disable-extensions')
-        chrome_options.add_argument('--disable-javascript')  # Re-enable if map needs it
         
         self.driver = webdriver.Chrome(options=chrome_options)
+        
+        # Hide webdriver property
         self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         
     def save_cookies(self):
@@ -61,10 +72,15 @@ class TrainScraper:
                 pass
         return False
     
+    def random_delay(self, min_sec=1, max_sec=3):
+        """Add random delays to simulate human behavior"""
+        delay = random.uniform(min_sec, max_sec)
+        time.sleep(delay)
+    
     def login(self):
         print("\n📌 Logging in...")
         self.driver.get(TF_LOGIN_URL)
-        time.sleep(3)
+        self.random_delay(2, 4)
         
         # Check if already logged in
         if "home/nextlevel" in self.driver.current_url and "login" not in self.driver.current_url.lower():
@@ -74,13 +90,23 @@ class TrainScraper:
         username = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "useR_name"))
         )
-        username.send_keys(TF_USERNAME)
+        # Type like a human
+        for char in TF_USERNAME:
+            username.send_keys(char)
+            time.sleep(random.uniform(0.05, 0.15))
         print("✅ Username entered")
         
+        self.random_delay(0.5, 1.5)
+        
         password = self.driver.find_element(By.ID, "pasS_word")
-        password.send_keys(TF_PASSWORD)
+        for char in TF_PASSWORD:
+            password.send_keys(char)
+            time.sleep(random.uniform(0.05, 0.15))
         print("✅ Password entered")
         
+        self.random_delay(1, 2)
+        
+        # Click login button
         self.driver.execute_script("""
             var tables = document.getElementsByClassName('popup_table');
             for(var i = 0; i < tables.length; i++) {
@@ -96,7 +122,8 @@ class TrainScraper:
             }
         """)
         print("✅ Login button clicked")
-        time.sleep(5)
+        
+        self.random_delay(3, 5)
         
         # Close warning
         self.driver.execute_script("""
@@ -118,12 +145,15 @@ class TrainScraper:
         return True
     
     def zoom_to_australia(self):
+        # Add random delay before zooming
+        self.random_delay(2, 4)
+        
         self.driver.execute_script("""
             if (window.map) {
                 var australia = [112, -44, 154, -10];
                 var proj = window.map.getView().getProjection();
                 var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 2000, maxZoom: 8 });
+                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
             }
         """)
         print("🌏 Zoomed to Australia")
@@ -226,7 +256,7 @@ class TrainScraper:
             # Try cookie login first
             if self.load_cookies():
                 self.driver.get(TF_LOGIN_URL)
-                time.sleep(3)
+                self.random_delay(2, 4)
                 if "login" in self.driver.current_url.lower():
                     print("⚠️ Cookies expired, logging in again")
                     if not self.login():
@@ -254,6 +284,7 @@ class TrainScraper:
                 print(f"\n📋 Sample train:")
                 print(f"   ID: {australian_trains[0]['id']}")
                 print(f"   Location: {australian_trains[0]['lat']:.4f}, {australian_trains[0]['lon']:.4f}")
+                print(f"   Speed: {australian_trains[0]['speed']} km/h")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
@@ -262,6 +293,8 @@ class TrainScraper:
             return [], f"error: {type(e).__name__}"
         finally:
             if self.driver:
+                # Add random delay before closing to seem more human
+                self.random_delay(1, 3)
                 self.driver.quit()
                 print("👋 Browser closed")
 
