@@ -1,13 +1,20 @@
-name: Update trains.json
+name: Update Train Data
 
 on:
   schedule:
+    # Run every 10 minutes (adjust as needed)
     - cron: '*/10 * * * *'
   workflow_dispatch:
+  # Also run on push to main to test changes
+  push:
+    branches: [ main ]
+    paths:
+      - 'update_trains.py'
 
 jobs:
-  update:
+  scrape:
     runs-on: ubuntu-latest
+    timeout-minutes: 10  # Prevent hanging jobs
     
     steps:
     - uses: actions/checkout@v3
@@ -16,17 +23,21 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
+        cache: 'pip'  # Cache dependencies
     
-    - name: Install Chrome and Xvfb
+    - name: Install Chrome and dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable xvfb
+        # Get Chrome version for matching ChromeDriver
+        google-chrome --version
     
     - name: Install Python dependencies
       run: |
-        pip install selenium requests
+        pip install --upgrade pip
+        pip install selenium webdriver-manager requests
     
-    - name: Run train scraper with virtual display
+    - name: Run train scraper
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
@@ -41,6 +52,14 @@ jobs:
         if git diff --cached --quiet; then
           echo "No changes to commit"
         else
-          git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           git push
         fi
+    
+    - name: Upload backup as artifact (on failure)
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: train-backups
+        path: trains_backup_*.json
+        retention-days: 7
