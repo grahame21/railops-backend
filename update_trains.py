@@ -23,7 +23,7 @@ class TrainScraper:
         self.trains = []
         
     def setup_driver(self):
-        """Configure Chrome driver for optimal performance"""
+        """Configure Chrome driver with performance logging"""
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
@@ -32,6 +32,9 @@ class TrainScraper:
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
+        
+        # Enable performance logging to capture network requests
+        chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
         
         # Add these for faster loading
         chrome_options.add_argument('--disable-images')
@@ -178,51 +181,90 @@ class TrainScraper:
         except:
             print("⚠️ Couldn't zoom map")
     
-    def trigger_train_load(self):
-        """Try to trigger train loading via various methods"""
-        print("\n🔄 Attempting to trigger train loading...")
+    def check_for_train_api_calls(self):
+        """Check browser logs for API calls that might contain train data"""
+        print("\n🔍 Checking for train-related API calls...")
+        
+        try:
+            logs = self.driver.get_log('performance')
+            train_apis = []
+            
+            for log in logs:
+                try:
+                    message = json.loads(log['message'])
+                    if 'Network.response' in message['message']['method']:
+                        url = message['message']['params'].get('request', {}).get('url', '')
+                        if any(term in url.lower() for term in ['train', 'loco', 'position', 'location', 'track']):
+                            train_apis.append({
+                                'url': url,
+                                'timestamp': message['message']['params'].get('timestamp', 0)
+                            })
+                except:
+                    pass
+            
+            if train_apis:
+                print(f"✅ Found {len(train_apis)} train-related API calls:")
+                for api in train_apis[:5]:  # Show first 5
+                    print(f"   - {api['url']}")
+                return train_apis
+            else:
+                print("   No train API calls found in logs")
+                return []
+                
+        except Exception as e:
+            print(f"❌ Error checking logs: {e}")
+            return []
+    
+    def try_alternative_interactions(self):
+        """Try different interactions that might trigger train loading"""
+        print("\n🔄 Trying alternative interactions...")
         
         script = """
         var results = [];
         
-        // Method 1: Check for any refresh/update buttons
-        var refreshButtons = document.querySelectorAll('button[title*="Refresh"], button[aria-label*="Refresh"], .refresh-button, .update-button');
-        refreshButtons.forEach(function(btn) {
-            results.push('Found refresh button');
-            btn.click();
+        // Method 1: Look for layer toggles or filter buttons
+        var filterButtons = document.querySelectorAll('button[class*="filter"], [class*="toggle"], [class*="layer"]');
+        filterButtons.forEach(function(btn) {
+            if (btn.offsetParent !== null) { // Only visible buttons
+                results.push('Found filter/layer button: ' + (btn.textContent || 'unnamed'));
+                // Don't click them yet - just note they exist
+            }
         });
         
-        // Method 2: Try to trigger any train update functions
-        if (typeof updateTrains === 'function') {
-            updateTrains();
-            results.push('Called updateTrains()');
+        // Method 2: Check for any train-specific UI elements
+        var trainControls = document.querySelectorAll('[class*="train-control"], [id*="train"], [class*="locomotive"]');
+        results.push('Found ' + trainControls.length + ' train-related UI elements');
+        
+        // Method 3: Try to trigger any data refresh functions
+        if (typeof refreshData === 'function') {
+            refreshData();
+            results.push('Called refreshData()');
         }
-        if (typeof loadTrains === 'function') {
-            loadTrains();
-            results.push('Called loadTrains()');
+        if (typeof loadMarkers === 'function') {
+            loadMarkers();
+            results.push('Called loadMarkers()');
         }
-        if (typeof refreshTrains === 'function') {
-            refreshTrains();
-            results.push('Called refreshTrains()');
+        if (typeof updateMarkers === 'function') {
+            updateMarkers();
+            results.push('Called updateMarkers()');
         }
         
-        // Method 3: Try to trigger via map events
-        if (window.map) {
-            window.map.dispatchEvent('moveend');
-            results.push('Dispatched moveend event');
-        }
+        // Method 4: Try to access any data stores
+        if (window.trainData) results.push('Found window.trainData');
+        if (window.locomotives) results.push('Found window.locomotives');
+        if (window.positions) results.push('Found window.positions');
         
         return results;
         """
         
         try:
             results = self.driver.execute_script(script)
-            if results:
-                print(f"   Triggered: {', '.join(results)}")
-            else:
-                print("   No train loading triggers found")
+            for result in results:
+                print(f"   {result}")
+            return results
         except Exception as e:
-            print(f"   Error triggering train load: {e}")
+            print(f"   Error during interactions: {e}")
+            return []
     
     def debug_map_features(self):
         """Debug what features are actually in the map sources"""
@@ -295,8 +337,9 @@ class TrainScraper:
                             # Convert to lat/lon for easier understanding
                             x, y = feat['coords']
                             lon = (x / 20037508.34) * 180
-                            print(f"        Coords (Web Mercator): {feat['coords']}")
-                            print(f"        Approx lat/lon: ({y:.2f}°, {lon:.2f}°)")
+                            # Approximate lat conversion (simplified)
+                            print(f"        Coords (Web Mercator): ({x:.2f}, {y:.2f})")
+                            print(f"        Approx lon: {lon:.2f}°")
                         if feat.get('props'):
                             print(f"        Props: {feat['props']}")
                     total_features += len(features)
@@ -313,6 +356,7 @@ class TrainScraper:
         
         start_time = time.time()
         last_trigger = 0
+        last_log_check = 0
         
         while time.time() - start_time < max_wait:
             try:
@@ -335,9 +379,14 @@ class TrainScraper:
                     print(f"\n✅ Map has {feature_count} features loaded")
                     return True
                 
-                # Try to trigger train loading every 10 seconds
+                # Check for API calls every 15 seconds
+                if time.time() - last_log_check > 15:
+                    api_calls = self.check_for_train_api_calls()
+                    last_log_check = time.time()
+                
+                # Try alternative interactions every 10 seconds
                 if time.time() - last_trigger > 10:
-                    self.trigger_train_load()
+                    self.try_alternative_interactions()
                     last_trigger = time.time()
                 
             except (StaleElementReferenceException, JavascriptException):
@@ -600,6 +649,12 @@ class TrainScraper:
             
             # Debug what's in the map sources
             self.debug_map_features()
+            
+            # Check for train API calls
+            self.check_for_train_api_calls()
+            
+            # Try alternative interactions
+            self.try_alternative_interactions()
             
             # Wait for trains to load (with triggering)
             self.wait_for_trains_simple(max_wait=60)
