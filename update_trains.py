@@ -178,6 +178,52 @@ class TrainScraper:
         except:
             print("⚠️ Couldn't zoom map")
     
+    def trigger_train_load(self):
+        """Try to trigger train loading via various methods"""
+        print("\n🔄 Attempting to trigger train loading...")
+        
+        script = """
+        var results = [];
+        
+        // Method 1: Check for any refresh/update buttons
+        var refreshButtons = document.querySelectorAll('button[title*="Refresh"], button[aria-label*="Refresh"], .refresh-button, .update-button');
+        refreshButtons.forEach(function(btn) {
+            results.push('Found refresh button');
+            btn.click();
+        });
+        
+        // Method 2: Try to trigger any train update functions
+        if (typeof updateTrains === 'function') {
+            updateTrains();
+            results.push('Called updateTrains()');
+        }
+        if (typeof loadTrains === 'function') {
+            loadTrains();
+            results.push('Called loadTrains()');
+        }
+        if (typeof refreshTrains === 'function') {
+            refreshTrains();
+            results.push('Called refreshTrains()');
+        }
+        
+        // Method 3: Try to trigger via map events
+        if (window.map) {
+            window.map.dispatchEvent('moveend');
+            results.push('Dispatched moveend event');
+        }
+        
+        return results;
+        """
+        
+        try:
+            results = self.driver.execute_script(script)
+            if results:
+                print(f"   Triggered: {', '.join(results)}")
+            else:
+                print("   No train loading triggers found")
+        except Exception as e:
+            print(f"   Error triggering train load: {e}")
+    
     def debug_map_features(self):
         """Debug what features are actually in the map sources"""
         print("\n🔍 Debugging map features...")
@@ -246,7 +292,11 @@ class TrainScraper:
                     for feat in features[:3]:  # Show first 3 features
                         print(f"      - Type: {feat.get('type', 'unknown')}")
                         if 'coords' in feat:
-                            print(f"        Coords: {feat['coords']}")
+                            # Convert to lat/lon for easier understanding
+                            x, y = feat['coords']
+                            lon = (x / 20037508.34) * 180
+                            print(f"        Coords (Web Mercator): {feat['coords']}")
+                            print(f"        Approx lat/lon: ({y:.2f}°, {lon:.2f}°)")
                         if feat.get('props'):
                             print(f"        Props: {feat['props']}")
                     total_features += len(features)
@@ -257,11 +307,13 @@ class TrainScraper:
             print(f"❌ Error debugging features: {e}")
             return None
     
-    def wait_for_trains_simple(self, max_wait=30):
-        """Simple wait for trains to appear in the map sources"""
+    def wait_for_trains_simple(self, max_wait=60):
+        """Wait for trains to appear, with periodic triggering"""
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
         
         start_time = time.time()
+        last_trigger = 0
+        
         while time.time() - start_time < max_wait:
             try:
                 # Check map features count
@@ -278,9 +330,15 @@ class TrainScraper:
                 
                 feature_count = self.driver.execute_script(script)
                 
-                if feature_count > 0:
+                # If we have more than 1 feature, we likely have trains
+                if feature_count > 1:
                     print(f"\n✅ Map has {feature_count} features loaded")
                     return True
+                
+                # Try to trigger train loading every 10 seconds
+                if time.time() - last_trigger > 10:
+                    self.trigger_train_load()
+                    last_trigger = time.time()
                 
             except (StaleElementReferenceException, JavascriptException):
                 pass  # Ignore and retry
@@ -313,34 +371,32 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Skip if coordinates are obviously not in Australia
-                            // (This is a rough filter - actual filtering happens later)
+                            // Skip if this looks like the South America point we saw
                             var x = coords[0];
                             var y = coords[1];
                             
-                            // If it's Web Mercator, rough Australia bounds
-                            if (Math.abs(x) > 180) {
-                                if (x < 12000000 || x > 17000000) return; // Rough Australia Web Mercator bounds
-                            }
-                            
-                            var id = props.id || props.ID || props.loco || props.Loco || 
-                                    props.unit || props.Unit || props.name || props.NAME ||
-                                    sourceName + '_' + index;
-                            
-                            if (!seenIds.has(id)) {
-                                seenIds.add(id);
+                            // Rough Web Mercator bounds for Australia
+                            // Australia in Web Mercator: x ~11500000 to 17000000, y ~-5500000 to -1100000
+                            if (x > 11000000 && x < 17500000 && y < -1000000 && y > -6000000) {
+                                var id = props.id || props.ID || props.loco || props.Loco || 
+                                        props.unit || props.Unit || props.name || props.NAME ||
+                                        sourceName + '_' + index;
                                 
-                                var trainNumber = props.service || props.Service || 
-                                                 props.trainNumber || props.train_number || '';
-                                
-                                trains.push({
-                                    'id': String(id).trim(),
-                                    'train_number': String(trainNumber).trim() || String(id).trim(),
-                                    'x': coords[0],
-                                    'y': coords[1],
-                                    'heading': props.heading || props.Heading || 0,
-                                    'speed': props.speed || props.Speed || 0
-                                });
+                                if (!seenIds.has(id)) {
+                                    seenIds.add(id);
+                                    
+                                    var trainNumber = props.service || props.Service || 
+                                                     props.trainNumber || props.train_number || '';
+                                    
+                                    trains.push({
+                                        'id': String(id).trim(),
+                                        'train_number': String(trainNumber).trim() || String(id).trim(),
+                                        'x': coords[0],
+                                        'y': coords[1],
+                                        'heading': props.heading || props.Heading || 0,
+                                        'speed': props.speed || props.Speed || 0
+                                    });
+                                }
                             }
                         }
                     } catch(e) {}
@@ -545,8 +601,11 @@ class TrainScraper:
             # Debug what's in the map sources
             self.debug_map_features()
             
-            # Wait for trains to load
-            self.wait_for_trains_simple(max_wait=45)
+            # Wait for trains to load (with triggering)
+            self.wait_for_trains_simple(max_wait=60)
+            
+            # Debug again after waiting
+            self.debug_map_features()
             
             # Try both extraction methods
             raw_trains = []
@@ -556,9 +615,8 @@ class TrainScraper:
             raw_trains.extend(trains_from_js)
             
             # Then try map features
-            if len(raw_trains) == 0:
-                trains_from_map = self.extract_trains_from_map_features()
-                raw_trains.extend(trains_from_map)
+            trains_from_map = self.extract_trains_from_map_features()
+            raw_trains.extend(trains_from_map)
             
             # Filter to Australia with detailed logging
             australian_trains = self.filter_australian_trains(raw_trains)
