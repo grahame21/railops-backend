@@ -214,6 +214,8 @@ class TrainScraper:
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains to appear...")
         
         start_time = time.time()
+        last_count = 0
+        stable_count = 0
         
         while time.time() - start_time < max_wait:
             # Check current train count
@@ -231,8 +233,8 @@ class TrainScraper:
             try:
                 current_count = self.driver.execute_script(script)
                 
-                # If we have more than just the artifact (1 feature), we have trains
-                if current_count > 10:  # Wait until we have a substantial number
+                # If count is stable and > 10, we have trains
+                if current_count > 50:  # Wait for substantial number
                     print(f"   ✅ Found {current_count} features after {int(time.time() - start_time)}s")
                     return True
                 
@@ -246,8 +248,8 @@ class TrainScraper:
             
             time.sleep(2)
         
-        print(f"   ⚠️ Timeout reached with no trains")
-        return False
+        print(f"   ⚠️ Timeout reached with only {current_count} trains")
+        return current_count > 10  # Return True if we got at least some trains
     
     def extract_trains_direct(self):
         """Extract ALL train data from ALL available sources"""
@@ -258,15 +260,12 @@ class TrainScraper:
         var seenIds = new Set();
         var sourceStats = {};
         
-        // Get ALL possible sources - including those with many features
+        // Get ALL possible sources
         var sources = [
-            'regTrainsSource',     // Registered trains
-            'unregTrainsSource',   // Unregistered trains
-            'markerSource',        // Markers
-            'arrowMarkersSource',  // Arrow markers (these have data too!)
-            'trainSource',         // Generic train source
-            'trainMarkers',        // Train markers
-            'trainPoints'          // Train points
+            'regTrainsSource',
+            'unregTrainsSource',
+            'markerSource',
+            'arrowMarkersSource'
         ];
         
         sources.forEach(function(sourceName) {
@@ -285,8 +284,8 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Parse speed - extract numeric value from strings like "5 km/h"
-                            var speedValue = props.trainSpeed || 0;
+                            // Parse speed
+                            var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
                                 var match = speedValue.match(/(\\d+\\.?\\d*)/);
@@ -297,11 +296,15 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            // Extract ALL available fields
+                            // Get the best available ID
+                            var trainId = props.trainNumber || props.trainName || 
+                                         props.serviceName || props.id || props.ID ||
+                                         sourceName + '_' + index;
+                            
+                            // Extract ALL available fields (don't skip any)
                             var trainData = {
                                 // Core identifiers
-                                'id': props.trainNumber || props.trainName || props.serviceName || 
-                                      props.id || props.ID || sourceName + '_' + index,
+                                'id': String(trainId),
                                 'train_number': props.trainNumber || '',
                                 'train_name': props.trainName || '',
                                 'service_name': props.serviceName || '',
@@ -335,7 +338,7 @@ class TrainScraper:
                                 'is_train_path': props.is_train_path || false,
                                 'is_actual_location': props.is_actual_location || false,
                                 
-                                // Source info (for debugging)
+                                // Source
                                 'source': sourceName,
                                 
                                 // Coordinates
@@ -343,13 +346,10 @@ class TrainScraper:
                                 'y': coords[1]
                             };
                             
-                            // Create unique ID - try multiple fields
-                            var uniqueId = trainData.train_number || trainData.train_name || 
-                                          trainData.service_name || trainData.id || 
-                                          sourceName + '_' + index;
-                            
-                            if (!seenIds.has(uniqueId)) {
-                                seenIds.add(uniqueId);
+                            // Keep ALL trains, even if they have minimal data
+                            // Just avoid exact duplicates
+                            if (!seenIds.has(trainId)) {
+                                seenIds.add(trainId);
                                 allTrains.push(trainData);
                             }
                         }
@@ -374,7 +374,9 @@ class TrainScraper:
             return []
     
     def extract_with_retry(self, max_retries=3):
-        """Try to extract trains multiple times if initial attempt fails"""
+        """Try to extract trains multiple times"""
+        
+        best_trains = []
         
         for attempt in range(max_retries):
             print(f"\n🔄 Extraction attempt {attempt + 1}/{max_retries}")
@@ -382,28 +384,19 @@ class TrainScraper:
             # Try direct extraction
             raw_trains = self.extract_trains_direct()
             
-            if len(raw_trains) > 100:  # Success! We have a good number of trains
-                print(f"   ✅ Successfully extracted {len(raw_trains)} trains")
-                return raw_trains
+            # Keep the best result (most trains)
+            if len(raw_trains) > len(best_trains):
+                best_trains = raw_trains
+                print(f"   📈 New best: {len(best_trains)} trains")
             
-            # If not enough trains, wait and try zooming again
-            print(f"   ⚠️ Only found {len(raw_trains)} trains, waiting and retrying...")
+            if len(best_trains) > 200:  # If we have a good number, stop
+                break
             
             if attempt < max_retries - 1:
-                # Zoom out and back in to trigger loading
-                self.driver.execute_script("""
-                    if (window.map) {
-                        var view = window.map.getView();
-                        var zoom = view.getZoom();
-                        view.setZoom(zoom - 1);
-                        setTimeout(function() {
-                            view.setZoom(zoom);
-                        }, 1000);
-                    }
-                """)
-                time.sleep(15)  # Wait for new data to load
+                print(f"   ⏳ Waiting before retry...")
+                time.sleep(15)
         
-        return raw_trains  # Return what we got, even if less than expected
+        return best_trains
     
     def webmercator_to_latlon(self, x, y):
         try:
@@ -429,9 +422,11 @@ class TrainScraper:
             else:
                 lat, lon = y, x
             
+            # Keep EVERY train with valid Australian coordinates
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
                 
+                # Avoid duplicates
                 if train_id not in seen_ids:
                     seen_ids.add(train_id)
                     australian_trains.append({
@@ -460,15 +455,20 @@ class TrainScraper:
         print(f"\n📊 Train Statistics:")
         print(f"   Total trains extracted: {len(australian_trains)}")
         
-        # Count trains with various fields
+        # Count what data we have
+        with_ids = sum(1 for t in australian_trains if t.get('id') and not t['id'].startswith('arrow'))
         with_names = sum(1 for t in australian_trains if t.get('train_name'))
         with_numbers = sum(1 for t in australian_trains if t.get('train_number'))
         with_origin = sum(1 for t in australian_trains if t.get('origin'))
         with_dest = sum(1 for t in australian_trains if t.get('destination'))
+        with_speed = sum(1 for t in australian_trains if t.get('speed', 0) > 0)
+        
+        print(f"   Trains with valid IDs: {with_ids}")
         print(f"   Trains with loco names: {with_names}")
         print(f"   Trains with train numbers: {with_numbers}")
         print(f"   Trains with origin: {with_origin}")
         print(f"   Trains with destination: {with_dest}")
+        print(f"   Trains with speed > 0: {with_speed}")
         
         return australian_trains
     
@@ -491,12 +491,11 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            # Wait for trains to actually appear (up to 2 minutes)
+            # Wait for trains to appear
             if not self.wait_for_trains(max_wait=120):
-                print("⚠️ No trains appeared within timeout")
-                return [], "timeout - no trains"
+                print("⚠️ Very few trains appeared, but continuing anyway")
             
-            # Try to extract with retries
+            # Extract with retries
             raw_trains = self.extract_with_retry(max_retries=3)
             
             print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
