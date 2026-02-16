@@ -2,10 +2,15 @@ name: Update Train Data
 
 on:
   schedule:
-    # Every 5 minutes during peak hours (6am-10pm AEST)
-    - cron: '*/5 20-13 * * *'
-    # Every 15 minutes during off-peak (10pm-6am AEST)
-    - cron: '*/15 14-19 * * *'
+    # Peak hours (6am-10pm AEST) - every 5 minutes
+    # AEST = UTC+11, so 6am AEST = 7pm UTC previous day, 10pm AEST = 9am UTC next day
+    # This requires two separate cron expressions
+    - cron: '*/5 19-23 * * *'  # 6am-10am AEST (7pm-11pm UTC)
+    - cron: '*/5 0-9 * * *'    # 10am-10pm AEST (12am-9am UTC)
+    
+    # Off-peak (10pm-6am AEST) - every 15 minutes
+    - cron: '*/15 10-18 * * *' # 10pm-6am AEST (10am-6pm UTC)
+    
   workflow_dispatch:
 
 jobs:
@@ -30,57 +35,28 @@ jobs:
           google-chrome-stable \
           xvfb \
           unzip \
-          curl \
-          jq
-    
-    - name: Check Chrome version
-      run: |
-        google-chrome --version
-        which google-chrome
+          curl
     
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
         pip install selenium requests webdriver-manager
     
-    - name: Debug - List files
-      run: |
-        pwd
-        ls -la
-        echo "--- Python files ---"
-        ls -la *.py || echo "No Python files found"
-    
-    - name: Debug - Check script syntax
-      run: |
-        python -m py_compile update_trains.py || echo "Syntax error in update_trains.py"
-    
-    - name: Run scraper with debug output
+    - name: Run scraper
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
         DISPLAY: ":99"
-        PYTHONUNBUFFERED: 1
       run: |
         # Start Xvfb
         Xvfb :99 -screen 0 1920x1080x24 &
         sleep 3
         
-        # Run with full traceback
-        python -u update_trains.py 2>&1 | tee scraper_output.log
+        # Add random delay to avoid detection
+        sleep $(( RANDOM % 60 ))
         
-        # Check exit code
-        if [ ${PIPESTATUS[0]} -ne 0 ]; then
-          echo "❌ Scraper failed with exit code ${PIPESTATUS[0]}"
-          exit ${PIPESTATUS[0]}
-        fi
-    
-    - name: Upload debug log on failure
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: scraper-debug-log
-        path: scraper_output.log
-        retention-days: 7
+        # Run the scraper
+        python update_trains.py
     
     - name: Commit and push if changed
       run: |
