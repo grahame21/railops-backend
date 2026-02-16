@@ -1276,6 +1276,14 @@
         "speed": 0,
         "origin": "Bondi Junction",
         "destination": "Cronulla via City"
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
+        "lat": -34.053248,
+        "lon": 151.150587,
+        "speed": 0,
+        "origin": "Bondi Junction",
+        "destination": "Cronulla via City"
       }
     ],
     "TNSW-1123-1778": [
@@ -4480,6 +4488,14 @@
         "speed": 0,
         "origin": "Waterfall",
         "destination": "Bondi Junction via City"
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
+        "lat": -33.89084,
+        "lon": 151.247424,
+        "speed": 0,
+        "origin": "Waterfall",
+        "destination": "Bondi Junction via City"
       }
     ],
     "TNSW-7278-2865": [
@@ -4552,6 +4568,14 @@
         "speed": 0,
         "origin": "Central",
         "destination": "Newcastle Interchange via Strathfield"
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
+        "lat": -33.88376,
+        "lon": 151.20615,
+        "speed": 0,
+        "origin": "Central",
+        "destination": "Newcastle Interchange via Strathfield"
       }
     ],
     "1290": [
@@ -4565,6 +4589,14 @@
       },
       {
         "timestamp": "2026-02-16 12:14:46",
+        "lat": -33.882259,
+        "lon": 151.207718,
+        "speed": 28,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
         "lat": -33.882259,
         "lon": 151.207718,
         "speed": 28,
@@ -4925,6 +4957,14 @@
       },
       {
         "timestamp": "2026-02-16 12:14:46",
+        "lat": -37.814209,
+        "lon": 145.233048,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
         "lat": -37.814209,
         "lon": 145.233048,
         "speed": 0,
@@ -6514,6 +6554,14 @@
         "speed": 0,
         "origin": "Richmond",
         "destination": "Leppington"
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
+        "lat": -33.83831,
+        "lon": 151.019745,
+        "speed": 0,
+        "origin": "Richmond",
+        "destination": "Leppington"
       }
     ],
     "TNSW-3096-4512": [
@@ -6581,6 +6629,14 @@
       },
       {
         "timestamp": "2026-02-16 12:14:46",
+        "lat": -33.710258,
+        "lon": 150.875473,
+        "speed": 0,
+        "origin": "Leppington",
+        "destination": "Richmond"
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
         "lat": -33.710258,
         "lon": 150.875473,
         "speed": 0,
@@ -6982,6 +7038,14 @@
         "speed": 5,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
+        "lat": -32.92568,
+        "lon": 151.730667,
+        "speed": 5,
+        "origin": "",
+        "destination": ""
       }
     ],
     "A4GTST": [
@@ -7247,6 +7311,14 @@
       },
       {
         "timestamp": "2026-02-16 12:14:46",
+        "lat": -33.88388,
+        "lon": 151.205173,
+        "speed": 2,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
         "lat": -33.88388,
         "lon": 151.205173,
         "speed": 2,
@@ -7679,6 +7751,14 @@
       },
       {
         "timestamp": "2026-02-16 12:14:46",
+        "lat": -31.951957,
+        "lon": 115.99072,
+        "speed": 4,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 12:16:43",
         "lat": -31.951957,
         "lon": 115.99072,
         "speed": 4,
@@ -8614,6 +8694,11 @@
     {
       "timestamp": "2026-02-16 12:14:46",
       "trains_seen": 478,
+      "locos_seen": 478
+    },
+    {
+      "timestamp": "2026-02-16 12:16:43",
+      "trains_seen": 10,
       "locos_seen": 478
     }
   ]
