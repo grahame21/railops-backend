@@ -2,11 +2,11 @@ name: Update Train Data
 
 on:
   schedule:
-    # Peak hours (6am-10pm AEST) - every 5 minutes with random delay
+    # Peak hours (6am-10pm AEST) - every 5 minutes
     - cron: '*/5 20-13 * * *'
     # Off-peak (10pm-6am) - every 15 minutes
     - cron: '*/15 14-19 * * *'
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   scrape:
@@ -32,7 +32,7 @@ jobs:
         pip install --upgrade pip
         pip install selenium requests
     
-    - name: Add random delay
+    - name: Add random delay (avoid detection)
       run: sleep $(( RANDOM % 120 ))
     
     - name: Run scraper
@@ -41,7 +41,7 @@ jobs:
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
       run: xvfb-run -a python update_trains.py
     
-    - name: Commit and push
+    - name: Commit and push if changed
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
