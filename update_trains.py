@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER")
+print("🚂 RAILOPS - TRAIN SCRAPER - MAXIMUM EXTRACTION")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -209,58 +209,72 @@ class TrainScraper:
         except Exception as e:
             print(f"⚠️ Could not zoom: {e}")
     
-    def wait_for_trains(self, max_wait=120):
-        """Wait until trains actually appear in the sources"""
-        print(f"\n⏳ Waiting up to {max_wait} seconds for trains to appear...")
+    def get_total_feature_count(self):
+        """Get total number of features across all sources"""
+        script = """
+        var total = 0;
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
+        sources.forEach(function(name) {
+            if (window[name] && window[name].getFeatures) {
+                total += window[name].getFeatures().length;
+            }
+        });
+        return total;
+        """
+        try:
+            return self.driver.execute_script(script)
+        except:
+            return 0
+    
+    def wait_for_max_trains(self, max_wait=180, target_count=500):
+        """Wait until we have a substantial number of trains"""
+        print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load (target: {target_count})...")
         
         start_time = time.time()
-        last_count = 0
-        stable_count = 0
+        best_count = 0
         
         while time.time() - start_time < max_wait:
-            # Check current train count
-            script = """
-            var total = 0;
-            var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
-            sources.forEach(function(name) {
-                if (window[name] && window[name].getFeatures) {
-                    total += window[name].getFeatures().length;
-                }
-            });
-            return total;
-            """
+            current_count = self.get_total_feature_count()
             
-            try:
-                current_count = self.driver.execute_script(script)
-                
-                # If count is stable and > 10, we have trains
-                if current_count > 50:  # Wait for substantial number
-                    print(f"   ✅ Found {current_count} features after {int(time.time() - start_time)}s")
-                    return True
-                
-                # Print progress every 10 seconds
-                elapsed = int(time.time() - start_time)
-                if elapsed % 10 == 0 and elapsed > 0:
-                    print(f"   Still waiting... ({current_count} features after {elapsed}s)")
-                    
-            except Exception as e:
-                pass
+            if current_count > best_count:
+                best_count = current_count
+                print(f"   📈 New peak: {current_count} features at {int(time.time() - start_time)}s")
             
-            time.sleep(2)
+            if current_count >= target_count:
+                print(f"   ✅ Reached target: {current_count} features")
+                return True
+            
+            # Every 30 seconds, try to trigger more loading
+            elapsed = int(time.time() - start_time)
+            if elapsed % 30 == 0 and elapsed > 0:
+                print(f"   Still loading... ({current_count} features, best: {best_count})")
+                # Pan and zoom to trigger loading
+                self.driver.execute_script("""
+                    if (window.map) {
+                        var view = window.map.getView();
+                        var center = view.getCenter();
+                        view.setCenter([center[0] + 10000, center[1]]);
+                        setTimeout(function() {
+                            view.setCenter(center);
+                        }, 500);
+                    }
+                """)
+            
+            time.sleep(5)
         
-        print(f"   ⚠️ Timeout reached with only {current_count} trains")
-        return current_count > 10  # Return True if we got at least some trains
+        print(f"   ⏰ Timeout reached. Best count: {best_count}")
+        return best_count > 100
     
     def extract_trains_direct(self):
-        """Extract ALL train data from ALL available sources"""
-        print("\n🔍 Extracting trains from ALL sources...")
+        """Extract EVERY train from ALL sources with NO FILTERING"""
+        print("\n🔍 Extracting ALL trains from ALL sources (no filtering)...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
         var sourceStats = {};
         
-        // Get ALL possible sources
+        // ALL possible sources
         var sources = [
             'regTrainsSource',
             'unregTrainsSource',
@@ -284,7 +298,7 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Parse speed
+                            // Parse speed from any field that might contain it
                             var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
@@ -296,12 +310,12 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            // Get the best available ID
+                            // Create a unique ID - use whatever is available
                             var trainId = props.trainNumber || props.trainName || 
                                          props.serviceName || props.id || props.ID ||
                                          sourceName + '_' + index;
                             
-                            // Extract ALL available fields (don't skip any)
+                            // Extract EVERY field we can find, even if empty
                             var trainData = {
                                 // Core identifiers
                                 'id': String(trainId),
@@ -309,10 +323,10 @@ class TrainScraper:
                                 'train_name': props.trainName || '',
                                 'service_name': props.serviceName || '',
                                 
-                                // Loco/consist info
-                                'consist_id': props.cId || '',
-                                'service_id': props.servId || '',
-                                'tr_key': props.trKey || '',
+                                // IDs from various sources
+                                'cId': props.cId || '',
+                                'servId': props.servId || '',
+                                'trKey': props.trKey || '',
                                 
                                 // Movement data
                                 'speed': speedNum,
@@ -338,65 +352,105 @@ class TrainScraper:
                                 'is_train_path': props.is_train_path || false,
                                 'is_actual_location': props.is_actual_location || false,
                                 
-                                // Source
+                                // Source metadata
                                 'source': sourceName,
+                                'feature_index': index,
                                 
                                 // Coordinates
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            // Keep ALL trains, even if they have minimal data
-                            // Just avoid exact duplicates
-                            if (!seenIds.has(trainId)) {
-                                seenIds.add(trainId);
-                                allTrains.push(trainData);
-                            }
+                            // Keep EVERY train, even duplicates from different sources
+                            // (we'll dedupe by ID later)
+                            allTrains.push(trainData);
                         }
-                    } catch(e) {}
+                    } catch(e) {
+                        // Skip problematic features
+                    }
                 });
             } catch(e) {}
         });
         
-        // Log source statistics
-        console.log('📊 Source statistics:', JSON.stringify(sourceStats));
+        // Now deduplicate by ID, keeping the version with most data
+        var uniqueTrains = {};
+        allTrains.forEach(function(train) {
+            var id = train.id;
+            if (!uniqueTrains[id] || Object.keys(train).length > Object.keys(uniqueTrains[id]).length) {
+                uniqueTrains[id] = train;
+            }
+        });
         
-        return allTrains;
+        var finalTrains = Object.values(uniqueTrains);
+        console.log('📊 Source statistics:', JSON.stringify(sourceStats));
+        console.log('📊 Raw features:', allTrains.length, 'Unique trains:', finalTrains.length);
+        
+        return finalTrains;
         """
         
         try:
             trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} trains from ALL sources")
+            print(f"   ✅ Extracted {len(trains)} unique trains from ALL sources")
             return trains
         except Exception as e:
             print(f"   ❌ Error extracting trains: {e}")
             traceback.print_exc()
             return []
     
-    def extract_with_retry(self, max_retries=3):
-        """Try to extract trains multiple times"""
+    def extract_with_multiple_passes(self):
+        """Try multiple extraction strategies"""
+        all_trains = []
         
-        best_trains = []
+        # Pass 1: Normal extraction
+        print("\n🔄 Pass 1: Standard extraction")
+        trains1 = self.extract_trains_direct()
+        all_trains.extend(trains1)
         
-        for attempt in range(max_retries):
-            print(f"\n🔄 Extraction attempt {attempt + 1}/{max_retries}")
-            
-            # Try direct extraction
-            raw_trains = self.extract_trains_direct()
-            
-            # Keep the best result (most trains)
-            if len(raw_trains) > len(best_trains):
-                best_trains = raw_trains
-                print(f"   📈 New best: {len(best_trains)} trains")
-            
-            if len(best_trains) > 200:  # If we have a good number, stop
-                break
-            
-            if attempt < max_retries - 1:
-                print(f"   ⏳ Waiting before retry...")
-                time.sleep(15)
+        # Pass 2: Pan the map to load more
+        print("\n🔄 Pass 2: Panning map to load more...")
+        self.driver.execute_script("""
+            if (window.map) {
+                var view = window.map.getView();
+                var center = view.getCenter();
+                // Pan east
+                view.setCenter([center[0] + 500000, center[1]]);
+                setTimeout(function() {
+                    // Pan west
+                    view.setCenter([center[0] - 500000, center[1]]);
+                }, 2000);
+            }
+        """)
+        time.sleep(5)
+        trains2 = self.extract_trains_direct()
+        all_trains.extend(trains2)
         
-        return best_trains
+        # Pass 3: Zoom out and in
+        print("\n🔄 Pass 3: Zooming to load more...")
+        self.driver.execute_script("""
+            if (window.map) {
+                var view = window.map.getView();
+                var zoom = view.getZoom();
+                view.setZoom(zoom - 2);
+                setTimeout(function() {
+                    view.setZoom(zoom);
+                }, 3000);
+            }
+        """)
+        time.sleep(5)
+        trains3 = self.extract_trains_direct()
+        all_trains.extend(trains3)
+        
+        # Deduplicate by ID
+        unique = {}
+        for train in all_trains:
+            tid = train.get('id', '')
+            if tid not in unique:
+                unique[tid] = train
+        
+        final_trains = list(unique.values())
+        print(f"\n📊 Combined results: {len(all_trains)} raw, {len(final_trains)} unique")
+        
+        return final_trains
     
     def webmercator_to_latlon(self, x, y):
         try:
@@ -417,6 +471,7 @@ class TrainScraper:
             x = t.get('x', 0)
             y = t.get('y', 0)
             
+            # Convert coordinates
             if abs(x) > 180 or abs(y) > 90:
                 lat, lon = self.webmercator_to_latlon(x, y)
             else:
@@ -426,7 +481,7 @@ class TrainScraper:
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
                 
-                # Avoid duplicates
+                # Avoid exact duplicates
                 if train_id not in seen_ids:
                     seen_ids.add(train_id)
                     australian_trains.append({
@@ -434,9 +489,9 @@ class TrainScraper:
                         'train_number': t.get('train_number', ''),
                         'train_name': t.get('train_name', ''),
                         'service_name': t.get('service_name', ''),
-                        'consist_id': t.get('consist_id', ''),
-                        'service_id': t.get('service_id', ''),
-                        'tr_key': t.get('tr_key', ''),
+                        'cId': t.get('cId', ''),
+                        'servId': t.get('servId', ''),
+                        'trKey': t.get('trKey', ''),
                         'speed': round(float(t.get('speed', 0)), 1),
                         'heading': round(float(t.get('heading', 0)), 1),
                         'km': t.get('km', ''),
@@ -453,17 +508,15 @@ class TrainScraper:
                     })
         
         print(f"\n📊 Train Statistics:")
-        print(f"   Total trains extracted: {len(australian_trains)}")
+        print(f"   Total trains in Australia: {len(australian_trains)}")
         
         # Count what data we have
-        with_ids = sum(1 for t in australian_trains if t.get('id') and not t['id'].startswith('arrow'))
         with_names = sum(1 for t in australian_trains if t.get('train_name'))
         with_numbers = sum(1 for t in australian_trains if t.get('train_number'))
         with_origin = sum(1 for t in australian_trains if t.get('origin'))
         with_dest = sum(1 for t in australian_trains if t.get('destination'))
         with_speed = sum(1 for t in australian_trains if t.get('speed', 0) > 0)
         
-        print(f"   Trains with valid IDs: {with_ids}")
         print(f"   Trains with loco names: {with_names}")
         print(f"   Trains with train numbers: {with_numbers}")
         print(f"   Trains with origin: {with_origin}")
@@ -491,12 +544,12 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            # Wait for trains to appear
-            if not self.wait_for_trains(max_wait=120):
-                print("⚠️ Very few trains appeared, but continuing anyway")
+            # Wait for maximum trains
+            if not self.wait_for_max_trains(max_wait=180, target_count=500):
+                print("⚠️ Could not reach target count, proceeding with what we have")
             
-            # Extract with retries
-            raw_trains = self.extract_with_retry(max_retries=3)
+            # Extract with multiple passes
+            raw_trains = self.extract_with_multiple_passes()
             
             print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
             
@@ -510,7 +563,6 @@ class TrainScraper:
                 print(f"   Destination: {sample.get('destination')}")
                 print(f"   Speed: {sample.get('speed')}")
                 print(f"   Source: {sample.get('source')}")
-                print(f"   Location: ({sample.get('x')}, {sample.get('y')})")
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
@@ -525,9 +577,7 @@ class TrainScraper:
                 print(f"   Origin: {sample['origin']}")
                 print(f"   Destination: {sample['destination']}")
                 print(f"   Speed: {sample['speed']} km/h")
-                print(f"   Description: {sample['description']}")
                 print(f"   Source: {sample['source']}")
-                print(f"   Location: {sample['lat']:.4f}, {sample['lon']:.4f}")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
