@@ -219,7 +219,7 @@ class TrainScraper:
             # Check current train count
             script = """
             var total = 0;
-            var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource'];
+            var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
             sources.forEach(function(name) {
                 if (window[name] && window[name].getFeatures) {
                     total += window[name].getFeatures().length;
@@ -232,7 +232,7 @@ class TrainScraper:
                 current_count = self.driver.execute_script(script)
                 
                 # If we have more than just the artifact (1 feature), we have trains
-                if current_count > 1:
+                if current_count > 10:  # Wait until we have a substantial number
                     print(f"   ✅ Found {current_count} features after {int(time.time() - start_time)}s")
                     return True
                 
@@ -250,14 +250,24 @@ class TrainScraper:
         return False
     
     def extract_trains_direct(self):
-        """Extract ALL train data with all available fields"""
-        print("\n🔍 Extracting trains directly from sources...")
+        """Extract ALL train data from ALL available sources"""
+        print("\n🔍 Extracting trains from ALL sources...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
+        var sourceStats = {};
         
-        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource'];
+        // Get ALL possible sources - including those with many features
+        var sources = [
+            'regTrainsSource',     // Registered trains
+            'unregTrainsSource',   // Unregistered trains
+            'markerSource',        // Markers
+            'arrowMarkersSource',  // Arrow markers (these have data too!)
+            'trainSource',         // Generic train source
+            'trainMarkers',        // Train markers
+            'trainPoints'          // Train points
+        ];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
@@ -265,6 +275,7 @@ class TrainScraper:
             
             try {
                 var features = source.getFeatures();
+                sourceStats[sourceName] = features.length;
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -278,7 +289,6 @@ class TrainScraper:
                             var speedValue = props.trainSpeed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
-                                // Extract numbers from string (e.g., "5 km/h" -> 5)
                                 var match = speedValue.match(/(\\d+\\.?\\d*)/);
                                 if (match) {
                                     speedNum = parseFloat(match[1]);
@@ -290,7 +300,8 @@ class TrainScraper:
                             // Extract ALL available fields
                             var trainData = {
                                 // Core identifiers
-                                'id': props.trainNumber || props.trainName || props.serviceName || sourceName + '_' + index,
+                                'id': props.trainNumber || props.trainName || props.serviceName || 
+                                      props.id || props.ID || sourceName + '_' + index,
                                 'train_number': props.trainNumber || '',
                                 'train_name': props.trainName || '',
                                 'service_name': props.serviceName || '',
@@ -300,7 +311,7 @@ class TrainScraper:
                                 'service_id': props.servId || '',
                                 'tr_key': props.trKey || '',
                                 
-                                // Movement data - use parsed numeric speed
+                                // Movement data
                                 'speed': speedNum,
                                 'speed_raw': props.trainSpeed || 0,
                                 'heading': props.heading || props.Heading || 0,
@@ -324,13 +335,18 @@ class TrainScraper:
                                 'is_train_path': props.is_train_path || false,
                                 'is_actual_location': props.is_actual_location || false,
                                 
+                                // Source info (for debugging)
+                                'source': sourceName,
+                                
                                 // Coordinates
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            // Create unique ID
-                            var uniqueId = trainData.train_number || trainData.train_name || trainData.service_name || sourceName + '_' + index;
+                            // Create unique ID - try multiple fields
+                            var uniqueId = trainData.train_number || trainData.train_name || 
+                                          trainData.service_name || trainData.id || 
+                                          sourceName + '_' + index;
                             
                             if (!seenIds.has(uniqueId)) {
                                 seenIds.add(uniqueId);
@@ -342,12 +358,15 @@ class TrainScraper:
             } catch(e) {}
         });
         
+        // Log source statistics
+        console.log('📊 Source statistics:', JSON.stringify(sourceStats));
+        
         return allTrains;
         """
         
         try:
             trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} trains from OpenLayers sources")
+            print(f"   ✅ Extracted {len(trains)} trains from ALL sources")
             return trains
         except Exception as e:
             print(f"   ❌ Error extracting trains: {e}")
@@ -363,11 +382,11 @@ class TrainScraper:
             # Try direct extraction
             raw_trains = self.extract_trains_direct()
             
-            if len(raw_trains) > 1:  # Success! We have trains
+            if len(raw_trains) > 100:  # Success! We have a good number of trains
                 print(f"   ✅ Successfully extracted {len(raw_trains)} trains")
                 return raw_trains
             
-            # If no trains, wait and try zooming again
+            # If not enough trains, wait and try zooming again
             print(f"   ⚠️ Only found {len(raw_trains)} trains, waiting and retrying...")
             
             if attempt < max_retries - 1:
@@ -382,9 +401,9 @@ class TrainScraper:
                         }, 1000);
                     }
                 """)
-                time.sleep(10)  # Wait for new data to load
+                time.sleep(15)  # Wait for new data to load
         
-        return []  # All retries failed
+        return raw_trains  # Return what we got, even if less than expected
     
     def webmercator_to_latlon(self, x, y):
         try:
@@ -401,10 +420,6 @@ class TrainScraper:
         australian_trains = []
         seen_ids = set()
         
-        real_count = 0
-        generic_count = 0
-        loco_count = 0
-        
         for t in raw_trains:
             x = t.get('x', 0)
             y = t.get('y', 0)
@@ -416,13 +431,6 @@ class TrainScraper:
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
-                
-                if t.get('train_name'):
-                    loco_count += 1
-                if t.get('train_number') or t.get('train_name'):
-                    real_count += 1
-                else:
-                    generic_count += 1
                 
                 if train_id not in seen_ids:
                     seen_ids.add(train_id)
@@ -443,15 +451,24 @@ class TrainScraper:
                         'date': t.get('date', ''),
                         'time': t.get('time', ''),
                         'tooltip': t.get('tooltip', ''),
+                        'source': t.get('source', ''),
                         'is_train': t.get('is_train', False),
                         'lat': lat,
                         'lon': lon
                     })
         
         print(f"\n📊 Train Statistics:")
-        print(f"   Trains with loco names (train_name): {loco_count}")
-        print(f"   Trains with train numbers: {real_count}")
-        print(f"   Generic IDs: {generic_count}")
+        print(f"   Total trains extracted: {len(australian_trains)}")
+        
+        # Count trains with various fields
+        with_names = sum(1 for t in australian_trains if t.get('train_name'))
+        with_numbers = sum(1 for t in australian_trains if t.get('train_number'))
+        with_origin = sum(1 for t in australian_trains if t.get('origin'))
+        with_dest = sum(1 for t in australian_trains if t.get('destination'))
+        print(f"   Trains with loco names: {with_names}")
+        print(f"   Trains with train numbers: {with_numbers}")
+        print(f"   Trains with origin: {with_origin}")
+        print(f"   Trains with destination: {with_dest}")
         
         return australian_trains
     
@@ -493,6 +510,7 @@ class TrainScraper:
                 print(f"   Origin: {sample.get('origin')}")
                 print(f"   Destination: {sample.get('destination')}")
                 print(f"   Speed: {sample.get('speed')}")
+                print(f"   Source: {sample.get('source')}")
                 print(f"   Location: ({sample.get('x')}, {sample.get('y')})")
             
             australian_trains = self.filter_australian_trains(raw_trains)
@@ -509,6 +527,7 @@ class TrainScraper:
                 print(f"   Destination: {sample['destination']}")
                 print(f"   Speed: {sample['speed']} km/h")
                 print(f"   Description: {sample['description']}")
+                print(f"   Source: {sample['source']}")
                 print(f"   Location: {sample['lat']:.4f}, {sample['lon']:.4f}")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
