@@ -12,7 +12,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, WebDriverException
 
 print("=" * 60)
 print("🚂 RAILOPS - TRAIN SCRAPER")
@@ -38,7 +37,7 @@ class TrainScraper:
         
     def setup_driver(self):
         print("\n🔧 Setting up Chrome driver...")
-        for attempt in range(3):  # Retry 3 times
+        for attempt in range(3):
             try:
                 chrome_options = Options()
                 chrome_options.add_argument('--no-sandbox')
@@ -48,7 +47,6 @@ class TrainScraper:
                 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
                 chrome_options.add_argument('--headless=new')
                 
-                # Rotate user agents
                 user_agents = [
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
@@ -67,9 +65,7 @@ class TrainScraper:
                 print(f"❌ Attempt {attempt + 1} failed: {e}")
                 if attempt < 2:
                     time.sleep(5)
-                else:
-                    traceback.print_exc()
-                    return False
+        return False
     
     def save_cookies(self):
         try:
@@ -186,7 +182,6 @@ class TrainScraper:
             
         except Exception as e:
             print(f"❌ Login error: {e}")
-            traceback.print_exc()
             return False
     
     def login(self):
@@ -196,11 +191,7 @@ class TrainScraper:
             if self.check_session_valid():
                 print("✅ Using saved session")
                 return True
-            else:
-                print("⚠️ Saved session invalid, doing fresh login")
-                return self.force_fresh_login()
-        else:
-            return self.force_fresh_login()
+        return self.force_fresh_login()
     
     def zoom_to_australia(self):
         self.random_delay(2, 5)
@@ -217,50 +208,65 @@ class TrainScraper:
         except Exception as e:
             print(f"⚠️ Could not zoom: {e}")
     
-    def get_feature_count(self):
+    def get_feature_counts(self):
+        """Get feature counts from ALL sources"""
         script = """
-        var total = 0;
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
+        var counts = {};
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
         sources.forEach(function(name) {
             if (window[name] && window[name].getFeatures) {
-                total += window[name].getFeatures().length;
+                counts[name] = window[name].getFeatures().length;
+            } else {
+                counts[name] = 0;
             }
         });
-        return total;
+        return counts;
         """
         try:
             return self.driver.execute_script(script)
         except:
-            return 0
+            return {}
     
     def wait_for_trains(self, max_wait=180):
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
-        
         start_time = time.time()
+        best_count = 0
         
         while time.time() - start_time < max_wait:
-            count = self.get_feature_count()
+            counts = self.get_feature_counts()
+            total = sum(counts.values())
             
-            if count > 10:
-                print(f"   ✅ Found {count} trains after {int(time.time() - start_time)}s")
+            if total > best_count:
+                best_count = total
+                print(f"   📈 Found {total} features total")
+                for src, cnt in counts.items():
+                    if cnt > 0:
+                        print(f"      - {src}: {cnt}")
+            
+            if total > 100:
+                print(f"   ✅ Proceeding with {total} features")
                 return True
-            
-            if int(time.time() - start_time) % 30 == 0:
-                print(f"   Still waiting... ({count} trains)")
             
             time.sleep(5)
         
-        print(f"   ⏰ Timeout. Found {count} trains")
-        return count > 0
+        print(f"   ⏰ Timeout. Got {best_count} features")
+        return best_count > 50
     
-    def extract_real_trains(self):
-        print("\n🔍 Extracting REAL trains...")
+    def extract_all_trains(self):
+        """Extract ALL trains from ALL sources"""
+        print("\n🔍 Extracting ALL trains from ALL sources...")
         
         script = """
-        var realTrains = [];
+        var allTrains = [];
         var seenIds = new Set();
         
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
+        // ALL possible sources that might contain trains
+        var sources = [
+            'regTrainsSource',
+            'unregTrainsSource', 
+            'markerSource',
+            'arrowMarkersSource'
+        ];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
@@ -268,6 +274,7 @@ class TrainScraper:
             
             try {
                 var features = source.getFeatures();
+                console.log(sourceName + ' has ' + features.length + ' features');
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -277,46 +284,55 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Get the real train identifiers
-                            var trainNumber = props.trainNumber || '';
-                            var trainName = props.trainName || '';
-                            var origin = props.serviceFrom || '';
-                            var destination = props.serviceTo || '';
-                            
-                            // Only keep trains with real data
-                            if (!trainNumber && !trainName && !origin && !destination) {
-                                return;
-                            }
-                            
                             // Parse speed
-                            var speedValue = props.trainSpeed || 0;
+                            var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
-                                var match = speedValue.match(/(\\d+)/);
-                                if (match) speedNum = parseInt(match[0]);
-                            } else {
-                                speedNum = parseInt(speedValue) || 0;
+                                var match = speedValue.match(/(\\d+\\.?\\d*)/);
+                                if (match) speedNum = parseFloat(match[1]);
+                            } else if (typeof speedValue === 'number') {
+                                speedNum = speedValue;
                             }
                             
-                            var displayId = trainName || trainNumber;
+                            // Get identifiers - try all possible fields
+                            var trainNumber = props.trainNumber || props.train_number || '';
+                            var trainName = props.trainName || props.train_name || '';
+                            var serviceName = props.serviceName || props.service_name || '';
+                            var origin = props.serviceFrom || props.origin || '';
+                            var destination = props.serviceTo || props.destination || '';
+                            var description = props.serviceDesc || props.description || '';
+                            
+                            // Create a unique ID - use whatever we can find
+                            var displayId = trainName || trainNumber || serviceName || sourceName + '_' + index;
+                            
+                            // Skip only obvious non-trains (arrow markers with no data)
+                            if (sourceName === 'arrowMarkersSource' && !trainNumber && !trainName && !origin) {
+                                return;
+                            }
                             
                             var trainData = {
                                 'id': displayId,
                                 'train_number': trainNumber,
                                 'train_name': trainName,
+                                'service_name': serviceName,
                                 'speed': speedNum,
                                 'origin': origin,
                                 'destination': destination,
-                                'description': props.serviceDesc || '',
-                                'km': props.trainKM || '',
-                                'time': props.trainTime || '',
+                                'description': description,
+                                'km': props.trainKM || props.km || '',
+                                'time': props.trainTime || props.time || '',
+                                'cId': props.cId || '',
+                                'servId': props.servId || '',
+                                'trKey': props.trKey || '',
+                                'source': sourceName,
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
+                            // Avoid duplicates
                             if (!seenIds.has(displayId)) {
                                 seenIds.add(displayId);
-                                realTrains.push(trainData);
+                                allTrains.push(trainData);
                             }
                         }
                     } catch(e) {}
@@ -324,15 +340,16 @@ class TrainScraper:
             } catch(e) {}
         });
         
-        return realTrains;
+        console.log('Total unique trains extracted: ' + allTrains.length);
+        return allTrains;
         """
         
         try:
             trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} REAL trains")
+            print(f"   ✅ Extracted {len(trains)} trains from ALL sources")
             return trains
         except Exception as e:
-            print(f"   ❌ Error: {e}")
+            print(f"   ❌ Error extracting trains: {e}")
             return []
     
     def webmercator_to_latlon(self, x, y):
@@ -368,12 +385,17 @@ class TrainScraper:
                         'id': train_id,
                         'train_number': t.get('train_number', ''),
                         'train_name': t.get('train_name', ''),
+                        'service_name': t.get('service_name', ''),
                         'speed': t.get('speed', 0),
                         'origin': t.get('origin', ''),
                         'destination': t.get('destination', ''),
                         'description': t.get('description', ''),
                         'km': t.get('km', ''),
                         'time': t.get('time', ''),
+                        'cId': t.get('cId', ''),
+                        'servId': t.get('servId', ''),
+                        'trKey': t.get('trKey', ''),
+                        'source': t.get('source', ''),
                         'lat': lat,
                         'lon': lon
                     })
@@ -403,7 +425,7 @@ class TrainScraper:
             if not self.wait_for_trains(max_wait=180):
                 print("⚠️ Fewer trains than expected")
             
-            raw_trains = self.extract_real_trains()
+            raw_trains = self.extract_all_trains()
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
@@ -419,20 +441,18 @@ class TrainScraper:
                 print("👋 Browser closed")
 
 def write_output(trains, note=""):
-    if len(trains) > 0:
+    if trains:
         print(f"\n📝 Writing {len(trains)} trains")
         payload = {
             "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
             "note": note,
             "trains": trains
         }
-        
-        try:
-            with open(OUT_FILE, "w", encoding="utf-8") as f:
-                json.dump(payload, f, ensure_ascii=False, indent=2)
-            print(f"✅ Output written")
-        except Exception as e:
-            print(f"❌ Failed to write: {e}")
+        with open(OUT_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        print(f"✅ Output written")
+    else:
+        print("\n⚠️ No trains to write")
 
 def main():
     print("\n🏁 Starting...")
