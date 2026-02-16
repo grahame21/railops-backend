@@ -1624,14 +1624,6 @@
     ],
     "NR95": [
       {
-        "timestamp": "2026-02-16 12:05:08",
-        "lat": -33.883317,
-        "lon": 151.062453,
-        "speed": 1,
-        "origin": "Kewdale",
-        "destination": "SFT (Chullora)"
-      },
-      {
         "timestamp": "2026-02-16 12:14:46",
         "lat": -33.883317,
         "lon": 151.062453,
@@ -2417,6 +2409,14 @@
       },
       {
         "timestamp": "2026-02-16 21:56:02",
+        "lat": -33.888513,
+        "lon": 151.050907,
+        "speed": 13,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
         "lat": -33.888513,
         "lon": 151.050907,
         "speed": 13,
@@ -3074,14 +3074,6 @@
     ],
     "TSRS036": [
       {
-        "timestamp": "2026-02-16 12:05:08",
-        "lat": -33.777168,
-        "lon": 151.117523,
-        "speed": 0,
-        "origin": "",
-        "destination": ""
-      },
-      {
         "timestamp": "2026-02-16 12:14:46",
         "lat": -33.777168,
         "lon": 151.117523,
@@ -3867,6 +3859,14 @@
       },
       {
         "timestamp": "2026-02-16 21:56:02",
+        "lat": -33.914131,
+        "lon": 151.166657,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
         "lat": -33.914131,
         "lon": 151.166657,
         "speed": 0,
@@ -6850,14 +6850,6 @@
     ],
     "VLINE-8161": [
       {
-        "timestamp": "2026-02-16 12:05:08",
-        "lat": -37.817799,
-        "lon": 144.951614,
-        "speed": 0,
-        "origin": "",
-        "destination": ""
-      },
-      {
         "timestamp": "2026-02-16 12:14:46",
         "lat": -37.817799,
         "lon": 144.951614,
@@ -7643,6 +7635,14 @@
       },
       {
         "timestamp": "2026-02-16 21:56:02",
+        "lat": -37.539711,
+        "lon": 143.819748,
+        "speed": 11,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
         "lat": -37.539711,
         "lon": 143.819748,
         "speed": 11,
@@ -12150,6 +12150,14 @@
         "speed": 0,
         "origin": "Parramatta",
         "destination": "City Circle "
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
+        "lat": -33.895799,
+        "lon": 151.189158,
+        "speed": 0,
+        "origin": "Parramatta",
+        "destination": "City Circle "
       }
     ],
     "1305": [
@@ -12931,6 +12939,14 @@
       },
       {
         "timestamp": "2026-02-16 21:56:02",
+        "lat": -33.910332,
+        "lon": 151.140106,
+        "speed": 2,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
         "lat": -33.910332,
         "lon": 151.140106,
         "speed": 2,
@@ -13722,6 +13738,14 @@
         "speed": 0,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
+        "lat": -33.74883,
+        "lon": 150.689751,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
       }
     ],
     "MM-896M": [
@@ -14503,6 +14527,14 @@
       },
       {
         "timestamp": "2026-02-16 21:56:02",
+        "lat": -37.605091,
+        "lon": 145.100357,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
         "lat": -37.605091,
         "lon": 145.100357,
         "speed": 0,
@@ -15294,6 +15326,14 @@
         "speed": 0,
         "origin": "North Shore",
         "destination": "Hornsby and Berowra via City and Strathfield"
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
+        "lat": -33.692638,
+        "lon": 151.104965,
+        "speed": 0,
+        "origin": "North Shore",
+        "destination": "Hornsby and Berowra via City and Strathfield"
       }
     ],
     "MM-378M": [
@@ -16075,6 +16115,14 @@
       },
       {
         "timestamp": "2026-02-16 21:56:02",
+        "lat": -37.599522,
+        "lon": 144.944275,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
         "lat": -37.599522,
         "lon": 144.944275,
         "speed": 0,
@@ -16866,6 +16914,14 @@
         "speed": 13,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 22:01:06",
+        "lat": -33.888603,
+        "lon": 151.050453,
+        "speed": 13,
+        "origin": "",
+        "destination": ""
       }
     ]
   },
@@ -17392,6 +17448,11 @@
     },
     {
       "timestamp": "2026-02-16 21:56:02",
+      "trains_seen": 10,
+      "locos_seen": 490
+    },
+    {
+      "timestamp": "2026-02-16 22:01:06",
       "trains_seen": 10,
       "locos_seen": 490
     }
