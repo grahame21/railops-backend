@@ -7,11 +7,23 @@ import math
 import pickle
 import random
 import traceback
+import signal
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+# Timeout handling
+class TimeoutException(Exception):
+    pass
+
+def timeout_handler(signum, frame):
+    raise TimeoutException("Scraper timed out after 9 minutes")
+
+# Set timeout
+signal.signal(signal.SIGALRM, timeout_handler)
+signal.alarm(540)  # 9 minutes
 
 print("=" * 60)
 print("🚂 RAILOPS - TRAIN SCRAPER")
@@ -47,7 +59,6 @@ class TrainScraper:
                 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
                 chrome_options.add_argument('--headless=new')
                 
-                # Add a more realistic user agent
                 user_agents = [
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
@@ -100,12 +111,10 @@ class TrainScraper:
     def check_login_success(self):
         """Verify we're actually logged in and seeing the map"""
         try:
-            # Check if we're on the login page
             if "login" in self.driver.current_url.lower():
                 print("❌ Still on login page")
                 return False
             
-            # Check if map exists
             map_exists = self.driver.execute_script("return typeof window.map !== 'undefined'")
             if not map_exists:
                 print("❌ Map not loaded")
@@ -129,7 +138,6 @@ class TrainScraper:
         self.random_delay(2, 5)
         
         try:
-            # Wait for login form
             username = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
             )
@@ -150,7 +158,6 @@ class TrainScraper:
             
             self.random_delay(1, 3)
             
-            # Click login button
             self.driver.execute_script("""
                 var tables = document.getElementsByClassName('popup_table');
                 for(var i = 0; i < tables.length; i++) {
@@ -168,10 +175,8 @@ class TrainScraper:
             """)
             print("✅ Login button clicked")
             
-            # Wait for login to process
             time.sleep(8)
             
-            # Close warning if it appears
             try:
                 self.driver.execute_script("""
                     var paths = document.getElementsByTagName('path');
@@ -192,7 +197,6 @@ class TrainScraper:
             
             time.sleep(3)
             
-            # Verify login worked
             if self.check_login_success():
                 self.save_cookies()
                 return True
@@ -206,7 +210,6 @@ class TrainScraper:
             return False
     
     def login(self):
-        # Try cookies first
         if self.load_cookies():
             self.driver.get(TF_LOGIN_URL)
             self.random_delay(3, 6)
@@ -215,8 +218,6 @@ class TrainScraper:
                 return True
             else:
                 print("⚠️ Saved session invalid")
-        
-        # Fall back to fresh login
         return self.force_fresh_login()
     
     def zoom_to_australia(self):
@@ -235,7 +236,6 @@ class TrainScraper:
             print(f"⚠️ Could not zoom: {e}")
     
     def get_all_feature_counts(self):
-        """Get feature counts from ALL sources"""
         script = """
         var counts = {};
         var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
@@ -269,13 +269,12 @@ class TrainScraper:
                     if cnt > 0:
                         print(f"      - {src}: {cnt}")
             
-            if total > 10:  # More than just the artifact
+            if total > 10:
                 print(f"   ✅ Proceeding with {total} features")
                 return True
             
-            # Every 30 seconds, try to trigger loading by panning
             elapsed = time.time() - start_time
-            if elapsed > 30 and elapsed % 30 < 2:
+            if elapsed > 30 and int(elapsed) % 30 < 2:
                 print("   🔄 Panning map to trigger loading...")
                 self.driver.execute_script("""
                     if (window.map) {
@@ -294,14 +293,12 @@ class TrainScraper:
         return best_count > 5
     
     def extract_all_trains(self):
-        """Extract ALL trains from ALL sources"""
         print("\n🔍 Extracting ALL trains from ALL sources...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
         
-        // ALL possible sources that might contain trains
         var sources = [
             'regTrainsSource',
             'unregTrainsSource', 
@@ -315,7 +312,6 @@ class TrainScraper:
             
             try {
                 var features = source.getFeatures();
-                console.log(sourceName + ' has ' + features.length + ' features');
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -325,7 +321,6 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Parse speed
                             var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
@@ -335,7 +330,6 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            // Get identifiers - try all possible fields
                             var trainNumber = props.trainNumber || props.train_number || '';
                             var trainName = props.trainName || props.train_name || '';
                             var serviceName = props.serviceName || props.service_name || '';
@@ -343,10 +337,8 @@ class TrainScraper:
                             var destination = props.serviceTo || props.destination || '';
                             var description = props.serviceDesc || props.description || '';
                             
-                            // Create a unique ID - use whatever we can find
                             var displayId = trainName || trainNumber || serviceName || sourceName + '_' + index;
                             
-                            // Skip only obvious non-trains (arrow markers with no data)
                             if (sourceName === 'arrowMarkersSource' && !trainNumber && !trainName && !origin) {
                                 return;
                             }
@@ -370,7 +362,6 @@ class TrainScraper:
                                 'y': coords[1]
                             };
                             
-                            // Avoid duplicates
                             if (!seenIds.has(displayId)) {
                                 seenIds.add(displayId);
                                 allTrains.push(trainData);
@@ -381,7 +372,6 @@ class TrainScraper:
             } catch(e) {}
         });
         
-        console.log('Total unique trains extracted: ' + allTrains.length);
         return allTrains;
         """
         
@@ -497,9 +487,13 @@ def write_output(trains, note=""):
 
 def main():
     print("\n🏁 Starting...")
-    scraper = TrainScraper()
-    trains, note = scraper.run()
-    write_output(trains, note)
+    try:
+        scraper = TrainScraper()
+        trains, note = scraper.run()
+        write_output(trains, note)
+    except TimeoutException as e:
+        print(f"❌ {e}")
+        sys.exit(1)
     print("\n✅ Done")
 
 if __name__ == "__main__":
