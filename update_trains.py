@@ -209,6 +209,46 @@ class TrainScraper:
         except Exception as e:
             print(f"⚠️ Could not zoom: {e}")
     
+    def wait_for_trains(self, max_wait=120):
+        """Wait until trains actually appear in the sources"""
+        print(f"\n⏳ Waiting up to {max_wait} seconds for trains to appear...")
+        
+        start_time = time.time()
+        
+        while time.time() - start_time < max_wait:
+            # Check current train count
+            script = """
+            var total = 0;
+            var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource'];
+            sources.forEach(function(name) {
+                if (window[name] && window[name].getFeatures) {
+                    total += window[name].getFeatures().length;
+                }
+            });
+            return total;
+            """
+            
+            try:
+                current_count = self.driver.execute_script(script)
+                
+                # If we have more than just the artifact (1 feature), we have trains
+                if current_count > 1:
+                    print(f"   ✅ Found {current_count} features after {int(time.time() - start_time)}s")
+                    return True
+                
+                # Print progress every 10 seconds
+                elapsed = int(time.time() - start_time)
+                if elapsed % 10 == 0 and elapsed > 0:
+                    print(f"   Still waiting... ({current_count} features after {elapsed}s)")
+                    
+            except Exception as e:
+                pass
+            
+            time.sleep(2)
+        
+        print(f"   ⚠️ Timeout reached with no trains")
+        return False
+    
     def extract_trains_direct(self):
         """Extract train data with real IDs prioritized"""
         print("\n🔍 Extracting trains directly from sources...")
@@ -216,7 +256,6 @@ class TrainScraper:
         script = """
         var allTrains = [];
         var seenIds = new Set();
-        var allProperties = {}; // Track all property names we see
         
         var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource'];
         
@@ -232,12 +271,6 @@ class TrainScraper:
                         var props = feature.getProperties();
                         var geom = feature.getGeometry();
                         
-                        // Track ALL property names
-                        var propNames = Object.keys(props);
-                        propNames.forEach(function(name) {
-                            allProperties[name] = (allProperties[name] || 0) + 1;
-                        });
-                        
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
@@ -249,8 +282,7 @@ class TrainScraper:
                             var locoCandidates = ['loco', 'Loco', 'unit', 'Unit', 'engine', 'Engine', 
                                                  'locoid', 'LocoId', 'locomotive', 'Locomotive',
                                                  'engine_number', 'EngineNumber', 'road_number', 'RoadNumber',
-                                                 'reporting_marks', 'ReportingMarks', 'power', 'Power',
-                                                 'consist', 'Consist', 'traction', 'Traction'];
+                                                 'reporting_marks', 'ReportingMarks', 'power', 'Power'];
                             
                             locoCandidates.forEach(function(candidate) {
                                 if (props[candidate] && !locoNumber) {
@@ -261,25 +293,13 @@ class TrainScraper:
                             // Check all possible train ID fields
                             var trainCandidates = ['train_id', 'trainId', 'train_number', 'trainNumber',
                                                   'service', 'Service', 'name', 'NAME', 'id', 'ID',
-                                                  'train', 'Train', 'service_code', 'ServiceCode',
-                                                  'trip', 'Trip', 'run', 'Run', 'trip_number', 'TripNumber'];
+                                                  'train', 'Train', 'service_code', 'ServiceCode'];
                             
                             trainCandidates.forEach(function(candidate) {
                                 if (props[candidate] && !trainId) {
                                     trainId = String(props[candidate]);
                                 }
                             });
-                            
-                            // If no ID found, try any property that looks like an identifier
-                            if (!locoNumber && !trainId) {
-                                for (var key in props) {
-                                    var val = props[key];
-                                    if (val && typeof val === 'string' && val.length > 2 && val.length < 20) {
-                                        // This might be an identifier
-                                        if (!trainId) trainId = val;
-                                    }
-                                }
-                            }
                             
                             // Use loco as primary if available
                             var primaryId = locoNumber || trainId || sourceName + '_' + index;
@@ -320,31 +340,49 @@ class TrainScraper:
             } catch(e) {}
         });
         
-        // Return both trains and property list
-        return {
-            'trains': allTrains,
-            'properties': allProperties
-        };
+        return allTrains;
         """
         
         try:
-            result = self.driver.execute_script(script)
-            trains = result.get('trains', [])
-            properties = result.get('properties', {})
-            
+            trains = self.driver.execute_script(script)
             print(f"   ✅ Extracted {len(trains)} trains from OpenLayers sources")
-            print(f"\n📊 ALL PROPERTIES FOUND IN TRAIN DATA:")
-            if properties:
-                for prop, count in sorted(properties.items()):
-                    print(f"   - {prop}: appears in {count} features")
-            else:
-                print("   No properties found - train data might be empty")
-            
             return trains
         except Exception as e:
             print(f"   ❌ Error extracting trains: {e}")
             traceback.print_exc()
             return []
+    
+    def extract_with_retry(self, max_retries=3):
+        """Try to extract trains multiple times if initial attempt fails"""
+        
+        for attempt in range(max_retries):
+            print(f"\n🔄 Extraction attempt {attempt + 1}/{max_retries}")
+            
+            # Try direct extraction
+            raw_trains = self.extract_trains_direct()
+            
+            if len(raw_trains) > 1:  # Success! We have trains
+                print(f"   ✅ Successfully extracted {len(raw_trains)} trains")
+                return raw_trains
+            
+            # If no trains, wait and try zooming again
+            print(f"   ⚠️ Only found {len(raw_trains)} trains, waiting and retrying...")
+            
+            if attempt < max_retries - 1:
+                # Zoom out and back in to trigger loading
+                self.driver.execute_script("""
+                    if (window.map) {
+                        var view = window.map.getView();
+                        var zoom = view.getZoom();
+                        view.setZoom(zoom - 1);
+                        setTimeout(function() {
+                            view.setZoom(zoom);
+                        }, 1000);
+                    }
+                """)
+                time.sleep(10)  # Wait for new data to load
+        
+        return []  # All retries failed
     
     def webmercator_to_latlon(self, x, y):
         try:
@@ -432,10 +470,14 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            print("⏳ Waiting 60 seconds for trains to load...")
-            time.sleep(60)
+            # Wait for trains to actually appear (up to 2 minutes)
+            if not self.wait_for_trains(max_wait=120):
+                print("⚠️ No trains appeared within timeout")
+                # Return empty but don't overwrite existing data
+                return [], "timeout - no trains"
             
-            raw_trains = self.extract_trains_direct()
+            # Try to extract with retries
+            raw_trains = self.extract_with_retry(max_retries=3)
             
             print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
             
@@ -476,6 +518,27 @@ class TrainScraper:
                 print("👋 Browser closed")
 
 def write_output(trains, note=""):
+    # If we got no trains but had trains before, keep the old data
+    if len(trains) == 0 and os.path.exists(OUT_FILE):
+        try:
+            with open(OUT_FILE, 'r') as f:
+                old_data = json.load(f)
+            old_trains = old_data.get('trains', [])
+            if len(old_trains) > 0:
+                print(f"\n📦 No new trains, keeping existing data ({len(old_trains)} trains)")
+                # Still update the timestamp to show we tried
+                payload = {
+                    "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+                    "note": f"{note} - using cached data",
+                    "trains": old_trains
+                }
+                with open(OUT_FILE, "w", encoding="utf-8") as f:
+                    json.dump(payload, f, ensure_ascii=False, indent=2)
+                print(f"✅ Updated timestamp only, kept {len(old_trains)} trains")
+                return
+        except Exception as e:
+            print(f"⚠️ Could not read old data: {e}")
+    
     print(f"\n📝 Writing output: {len(trains)} trains, status: {note}")
     payload = {
         "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
@@ -483,7 +546,7 @@ def write_output(trains, note=""):
         "trains": trains or []
     }
     
-    if os.path.exists(OUT_FILE):
+    if os.path.exists(OUT_FILE) and len(trains) > 0:
         backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         try:
             with open(OUT_FILE, 'r') as src:
