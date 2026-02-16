@@ -1566,22 +1566,22 @@
     "total_sightings": 2
   },
   "NR95": {
-    "last_seen": "2026-02-16 12:14:46",
+    "last_seen": "2026-02-16 14:02:10",
     "last_date": "2026-02-16",
-    "last_time": "12:14:46",
+    "last_time": "14:02:10",
     "last_location": {
-      "lat": -33.883317,
-      "lon": 151.062453
+      "lat": -33.888513,
+      "lon": 151.050907
     },
-    "last_speed": 1,
-    "last_origin": "Kewdale",
-    "last_destination": "SFT (Chullora)",
-    "last_description": "PN Intermodal",
-    "last_train_number": "5PS6",
-    "cId": "",
+    "last_speed": 13,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "",
+    "last_train_number": "UNREG",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "",
-    "trKey": "",
-    "total_sightings": 2
+    "trKey": "NR95",
+    "total_sightings": 3
   },
   "TNSW-2404-8804": {
     "last_seen": "2026-02-16 12:14:46",
@@ -2232,22 +2232,22 @@
     "total_sightings": 2
   },
   "TSRS036": {
-    "last_seen": "2026-02-16 12:14:46",
+    "last_seen": "2026-02-16 14:02:10",
     "last_date": "2026-02-16",
-    "last_time": "12:14:46",
+    "last_time": "14:02:10",
     "last_location": {
-      "lat": -33.777168,
-      "lon": 151.117523
+      "lat": -33.914131,
+      "lon": 151.166657
     },
     "last_speed": 0,
     "last_origin": "",
     "last_destination": "",
     "last_description": "Metro North West & Bankstown Line",
-    "last_train_number": "M1-0",
-    "cId": "",
-    "servId": "",
-    "trKey": "",
-    "total_sightings": 2
+    "last_train_number": "M1-1",
+    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
+    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
+    "trKey": "TSRS036",
+    "total_sightings": 3
   },
   "TNSW-2627-6437": {
     "last_seen": "2026-02-16 12:14:46",
@@ -5112,22 +5112,22 @@
     "total_sightings": 2
   },
   "VLINE-8161": {
-    "last_seen": "2026-02-16 12:14:46",
+    "last_seen": "2026-02-16 14:02:10",
     "last_date": "2026-02-16",
-    "last_time": "12:14:46",
+    "last_time": "14:02:10",
     "last_location": {
-      "lat": -37.817799,
-      "lon": 144.951614
+      "lat": -37.539711,
+      "lon": 143.819748
     },
-    "last_speed": 0,
+    "last_speed": 11,
     "last_origin": "",
     "last_destination": "",
     "last_description": "Ballarat - Melbourne Via Melton",
     "last_train_number": "8161",
-    "cId": "",
+    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
     "servId": "",
-    "trKey": "",
-    "total_sightings": 2
+    "trKey": "VLINE-8161",
+    "total_sightings": 3
   },
   "3VL59": {
     "last_seen": "2026-02-16 12:14:46",
@@ -8692,5 +8692,131 @@
     "servId": "",
     "trKey": "TT04",
     "total_sightings": 2
+  },
+  "TNSW-5506-3355": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -33.895799,
+      "lon": 151.189158
+    },
+    "last_speed": 0,
+    "last_origin": "Parramatta",
+    "last_destination": "City Circle ",
+    "last_description": "T2 Leppington & Inner West Line",
+    "last_train_number": "90XY",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5506-3355",
+    "total_sightings": 1
+  },
+  "1305": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -33.910332,
+      "lon": 151.140106
+    },
+    "last_speed": 2,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "Dulwich Hill Line",
+    "last_train_number": "L1",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "servId": "",
+    "trKey": "1305",
+    "total_sightings": 1
+  },
+  "TNSW-9477-5568": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -33.74883,
+      "lon": 150.689751
+    },
+    "last_speed": 0,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "Out Of Service trips",
+    "last_train_number": "854U",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-9477-5568",
+    "total_sightings": 1
+  },
+  "MM-896M": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -37.605091,
+      "lon": 145.100357
+    },
+    "last_speed": 0,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "Mernda Line",
+    "last_train_number": "MDD",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "7ef147fb-ba13-4660-9105-e8c2eda15eed",
+    "trKey": "MM-896M",
+    "total_sightings": 1
+  },
+  "TNSW-9662-9823": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -33.692638,
+      "lon": 151.104965
+    },
+    "last_speed": 0,
+    "last_origin": "North Shore",
+    "last_destination": "Hornsby and Berowra via City and Strathfield",
+    "last_description": "T9 Northern Line",
+    "last_train_number": "813R",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-9662-9823",
+    "total_sightings": 1
+  },
+  "MM-378M": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -37.599522,
+      "lon": 144.944275
+    },
+    "last_speed": 0,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "Craigieburn Line",
+    "last_train_number": "CGB",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "57e4f52e-d88e-4110-8a33-061732512faa",
+    "trKey": "MM-378M",
+    "total_sightings": 1
+  },
+  "NR88": {
+    "last_seen": "2026-02-16 14:02:10",
+    "last_date": "2026-02-16",
+    "last_time": "14:02:10",
+    "last_location": {
+      "lat": -33.888603,
+      "lon": 151.050453
+    },
+    "last_speed": 13,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "",
+    "last_train_number": "UNREG",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "",
+    "trKey": "NR88",
+    "total_sightings": 1
   }
 }
