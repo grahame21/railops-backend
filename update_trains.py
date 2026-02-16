@@ -1,548 +1,630 @@
-import os
-import sys
-import json
-import datetime
-import time
-import math
-import pickle
-import random
-import traceback
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RailOps — AU Live Map</title>
 
-print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER - RICH DATA EXTRACTION")
-print("=" * 60)
-print(f"Python version: {sys.version}")
-print(f"Current time: {datetime.datetime.now()}")
-print("=" * 60)
+  <!-- OpenLayers -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.5.2/ol.css">
+  <script src="https://cdn.jsdelivr.net/npm/ol@7.5.2/dist/ol.js"></script>
 
-OUT_FILE = "trains.json"
-COOKIE_FILE = "trainfinder_cookies.pkl"
-TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
-TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
-TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, sans-serif; }
+    #map { height: 100%; width: 100%; background: #0a1a2a; }
+    
+    /* Top Toolbar */
+    .toolbar {
+      position: absolute; top: 12px; left: 12px; z-index: 1000;
+      background: rgba(10, 26, 42, 0.95); backdrop-filter: blur(8px);
+      color: white; padding: 10px 16px; border-radius: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      display: flex; gap: 12px; align-items: center;
+      border: 1px solid #2a4a7a;
+      font-size: 14px; font-weight: 500;
+    }
+    .toolbar button, .toolbar select {
+      background: #1e3a5f; color: white;
+      border: 1px solid #3a6a9a; border-radius: 30px;
+      padding: 6px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .toolbar button:hover {
+      background: #2a4a7a; border-color: #5a8aca;
+    }
+    
+    /* Search Bar */
+    .search-container {
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; width: 380px;
+    }
+    .search-box {
+      background: rgba(10, 26, 42, 0.95); backdrop-filter: blur(8px);
+      border-radius: 40px; border: 1px solid #2a4a7a;
+      display: flex; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .search-box input {
+      flex: 1; background: #1e3a5f; border: 1px solid #3a6a9a;
+      border-radius: 40px 0 0 40px; padding: 10px 20px;
+      color: white; font-size: 14px; outline: none;
+    }
+    .search-box input::placeholder { color: #9ab0d0; }
+    .search-box button {
+      background: #0b57cf; border: none; border-radius: 0 40px 40px 0;
+      padding: 10px 24px; color: white; font-weight: 600;
+      cursor: pointer; transition: 0.2s;
+    }
+    
+    /* Autocomplete */
+    .autocomplete-items {
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: rgba(10, 26, 42, 0.95); backdrop-filter: blur(8px);
+      border: 1px solid #2a4a7a; border-top: none;
+      border-radius: 0 0 20px 20px; max-height: 300px;
+      overflow-y: auto; z-index: 1001; margin-top: 2px;
+    }
+    .autocomplete-item {
+      padding: 12px 20px; color: white; cursor: pointer;
+      border-bottom: 1px solid #1e3a5f; font-size: 13px;
+      display: flex; justify-content: space-between;
+    }
+    .autocomplete-item:hover {
+      background: #1e3a5f;
+    }
+    .autocomplete-item .train-id {
+      font-weight: 600; color: #9ab0d0;
+    }
+    .autocomplete-item .train-loc {
+      color: #ffaa00;
+    }
+    
+    /* Status Bar */
+    .status-bar {
+      position: absolute; top: 12px; right: 12px; z-index: 1000;
+      background: rgba(10, 26, 42, 0.95); backdrop-filter: blur(8px);
+      color: white; padding: 8px 20px; border-radius: 40px;
+      font-size: 13px; border: 1px solid #2a4a7a;
+      display: flex; gap: 12px; align-items: center;
+    }
+    .train-count {
+      background: #0b57cf; padding: 2px 12px;
+      border-radius: 30px; font-weight: 700;
+    }
+    
+    /* Layers Panel */
+    .layers-panel {
+      position: absolute; left: 12px; bottom: 12px; z-index: 1000;
+      background: rgba(10, 26, 42, 0.95); backdrop-filter: blur(8px);
+      color: white; border-radius: 20px; padding: 16px;
+      border: 1px solid #2a4a7a; width: 260px;
+    }
+    .layer-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid #1e3a5f;
+    }
+    .layer-row:last-child { border-bottom: none; }
+    .section-title {
+      color: #9ab0d0; font-size: 12px; margin: 12px 0 4px 0;
+    }
+    
+    /* Train Marker Style - Shows number without hovering */
+    .train-label {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid #ffaa00;
+      white-space: nowrap;
+      pointer-events: none;
+      text-shadow: 1px 1px 1px black;
+    }
+    
+    /* TrainFinder-style Popup */
+    .train-popup {
+      position: absolute;
+      background: rgba(10, 26, 42, 0.98);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 16px;
+      border-radius: 16px;
+      border: 2px solid #2a4a7a;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.9);
+      pointer-events: none;
+      transform: translate(-50%, -100%);
+      min-width: 340px;
+      z-index: 10000;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .train-popup::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 10px;
+      border-style: solid;
+      border-color: #2a4a7a transparent transparent transparent;
+    }
+    .popup-header {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffaa00;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #2a4a7a;
+      padding-bottom: 4px;
+    }
+    .popup-subheader {
+      font-size: 14px;
+      color: #9ab0d0;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+    .popup-row {
+      display: flex;
+      margin: 8px 0;
+      font-size: 13px;
+    }
+    .popup-label {
+      width: 90px;
+      color: #9ab0d0;
+      font-weight: 600;
+    }
+    .popup-value {
+      flex: 1;
+      color: white;
+      font-weight: 500;
+    }
+    .popup-badge {
+      background: #1e3a5f;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      display: inline-block;
+      margin-right: 6px;
+      margin-top: 4px;
+      color: #9ab0d0;
+    }
+    .popup-speed {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffaa00;
+      text-align: center;
+      margin: 12px 0 8px;
+      padding: 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 30px;
+    }
+    .popup-footer {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      justify-content: center;
+      font-size: 11px;
+      color: #9ab0d0;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <span style="font-weight:700; color:#9ab0d0">🚂 RailOps</span>
+    <select id="stateSelect">
+      <option value="au">🇦🇺 Australia</option>
+      <option value="nsw">📍 NSW</option>
+      <option value="vic">📍 VIC</option>
+      <option value="qld">📍 QLD</option>
+      <option value="sa">📍 SA</option>
+      <option value="wa">📍 WA</option>
+      <option value="tas">📍 TAS</option>
+      <option value="nt">📍 NT</option>
+    </select>
+    <button id="locateBtn">📍 My Location</button>
+    <button id="layersToggleBtn">🗺️ Layers</button>
+  </div>
 
-print(f"\n🔑 Credentials:")
-print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
-print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
+  <div class="search-container">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search train number, loco, or destination...">
+      <button id="searchBtn">🔍 Search</button>
+    </div>
+    <div id="autocompleteList" class="autocomplete-items" style="display: none;"></div>
+  </div>
 
-class TrainScraper:
-    def __init__(self):
-        self.driver = None
-        print("✅ TrainScraper initialized")
-        
-    def setup_driver(self):
-        print("\n🔧 Setting up Chrome driver...")
-        try:
-            chrome_options = Options()
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('--disable-gpu')
-            chrome_options.add_argument('--window-size=1920,1080')
-            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-            chrome_options.add_argument('--headless=new')
-            
-            user_agents = [
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            ]
-            chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
-            
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option('useAutomationExtension', False)
-            
-            self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            print("✅ Chrome driver setup successful")
-            return True
-        except Exception as e:
-            print(f"❌ Failed to setup Chrome driver: {e}")
-            traceback.print_exc()
-            return False
+  <div class="status-bar">
+    <span id="lastUpdate">Loading...</span>
+    <span class="train-count" id="trainCount">0</span>
+  </div>
+
+  <div class="layers-panel" id="layersPanel" style="display: none;">
+    <h3>🗺️ MAP LAYERS</h3>
+    <div class="layer-row"><label><input type="checkbox" id="trainLayerChk" checked> 🚆 Live Trains</label></div>
+    <div class="layer-row"><label><input type="checkbox" id="railLayerChk" checked> 🛤️ Rail Lines (Blue)</label></div>
+    <div class="layer-row"><label><input type="checkbox" id="stationsLayerChk" checked> 🏢 Stations</label></div>
+    <div class="section-title">📱 MOBILE COVERAGE</div>
+    <div class="layer-row"><label><input type="checkbox" id="covTelstraChk"> 📶 Telstra</label></div>
+    <div class="layer-row"><label><input type="checkbox" id="covOptusChk"> 📶 Optus</label></div>
+    <div class="layer-row"><label><input type="checkbox" id="covTPGChk"> 📶 Vodafone/TPG</label></div>
+    <div class="layer-row"><label><input type="checkbox" id="covAllChk"> 📶 All Networks</label></div>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+    const map = new ol.Map({
+      target: 'map',
+      layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([133.7751, -25.2744]),
+        zoom: 4,
+        maxZoom: 18
+      })
+    });
+
+    map.getView().on('change:rotation', () => map.getView().setRotation(0));
+
+    // Rail layers with blue filter
+    const railLayer = new ol.layer.Tile({
+      source: new ol.source.XYZ({ url: 'https://{a-c}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png' }),
+      visible: true,
+      zIndex: 1
+    });
     
-    def save_cookies(self):
-        try:
-            with open(COOKIE_FILE, "wb") as f:
-                pickle.dump(self.driver.get_cookies(), f)
-            print("✅ Cookies saved")
-        except Exception as e:
-            print(f"❌ Failed to save cookies: {e}")
+    railLayer.on('prerender', function(event) {
+      event.context.filter = 'hue-rotate(200deg) brightness(0.9) saturate(1.5)';
+    });
+    railLayer.on('postrender', function(event) {
+      event.context.filter = 'none';
+    });
     
-    def load_cookies(self):
-        if os.path.exists(COOKIE_FILE):
-            try:
-                with open(COOKIE_FILE, "rb") as f:
-                    cookies = pickle.load(f)
-                self.driver.get("https://trainfinder.otenko.com")
-                time.sleep(2)
-                for cookie in cookies:
-                    try:
-                        self.driver.add_cookie(cookie)
-                    except:
-                        pass
-                print("✅ Cookies loaded")
-                return True
-            except Exception as e:
-                print(f"⚠️ Could not load cookies: {e}")
-        return False
+    const stationsLayer = new ol.layer.Tile({
+      source: new ol.source.XYZ({ url: 'https://{a-c}.tiles.openrailwaymap.org/stations/{z}/{x}/{y}.png' }),
+      visible: true,
+      zIndex: 2
+    });
     
-    def random_delay(self, min_sec=0.5, max_sec=2):
-        time.sleep(random.uniform(min_sec, max_sec))
+    map.addLayer(railLayer);
+    map.addLayer(stationsLayer);
+
+    // ACCC coverage layers
+    const ACCC_URL = 'https://spatial.infrastructure.gov.au/server/rest/services/ACCC_Mobile_Sites_and_Coverages/MapServer';
+    function createAcccLayer(id) {
+      return new ol.layer.Tile({
+        source: new ol.source.TileArcGISRest({
+          url: ACCC_URL,
+          params: { layers: `show:${id}`, dpi: 96, transparent: true, format: 'png32' }
+        }),
+        opacity: 0.45,
+        visible: false,
+        zIndex: 3
+      });
+    }
     
-    def check_session_valid(self):
-        try:
-            self.driver.get(TF_LOGIN_URL)
-            self.random_delay(2, 3)
-            if "login" in self.driver.current_url.lower():
-                print("⚠️ Session expired")
-                return False
-            print("✅ Session valid")
-            return True
-        except Exception as e:
-            print(f"⚠️ Session check error: {e}")
-            return False
+    const covTelstra = createAcccLayer(25);
+    const covOptus = createAcccLayer(15);
+    const covTPG = createAcccLayer(33);
+    const covAll = createAcccLayer(4);
+    [covTelstra, covOptus, covTPG, covAll].forEach(l => map.addLayer(l));
+
+    // Train layer with custom style showing numbers
+    const trainSource = new ol.source.Vector();
+    const trainLayer = new ol.layer.Vector({
+      source: trainSource,
+      visible: true,
+      zIndex: 10,
+      style: function(feature) {
+        const train = feature.get('train_data') || {};
+        const trainNumber = train.train_number || train.id || '';
+        const trainName = train.train_name || '';
+        const speed = train.speed || 0;
+        
+        // Determine color based on speed
+        let dotColor = '#ffaa00'; // default orange
+        if (speed > 80) dotColor = '#ff4444'; // red for fast
+        else if (speed > 30) dotColor = '#00cc00'; // green for moving
+        
+        // Create style with label
+        return [
+          // The dot
+          new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 8,
+              fill: new ol.style.Fill({ color: dotColor }),
+              stroke: new ol.style.Stroke({ color: '#ffffff', width: 2 })
+            })
+          }),
+          // The label (train number)
+          new ol.style.Style({
+            text: new ol.style.Text({
+              text: trainName || trainNumber,
+              font: 'bold 11px monospace',
+              fill: new ol.style.Fill({ color: '#ffffff' }),
+              stroke: new ol.style.Stroke({ color: '#000000', width: 3 }),
+              offsetY: -18,
+              backgroundFill: new ol.style.Fill({ color: 'rgba(0,0,0,0.7)' }),
+              backgroundStroke: new ol.style.Stroke({ color: '#ffaa00', width: 1 }),
+              padding: [2, 6, 2, 6]
+            })
+          })
+        ];
+      }
+    });
+    map.addLayer(trainLayer);
+
+    let allTrains = [];
     
-    def force_fresh_login(self):
-        print("\n🔐 Performing fresh login...")
+    async function loadRealTrains() {
+      const url = 'https://raw.githubusercontent.com/grahame21/railops-backend/main/trains.json';
+      
+      try {
+        document.getElementById('lastUpdate').innerHTML = 'Loading...';
         
-        if os.path.exists(COOKIE_FILE):
-            os.remove(COOKIE_FILE)
-            print("🗑️ Removed old cookies")
+        const response = await fetch(url, { cache: 'no-cache' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
-        self.driver.delete_all_cookies()
-        self.driver.get(TF_LOGIN_URL)
-        self.random_delay(2, 4)
+        const data = await response.json();
+        let trains = data.trains || [];
         
-        try:
-            username = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.ID, "useR_name"))
-            )
-            username.clear()
-            for char in TF_USERNAME:
-                username.send_keys(char)
-                time.sleep(random.uniform(0.05, 0.15))
-            print("✅ Username entered")
-            
-            self.random_delay(0.5, 1.5)
-            
-            password = self.driver.find_element(By.ID, "pasS_word")
-            password.clear()
-            for char in TF_PASSWORD:
-                password.send_keys(char)
-                time.sleep(random.uniform(0.05, 0.15))
-            print("✅ Password entered")
-            
-            self.random_delay(1, 2)
-            
-            self.driver.execute_script("""
-                var tables = document.getElementsByClassName('popup_table');
-                for(var i = 0; i < tables.length; i++) {
-                    if(tables[i].className.includes('login')) {
-                        var elements = tables[i].getElementsByTagName('*');
-                        for(var j = 0; j < elements.length; j++) {
-                            if(elements[j].textContent.trim() === 'Log In') {
-                                elements[j].click();
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            """)
-            print("✅ Login button clicked")
-            
-            time.sleep(5)
-            
-            self.driver.execute_script("""
-                var paths = document.getElementsByTagName('path');
-                for(var i = 0; i < paths.length; i++) {
-                    var d = paths[i].getAttribute('d') || '';
-                    if(d.includes('M13.7,11l6.1-6.1')) {
-                        var parent = paths[i].parentElement;
-                        while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
-                            parent = parent.parentElement;
-                        }
-                        if(parent) parent.click();
-                    }
-                }
-            """)
-            print("✅ Warning closed")
-            
-            time.sleep(5)
-            
-            self.save_cookies()
-            return True
-            
-        except Exception as e:
-            print(f"❌ Login error: {e}")
-            traceback.print_exc()
-            return False
-    
-    def login(self):
-        if self.load_cookies():
-            self.driver.get(TF_LOGIN_URL)
-            self.random_delay(3, 5)
-            if self.check_session_valid():
-                print("✅ Using saved session")
-                return True
-            else:
-                print("⚠️ Saved session invalid, doing fresh login")
-                return self.force_fresh_login()
-        else:
-            return self.force_fresh_login()
-    
-    def zoom_to_australia(self):
-        self.random_delay(2, 4)
-        try:
-            self.driver.execute_script("""
-                if (window.map) {
-                    var australia = [112, -44, 154, -10];
-                    var proj = window.map.getView().getProjection();
-                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                    window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
-                }
-            """)
-            print("🌏 Zoomed to Australia")
-        except Exception as e:
-            print(f"⚠️ Could not zoom: {e}")
-    
-    def wait_for_rich_data(self, max_wait=180):
-        """Wait until we have trains with rich data"""
-        print(f"\n⏳ Waiting up to {max_wait} seconds for rich train data...")
+        console.log(`✅ Loaded ${trains.length} trains`);
+        allTrains = trains;
         
-        start_time = time.time()
+        document.getElementById('trainCount').textContent = trains.length;
+        document.getElementById('lastUpdate').innerHTML = 
+          `Last: ${new Date(data.lastUpdated).toLocaleTimeString()}`;
         
-        while time.time() - start_time < max_wait:
-            script = """
-            var richCount = 0;
-            var sources = ['regTrainsSource', 'unregTrainsSource'];
-            
-            sources.forEach(function(sourceName) {
-                var source = window[sourceName];
-                if (!source || !source.getFeatures) return;
-                
-                var features = source.getFeatures();
-                features.forEach(function(feature) {
-                    var props = feature.getProperties();
-                    // Check for rich data fields
-                    if (props.trainNumber || props.trainName || props.serviceFrom) {
-                        richCount++;
-                    }
-                });
-            });
-            
-            return richCount;
-            """
-            
-            try:
-                rich_count = self.driver.execute_script(script)
-                
-                if rich_count > 50:
-                    print(f"   ✅ Found {rich_count} rich trains after {int(time.time() - start_time)}s")
-                    return True
-                
-                elapsed = int(time.time() - start_time)
-                if elapsed % 20 == 0:
-                    print(f"   Still waiting... ({rich_count} rich trains after {elapsed}s)")
-                    
-            except Exception as e:
-                pass
-            
-            time.sleep(5)
+        trainSource.clear();
         
-        print(f"   ⚠️ Timeout reached")
-        return False
-    
-    def extract_rich_train_data(self):
-        """Extract ALL rich train data from sources"""
-        print("\n🔍 Extracting RICH train data...")
-        
-        script = """
-        var allTrains = [];
-        var seenIds = new Set();
-        
-        // Focus on sources that have rich data
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
-        
-        sources.forEach(function(sourceName) {
-            var source = window[sourceName];
-            if (!source || !source.getFeatures) return;
-            
+        trains.forEach(train => {
+          if (train.lat && train.lon) {
             try {
-                var features = source.getFeatures();
-                
-                features.forEach(function(feature, index) {
-                    try {
-                        var props = feature.getProperties();
-                        var geom = feature.getGeometry();
-                        
-                        if (geom && geom.getType() === 'Point') {
-                            var coords = geom.getCoordinates();
-                            
-                            // Parse speed
-                            var speedValue = props.trainSpeed || props.speed || 0;
-                            var speedNum = 0;
-                            if (typeof speedValue === 'string') {
-                                var match = speedValue.match(/(\\d+\\.?\\d*)/);
-                                if (match) {
-                                    speedNum = parseFloat(match[1]);
-                                }
-                            } else if (typeof speedValue === 'number') {
-                                speedNum = speedValue;
-                            }
-                            
-                            // Get the best available ID (prioritize real train numbers)
-                            var trainId = props.trainNumber || props.trainName || 
-                                         props.serviceName || props.id || props.ID ||
-                                         sourceName + '_' + index;
-                            
-                            // Extract ALL available rich fields
-                            var trainData = {
-                                // Core identifiers
-                                'id': String(trainId),
-                                'train_number': props.trainNumber || '',
-                                'train_name': props.trainName || '',
-                                'service_name': props.serviceName || '',
-                                
-                                // IDs from various sources
-                                'cId': props.cId || '',
-                                'servId': props.servId || '',
-                                'trKey': props.trKey || '',
-                                
-                                // Movement data
-                                'speed': speedNum,
-                                'speed_raw': props.trainSpeed || 0,
-                                'heading': props.heading || props.Heading || 0,
-                                'km': props.trainKM || '',
-                                
-                                // Service details - THESE ARE THE RICH FIELDS
-                                'origin': props.serviceFrom || '',
-                                'destination': props.serviceTo || '',
-                                'description': props.serviceDesc || '',
-                                'date': props.trainDate || '',
-                                'time': props.trainTime || '',
-                                
-                                // Display data
-                                'tooltip': props.tooltipHTML || '',
-                                'label_content': props.labelContent || '',
-                                'label_anchor': props.labelAnchor || '',
-                                'label_style': props.labelStyle || '',
-                                
-                                // Flags
-                                'is_train': props.is_train || false,
-                                
-                                // Source
-                                'source': sourceName,
-                                
-                                // Coordinates
-                                'x': coords[0],
-                                'y': coords[1]
-                            };
-                            
-                            // Only keep trains that have SOME rich data
-                            var hasRichData = trainData.origin || trainData.destination || 
-                                             trainData.description || trainData.train_name ||
-                                             (trainData.speed > 0);
-                            
-                            if (hasRichData && !seenIds.has(trainId)) {
-                                seenIds.add(trainId);
-                                allTrains.push(trainData);
-                            }
-                        }
-                    } catch(e) {}
-                });
-            } catch(e) {}
+              const feature = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([train.lon, train.lat]))
+              });
+              
+              // Store ALL train data
+              feature.set('train_data', train);
+              trainSource.addFeature(feature);
+            } catch (e) {
+              console.error('Error adding feature:', e);
+            }
+          }
         });
         
-        return allTrains;
-        """
+        console.log(`✅ Added ${trainSource.getFeatures().length} trains to map`);
         
-        try:
-            trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} rich trains")
-            return trains
-        except Exception as e:
-            print(f"   ❌ Error extracting trains: {e}")
-            traceback.print_exc()
-            return []
-    
-    def webmercator_to_latlon(self, x, y):
-        try:
-            x = float(x)
-            y = float(y)
-            lon = (x / 20037508.34) * 180
-            lat = (y / 20037508.34) * 180
-            lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
-            return round(lat, 6), round(lon, 6)
-        except:
-            return None, None
-    
-    def filter_australian_trains(self, raw_trains):
-        australian_trains = []
-        seen_ids = set()
-        
-        for t in raw_trains:
-            x = t.get('x', 0)
-            y = t.get('y', 0)
-            
-            if abs(x) > 180 or abs(y) > 90:
-                lat, lon = self.webmercator_to_latlon(x, y)
-            else:
-                lat, lon = y, x
-            
-            if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                train_id = t.get('id', 'unknown')
-                
-                if train_id not in seen_ids:
-                    seen_ids.add(train_id)
-                    australian_trains.append({
-                        'id': train_id,
-                        'train_number': t.get('train_number', ''),
-                        'train_name': t.get('train_name', ''),
-                        'service_name': t.get('service_name', ''),
-                        'cId': t.get('cId', ''),
-                        'servId': t.get('servId', ''),
-                        'trKey': t.get('trKey', ''),
-                        'speed': round(float(t.get('speed', 0)), 1),
-                        'heading': round(float(t.get('heading', 0)), 1),
-                        'km': t.get('km', ''),
-                        'origin': t.get('origin', ''),
-                        'destination': t.get('destination', ''),
-                        'description': t.get('description', ''),
-                        'date': t.get('date', ''),
-                        'time': t.get('time', ''),
-                        'tooltip': t.get('tooltip', ''),
-                        'source': t.get('source', ''),
-                        'is_train': t.get('is_train', False),
-                        'lat': lat,
-                        'lon': lon
-                    })
-        
-        print(f"\n📊 Train Statistics:")
-        print(f"   Total rich trains in Australia: {len(australian_trains)}")
-        
-        # Count rich data
-        with_names = sum(1 for t in australian_trains if t.get('train_name'))
-        with_numbers = sum(1 for t in australian_trains if t.get('train_number'))
-        with_origin = sum(1 for t in australian_trains if t.get('origin'))
-        with_dest = sum(1 for t in australian_trains if t.get('destination'))
-        with_desc = sum(1 for t in australian_trains if t.get('description'))
-        
-        print(f"   Trains with loco names: {with_names}")
-        print(f"   Trains with train numbers: {with_numbers}")
-        print(f"   Trains with origin: {with_origin}")
-        print(f"   Trains with destination: {with_dest}")
-        print(f"   Trains with description: {with_desc}")
-        
-        return australian_trains
-    
-    def run(self):
-        print("\n🚀 Starting scraper run...")
-        
-        if not TF_USERNAME or not TF_PASSWORD:
-            print("❌ Missing credentials")
-            return [], "Missing credentials"
-        
-        if not self.setup_driver():
-            return [], "Failed to setup driver"
-        
-        try:
-            if not self.login():
-                return [], "Login failed"
-            
-            print("\n⏳ Waiting 30 seconds for map to stabilize...")
-            time.sleep(30)
-            
-            self.zoom_to_australia()
-            
-            # Wait for rich data to appear
-            self.wait_for_rich_data(max_wait=180)
-            
-            # Extract rich train data
-            raw_trains = self.extract_rich_train_data()
-            
-            print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
-            
-            if raw_trains:
-                print(f"\n📋 First raw train sample:")
-                sample = raw_trains[0]
-                print(f"   ID: {sample.get('id')}")
-                print(f"   Train Number: {sample.get('train_number')}")
-                print(f"   Train Name: {sample.get('train_name')}")
-                print(f"   Origin: {sample.get('origin')}")
-                print(f"   Destination: {sample.get('destination')}")
-                print(f"   Description: {sample.get('description')}")
-                print(f"   Speed: {sample.get('speed')}")
-            
-            australian_trains = self.filter_australian_trains(raw_trains)
-            
-            print(f"\n✅ Australian trains after filtering: {len(australian_trains)}")
-            
-            if australian_trains:
-                print(f"\n📋 Sample Australian train:")
-                sample = australian_trains[0]
-                print(f"   ID: {sample['id']}")
-                print(f"   Train Number: {sample['train_number']}")
-                print(f"   Train Name: {sample['train_name']}")
-                print(f"   Origin: {sample['origin']}")
-                print(f"   Destination: {sample['destination']}")
-                print(f"   Description: {sample['description']}")
-                print(f"   Speed: {sample['speed']} km/h")
-            
-            return australian_trains, f"ok - {len(australian_trains)} trains"
-            
-        except Exception as e:
-            print(f"\n❌ Error in run: {e}")
-            traceback.print_exc()
-            return [], f"error: {type(e).__name__}"
-        finally:
-            if self.driver:
-                self.driver.quit()
-                print("👋 Browser closed")
+      } catch (error) {
+        console.error('❌ Failed to load trains:', error);
+        document.getElementById('lastUpdate').innerHTML = '⚠️ Update failed';
+      }
+    }
 
-def write_output(trains, note=""):
-    # If we got rich data, always write it
-    if len(trains) > 0:
-        print(f"\n📝 Writing output: {len(trains)} rich trains, status: {note}")
-        payload = {
-            "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
-            "note": note,
-            "trains": trains
+    // TrainFinder-style hover popup with ALL details
+    let popupElement = null;
+    
+    map.on('pointermove', function(evt) {
+      const feature = map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        return layer === trainLayer ? feature : null;
+      });
+      
+      if (popupElement) {
+        map.removeOverlay(popupElement);
+        popupElement = null;
+      }
+      
+      if (feature) {
+        const coords = feature.getGeometry().getCoordinates();
+        const train = feature.get('train_data') || {};
+        const lonLat = ol.proj.toLonLat(coords);
+        
+        // Extract all the rich data
+        const trainNumber = train.train_number || train.id || 'Unknown';
+        const trainName = train.train_name || '';
+        const speed = train.speed || 0;
+        const origin = train.origin || 'Unknown';
+        const destination = train.destination || 'Unknown';
+        const description = train.description || '';
+        const km = train.km || '';
+        const time = train.time || '';
+        const date = train.date || '';
+        const trKey = train.trKey || '';
+        const cId = train.cId ? train.cId.substring(0, 8) + '...' : '';
+        
+        // Format the header
+        let header = trainNumber;
+        if (trainName && trainName !== trainNumber) {
+          header = `${trainName} [${trainNumber}]`;
         }
         
-        # Create backup
-        backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        try:
-            with open(OUT_FILE, 'r') as src:
-                with open(backup_name, 'w') as dst:
-                    dst.write(src.read())
-            print(f"💾 Backup created: {backup_name}")
-        except:
-            pass
+        const popupDiv = document.createElement('div');
+        popupDiv.className = 'train-popup';
         
-        try:
-            with open(OUT_FILE, "w", encoding="utf-8") as f:
-                json.dump(payload, f, ensure_ascii=False, indent=2)
-            print(f"✅ Output written to {OUT_FILE}")
-        except Exception as e:
-            print(f"❌ Failed to write output: {e}")
-    else:
-        print("\n⚠️ No rich data extracted, keeping previous file")
+        popupDiv.innerHTML = `
+          <div class="popup-header">
+            ${header} - ${speed}km/h
+          </div>
+          ${description ? `<div class="popup-subheader">${description}</div>` : ''}
+          <div class="popup-row">
+            <span class="popup-label">Origin:</span>
+            <span class="popup-value">${origin}</span>
+          </div>
+          <div class="popup-row">
+            <span class="popup-label">Destination:</span>
+            <span class="popup-value">${destination}</span>
+          </div>
+          ${time || km ? `
+          <div class="popup-row">
+            <span class="popup-label">ETA/Dist:</span>
+            <span class="popup-value">${time || '--:--'} ${km ? `- ${km}` : ''}</span>
+          </div>
+          ` : ''}
+          <div class="popup-speed">
+            ⚡ ${speed} km/h
+          </div>
+          <div class="popup-footer">
+            ${trainName ? `<span class="popup-badge">Loco: ${trainName}</span>` : ''}
+            ${trKey ? `<span class="popup-badge">Key: ${trKey}</span>` : ''}
+            <span class="popup-badge">📍 ${lonLat[1].toFixed(4)}°, ${lonLat[0].toFixed(4)}°</span>
+          </div>
+        `;
+        
+        popupElement = new ol.Overlay({
+          element: popupDiv,
+          position: coords,
+          positioning: 'bottom-center',
+          offset: [0, -15]
+        });
+        
+        map.addOverlay(popupElement);
+      }
+    });
 
-def main():
-    print("\n🏁 Starting main function...")
-    scraper = TrainScraper()
-    trains, note = scraper.run()
-    write_output(trains, note)
-    print("\n✅ Script completed")
+    // Enhanced autocomplete
+    const searchInput = document.getElementById('searchInput');
+    const autocompleteList = document.getElementById('autocompleteList');
     
-    if "error" in note:
-        sys.exit(1)
-    else:
-        sys.exit(0)
+    function updateAutocomplete() {
+      const query = searchInput.value.trim().toLowerCase();
+      if (query.length < 2) {
+        autocompleteList.style.display = 'none';
+        return;
+      }
+      
+      const matches = [];
+      const seen = new Set();
+      
+      allTrains.forEach(train => {
+        const searchable = [
+          train.train_number,
+          train.train_name,
+          train.trKey,
+          train.origin,
+          train.destination,
+          train.id
+        ].filter(Boolean).map(s => s.toLowerCase());
+        
+        const matchesQuery = searchable.some(s => s.includes(query));
+        
+        if (matchesQuery && !seen.has(train.id)) {
+          seen.add(train.id);
+          matches.push({
+            id: train.train_name || train.train_number || train.id,
+            full: train,
+            lat: train.lat,
+            lon: train.lon
+          });
+        }
+      });
+      
+      if (matches.length > 0) {
+        autocompleteList.innerHTML = '';
+        matches.slice(0, 8).forEach(match => {
+          const item = document.createElement('div');
+          item.className = 'autocomplete-item';
+          item.innerHTML = `
+            <span class="train-id">${match.id}</span>
+            <span class="train-loc">${match.full.origin || ''} → ${match.full.destination || ''}</span>
+          `;
+          item.addEventListener('click', () => {
+            searchInput.value = match.id;
+            autocompleteList.style.display = 'none';
+            flyToTrain(match.lat, match.lon, match.id);
+          });
+          autocompleteList.appendChild(item);
+        });
+        autocompleteList.style.display = 'block';
+      } else {
+        autocompleteList.style.display = 'none';
+      }
+    }
+    
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(updateAutocomplete, 300);
+    });
+    
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !autocompleteList.contains(e.target)) {
+        autocompleteList.style.display = 'none';
+      }
+    });
 
-if __name__ == "__main__":
-    main()
+    function flyToTrain(lat, lon, trainId) {
+      map.getView().animate({
+        center: ol.proj.fromLonLat([lon, lat]),
+        zoom: 12,
+        duration: 1000
+      });
+    }
+
+    function searchTrains() {
+      const query = searchInput.value.trim().toLowerCase();
+      if (!query) return;
+      
+      for (const train of allTrains) {
+        const searchable = [
+          train.train_number,
+          train.train_name,
+          train.trKey,
+          train.id
+        ].filter(Boolean).map(s => s.toLowerCase());
+        
+        if (searchable.some(s => s.includes(query))) {
+          flyToTrain(train.lat, train.lon, train.train_name || train.train_number);
+          autocompleteList.style.display = 'none';
+          return;
+        }
+      }
+      
+      alert('No trains found matching: ' + query);
+    }
+
+    // Zoom functions
+    const stateBounds = {
+      au: [112, -44, 154, -10], nsw: [141, -38, 154, -28], vic: [141, -40, 150, -34],
+      qld: [138, -30, 154, -9], sa: [129, -40, 141, -25], wa: [112, -36, 129, -13],
+      tas: [143, -44, 149, -39], nt: [129, -27, 138, -10]
+    };
+
+    function zoomTo(region) {
+      const bounds = stateBounds[region] || stateBounds.au;
+      const extent = ol.proj.transformExtent(bounds, 'EPSG:4326', 'EPSG:3857');
+      map.getView().fit(extent, { duration: 1000, maxZoom: 10 });
+    }
+
+    function zoomToCurrent() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(pos => {
+        const center = ol.proj.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+        map.getView().animate({ center, zoom: 12, duration: 1000 });
+      });
+    }
+
+    // Event listeners
+    document.getElementById('stateSelect').addEventListener('change', e => zoomTo(e.target.value));
+    document.getElementById('locateBtn').addEventListener('click', zoomToCurrent);
+    document.getElementById('layersToggleBtn').addEventListener('click', () => {
+      const panel = document.getElementById('layersPanel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    });
+    document.getElementById('searchBtn').addEventListener('click', searchTrains);
+    searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') searchTrains(); });
+
+    // Layer toggles
+    document.getElementById('trainLayerChk').addEventListener('change', e => trainLayer.setVisible(e.target.checked));
+    document.getElementById('railLayerChk').addEventListener('change', e => railLayer.setVisible(e.target.checked));
+    document.getElementById('stationsLayerChk').addEventListener('change', e => stationsLayer.setVisible(e.target.checked));
+    document.getElementById('covTelstraChk').addEventListener('change', e => covTelstra.setVisible(e.target.checked));
+    document.getElementById('covOptusChk').addEventListener('change', e => covOptus.setVisible(e.target.checked));
+    document.getElementById('covTPGChk').addEventListener('change', e => covTPG.setVisible(e.target.checked));
+    document.getElementById('covAllChk').addEventListener('change', e => covAll.setVisible(e.target.checked));
+
+    // Initial load
+    loadRealTrains();
+    setInterval(loadRealTrains, 30000);
+    zoomTo('au');
+  </script>
+</body>
+</html>
