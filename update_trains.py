@@ -74,15 +74,6 @@ class TrainScraper:
     def load_cookies(self):
         if os.path.exists(COOKIE_FILE):
             try:
-                with open(COOKIE_FILE, "wb") as f:
-                    pickle.dump(self.driver.get_cookies(), f)
-                print("✅ Cookies saved")
-        except Exception as e:
-            print(f"❌ Failed to save cookies: {e}")
-    
-    def load_cookies(self):
-        if os.path.exists(COOKIE_FILE):
-            try:
                 with open(COOKIE_FILE, "rb") as f:
                     cookies = pickle.load(f)
                 self.driver.get("https://trainfinder.otenko.com")
@@ -311,7 +302,7 @@ class TrainScraper:
                                 
                                 // Movement data - use parsed numeric speed
                                 'speed': speedNum,
-                                'speed_raw': props.trainSpeed || 0,  // Keep raw for debugging
+                                'speed_raw': props.trainSpeed || 0,
                                 'heading': props.heading || props.Heading || 0,
                                 'km': props.trainKM || '',
                                 
