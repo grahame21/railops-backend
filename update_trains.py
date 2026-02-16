@@ -93,17 +93,29 @@ class TrainScraper:
         time.sleep(random.uniform(min_sec, max_sec))
     
     def check_login_success(self):
-        """Quick check if we're logged in"""
+        """Quick check if we're logged in and seeing trains"""
         try:
             current_url = self.driver.current_url.lower()
-            page_source = self.driver.page_source.lower()
             
-            if "login" in current_url or ("username" in page_source and "password" in page_source):
+            if "login" in current_url:
                 return False
             
-            # Check if map exists
-            map_exists = self.driver.execute_script("return typeof window.map !== 'undefined'")
-            return map_exists
+            # Check if map exists and has train sources
+            script = """
+            var hasTrains = false;
+            var sources = ['regTrainsSource', 'unregTrainsSource'];
+            sources.forEach(function(name) {
+                if (window[name] && window[name].getFeatures) {
+                    if (window[name].getFeatures().length > 1) {
+                        hasTrains = true;
+                    }
+                }
+            });
+            return hasTrains;
+            """
+            
+            has_trains = self.driver.execute_script(script)
+            return has_trains
         except:
             return False
     
@@ -176,7 +188,7 @@ class TrainScraper:
                 self.save_cookies()
                 return True
             else:
-                print("❌ Login verification failed")
+                print("❌ Login verification failed - no trains visible")
                 return False
             
         except Exception as e:
