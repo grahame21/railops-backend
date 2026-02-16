@@ -2,7 +2,10 @@ name: Update Train Data
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    # Peak hours (6am-10pm AEST) - every 5 minutes with random delay
+    - cron: '*/5 20-13 * * *'
+    # Off-peak (10pm-6am) - every 15 minutes
+    - cron: '*/15 14-19 * * *'
   workflow_dispatch:
 
 jobs:
@@ -19,31 +22,31 @@ jobs:
         python-version: '3.10'
         cache: 'pip'
     
-    - name: Install Chrome and dependencies
+    - name: Install Chrome
       run: |
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable xvfb
     
-    - name: Install Python dependencies
+    - name: Install dependencies
       run: |
         pip install --upgrade pip
         pip install selenium requests
     
-    - name: Run train scraper
+    - name: Add random delay
+      run: sleep $(( RANDOM % 120 ))
+    
+    - name: Run scraper
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
-      run: |
-        xvfb-run -a python update_trains.py
+      run: xvfb-run -a python update_trains.py
     
-    - name: Commit and push if changed
+    - name: Commit and push
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add trains.json
-        if git diff --cached --quiet; then
-          echo "No changes to commit"
-        else
+        if ! git diff --cached --quiet; then
           git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           git push
         fi
