@@ -253,14 +253,16 @@ class TrainScraper:
         print(f"   ⏰ Timeout. Got {best_count} features")
         return best_count > 50
     
-    def extract_all_trains(self):
-        print("\n🔍 Extracting ALL trains...")
+    def extract_real_trains_only(self):
+        """Extract ONLY real trains, filter out arrow markers"""
+        print("\n🔍 Extracting REAL trains only...")
         
         script = """
-        var allTrains = [];
+        var realTrains = [];
         var seenIds = new Set();
         
-        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
+        // Focus on sources that have real train data
+        var sources = ['regTrainsSource', 'unregTrainsSource'];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
@@ -281,7 +283,7 @@ class TrainScraper:
                             var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
-                                var match = speedValue.match(/(\\d+\\.?\\d*)/);
+                                var match = speedValue.match(/(\d+\.?\d*)/);
                                 if (match) {
                                     speedNum = parseFloat(match[1]);
                                 }
@@ -297,16 +299,15 @@ class TrainScraper:
                             var destination = props.serviceTo || '';
                             var description = props.serviceDesc || '';
                             
-                            // Determine if this is a real train (has actual data)
+                            // Only keep trains with REAL data
                             var hasRealData = trainNumber || trainName || origin || destination || description;
                             
-                            // Skip arrow markers and trains with no real data
-                            if (!hasRealData && sourceName.includes('arrow')) {
-                                return;
+                            if (!hasRealData) {
+                                return; // Skip trains with no real data
                             }
                             
-                            // Create display ID
-                            var displayId = trainName || trainNumber || serviceName || sourceName + '_' + index;
+                            // Create display ID - prefer trainName (loco) or trainNumber
+                            var displayId = trainName || trainNumber || serviceName;
                             
                             var trainData = {
                                 'id': displayId,
@@ -325,8 +326,6 @@ class TrainScraper:
                                 'date': props.trainDate || '',
                                 'time': props.trainTime || '',
                                 'tooltip': props.tooltipHTML || '',
-                                'source': sourceName,
-                                'has_real_data': hasRealData,
                                 'x': coords[0],
                                 'y': coords[1]
                             };
@@ -334,7 +333,7 @@ class TrainScraper:
                             // Avoid duplicates
                             if (!seenIds.has(displayId)) {
                                 seenIds.add(displayId);
-                                allTrains.push(trainData);
+                                realTrains.push(trainData);
                             }
                         }
                     } catch(e) {}
@@ -342,12 +341,12 @@ class TrainScraper:
             } catch(e) {}
         });
         
-        return allTrains;
+        return realTrains;
         """
         
         try:
             trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} unique trains")
+            print(f"   ✅ Extracted {len(trains)} REAL trains")
             return trains
         except Exception as e:
             print(f"   ❌ Error: {e}")
@@ -368,9 +367,6 @@ class TrainScraper:
         australian_trains = []
         seen_ids = set()
         
-        real_count = 0
-        generic_count = 0
-        
         for t in raw_trains:
             x = t.get('x', 0)
             y = t.get('y', 0)
@@ -381,16 +377,10 @@ class TrainScraper:
                 lat, lon = y, x
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                # Only keep trains with real data
-                if not t.get('has_real_data'):
-                    generic_count += 1
-                    continue
-                
                 train_id = t.get('id', 'unknown')
                 
                 if train_id not in seen_ids:
                     seen_ids.add(train_id)
-                    real_count += 1
                     australian_trains.append({
                         'id': train_id,
                         'train_number': t.get('train_number', ''),
@@ -408,15 +398,11 @@ class TrainScraper:
                         'date': t.get('date', ''),
                         'time': t.get('time', ''),
                         'tooltip': t.get('tooltip', ''),
-                        'source': t.get('source', ''),
                         'lat': lat,
                         'lon': lon
                     })
         
-        print(f"\n📊 Train Statistics:")
-        print(f"   Real trains kept: {real_count}")
-        print(f"   Generic trains filtered out: {generic_count}")
-        
+        print(f"\n📊 Found {len(australian_trains)} Australian trains")
         return australian_trains
     
     def run(self):
@@ -440,7 +426,8 @@ class TrainScraper:
             
             self.wait_for_trains(max_wait=180)
             
-            raw_trains = self.extract_all_trains()
+            # Only extract real trains
+            raw_trains = self.extract_real_trains_only()
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
