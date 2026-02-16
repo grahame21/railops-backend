@@ -2,7 +2,6 @@ name: Update Train Data
 
 on:
   schedule:
-    # Run every 3 hours
     - cron: '0 */3 * * *'
   workflow_dispatch:
 
@@ -14,6 +13,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for better merge handling
     
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -35,7 +36,7 @@ jobs:
         pip install --upgrade pip
         pip install selenium requests webdriver-manager
     
-    - name: Run train scraper
+    - name: Run train scraper with retry
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
@@ -43,16 +44,32 @@ jobs:
       run: |
         Xvfb :99 -screen 0 1920x1080x24 &
         sleep 3
-        python update_trains.py
+        
+        # Try up to 3 times to get trains
+        for i in {1..3}; do
+          echo "Attempt $i of 3..."
+          python update_trains.py
+          if [ -f trains.json ] && [ $(grep -c '"lat"' trains.json) -gt 10 ]; then
+            echo "✅ Successfully got trains!"
+            break
+          fi
+          echo "⚠️ No trains found, waiting 30 seconds before retry..."
+          sleep 30
+        done
     
     - name: Update loco database
       run: |
         python update_locos.py
     
-    - name: Commit and push if changed
+    - name: Pull latest changes and push
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        
+        # Pull latest changes with rebase to avoid conflicts
+        git pull --rebase origin main
+        
+        # Add and commit
         git add trains.json locos.json loco_history.json loco_summary.txt
         if ! git diff --cached --quiet; then
           git commit -m "Update train data and loco database $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
