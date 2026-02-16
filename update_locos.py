@@ -1,170 +1,385 @@
 import os
+import sys
 import json
 import datetime
-from collections import defaultdict
+import time
+import math
+import pickle
+import random
+import traceback
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# Files
-TRAINS_FILE = "trains.json"
-LOCOS_FILE = "locos.json"
-HISTORY_FILE = "loco_history.json"  # For full historical tracking
+print("=" * 60)
+print("🚂 RAILOPS - TRAIN SCRAPER")
+print("=" * 60)
+print(f"Python version: {sys.version}")
+print(f"Current time: {datetime.datetime.now()}")
+print("=" * 60)
 
-def load_json_file(filename):
-    """Load JSON file if it exists"""
-    if os.path.exists(filename):
+OUT_FILE = "trains.json"
+COOKIE_FILE = "trainfinder_cookies.pkl"
+TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
+TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
+TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
+
+print(f"\n🔑 Credentials:")
+print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
+print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
+
+class TrainScraper:
+    def __init__(self):
+        self.driver = None
+        print("✅ TrainScraper initialized")
+        
+    def setup_driver(self):
+        print("\n🔧 Setting up Chrome driver...")
+        for attempt in range(3):
+            try:
+                chrome_options = Options()
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+                chrome_options.add_argument('--disable-gpu')
+                chrome_options.add_argument('--window-size=1920,1080')
+                chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+                chrome_options.add_argument('--headless=new')
+                
+                user_agents = [
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                ]
+                chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
+                
+                chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+                chrome_options.add_experimental_option('useAutomationExtension', False)
+                
+                self.driver = webdriver.Chrome(options=chrome_options)
+                self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                print("✅ Chrome driver setup successful")
+                return True
+            except Exception as e:
+                print(f"❌ Attempt {attempt + 1} failed: {e}")
+                if attempt < 2:
+                    time.sleep(5)
+        return False
+    
+    def save_cookies(self):
         try:
-            with open(filename, 'r') as f:
-                return json.load(f)
-        except:
-            return {}
-    return {}
-
-def save_json_file(filename, data):
-    """Save data to JSON file"""
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-def update_loco_database():
-    """Update loco database with latest train positions"""
+            with open(COOKIE_FILE, "wb") as f:
+                pickle.dump(self.driver.get_cookies(), f)
+            print("✅ Cookies saved")
+        except Exception as e:
+            print(f"❌ Failed to save cookies: {e}")
     
-    print("=" * 60)
-    print("🚂 LOCO DATABASE UPDATER")
-    print("=" * 60)
+    def load_cookies(self):
+        if os.path.exists(COOKIE_FILE):
+            try:
+                with open(COOKIE_FILE, "rb") as f:
+                    cookies = pickle.load(f)
+                self.driver.get("https://trainfinder.otenko.com")
+                time.sleep(2)
+                for cookie in cookies:
+                    try:
+                        self.driver.add_cookie(cookie)
+                    except:
+                        pass
+                print("✅ Cookies loaded")
+                return True
+            except Exception as e:
+                print(f"⚠️ Could not load cookies: {e}")
+        return False
     
-    # Load current trains
-    if not os.path.exists(TRAINS_FILE):
-        print(f"❌ {TRAINS_FILE} not found")
-        return
+    def random_delay(self, min_sec=1, max_sec=4):
+        time.sleep(random.uniform(min_sec, max_sec))
     
-    with open(TRAINS_FILE, 'r') as f:
-        train_data = json.load(f)
+    def check_session_valid(self):
+        try:
+            self.driver.get(TF_LOGIN_URL)
+            self.random_delay(2, 4)
+            if "login" in self.driver.current_url.lower():
+                print("⚠️ Session expired")
+                return False
+            print("✅ Session valid")
+            return True
+        except Exception as e:
+            print(f"⚠️ Session check error: {e}")
+            return False
     
-    trains = train_data.get('trains', [])
-    current_time = datetime.datetime.now()
-    timestamp = current_time.strftime('%Y-%m-%d %H:%M:%S')
-    date = current_time.strftime('%Y-%m-%d')
-    
-    print(f"\n📊 Processing {len(trains)} trains...")
-    
-    # Load existing loco database
-    locos = load_json_file(LOCOS_FILE)
-    
-    # Load history
-    history = load_json_file(HISTORY_FILE)
-    if not history:
-        history = {'locos': {}, 'updates': []}
-    
-    # Track new sightings
-    new_sightings = 0
-    updated_locos = 0
-    
-    for train in trains:
-        # Get loco identifier (prioritize train_name, then train_number, then id)
-        loco_id = train.get('train_name') or train.get('train_number') or train.get('id')
+    def force_fresh_login(self):
+        print("\n🔐 Performing fresh login...")
         
-        if not loco_id:
-            continue
+        if os.path.exists(COOKIE_FILE):
+            os.remove(COOKIE_FILE)
+            print("🗑️ Removed old cookies")
+        
+        self.driver.delete_all_cookies()
+        self.driver.get(TF_LOGIN_URL)
+        self.random_delay(2, 5)
+        
+        try:
+            username = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, "useR_name"))
+            )
+            username.clear()
+            for char in TF_USERNAME:
+                username.send_keys(char)
+                time.sleep(random.uniform(0.1, 0.3))
+            print("✅ Username entered")
             
-        # Skip obvious non-loco entries
-        if 'marker' in loco_id.lower() or 'arrow' in loco_id.lower():
-            continue
+            self.random_delay(1, 3)
+            
+            password = self.driver.find_element(By.ID, "pasS_word")
+            password.clear()
+            for char in TF_PASSWORD:
+                password.send_keys(char)
+                time.sleep(random.uniform(0.1, 0.3))
+            print("✅ Password entered")
+            
+            self.random_delay(1, 3)
+            
+            self.driver.execute_script("""
+                var tables = document.getElementsByClassName('popup_table');
+                for(var i = 0; i < tables.length; i++) {
+                    if(tables[i].className.includes('login')) {
+                        var elements = tables[i].getElementsByTagName('*');
+                        for(var j = 0; j < elements.length; j++) {
+                            if(elements[j].textContent.trim() === 'Log In') {
+                                elements[j].click();
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            """)
+            print("✅ Login button clicked")
+            
+            self.random_delay(4, 7)
+            
+            self.driver.execute_script("""
+                var paths = document.getElementsByTagName('path');
+                for(var i = 0; i < paths.length; i++) {
+                    var d = paths[i].getAttribute('d') || '';
+                    if(d.includes('M13.7,11l6.1-6.1')) {
+                        var parent = paths[i].parentElement;
+                        while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                            parent = parent.parentElement;
+                        }
+                        if(parent) parent.click();
+                    }
+                }
+            """)
+            print("✅ Warning closed")
+            
+            self.random_delay(3, 6)
+            
+            self.save_cookies()
+            return True
+            
+        except Exception as e:
+            print(f"❌ Login error: {e}")
+            return False
+    
+    def login(self):
+        if self.load_cookies():
+            self.driver.get(TF_LOGIN_URL)
+            self.random_delay(3, 6)
+            if self.check_session_valid():
+                print("✅ Using saved session")
+                return True
+        return self.force_fresh_login()
+    
+    def zoom_to_australia(self):
+        self.random_delay(2, 5)
+        try:
+            self.driver.execute_script("""
+                if (window.map) {
+                    var australia = [112, -44, 154, -10];
+                    var proj = window.map.getView().getProjection();
+                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                    window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+                }
+            """)
+            print("🌏 Zoomed to Australia")
+        except Exception as e:
+            print(f"⚠️ Could not zoom: {e}")
+    
+    def get_feature_count(self):
+        script = """
+        var total = 0;
+        var sources = ['regTrainsSource', 'unregTrainsSource'];
+        sources.forEach(function(name) {
+            if (window[name] && window[name].getFeatures) {
+                total += window[name].getFeatures().length;
+            }
+        });
+        return total;
+        """
+        try:
+            return self.driver.execute_script(script)
+        except:
+            return 0
+    
+    def wait_for_trains(self, max_wait=180):
+        print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
+        start_time = time.time()
+        while time.time() - start_time < max_wait:
+            count = self.get_feature_count()
+            if count > 10:
+                print(f"   ✅ Found {count} trains after {int(time.time() - start_time)}s")
+                return True
+            if int(time.time() - start_time) % 30 == 0:
+                print(f"   Still waiting... ({count} trains)")
+            time.sleep(5)
+        return False
+    
+    def extract_real_trains(self):
+        print("\n🔍 Extracting REAL trains...")
+        script = """
+        var realTrains = [];
+        var seenIds = new Set();
+        var sources = ['regTrainsSource', 'unregTrainsSource'];
         
-        # Prepare loco data
-        loco_data = {
-            'last_seen': timestamp,
-            'last_date': date,
-            'last_time': current_time.strftime('%H:%M:%S'),
-            'last_location': {
-                'lat': train.get('lat'),
-                'lon': train.get('lon')
-            },
-            'last_speed': train.get('speed', 0),
-            'last_origin': train.get('origin', ''),
-            'last_destination': train.get('destination', ''),
-            'last_description': train.get('description', ''),
-            'last_train_number': train.get('train_number', ''),
-            'cId': train.get('cId', ''),
-            'servId': train.get('servId', ''),
-            'trKey': train.get('trKey', ''),
-            'total_sightings': 1
+        sources.forEach(function(sourceName) {
+            var source = window[sourceName];
+            if (!source || !source.getFeatures) return;
+            
+            var features = source.getFeatures();
+            features.forEach(function(feature) {
+                try {
+                    var props = feature.getProperties();
+                    var geom = feature.getGeometry();
+                    if (!geom || geom.getType() !== 'Point') return;
+                    
+                    var coords = geom.getCoordinates();
+                    var trainNumber = props.trainNumber || '';
+                    var trainName = props.trainName || '';
+                    var origin = props.serviceFrom || '';
+                    var destination = props.serviceTo || '';
+                    
+                    if (!trainNumber && !trainName && !origin && !destination) return;
+                    
+                    var speedValue = props.trainSpeed || 0;
+                    var speedNum = 0;
+                    if (typeof speedValue === 'string') {
+                        var match = speedValue.match(/(\\d+)/);
+                        if (match) speedNum = parseInt(match[0]);
+                    } else {
+                        speedNum = parseInt(speedValue) || 0;
+                    }
+                    
+                    var displayId = trainName || trainNumber;
+                    if (!displayId || seenIds.has(displayId)) return;
+                    
+                    seenIds.add(displayId);
+                    realTrains.push({
+                        'id': displayId,
+                        'train_number': trainNumber,
+                        'train_name': trainName,
+                        'speed': speedNum,
+                        'origin': origin,
+                        'destination': destination,
+                        'description': props.serviceDesc || '',
+                        'km': props.trainKM || '',
+                        'time': props.trainTime || '',
+                        'cId': props.cId or '',
+                        'servId': props.servId or '',
+                        'trKey': props.trKey or '',
+                        'x': coords[0],
+                        'y': coords[1]
+                    });
+                } catch(e) {}
+            });
+        });
+        return realTrains;
+        """
+        try:
+            trains = self.driver.execute_script(script)
+            print(f"   ✅ Extracted {len(trains)} REAL trains")
+            return trains
+        except Exception as e:
+            print(f"   ❌ Error: {e}")
+            return []
+    
+    def webmercator_to_latlon(self, x, y):
+        try:
+            x = float(x)
+            y = float(y)
+            lon = (x / 20037508.34) * 180
+            lat = (y / 20037508.34) * 180
+            lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+            return round(lat, 6), round(lon, 6)
+        except:
+            return None, None
+    
+    def filter_australian_trains(self, raw_trains):
+        australian_trains = []
+        seen_ids = set()
+        for t in raw_trains:
+            x = t.get('x', 0)
+            y = t.get('y', 0)
+            if abs(x) > 180 or abs(y) > 90:
+                lat, lon = self.webmercator_to_latlon(x, y)
+            else:
+                lat, lon = y, x
+            if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
+                train_id = t.get('id', 'unknown')
+                if train_id not in seen_ids:
+                    seen_ids.add(train_id)
+                    australian_trains.append({
+                        'id': train_id,
+                        'train_number': t.get('train_number', ''),
+                        'train_name': t.get('train_name', ''),
+                        'speed': t.get('speed', 0),
+                        'origin': t.get('origin', ''),
+                        'destination': t.get('destination', ''),
+                        'description': t.get('description', ''),
+                        'km': t.get('km', ''),
+                        'time': t.get('time', ''),
+                        'cId': t.get('cId', ''),
+                        'servId': t.get('servId', ''),
+                        'trKey': t.get('trKey', ''),
+                        'lat': lat,
+                        'lon': lon
+                    })
+        return australian_trains
+    
+    def run(self):
+        print("\n🚀 Starting scraper run...")
+        if not self.setup_driver() or not self.login():
+            return [], "Setup failed"
+        try:
+            print("\n⏳ Waiting 30 seconds for map to stabilize...")
+            time.sleep(30)
+            self.zoom_to_australia()
+            self.wait_for_trains(max_wait=180)
+            raw_trains = self.extract_real_trains()
+            australian_trains = self.filter_australian_trains(raw_trains)
+            return australian_trains, f"ok - {len(australian_trains)} trains"
+        finally:
+            if self.driver:
+                self.driver.quit()
+                print("👋 Browser closed")
+
+def write_output(trains, note=""):
+    if trains:
+        payload = {
+            "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+            "note": note,
+            "trains": trains
         }
-        
-        # If we've seen this loco before, update it
-        if loco_id in locos:
-            # Count this as another sighting
-            locos[loco_id]['total_sightings'] = locos[loco_id].get('total_sightings', 1) + 1
-            locos[loco_id]['last_seen'] = timestamp
-            locos[loco_id]['last_location'] = loco_data['last_location']
-            locos[loco_id]['last_speed'] = loco_data['last_speed']
-            locos[loco_id]['last_origin'] = loco_data['last_origin']
-            locos[loco_id]['last_destination'] = loco_data['last_destination']
-            updated_locos += 1
-        else:
-            # New loco!
-            locos[loco_id] = loco_data
-            new_sightings += 1
-        
-        # Add to history (keep last 30 days of positions)
-        if loco_id not in history['locos']:
-            history['locos'][loco_id] = []
-        
-        # Add current position to history (limit to last 100 positions per loco)
-        history['locos'][loco_id].append({
-            'timestamp': timestamp,
-            'lat': train.get('lat'),
-            'lon': train.get('lon'),
-            'speed': train.get('speed', 0),
-            'origin': train.get('origin', ''),
-            'destination': train.get('destination', '')
-        })
-        
-        # Keep only last 100 positions
-        if len(history['locos'][loco_id]) > 100:
-            history['locos'][loco_id] = history['locos'][loco_id][-100:]
-    
-    # Record this update
-    history['updates'].append({
-        'timestamp': timestamp,
-        'trains_seen': len(trains),
-        'locos_seen': len(locos)
-    })
-    
-    # Keep only last 1000 updates
-    if len(history['updates']) > 1000:
-        history['updates'] = history['updates'][-1000:]
-    
-    # Save files
-    save_json_file(LOCOS_FILE, locos)
-    save_json_file(HISTORY_FILE, history)
-    
-    print(f"\n📊 Statistics:")
-    print(f"   New locos found: {new_sightings}")
-    print(f"   Existing locos updated: {updated_locos}")
-    print(f"   Total locos in database: {len(locos)}")
-    print(f"   History entries: {sum(len(h) for h in history['locos'].values())}")
-    
-    # Save a human-readable summary
-    summary_file = "loco_summary.txt"
-    with open(summary_file, 'w') as f:
-        f.write(f"LOCO DATABASE SUMMARY - {timestamp}\n")
-        f.write("=" * 60 + "\n\n")
-        f.write(f"Total Locomotives Tracked: {len(locos)}\n\n")
-        
-        # Sort by last seen (most recent first)
-        sorted_locos = sorted(locos.items(), key=lambda x: x[1]['last_seen'], reverse=True)
-        
-        for loco_id, data in sorted_locos[:50]:  # Show top 50 most recent
-            f.write(f"{loco_id}:\n")
-            f.write(f"  Last Seen: {data['last_seen']}\n")
-            f.write(f"  Location: ({data['last_location']['lat']:.4f}, {data['last_location']['lon']:.4f})\n")
-            f.write(f"  Speed: {data['last_speed']} km/h\n")
-            if data['last_origin'] or data['last_destination']:
-                f.write(f"  Route: {data['last_origin']} → {data['last_destination']}\n")
-            f.write(f"  Sightings: {data['total_sightings']}\n")
-            f.write("-" * 40 + "\n")
-    
-    print(f"\n✅ Summary saved to {summary_file}")
-    print(f"✅ Loco database saved to {LOCOS_FILE}")
-    print(f"✅ History saved to {HISTORY_FILE}")
+        with open(OUT_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        print(f"✅ Wrote {len(trains)} trains")
+
+def main():
+    scraper = TrainScraper()
+    trains, note = scraper.run()
+    write_output(trains, note)
 
 if __name__ == "__main__":
-    update_loco_database()
+    main()
