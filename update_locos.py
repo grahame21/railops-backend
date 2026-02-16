@@ -1,7 +1,6 @@
 import os
 import json
 import datetime
-from collections import defaultdict
 
 TRAINS_FILE = "trains.json"
 LOCOS_FILE = "locos.json"
