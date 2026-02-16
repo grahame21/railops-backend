@@ -7,6 +7,7 @@ import math
 import pickle
 import random
 import traceback
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -14,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER")
+print("🚂 RAILOPS - TRAIN SCRAPER WITH PROXY")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -26,16 +27,38 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
+# Free proxy list - these are examples, you'll need fresh ones
+# Get fresh proxies from: https://free-proxy-list.net/
+PROXIES = [
+    # Format: "ip:port"
+    # You MUST replace these with working proxies
+    # Example: "123.45.67.89:8080"
+]
+
 print(f"\n🔑 Credentials:")
 print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
 print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
+print(f"   Proxies configured: {len(PROXIES)}")
+
+def test_proxy(proxy):
+    """Test if a proxy is working"""
+    try:
+        test_url = "http://httpbin.org/ip"
+        proxies = {"http": f"http://{proxy}", "https": f"http://{proxy}"}
+        response = requests.get(test_url, proxies=proxies, timeout=10)
+        if response.status_code == 200:
+            print(f"   ✅ Proxy {proxy} is working")
+            return True
+    except:
+        pass
+    return False
 
 class TrainScraper:
     def __init__(self):
         self.driver = None
         print("✅ TrainScraper initialized")
         
-    def setup_driver(self):
+    def setup_driver_with_proxy(self, proxy=None):
         print("\n🔧 Setting up Chrome driver...")
         try:
             chrome_options = Options()
@@ -46,9 +69,16 @@ class TrainScraper:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_argument('--headless=new')
             
+            # Add proxy if provided
+            if proxy:
+                chrome_options.add_argument(f'--proxy-server=http://{proxy}')
+                print(f"   Using proxy: {proxy}")
+            
             # Rotate user agents
             user_agents = [
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             ]
             chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
             
@@ -93,7 +123,7 @@ class TrainScraper:
         time.sleep(random.uniform(min_sec, max_sec))
     
     def check_login_success(self):
-        """Quick check if we're logged in and seeing trains"""
+        """Check if we're logged in and seeing trains"""
         try:
             current_url = self.driver.current_url.lower()
             
@@ -102,21 +132,30 @@ class TrainScraper:
             
             # Check if map exists and has train sources
             script = """
-            var hasTrains = false;
+            var result = {
+                'map_exists': typeof window.map !== 'undefined',
+                'train_sources': {}
+            };
             var sources = ['regTrainsSource', 'unregTrainsSource'];
             sources.forEach(function(name) {
                 if (window[name] && window[name].getFeatures) {
-                    if (window[name].getFeatures().length > 1) {
-                        hasTrains = true;
-                    }
+                    result.train_sources[name] = window[name].getFeatures().length;
+                } else {
+                    result.train_sources[name] = 0;
                 }
             });
-            return hasTrains;
+            return result;
             """
             
-            has_trains = self.driver.execute_script(script)
-            return has_trains
-        except:
+            result = self.driver.execute_script(script)
+            total_trains = sum(result['train_sources'].values())
+            
+            print(f"   Map exists: {result['map_exists']}")
+            print(f"   Train sources: {result['train_sources']}")
+            
+            return total_trains > 5
+        except Exception as e:
+            print(f"   Login check error: {e}")
             return False
     
     def force_fresh_login(self):
@@ -195,14 +234,49 @@ class TrainScraper:
             print(f"❌ Login error: {e}")
             return False
     
-    def login(self):
-        if self.load_cookies():
-            self.driver.get(TF_LOGIN_URL)
-            self.random_delay(3, 5)
-            if self.check_login_success():
-                print("✅ Using saved session")
+    def login_with_proxy_rotation(self):
+        """Try multiple proxies until one works"""
+        
+        # First try without proxy (maybe it works)
+        print("\n🔄 Attempt 1: Direct connection (no proxy)")
+        if self.setup_driver_with_proxy(None):
+            if self.load_cookies():
+                self.driver.get(TF_LOGIN_URL)
+                self.random_delay(3, 5)
+                if self.check_login_success():
+                    print("✅ Success with direct connection")
+                    return True
+            
+            if self.force_fresh_login():
                 return True
-        return self.force_fresh_login()
+            self.driver.quit()
+        
+        # Try each proxy
+        for i, proxy in enumerate(PROXIES):
+            print(f"\n🔄 Attempt {i+2}: Testing proxy {proxy}")
+            
+            # Test proxy first
+            if not test_proxy(proxy):
+                print(f"   ⚠️ Proxy {proxy} failed test, skipping")
+                continue
+            
+            if self.setup_driver_with_proxy(proxy):
+                if self.load_cookies():
+                    self.driver.get(TF_LOGIN_URL)
+                    self.random_delay(3, 5)
+                    if self.check_login_success():
+                        print(f"✅ Success with proxy {proxy}")
+                        return True
+                
+                if self.force_fresh_login():
+                    print(f"✅ Success with proxy {proxy}")
+                    return True
+                
+                self.driver.quit()
+                time.sleep(5)
+        
+        print("❌ All proxy attempts failed")
+        return False
     
     def zoom_to_australia(self):
         try:
@@ -220,7 +294,6 @@ class TrainScraper:
             print("⚠️ Could not zoom")
     
     def get_train_count(self):
-        """Quick check for trains"""
         script = """
         var total = 0;
         var sources = ['regTrainsSource', 'unregTrainsSource'];
@@ -237,7 +310,6 @@ class TrainScraper:
             return 0
     
     def wait_for_trains(self, max_wait=60):
-        """Wait up to 60 seconds for trains"""
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains...")
         
         for i in range(max_wait // 5):
@@ -252,7 +324,6 @@ class TrainScraper:
         return False
     
     def extract_trains(self):
-        """Extract trains - simplified version"""
         print("\n🔍 Extracting trains...")
         
         script = """
@@ -365,13 +436,10 @@ class TrainScraper:
         if not TF_USERNAME or not TF_PASSWORD:
             return [], "Missing credentials"
         
-        if not self.setup_driver():
-            return [], "Driver setup failed"
+        if not self.login_with_proxy_rotation():
+            return [], "Login failed after proxy rotation"
         
         try:
-            if not self.login():
-                return [], "Login failed"
-            
             time.sleep(10)
             self.zoom_to_australia()
             self.wait_for_trains(max_wait=45)
@@ -399,7 +467,7 @@ def write_output(trains, note):
             json.dump(payload, f, indent=2)
         print(f"✅ Wrote {len(trains)} trains")
     else:
-        print("⚠️ No trains to write")
+        print("⚠️ No trains to write - keeping existing data")
 
 def main():
     scraper = TrainScraper()
