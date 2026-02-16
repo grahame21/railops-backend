@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, WebDriverException
 
 print("=" * 60)
 print("🚂 RAILOPS - TRAIN SCRAPER")
@@ -37,34 +38,38 @@ class TrainScraper:
         
     def setup_driver(self):
         print("\n🔧 Setting up Chrome driver...")
-        try:
-            chrome_options = Options()
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('--disable-gpu')
-            chrome_options.add_argument('--window-size=1920,1080')
-            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-            chrome_options.add_argument('--headless=new')
-            
-            # Rotate user agents
-            user_agents = [
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            ]
-            chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
-            
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option('useAutomationExtension', False)
-            
-            self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            print("✅ Chrome driver setup successful")
-            return True
-        except Exception as e:
-            print(f"❌ Failed to setup Chrome driver: {e}")
-            traceback.print_exc()
-            return False
+        for attempt in range(3):  # Retry 3 times
+            try:
+                chrome_options = Options()
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument('--disable-dev-shm-usage')
+                chrome_options.add_argument('--disable-gpu')
+                chrome_options.add_argument('--window-size=1920,1080')
+                chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+                chrome_options.add_argument('--headless=new')
+                
+                # Rotate user agents
+                user_agents = [
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                ]
+                chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
+                
+                chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+                chrome_options.add_experimental_option('useAutomationExtension', False)
+                
+                self.driver = webdriver.Chrome(options=chrome_options)
+                self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+                print("✅ Chrome driver setup successful")
+                return True
+            except Exception as e:
+                print(f"❌ Attempt {attempt + 1} failed: {e}")
+                if attempt < 2:
+                    time.sleep(5)
+                else:
+                    traceback.print_exc()
+                    return False
     
     def save_cookies(self):
         try:
@@ -212,56 +217,49 @@ class TrainScraper:
         except Exception as e:
             print(f"⚠️ Could not zoom: {e}")
     
-    def get_all_feature_counts(self):
+    def get_feature_count(self):
         script = """
-        var result = {};
-        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
+        var total = 0;
+        var sources = ['regTrainsSource', 'unregTrainsSource'];
         sources.forEach(function(name) {
             if (window[name] && window[name].getFeatures) {
-                result[name] = window[name].getFeatures().length;
-            } else {
-                result[name] = 0;
+                total += window[name].getFeatures().length;
             }
         });
-        return result;
+        return total;
         """
         try:
             return self.driver.execute_script(script)
         except:
-            return {}
+            return 0
     
     def wait_for_trains(self, max_wait=180):
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
         
         start_time = time.time()
-        best_count = 0
         
         while time.time() - start_time < max_wait:
-            counts = self.get_all_feature_counts()
-            total = sum(counts.values())
+            count = self.get_feature_count()
             
-            if total > best_count:
-                best_count = total
-                print(f"   📈 Found {total} features")
-            
-            if total > 100:
-                print(f"   ✅ Proceeding with {total} features")
+            if count > 10:
+                print(f"   ✅ Found {count} trains after {int(time.time() - start_time)}s")
                 return True
+            
+            if int(time.time() - start_time) % 30 == 0:
+                print(f"   Still waiting... ({count} trains)")
             
             time.sleep(5)
         
-        print(f"   ⏰ Timeout. Got {best_count} features")
-        return best_count > 50
+        print(f"   ⏰ Timeout. Found {count} trains")
+        return count > 0
     
-    def extract_real_trains_only(self):
-        """Extract ONLY real trains, filter out arrow markers"""
-        print("\n🔍 Extracting REAL trains only...")
+    def extract_real_trains(self):
+        print("\n🔍 Extracting REAL trains...")
         
         script = """
         var realTrains = [];
         var seenIds = new Set();
         
-        // Focus on sources that have real train data
         var sources = ['regTrainsSource', 'unregTrainsSource'];
         
         sources.forEach(function(sourceName) {
@@ -279,58 +277,43 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Parse speed
-                            var speedValue = props.trainSpeed || props.speed || 0;
-                            var speedNum = 0;
-                            if (typeof speedValue === 'string') {
-                                var match = speedValue.match(/(\d+\.?\d*)/);
-                                if (match) {
-                                    speedNum = parseFloat(match[1]);
-                                }
-                            } else if (typeof speedValue === 'number') {
-                                speedNum = speedValue;
-                            }
-                            
-                            // Get real train identifiers
+                            // Get the real train identifiers
                             var trainNumber = props.trainNumber || '';
                             var trainName = props.trainName || '';
-                            var serviceName = props.serviceName || '';
                             var origin = props.serviceFrom || '';
                             var destination = props.serviceTo || '';
-                            var description = props.serviceDesc || '';
                             
-                            // Only keep trains with REAL data
-                            var hasRealData = trainNumber || trainName || origin || destination || description;
-                            
-                            if (!hasRealData) {
-                                return; // Skip trains with no real data
+                            // Only keep trains with real data
+                            if (!trainNumber && !trainName && !origin && !destination) {
+                                return;
                             }
                             
-                            // Create display ID - prefer trainName (loco) or trainNumber
-                            var displayId = trainName || trainNumber || serviceName;
+                            // Parse speed
+                            var speedValue = props.trainSpeed || 0;
+                            var speedNum = 0;
+                            if (typeof speedValue === 'string') {
+                                var match = speedValue.match(/(\\d+)/);
+                                if (match) speedNum = parseInt(match[0]);
+                            } else {
+                                speedNum = parseInt(speedValue) || 0;
+                            }
+                            
+                            var displayId = trainName || trainNumber;
                             
                             var trainData = {
                                 'id': displayId,
                                 'train_number': trainNumber,
                                 'train_name': trainName,
-                                'service_name': serviceName,
-                                'cId': props.cId || '',
-                                'servId': props.servId || '',
-                                'trKey': props.trKey || '',
                                 'speed': speedNum,
-                                'heading': props.heading || props.Heading || 0,
-                                'km': props.trainKM || '',
                                 'origin': origin,
                                 'destination': destination,
-                                'description': description,
-                                'date': props.trainDate || '',
+                                'description': props.serviceDesc || '',
+                                'km': props.trainKM || '',
                                 'time': props.trainTime || '',
-                                'tooltip': props.tooltipHTML || '',
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            // Avoid duplicates
                             if (!seenIds.has(displayId)) {
                                 seenIds.add(displayId);
                                 realTrains.push(trainData);
@@ -385,19 +368,12 @@ class TrainScraper:
                         'id': train_id,
                         'train_number': t.get('train_number', ''),
                         'train_name': t.get('train_name', ''),
-                        'service_name': t.get('service_name', ''),
-                        'cId': t.get('cId', ''),
-                        'servId': t.get('servId', ''),
-                        'trKey': t.get('trKey', ''),
-                        'speed': round(float(t.get('speed', 0)), 1),
-                        'heading': round(float(t.get('heading', 0)), 1),
-                        'km': t.get('km', ''),
+                        'speed': t.get('speed', 0),
                         'origin': t.get('origin', ''),
                         'destination': t.get('destination', ''),
                         'description': t.get('description', ''),
-                        'date': t.get('date', ''),
+                        'km': t.get('km', ''),
                         'time': t.get('time', ''),
-                        'tooltip': t.get('tooltip', ''),
                         'lat': lat,
                         'lon': lon
                     })
@@ -424,10 +400,10 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            self.wait_for_trains(max_wait=180)
+            if not self.wait_for_trains(max_wait=180):
+                print("⚠️ Fewer trains than expected")
             
-            # Only extract real trains
-            raw_trains = self.extract_real_trains_only()
+            raw_trains = self.extract_real_trains()
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
