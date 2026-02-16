@@ -250,7 +250,7 @@ class TrainScraper:
         return False
     
     def extract_trains_direct(self):
-        """Extract train data with real IDs prioritized"""
+        """Extract ALL train data with all available fields"""
         print("\n🔍 Extracting trains directly from sources...")
         
         script = """
@@ -274,62 +274,50 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Try to find loco number in ANY property
-                            var locoNumber = '';
-                            var trainId = '';
-                            
-                            // Check all possible loco fields
-                            var locoCandidates = ['loco', 'Loco', 'unit', 'Unit', 'engine', 'Engine', 
-                                                 'locoid', 'LocoId', 'locomotive', 'Locomotive',
-                                                 'engine_number', 'EngineNumber', 'road_number', 'RoadNumber',
-                                                 'reporting_marks', 'ReportingMarks', 'power', 'Power'];
-                            
-                            locoCandidates.forEach(function(candidate) {
-                                if (props[candidate] && !locoNumber) {
-                                    locoNumber = String(props[candidate]);
-                                }
-                            });
-                            
-                            // Check all possible train ID fields
-                            var trainCandidates = ['train_id', 'trainId', 'train_number', 'trainNumber',
-                                                  'service', 'Service', 'name', 'NAME', 'id', 'ID',
-                                                  'train', 'Train', 'service_code', 'ServiceCode'];
-                            
-                            trainCandidates.forEach(function(candidate) {
-                                if (props[candidate] && !trainId) {
-                                    trainId = String(props[candidate]);
-                                }
-                            });
-                            
-                            // Use loco as primary if available
-                            var primaryId = locoNumber || trainId || sourceName + '_' + index;
-                            
+                            // Extract ALL available fields
                             var trainData = {
-                                'id': primaryId,
-                                'loco': locoNumber,
-                                'train_id': trainId,
-                                'train_number': props.train_number || props.trainNumber || '',
-                                'unit': props.unit || props.Unit || '',
-                                'operator': props.operator || props.Operator || '',
-                                'origin': props.origin || props.from || '',
-                                'destination': props.destination || props.to || '',
-                                'speed': props.speed || props.Speed || 0,
+                                // Core identifiers
+                                'id': props.trainNumber || props.trainName || props.serviceName || sourceName + '_' + index,
+                                'train_number': props.trainNumber || '',
+                                'train_name': props.trainName || '',
+                                'service_name': props.serviceName || '',
+                                
+                                // Loco/consist info
+                                'consist_id': props.cId || '',
+                                'service_id': props.servId || '',
+                                'tr_key': props.trKey || '',
+                                
+                                // Movement data
+                                'speed': props.trainSpeed || 0,
                                 'heading': props.heading || props.Heading || 0,
-                                'eta': props.eta || props.ETA || '',
-                                'status': props.status || props.Status || '',
-                                'type': props.type || props.Type || '',
-                                'cars': props.cars || props.Cars || 0,
-                                'line': props.line || props.Line || props.route || '',
+                                'km': props.trainKM || '',
+                                
+                                // Service details
+                                'origin': props.serviceFrom || '',
+                                'destination': props.serviceTo || '',
+                                'description': props.serviceDesc || '',
+                                'date': props.trainDate || '',
+                                'time': props.trainTime || '',
+                                
+                                // Display data
+                                'tooltip': props.tooltipHTML || '',
+                                'label_content': props.labelContent || '',
+                                'label_anchor': props.labelAnchor || '',
+                                'label_style': props.labelStyle || '',
+                                
+                                // Flags
+                                'is_train': props.is_train || false,
+                                'is_train_path': props.is_train_path || false,
+                                'is_actual_location': props.is_actual_location || false,
+                                
+                                // Coordinates
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            // Skip markerSource without real IDs
-                            if (sourceName === 'markerSource' && !locoNumber && !trainId) {
-                                return;
-                            }
+                            // Create unique ID
+                            var uniqueId = trainData.train_number || trainData.train_name || trainData.service_name || sourceName + '_' + index;
                             
-                            var uniqueId = primaryId;
                             if (!seenIds.has(uniqueId)) {
                                 seenIds.add(uniqueId);
                                 allTrains.push(trainData);
@@ -415,9 +403,9 @@ class TrainScraper:
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 train_id = t.get('id', 'unknown')
                 
-                if t.get('loco'):
+                if t.get('train_name'):
                     loco_count += 1
-                if t.get('loco') or t.get('train_id'):
+                if t.get('train_number') or t.get('train_name'):
                     real_count += 1
                 else:
                     generic_count += 1
@@ -426,27 +414,29 @@ class TrainScraper:
                     seen_ids.add(train_id)
                     australian_trains.append({
                         'id': train_id,
-                        'loco': t.get('loco', ''),
-                        'train_id': t.get('train_id', ''),
                         'train_number': t.get('train_number', ''),
-                        'unit': t.get('unit', ''),
-                        'operator': t.get('operator', ''),
-                        'origin': t.get('origin', ''),
-                        'destination': t.get('destination', ''),
+                        'train_name': t.get('train_name', ''),
+                        'service_name': t.get('service_name', ''),
+                        'consist_id': t.get('consist_id', ''),
+                        'service_id': t.get('service_id', ''),
+                        'tr_key': t.get('tr_key', ''),
                         'speed': round(float(t.get('speed', 0)), 1),
                         'heading': round(float(t.get('heading', 0)), 1),
-                        'eta': t.get('eta', ''),
-                        'status': t.get('status', ''),
-                        'type': t.get('type', ''),
-                        'cars': t.get('cars', 0),
-                        'line': t.get('line', ''),
+                        'km': t.get('km', ''),
+                        'origin': t.get('origin', ''),
+                        'destination': t.get('destination', ''),
+                        'description': t.get('description', ''),
+                        'date': t.get('date', ''),
+                        'time': t.get('time', ''),
+                        'tooltip': t.get('tooltip', ''),
+                        'is_train': t.get('is_train', False),
                         'lat': lat,
                         'lon': lon
                     })
         
         print(f"\n📊 Train Statistics:")
-        print(f"   Trains with loco numbers: {loco_count}")
-        print(f"   Real train IDs: {real_count}")
+        print(f"   Trains with loco names (train_name): {loco_count}")
+        print(f"   Trains with train numbers: {real_count}")
         print(f"   Generic IDs: {generic_count}")
         
         return australian_trains
@@ -473,7 +463,6 @@ class TrainScraper:
             # Wait for trains to actually appear (up to 2 minutes)
             if not self.wait_for_trains(max_wait=120):
                 print("⚠️ No trains appeared within timeout")
-                # Return empty but don't overwrite existing data
                 return [], "timeout - no trains"
             
             # Try to extract with retries
@@ -485,8 +474,10 @@ class TrainScraper:
                 print(f"\n📋 First raw train sample:")
                 sample = raw_trains[0]
                 print(f"   ID: {sample.get('id')}")
-                print(f"   Loco: {sample.get('loco')}")
-                print(f"   Train ID: {sample.get('train_id')}")
+                print(f"   Train Number: {sample.get('train_number')}")
+                print(f"   Train Name: {sample.get('train_name')}")
+                print(f"   Origin: {sample.get('origin')}")
+                print(f"   Destination: {sample.get('destination')}")
                 print(f"   Speed: {sample.get('speed')}")
                 print(f"   Location: ({sample.get('x')}, {sample.get('y')})")
             
@@ -498,12 +489,12 @@ class TrainScraper:
                 print(f"\n📋 Sample Australian train:")
                 sample = australian_trains[0]
                 print(f"   ID: {sample['id']}")
-                print(f"   Loco: {sample['loco']}")
-                print(f"   Train ID: {sample['train_id']}")
-                print(f"   Operator: {sample['operator']}")
+                print(f"   Train Number: {sample['train_number']}")
+                print(f"   Train Name: {sample['train_name']}")
                 print(f"   Origin: {sample['origin']}")
                 print(f"   Destination: {sample['destination']}")
                 print(f"   Speed: {sample['speed']} km/h")
+                print(f"   Description: {sample['description']}")
                 print(f"   Location: {sample['lat']:.4f}, {sample['lon']:.4f}")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
