@@ -700,6 +700,14 @@
         "speed": 0,
         "origin": "Bondi Junction",
         "destination": "Cronulla via City"
+      },
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -34.053248,
+        "lon": 151.150587,
+        "speed": 0,
+        "origin": "Bondi Junction",
+        "destination": "Cronulla via City"
       }
     ],
     "TNSW-4886-2784": [
@@ -787,6 +795,14 @@
         "timestamp": "2026-02-16 12:14:46",
         "lat": -33.887796,
         "lon": 151.20219,
+        "speed": 0,
+        "origin": "City",
+        "destination": "Emu Plains"
+      },
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -33.749447,
+        "lon": 150.693522,
         "speed": 0,
         "origin": "City",
         "destination": "Emu Plains"
@@ -2882,6 +2898,14 @@
         "lat": -33.83815,
         "lon": 151.207123,
         "speed": 65,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -33.691898,
+        "lon": 150.905334,
+        "speed": 0,
         "origin": "",
         "destination": ""
       }
@@ -5392,6 +5416,14 @@
         "speed": 0,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -38.099689,
+        "lon": 145.280762,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
       }
     ],
     "3VL91": [
@@ -6578,6 +6610,14 @@
         "lat": -33.53163,
         "lon": 149.797053,
         "speed": 38,
+        "origin": "Grainforce Siding, Kelso",
+        "destination": "Port Botany"
+      },
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -33.480333,
+        "lon": 150.158013,
+        "speed": 3,
         "origin": "Grainforce Siding, Kelso",
         "destination": "Port Botany"
       }
@@ -8843,6 +8883,56 @@
         "origin": "",
         "destination": ""
       }
+    ],
+    "TNSW-8989-6651": [
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -33.891076,
+        "lon": 151.247359,
+        "speed": 0,
+        "origin": "Waterfall",
+        "destination": "Bondi Junction via City"
+      }
+    ],
+    "MM-778M": [
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -37.86504,
+        "lon": 145.027985,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      }
+    ],
+    "MM-972M": [
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -37.879707,
+        "lon": 145.162613,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      }
+    ],
+    "HM2756": [
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -32.923843,
+        "lon": 151.758387,
+        "speed": 5,
+        "origin": "",
+        "destination": ""
+      }
+    ],
+    "TT04": [
+      {
+        "timestamp": "2026-02-16 13:46:58",
+        "lat": -32.671843,
+        "lon": 151.3704,
+        "speed": 1,
+        "origin": "",
+        "destination": ""
+      }
     ]
   },
   "updates": [
@@ -8870,6 +8960,11 @@
       "timestamp": "2026-02-16 13:44:57",
       "trains_seen": 10,
       "locos_seen": 478
+    },
+    {
+      "timestamp": "2026-02-16 13:46:58",
+      "trains_seen": 10,
+      "locos_seen": 483
     }
   ]
 }
