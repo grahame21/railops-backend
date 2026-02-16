@@ -5,6 +5,11 @@ on:
     - cron: '0 */3 * * *'
   workflow_dispatch:
 
+# THIS PREVENTS CONCURRENT RUNS
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -14,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Fetch all history for better merge handling
+        fetch-depth: 0
     
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -27,16 +32,14 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           google-chrome-stable \
-          xvfb \
-          unzip \
-          curl
+          xvfb
     
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
-        pip install selenium requests webdriver-manager
+        pip install selenium requests
     
-    - name: Run train scraper with retry
+    - name: Run train scraper
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
@@ -44,36 +47,21 @@ jobs:
       run: |
         Xvfb :99 -screen 0 1920x1080x24 &
         sleep 3
-        
-        # Try up to 3 times to get trains
-        for i in {1..3}; do
-          echo "Attempt $i of 3..."
-          python update_trains.py
-          if [ -f trains.json ] && [ $(grep -c '"lat"' trains.json) -gt 10 ]; then
-            echo "✅ Successfully got trains!"
-            break
-          fi
-          echo "⚠️ No trains found, waiting 30 seconds before retry..."
-          sleep 30
-        done
+        python update_trains.py
     
     - name: Update loco database
       run: |
         python update_locos.py
     
-    - name: Pull latest changes and push
+    - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        
-        # Pull latest changes with rebase to avoid conflicts
-        git pull --rebase origin main
-        
-        # Add and commit
         git add trains.json locos.json loco_history.json loco_summary.txt
-        if ! git diff --cached --quiet; then
-          git commit -m "Update train data and loco database $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-          git push
-        else
+        if git diff --cached --quiet; then
           echo "No changes to commit"
+        else
+          git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git pull --rebase origin main
+          git push
         fi
