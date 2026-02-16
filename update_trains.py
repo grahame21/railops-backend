@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER - FIXED VERSION")
+print("🚂 RAILOPS - TRAIN SCRAPER")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -46,8 +46,11 @@ class TrainScraper:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_argument('--headless=new')
             
+            # Rotate user agents
             user_agents = [
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             ]
             chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
             
@@ -89,13 +92,13 @@ class TrainScraper:
                 print(f"⚠️ Could not load cookies: {e}")
         return False
     
-    def random_delay(self, min_sec=0.5, max_sec=2):
+    def random_delay(self, min_sec=1, max_sec=4):
         time.sleep(random.uniform(min_sec, max_sec))
     
     def check_session_valid(self):
         try:
             self.driver.get(TF_LOGIN_URL)
-            self.random_delay(2, 3)
+            self.random_delay(2, 4)
             if "login" in self.driver.current_url.lower():
                 print("⚠️ Session expired")
                 return False
@@ -114,7 +117,7 @@ class TrainScraper:
         
         self.driver.delete_all_cookies()
         self.driver.get(TF_LOGIN_URL)
-        self.random_delay(2, 4)
+        self.random_delay(2, 5)
         
         try:
             username = WebDriverWait(self.driver, 10).until(
@@ -123,19 +126,19 @@ class TrainScraper:
             username.clear()
             for char in TF_USERNAME:
                 username.send_keys(char)
-                time.sleep(random.uniform(0.05, 0.15))
+                time.sleep(random.uniform(0.1, 0.3))
             print("✅ Username entered")
             
-            self.random_delay(0.5, 1.5)
+            self.random_delay(1, 3)
             
             password = self.driver.find_element(By.ID, "pasS_word")
             password.clear()
             for char in TF_PASSWORD:
                 password.send_keys(char)
-                time.sleep(random.uniform(0.05, 0.15))
+                time.sleep(random.uniform(0.1, 0.3))
             print("✅ Password entered")
             
-            self.random_delay(1, 2)
+            self.random_delay(1, 3)
             
             self.driver.execute_script("""
                 var tables = document.getElementsByClassName('popup_table');
@@ -154,7 +157,7 @@ class TrainScraper:
             """)
             print("✅ Login button clicked")
             
-            time.sleep(5)
+            self.random_delay(4, 7)
             
             self.driver.execute_script("""
                 var paths = document.getElementsByTagName('path');
@@ -171,7 +174,7 @@ class TrainScraper:
             """)
             print("✅ Warning closed")
             
-            time.sleep(5)
+            self.random_delay(3, 6)
             
             self.save_cookies()
             return True
@@ -184,7 +187,7 @@ class TrainScraper:
     def login(self):
         if self.load_cookies():
             self.driver.get(TF_LOGIN_URL)
-            self.random_delay(3, 5)
+            self.random_delay(3, 6)
             if self.check_session_valid():
                 print("✅ Using saved session")
                 return True
@@ -195,7 +198,7 @@ class TrainScraper:
             return self.force_fresh_login()
     
     def zoom_to_australia(self):
-        self.random_delay(2, 4)
+        self.random_delay(2, 5)
         try:
             self.driver.execute_script("""
                 if (window.map) {
@@ -210,11 +213,9 @@ class TrainScraper:
             print(f"⚠️ Could not zoom: {e}")
     
     def get_all_feature_counts(self):
-        """Get feature counts from ALL sources"""
         script = """
         var result = {};
         var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
-        
         sources.forEach(function(name) {
             if (window[name] && window[name].getFeatures) {
                 result[name] = window[name].getFeatures().length;
@@ -222,7 +223,6 @@ class TrainScraper:
                 result[name] = 0;
             }
         });
-        
         return result;
         """
         try:
@@ -230,8 +230,7 @@ class TrainScraper:
         except:
             return {}
     
-    def wait_for_trains(self, max_wait=240):
-        """Wait until we have a substantial number of features from ANY source"""
+    def wait_for_trains(self, max_wait=180):
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
         
         start_time = time.time()
@@ -243,50 +242,25 @@ class TrainScraper:
             
             if total > best_count:
                 best_count = total
-                print(f"   📈 New peak: {total} features at {int(time.time() - start_time)}s")
-                print(f"      Sources: {counts}")
+                print(f"   📈 Found {total} features")
             
-            if total > 100:  # We have a good number of trains
-                print(f"   ✅ Found {total} features, proceeding...")
+            if total > 100:
+                print(f"   ✅ Proceeding with {total} features")
                 return True
-            
-            # Every 30 seconds, try to trigger more loading
-            elapsed = int(time.time() - start_time)
-            if elapsed % 30 == 0 and elapsed > 0:
-                print(f"   Still loading... ({total} features after {elapsed}s)")
-                # Pan the map to trigger loading
-                self.driver.execute_script("""
-                    if (window.map) {
-                        var view = window.map.getView();
-                        var center = view.getCenter();
-                        view.setCenter([center[0] + 100000, center[1]]);
-                        setTimeout(function() {
-                            view.setCenter(center);
-                        }, 1000);
-                    }
-                """)
             
             time.sleep(5)
         
-        print(f"   ⏰ Timeout reached. Best count: {best_count}")
-        return best_count > 50  # Return True if we got at least some trains
+        print(f"   ⏰ Timeout. Got {best_count} features")
+        return best_count > 50
     
     def extract_all_trains(self):
-        """Extract ALL trains from ALL sources with rich data"""
-        print("\n🔍 Extracting ALL trains from ALL sources...")
+        print("\n🔍 Extracting ALL trains...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
-        var sourceStats = {};
         
-        // ALL possible sources
-        var sources = [
-            'regTrainsSource',
-            'unregTrainsSource',
-            'markerSource',
-            'arrowMarkersSource'
-        ];
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
@@ -294,7 +268,6 @@ class TrainScraper:
             
             try {
                 var features = source.getFeatures();
-                sourceStats[sourceName] = features.length;
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -316,14 +289,13 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            // Get the best available ID
-                            var trainId = props.trainNumber || props.trainName || 
-                                         props.serviceName || props.id || props.ID ||
-                                         sourceName + '_' + index;
+                            // Use train_name for display if available
+                            var displayId = props.trainName || props.trainNumber || 
+                                          props.serviceName || sourceName + '_' + index;
                             
-                            // Extract ALL available fields
                             var trainData = {
-                                'id': String(trainId),
+                                'id': sourceName + '_' + index,  // Keep original ID for reference
+                                'display_id': String(displayId),
                                 'train_number': props.trainNumber || '',
                                 'train_name': props.trainName || '',
                                 'service_name': props.serviceName || '',
@@ -344,10 +316,9 @@ class TrainScraper:
                                 'y': coords[1]
                             };
                             
-                            // Keep ALL trains, even if they have minimal data
-                            // Just avoid exact duplicates
-                            if (!seenIds.has(trainId)) {
-                                seenIds.add(trainId);
+                            // Avoid duplicates by display_id
+                            if (!seenIds.has(displayId)) {
+                                seenIds.add(displayId);
                                 allTrains.push(trainData);
                             }
                         }
@@ -356,17 +327,15 @@ class TrainScraper:
             } catch(e) {}
         });
         
-        console.log('📊 Source statistics:', JSON.stringify(sourceStats));
         return allTrains;
         """
         
         try:
             trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} trains from ALL sources")
+            print(f"   ✅ Extracted {len(trains)} unique trains")
             return trains
         except Exception as e:
-            print(f"   ❌ Error extracting trains: {e}")
-            traceback.print_exc()
+            print(f"   ❌ Error: {e}")
             return []
     
     def webmercator_to_latlon(self, x, y):
@@ -394,12 +363,13 @@ class TrainScraper:
                 lat, lon = y, x
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                train_id = t.get('id', 'unknown')
+                # Use display_id for deduplication
+                display_id = t.get('display_id', 'unknown')
                 
-                if train_id not in seen_ids:
-                    seen_ids.add(train_id)
+                if display_id not in seen_ids:
+                    seen_ids.add(display_id)
                     australian_trains.append({
-                        'id': train_id,
+                        'id': display_id,  # Use display_id as main ID
                         'train_number': t.get('train_number', ''),
                         'train_name': t.get('train_name', ''),
                         'service_name': t.get('service_name', ''),
@@ -420,24 +390,7 @@ class TrainScraper:
                         'lon': lon
                     })
         
-        print(f"\n📊 Train Statistics:")
-        print(f"   Total trains in Australia: {len(australian_trains)}")
-        
-        # Count rich data
-        with_names = sum(1 for t in australian_trains if t.get('train_name'))
-        with_numbers = sum(1 for t in australian_trains if t.get('train_number'))
-        with_origin = sum(1 for t in australian_trains if t.get('origin'))
-        with_dest = sum(1 for t in australian_trains if t.get('destination'))
-        with_desc = sum(1 for t in australian_trains if t.get('description'))
-        with_speed = sum(1 for t in australian_trains if t.get('speed', 0) > 0)
-        
-        print(f"   Trains with loco names: {with_names}")
-        print(f"   Trains with train numbers: {with_numbers}")
-        print(f"   Trains with origin: {with_origin}")
-        print(f"   Trains with destination: {with_dest}")
-        print(f"   Trains with description: {with_desc}")
-        print(f"   Trains with speed > 0: {with_speed}")
-        
+        print(f"\n📊 Found {len(australian_trains)} Australian trains")
         return australian_trains
     
     def run(self):
@@ -459,45 +412,18 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            # Wait for trains to load (up to 4 minutes)
-            if not self.wait_for_trains(max_wait=240):
-                print("⚠️ Fewer trains than expected, but proceeding anyway")
+            # Wait for trains
+            self.wait_for_trains(max_wait=180)
             
-            # Extract ALL trains
+            # Extract trains
             raw_trains = self.extract_all_trains()
             
-            print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
-            
-            if raw_trains:
-                print(f"\n📋 First raw train sample:")
-                sample = raw_trains[0]
-                print(f"   ID: {sample.get('id')}")
-                print(f"   Train Number: {sample.get('train_number')}")
-                print(f"   Train Name: {sample.get('train_name')}")
-                print(f"   Origin: {sample.get('origin')}")
-                print(f"   Destination: {sample.get('destination')}")
-                print(f"   Speed: {sample.get('speed')}")
-                print(f"   Source: {sample.get('source')}")
-            
             australian_trains = self.filter_australian_trains(raw_trains)
-            
-            print(f"\n✅ Australian trains after filtering: {len(australian_trains)}")
-            
-            if australian_trains:
-                print(f"\n📋 Sample Australian train:")
-                sample = australian_trains[0]
-                print(f"   ID: {sample['id']}")
-                print(f"   Train Number: {sample['train_number']}")
-                print(f"   Train Name: {sample['train_name']}")
-                print(f"   Origin: {sample['origin']}")
-                print(f"   Destination: {sample['destination']}")
-                print(f"   Speed: {sample['speed']} km/h")
-                print(f"   Description: {sample['description']}")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
         except Exception as e:
-            print(f"\n❌ Error in run: {e}")
+            print(f"\n❌ Error: {e}")
             traceback.print_exc()
             return [], f"error: {type(e).__name__}"
         finally:
@@ -506,46 +432,27 @@ class TrainScraper:
                 print("👋 Browser closed")
 
 def write_output(trains, note=""):
-    # If we got trains, always write them
     if len(trains) > 0:
-        print(f"\n📝 Writing output: {len(trains)} trains, status: {note}")
+        print(f"\n📝 Writing {len(trains)} trains")
         payload = {
             "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
             "note": note,
             "trains": trains
         }
         
-        # Create backup
-        try:
-            if os.path.exists(OUT_FILE):
-                backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-                with open(OUT_FILE, 'r') as src:
-                    with open(backup_name, 'w') as dst:
-                        dst.write(src.read())
-                print(f"💾 Backup created: {backup_name}")
-        except:
-            pass
-        
         try:
             with open(OUT_FILE, "w", encoding="utf-8") as f:
                 json.dump(payload, f, ensure_ascii=False, indent=2)
-            print(f"✅ Output written to {OUT_FILE}")
+            print(f"✅ Output written")
         except Exception as e:
-            print(f"❌ Failed to write output: {e}")
-    else:
-        print("\n⚠️ No trains extracted, keeping previous file")
+            print(f"❌ Failed to write: {e}")
 
 def main():
-    print("\n🏁 Starting main function...")
+    print("\n🏁 Starting...")
     scraper = TrainScraper()
     trains, note = scraper.run()
     write_output(trains, note)
-    print("\n✅ Script completed")
-    
-    if "error" in note:
-        sys.exit(1)
-    else:
-        sys.exit(0)
+    print("\n✅ Done")
 
 if __name__ == "__main__":
     main()
