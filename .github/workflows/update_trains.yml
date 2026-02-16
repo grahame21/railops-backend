@@ -26,14 +26,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           google-chrome-stable \
-          xvfb
+          xvfb \
+          unzip \
+          curl
     
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
-        pip install selenium requests
+        pip install selenium requests webdriver-manager
     
-    - name: Run scraper
+    - name: Run train scraper
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
@@ -43,13 +45,17 @@ jobs:
         sleep 3
         python update_trains.py
     
+    - name: Update loco database
+      run: |
+        python update_locos.py
+    
     - name: Commit and push if changed
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add trains.json
+        git add trains.json locos.json loco_history.json loco_summary.txt
         if ! git diff --cached --quiet; then
-          git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git commit -m "Update train data and loco database $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           git push
         else
           echo "No changes to commit"
