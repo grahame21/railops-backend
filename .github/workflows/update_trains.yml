@@ -2,15 +2,8 @@ name: Update Train Data
 
 on:
   schedule:
-    # Peak hours (6am-10pm AEST) - every 5 minutes
-    # AEST = UTC+11, so 6am AEST = 7pm UTC previous day, 10pm AEST = 9am UTC next day
-    # This requires two separate cron expressions
-    - cron: '*/5 19-23 * * *'  # 6am-10am AEST (7pm-11pm UTC)
-    - cron: '*/5 0-9 * * *'    # 10am-10pm AEST (12am-9am UTC)
-    
-    # Off-peak (10pm-6am AEST) - every 15 minutes
-    - cron: '*/15 10-18 * * *' # 10pm-6am AEST (10am-6pm UTC)
-    
+    # Run every 3 hours
+    - cron: '0 */3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -33,14 +26,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           google-chrome-stable \
-          xvfb \
-          unzip \
-          curl
+          xvfb
     
     - name: Install Python dependencies
       run: |
         pip install --upgrade pip
-        pip install selenium requests webdriver-manager
+        pip install selenium requests
     
     - name: Run scraper
       env:
@@ -48,14 +39,8 @@ jobs:
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
         DISPLAY: ":99"
       run: |
-        # Start Xvfb
         Xvfb :99 -screen 0 1920x1080x24 &
         sleep 3
-        
-        # Add random delay to avoid detection
-        sleep $(( RANDOM % 60 ))
-        
-        # Run the scraper
         python update_trains.py
     
     - name: Commit and push if changed
