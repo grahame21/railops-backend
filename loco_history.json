@@ -2142,6 +2142,14 @@
         "speed": 13,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
+        "lat": -33.888513,
+        "lon": 151.050907,
+        "speed": 13,
+        "origin": "",
+        "destination": ""
       }
     ],
     "TNSW-2404-8804": [
@@ -3307,6 +3315,14 @@
       },
       {
         "timestamp": "2026-02-16 19:05:56",
+        "lat": -33.914131,
+        "lon": 151.166657,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
         "lat": -33.914131,
         "lon": 151.166657,
         "speed": 0,
@@ -6803,6 +6819,14 @@
       },
       {
         "timestamp": "2026-02-16 19:05:56",
+        "lat": -37.539711,
+        "lon": 143.819748,
+        "speed": 11,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
         "lat": -37.539711,
         "lon": 143.819748,
         "speed": 11,
@@ -11030,6 +11054,14 @@
         "speed": 0,
         "origin": "Parramatta",
         "destination": "City Circle "
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
+        "lat": -33.895799,
+        "lon": 151.189158,
+        "speed": 0,
+        "origin": "Parramatta",
+        "destination": "City Circle "
       }
     ],
     "1305": [
@@ -11531,6 +11563,14 @@
       },
       {
         "timestamp": "2026-02-16 19:05:56",
+        "lat": -33.910332,
+        "lon": 151.140106,
+        "speed": 2,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
         "lat": -33.910332,
         "lon": 151.140106,
         "speed": 2,
@@ -12042,6 +12082,14 @@
         "speed": 0,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
+        "lat": -33.74883,
+        "lon": 150.689751,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
       }
     ],
     "MM-896M": [
@@ -12543,6 +12591,14 @@
       },
       {
         "timestamp": "2026-02-16 19:05:56",
+        "lat": -37.605091,
+        "lon": 145.100357,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
         "lat": -37.605091,
         "lon": 145.100357,
         "speed": 0,
@@ -13054,6 +13110,14 @@
         "speed": 0,
         "origin": "North Shore",
         "destination": "Hornsby and Berowra via City and Strathfield"
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
+        "lat": -33.692638,
+        "lon": 151.104965,
+        "speed": 0,
+        "origin": "North Shore",
+        "destination": "Hornsby and Berowra via City and Strathfield"
       }
     ],
     "MM-378M": [
@@ -13555,6 +13619,14 @@
       },
       {
         "timestamp": "2026-02-16 19:05:56",
+        "lat": -37.599522,
+        "lon": 144.944275,
+        "speed": 0,
+        "origin": "",
+        "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
         "lat": -37.599522,
         "lon": 144.944275,
         "speed": 0,
@@ -14066,6 +14138,14 @@
         "speed": 13,
         "origin": "",
         "destination": ""
+      },
+      {
+        "timestamp": "2026-02-16 19:10:59",
+        "lat": -33.888603,
+        "lon": 151.050453,
+        "speed": 13,
+        "origin": "",
+        "destination": ""
       }
     ]
   },
@@ -14417,6 +14497,11 @@
     },
     {
       "timestamp": "2026-02-16 19:05:56",
+      "trains_seen": 10,
+      "locos_seen": 490
+    },
+    {
+      "timestamp": "2026-02-16 19:10:59",
       "trains_seen": 10,
       "locos_seen": 490
     }
