@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER - RICH DATA EXTRACTION")
+print("🚂 RAILOPS - TRAIN SCRAPER - FIXED VERSION")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -209,63 +209,84 @@ class TrainScraper:
         except Exception as e:
             print(f"⚠️ Could not zoom: {e}")
     
-    def wait_for_rich_data(self, max_wait=180):
-        """Wait until we have trains with rich data"""
-        print(f"\n⏳ Waiting up to {max_wait} seconds for rich train data...")
+    def get_all_feature_counts(self):
+        """Get feature counts from ALL sources"""
+        script = """
+        var result = {};
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
+        
+        sources.forEach(function(name) {
+            if (window[name] && window[name].getFeatures) {
+                result[name] = window[name].getFeatures().length;
+            } else {
+                result[name] = 0;
+            }
+        });
+        
+        return result;
+        """
+        try:
+            return self.driver.execute_script(script)
+        except:
+            return {}
+    
+    def wait_for_trains(self, max_wait=240):
+        """Wait until we have a substantial number of features from ANY source"""
+        print(f"\n⏳ Waiting up to {max_wait} seconds for trains to load...")
         
         start_time = time.time()
+        best_count = 0
         
         while time.time() - start_time < max_wait:
-            script = """
-            var richCount = 0;
-            var sources = ['regTrainsSource', 'unregTrainsSource'];
+            counts = self.get_all_feature_counts()
+            total = sum(counts.values())
             
-            sources.forEach(function(sourceName) {
-                var source = window[sourceName];
-                if (!source || !source.getFeatures) return;
-                
-                var features = source.getFeatures();
-                features.forEach(function(feature) {
-                    var props = feature.getProperties();
-                    // Check for rich data fields
-                    if (props.trainNumber || props.trainName || props.serviceFrom) {
-                        richCount++;
+            if total > best_count:
+                best_count = total
+                print(f"   📈 New peak: {total} features at {int(time.time() - start_time)}s")
+                print(f"      Sources: {counts}")
+            
+            if total > 100:  # We have a good number of trains
+                print(f"   ✅ Found {total} features, proceeding...")
+                return True
+            
+            # Every 30 seconds, try to trigger more loading
+            elapsed = int(time.time() - start_time)
+            if elapsed % 30 == 0 and elapsed > 0:
+                print(f"   Still loading... ({total} features after {elapsed}s)")
+                # Pan the map to trigger loading
+                self.driver.execute_script("""
+                    if (window.map) {
+                        var view = window.map.getView();
+                        var center = view.getCenter();
+                        view.setCenter([center[0] + 100000, center[1]]);
+                        setTimeout(function() {
+                            view.setCenter(center);
+                        }, 1000);
                     }
-                });
-            });
-            
-            return richCount;
-            """
-            
-            try:
-                rich_count = self.driver.execute_script(script)
-                
-                if rich_count > 50:
-                    print(f"   ✅ Found {rich_count} rich trains after {int(time.time() - start_time)}s")
-                    return True
-                
-                elapsed = int(time.time() - start_time)
-                if elapsed % 20 == 0:
-                    print(f"   Still waiting... ({rich_count} rich trains after {elapsed}s)")
-                    
-            except Exception as e:
-                pass
+                """)
             
             time.sleep(5)
         
-        print(f"   ⚠️ Timeout reached")
-        return False
+        print(f"   ⏰ Timeout reached. Best count: {best_count}")
+        return best_count > 50  # Return True if we got at least some trains
     
-    def extract_rich_train_data(self):
-        """Extract ALL rich train data from sources"""
-        print("\n🔍 Extracting RICH train data...")
+    def extract_all_trains(self):
+        """Extract ALL trains from ALL sources with rich data"""
+        print("\n🔍 Extracting ALL trains from ALL sources...")
         
         script = """
         var allTrains = [];
         var seenIds = new Set();
+        var sourceStats = {};
         
-        // Focus on sources that have rich data
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
+        // ALL possible sources
+        var sources = [
+            'regTrainsSource',
+            'unregTrainsSource',
+            'markerSource',
+            'arrowMarkersSource'
+        ];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
@@ -273,6 +294,7 @@ class TrainScraper:
             
             try {
                 var features = source.getFeatures();
+                sourceStats[sourceName] = features.length;
                 
                 features.forEach(function(feature, index) {
                     try {
@@ -294,60 +316,37 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            // Get the best available ID (prioritize real train numbers)
+                            // Get the best available ID
                             var trainId = props.trainNumber || props.trainName || 
                                          props.serviceName || props.id || props.ID ||
                                          sourceName + '_' + index;
                             
-                            // Extract ALL available rich fields
+                            // Extract ALL available fields
                             var trainData = {
-                                // Core identifiers
                                 'id': String(trainId),
                                 'train_number': props.trainNumber || '',
                                 'train_name': props.trainName || '',
                                 'service_name': props.serviceName || '',
-                                
-                                // IDs from various sources
                                 'cId': props.cId || '',
                                 'servId': props.servId || '',
                                 'trKey': props.trKey || '',
-                                
-                                // Movement data
                                 'speed': speedNum,
-                                'speed_raw': props.trainSpeed || 0,
                                 'heading': props.heading || props.Heading || 0,
                                 'km': props.trainKM || '',
-                                
-                                // Service details - THESE ARE THE RICH FIELDS
                                 'origin': props.serviceFrom || '',
                                 'destination': props.serviceTo || '',
                                 'description': props.serviceDesc || '',
                                 'date': props.trainDate || '',
                                 'time': props.trainTime || '',
-                                
-                                // Display data
                                 'tooltip': props.tooltipHTML || '',
-                                'label_content': props.labelContent || '',
-                                'label_anchor': props.labelAnchor || '',
-                                'label_style': props.labelStyle || '',
-                                
-                                // Flags
-                                'is_train': props.is_train || false,
-                                
-                                // Source
                                 'source': sourceName,
-                                
-                                // Coordinates
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            // Only keep trains that have SOME rich data
-                            var hasRichData = trainData.origin || trainData.destination || 
-                                             trainData.description || trainData.train_name ||
-                                             (trainData.speed > 0);
-                            
-                            if (hasRichData && !seenIds.has(trainId)) {
+                            // Keep ALL trains, even if they have minimal data
+                            // Just avoid exact duplicates
+                            if (!seenIds.has(trainId)) {
                                 seenIds.add(trainId);
                                 allTrains.push(trainData);
                             }
@@ -357,12 +356,13 @@ class TrainScraper:
             } catch(e) {}
         });
         
+        console.log('📊 Source statistics:', JSON.stringify(sourceStats));
         return allTrains;
         """
         
         try:
             trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} rich trains")
+            print(f"   ✅ Extracted {len(trains)} trains from ALL sources")
             return trains
         except Exception as e:
             print(f"   ❌ Error extracting trains: {e}")
@@ -416,13 +416,12 @@ class TrainScraper:
                         'time': t.get('time', ''),
                         'tooltip': t.get('tooltip', ''),
                         'source': t.get('source', ''),
-                        'is_train': t.get('is_train', False),
                         'lat': lat,
                         'lon': lon
                     })
         
         print(f"\n📊 Train Statistics:")
-        print(f"   Total rich trains in Australia: {len(australian_trains)}")
+        print(f"   Total trains in Australia: {len(australian_trains)}")
         
         # Count rich data
         with_names = sum(1 for t in australian_trains if t.get('train_name'))
@@ -430,12 +429,14 @@ class TrainScraper:
         with_origin = sum(1 for t in australian_trains if t.get('origin'))
         with_dest = sum(1 for t in australian_trains if t.get('destination'))
         with_desc = sum(1 for t in australian_trains if t.get('description'))
+        with_speed = sum(1 for t in australian_trains if t.get('speed', 0) > 0)
         
         print(f"   Trains with loco names: {with_names}")
         print(f"   Trains with train numbers: {with_numbers}")
         print(f"   Trains with origin: {with_origin}")
         print(f"   Trains with destination: {with_dest}")
         print(f"   Trains with description: {with_desc}")
+        print(f"   Trains with speed > 0: {with_speed}")
         
         return australian_trains
     
@@ -458,11 +459,12 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            # Wait for rich data to appear
-            self.wait_for_rich_data(max_wait=180)
+            # Wait for trains to load (up to 4 minutes)
+            if not self.wait_for_trains(max_wait=240):
+                print("⚠️ Fewer trains than expected, but proceeding anyway")
             
-            # Extract rich train data
-            raw_trains = self.extract_rich_train_data()
+            # Extract ALL trains
+            raw_trains = self.extract_all_trains()
             
             print(f"\n✅ Total raw trains before filtering: {len(raw_trains)}")
             
@@ -474,8 +476,8 @@ class TrainScraper:
                 print(f"   Train Name: {sample.get('train_name')}")
                 print(f"   Origin: {sample.get('origin')}")
                 print(f"   Destination: {sample.get('destination')}")
-                print(f"   Description: {sample.get('description')}")
                 print(f"   Speed: {sample.get('speed')}")
+                print(f"   Source: {sample.get('source')}")
             
             australian_trains = self.filter_australian_trains(raw_trains)
             
@@ -489,8 +491,8 @@ class TrainScraper:
                 print(f"   Train Name: {sample['train_name']}")
                 print(f"   Origin: {sample['origin']}")
                 print(f"   Destination: {sample['destination']}")
-                print(f"   Description: {sample['description']}")
                 print(f"   Speed: {sample['speed']} km/h")
+                print(f"   Description: {sample['description']}")
             
             return australian_trains, f"ok - {len(australian_trains)} trains"
             
@@ -504,9 +506,9 @@ class TrainScraper:
                 print("👋 Browser closed")
 
 def write_output(trains, note=""):
-    # If we got rich data, always write it
+    # If we got trains, always write them
     if len(trains) > 0:
-        print(f"\n📝 Writing output: {len(trains)} rich trains, status: {note}")
+        print(f"\n📝 Writing output: {len(trains)} trains, status: {note}")
         payload = {
             "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
             "note": note,
@@ -514,12 +516,13 @@ def write_output(trains, note=""):
         }
         
         # Create backup
-        backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         try:
-            with open(OUT_FILE, 'r') as src:
-                with open(backup_name, 'w') as dst:
-                    dst.write(src.read())
-            print(f"💾 Backup created: {backup_name}")
+            if os.path.exists(OUT_FILE):
+                backup_name = f"trains_backup_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                with open(OUT_FILE, 'r') as src:
+                    with open(backup_name, 'w') as dst:
+                        dst.write(src.read())
+                print(f"💾 Backup created: {backup_name}")
         except:
             pass
         
@@ -530,7 +533,7 @@ def write_output(trains, note=""):
         except Exception as e:
             print(f"❌ Failed to write output: {e}")
     else:
-        print("\n⚠️ No rich data extracted, keeping previous file")
+        print("\n⚠️ No trains extracted, keeping previous file")
 
 def main():
     print("\n🏁 Starting main function...")
