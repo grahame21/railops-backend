@@ -277,11 +277,11 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            // Parse speed
+                            # Parse speed
                             var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
-                                var match = speedValue.match(/(\\d+\\.?\\d*)/);
+                                var match = speedValue.match(/(\d+\.?\d*)/);
                                 if (match) {
                                     speedNum = parseFloat(match[1]);
                                 }
@@ -289,12 +289,12 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            // Use train_name for display if available
+                            # Use train_name for display if available
                             var displayId = props.trainName || props.trainNumber || 
                                           props.serviceName || sourceName + '_' + index;
                             
                             var trainData = {
-                                'id': sourceName + '_' + index,  // Keep original ID for reference
+                                'id': sourceName + '_' + index,
                                 'display_id': String(displayId),
                                 'train_number': props.trainNumber || '',
                                 'train_name': props.trainName || '',
@@ -316,7 +316,7 @@ class TrainScraper:
                                 'y': coords[1]
                             };
                             
-                            // Avoid duplicates by display_id
+                            # Avoid duplicates by display_id
                             if (!seenIds.has(displayId)) {
                                 seenIds.add(displayId);
                                 allTrains.push(trainData);
@@ -363,13 +363,12 @@ class TrainScraper:
                 lat, lon = y, x
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                # Use display_id for deduplication
                 display_id = t.get('display_id', 'unknown')
                 
                 if display_id not in seen_ids:
                     seen_ids.add(display_id)
                     australian_trains.append({
-                        'id': display_id,  # Use display_id as main ID
+                        'id': display_id,
                         'train_number': t.get('train_number', ''),
                         'train_name': t.get('train_name', ''),
                         'service_name': t.get('service_name', ''),
@@ -412,10 +411,8 @@ class TrainScraper:
             
             self.zoom_to_australia()
             
-            # Wait for trains
             self.wait_for_trains(max_wait=180)
             
-            # Extract trains
             raw_trains = self.extract_all_trains()
             
             australian_trains = self.filter_australian_trains(raw_trains)
