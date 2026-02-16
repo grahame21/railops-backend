@@ -47,6 +47,7 @@ class TrainScraper:
                 chrome_options.add_argument('--disable-blink-features=AutomationControlled')
                 chrome_options.add_argument('--headless=new')
                 
+                # Add a more realistic user agent
                 user_agents = [
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
@@ -96,17 +97,24 @@ class TrainScraper:
     def random_delay(self, min_sec=1, max_sec=4):
         time.sleep(random.uniform(min_sec, max_sec))
     
-    def check_session_valid(self):
+    def check_login_success(self):
+        """Verify we're actually logged in and seeing the map"""
         try:
-            self.driver.get(TF_LOGIN_URL)
-            self.random_delay(2, 4)
+            # Check if we're on the login page
             if "login" in self.driver.current_url.lower():
-                print("⚠️ Session expired")
+                print("❌ Still on login page")
                 return False
-            print("✅ Session valid")
+            
+            # Check if map exists
+            map_exists = self.driver.execute_script("return typeof window.map !== 'undefined'")
+            if not map_exists:
+                print("❌ Map not loaded")
+                return False
+            
+            print("✅ Successfully logged in and map loaded")
             return True
         except Exception as e:
-            print(f"⚠️ Session check error: {e}")
+            print(f"⚠️ Login check error: {e}")
             return False
     
     def force_fresh_login(self):
@@ -121,6 +129,7 @@ class TrainScraper:
         self.random_delay(2, 5)
         
         try:
+            # Wait for login form
             username = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
             )
@@ -141,6 +150,7 @@ class TrainScraper:
             
             self.random_delay(1, 3)
             
+            # Click login button
             self.driver.execute_script("""
                 var tables = document.getElementsByClassName('popup_table');
                 for(var i = 0; i < tables.length; i++) {
@@ -158,39 +168,55 @@ class TrainScraper:
             """)
             print("✅ Login button clicked")
             
-            self.random_delay(4, 7)
+            # Wait for login to process
+            time.sleep(8)
             
-            self.driver.execute_script("""
-                var paths = document.getElementsByTagName('path');
-                for(var i = 0; i < paths.length; i++) {
-                    var d = paths[i].getAttribute('d') || '';
-                    if(d.includes('M13.7,11l6.1-6.1')) {
-                        var parent = paths[i].parentElement;
-                        while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
-                            parent = parent.parentElement;
+            # Close warning if it appears
+            try:
+                self.driver.execute_script("""
+                    var paths = document.getElementsByTagName('path');
+                    for(var i = 0; i < paths.length; i++) {
+                        var d = paths[i].getAttribute('d') || '';
+                        if(d.includes('M13.7,11l6.1-6.1')) {
+                            var parent = paths[i].parentElement;
+                            while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                                parent = parent.parentElement;
+                            }
+                            if(parent) parent.click();
                         }
-                        if(parent) parent.click();
                     }
-                }
-            """)
-            print("✅ Warning closed")
+                """)
+                print("✅ Warning closed")
+            except:
+                pass
             
-            self.random_delay(3, 6)
+            time.sleep(3)
             
-            self.save_cookies()
-            return True
+            # Verify login worked
+            if self.check_login_success():
+                self.save_cookies()
+                return True
+            else:
+                print("❌ Login verification failed")
+                return False
             
         except Exception as e:
             print(f"❌ Login error: {e}")
+            traceback.print_exc()
             return False
     
     def login(self):
+        # Try cookies first
         if self.load_cookies():
             self.driver.get(TF_LOGIN_URL)
             self.random_delay(3, 6)
-            if self.check_session_valid():
+            if self.check_login_success():
                 print("✅ Using saved session")
                 return True
+            else:
+                print("⚠️ Saved session invalid")
+        
+        # Fall back to fresh login
         return self.force_fresh_login()
     
     def zoom_to_australia(self):
@@ -208,7 +234,7 @@ class TrainScraper:
         except Exception as e:
             print(f"⚠️ Could not zoom: {e}")
     
-    def get_feature_counts(self):
+    def get_all_feature_counts(self):
         """Get feature counts from ALL sources"""
         script = """
         var counts = {};
@@ -233,7 +259,7 @@ class TrainScraper:
         best_count = 0
         
         while time.time() - start_time < max_wait:
-            counts = self.get_feature_counts()
+            counts = self.get_all_feature_counts()
             total = sum(counts.values())
             
             if total > best_count:
@@ -243,14 +269,29 @@ class TrainScraper:
                     if cnt > 0:
                         print(f"      - {src}: {cnt}")
             
-            if total > 100:
+            if total > 10:  # More than just the artifact
                 print(f"   ✅ Proceeding with {total} features")
                 return True
+            
+            # Every 30 seconds, try to trigger loading by panning
+            elapsed = time.time() - start_time
+            if elapsed > 30 and elapsed % 30 < 2:
+                print("   🔄 Panning map to trigger loading...")
+                self.driver.execute_script("""
+                    if (window.map) {
+                        var view = window.map.getView();
+                        var center = view.getCenter();
+                        view.setCenter([center[0] + 100000, center[1]]);
+                        setTimeout(function() {
+                            view.setCenter(center);
+                        }, 1000);
+                    }
+                """)
             
             time.sleep(5)
         
         print(f"   ⏰ Timeout. Got {best_count} features")
-        return best_count > 50
+        return best_count > 5
     
     def extract_all_trains(self):
         """Extract ALL trains from ALL sources"""
