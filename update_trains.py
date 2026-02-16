@@ -277,11 +277,11 @@ class TrainScraper:
                         if (geom && geom.getType() === 'Point') {
                             var coords = geom.getCoordinates();
                             
-                            # Parse speed
+                            // Parse speed
                             var speedValue = props.trainSpeed || props.speed || 0;
                             var speedNum = 0;
                             if (typeof speedValue === 'string') {
-                                var match = speedValue.match(/(\d+\.?\d*)/);
+                                var match = speedValue.match(/(\\d+\\.?\\d*)/);
                                 if (match) {
                                     speedNum = parseFloat(match[1]);
                                 }
@@ -289,34 +289,49 @@ class TrainScraper:
                                 speedNum = speedValue;
                             }
                             
-                            # Use train_name for display if available
-                            var displayId = props.trainName || props.trainNumber || 
-                                          props.serviceName || sourceName + '_' + index;
+                            // Get real train identifiers
+                            var trainNumber = props.trainNumber || '';
+                            var trainName = props.trainName || '';
+                            var serviceName = props.serviceName || '';
+                            var origin = props.serviceFrom || '';
+                            var destination = props.serviceTo || '';
+                            var description = props.serviceDesc || '';
+                            
+                            // Determine if this is a real train (has actual data)
+                            var hasRealData = trainNumber || trainName || origin || destination || description;
+                            
+                            // Skip arrow markers and trains with no real data
+                            if (!hasRealData && sourceName.includes('arrow')) {
+                                return;
+                            }
+                            
+                            // Create display ID
+                            var displayId = trainName || trainNumber || serviceName || sourceName + '_' + index;
                             
                             var trainData = {
-                                'id': sourceName + '_' + index,
-                                'display_id': String(displayId),
-                                'train_number': props.trainNumber || '',
-                                'train_name': props.trainName || '',
-                                'service_name': props.serviceName || '',
+                                'id': displayId,
+                                'train_number': trainNumber,
+                                'train_name': trainName,
+                                'service_name': serviceName,
                                 'cId': props.cId || '',
                                 'servId': props.servId || '',
                                 'trKey': props.trKey || '',
                                 'speed': speedNum,
                                 'heading': props.heading || props.Heading || 0,
                                 'km': props.trainKM || '',
-                                'origin': props.serviceFrom || '',
-                                'destination': props.serviceTo || '',
-                                'description': props.serviceDesc || '',
+                                'origin': origin,
+                                'destination': destination,
+                                'description': description,
                                 'date': props.trainDate || '',
                                 'time': props.trainTime || '',
                                 'tooltip': props.tooltipHTML || '',
                                 'source': sourceName,
+                                'has_real_data': hasRealData,
                                 'x': coords[0],
                                 'y': coords[1]
                             };
                             
-                            # Avoid duplicates by display_id
+                            // Avoid duplicates
                             if (!seenIds.has(displayId)) {
                                 seenIds.add(displayId);
                                 allTrains.push(trainData);
@@ -353,6 +368,9 @@ class TrainScraper:
         australian_trains = []
         seen_ids = set()
         
+        real_count = 0
+        generic_count = 0
+        
         for t in raw_trains:
             x = t.get('x', 0)
             y = t.get('y', 0)
@@ -363,12 +381,18 @@ class TrainScraper:
                 lat, lon = y, x
             
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                display_id = t.get('display_id', 'unknown')
+                # Only keep trains with real data
+                if not t.get('has_real_data'):
+                    generic_count += 1
+                    continue
                 
-                if display_id not in seen_ids:
-                    seen_ids.add(display_id)
+                train_id = t.get('id', 'unknown')
+                
+                if train_id not in seen_ids:
+                    seen_ids.add(train_id)
+                    real_count += 1
                     australian_trains.append({
-                        'id': display_id,
+                        'id': train_id,
                         'train_number': t.get('train_number', ''),
                         'train_name': t.get('train_name', ''),
                         'service_name': t.get('service_name', ''),
@@ -389,7 +413,10 @@ class TrainScraper:
                         'lon': lon
                     })
         
-        print(f"\n📊 Found {len(australian_trains)} Australian trains")
+        print(f"\n📊 Train Statistics:")
+        print(f"   Real trains kept: {real_count}")
+        print(f"   Generic trains filtered out: {generic_count}")
+        
         return australian_trains
     
     def run(self):
