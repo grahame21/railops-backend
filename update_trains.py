@@ -7,26 +7,14 @@ import math
 import pickle
 import random
 import traceback
-import signal
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-# Set timeout handler
-class TimeoutException(Exception):
-    pass
-
-def timeout_handler(signum, frame):
-    raise TimeoutException("Operation timed out")
-
-# Set 5 minute timeout for the entire script
-signal.signal(signal.SIGALRM, timeout_handler)
-signal.alarm(300)  # 5 minutes
-
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER WITH TIMEOUT")
+print("🚂 RAILOPS - TRAIN SCRAPER")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -71,33 +59,31 @@ class TrainScraper:
             
             # Add proxy if configured
             if use_proxy and PROXY_HOST and PROXY_PORT:
+                # Try different proxy formats
                 if PROXY_USER and PROXY_PASS:
-                    # Format: http://username:password@host:port
+                    # Format with authentication
                     proxy_string = f"http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
                 else:
                     proxy_string = f"http://{PROXY_HOST}:{PROXY_PORT}"
                 
                 chrome_options.add_argument(f'--proxy-server={proxy_string}')
                 print(f"   Using proxy: {PROXY_HOST}:{PROXY_PORT}")
+                
+                # Add these for better proxy compatibility
+                chrome_options.add_argument('--ignore-certificate-errors')
+                chrome_options.add_argument('--allow-insecure-localhost')
             
             # Rotate user agents
             user_agents = [
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             ]
             chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
             
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
             chrome_options.add_experimental_option('useAutomationExtension', False)
             
-            # Add timeout options
-            chrome_options.add_argument('--ignore-certificate-errors')
-            chrome_options.add_argument('--disable-web-security')
-            
             self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.set_page_load_timeout(30)
-            self.driver.set_script_timeout(30)
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             print("✅ Chrome driver setup successful")
             return True
@@ -457,10 +443,10 @@ class TrainScraper:
         if not TF_USERNAME or not TF_PASSWORD:
             return [], "Missing credentials"
         
+        if not self.login_with_retry():
+            return [], "Login failed after retry"
+        
         try:
-            if not self.login_with_retry():
-                return [], "Login failed after retry"
-            
             time.sleep(10)
             self.zoom_to_australia()
             self.wait_for_trains(max_wait=45)
@@ -470,9 +456,6 @@ class TrainScraper:
             
             return australian, f"ok - {len(australian)} trains"
             
-        except TimeoutException:
-            print("❌ Script timed out")
-            return [], "timeout"
         except Exception as e:
             print(f"❌ Error: {e}")
             return [], f"error: {type(e).__name__}"
@@ -494,16 +477,9 @@ def write_output(trains, note):
         print("⚠️ No trains to write - keeping existing data")
 
 def main():
-    try:
-        scraper = TrainScraper()
-        trains, note = scraper.run()
-        write_output(trains, note)
-    except TimeoutException:
-        print("❌ Script timed out - exiting")
-        sys.exit(1)
-    except Exception as e:
-        print(f"❌ Fatal error: {e}")
-        sys.exit(1)
+    scraper = TrainScraper()
+    trains, note = scraper.run()
+    write_output(trains, note)
 
 if __name__ == "__main__":
     main()
