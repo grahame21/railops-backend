@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER WITH PROXY ROTATION")
+print("🚂 RAILOPS - TRAIN SCRAPER")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -27,56 +27,17 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-# Free proxy sources (updated regularly)
-PROXY_SOURCES = [
-    "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all",
-    "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
-    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
-    "https://raw.githubusercontent.com/almroot/proxylist/master/list.txt",
-]
-
 print(f"\n🔑 Credentials:")
 print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
 print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
-
-def fetch_free_proxies():
-    """Fetch fresh proxies from multiple free sources"""
-    all_proxies = []
-    print("\n🌐 Fetching free proxies...")
-    
-    for source in PROXY_SOURCES:
-        try:
-            response = requests.get(source, timeout=10)
-            if response.status_code == 200:
-                # Parse proxies (format: ip:port)
-                proxies = response.text.strip().split('\n')
-                # Take first 20 from each source
-                all_proxies.extend([p.strip() for p in proxies if p.strip()][:20])
-                print(f"   ✅ Got {len(proxies[:20])} proxies from {source.split('/')[2]}")
-        except Exception as e:
-            print(f"   ⚠️ Failed to fetch from {source}: {e}")
-    
-    # Remove duplicates
-    all_proxies = list(set(all_proxies))
-    print(f"   📊 Total unique proxies: {len(all_proxies)}")
-    return all_proxies
-
-def test_proxy(proxy):
-    """Quick test if proxy works"""
-    try:
-        proxy_dict = {"http": f"http://{proxy}", "https": f"http://{proxy}"}
-        response = requests.get("http://httpbin.org/ip", proxies=proxy_dict, timeout=5)
-        return response.status_code == 200
-    except:
-        return False
 
 class TrainScraper:
     def __init__(self):
         self.driver = None
         print("✅ TrainScraper initialized")
         
-    def setup_driver_with_proxy(self, proxy=None):
-        print(f"\n🔧 Setting up Chrome driver with proxy: {proxy if proxy else 'NO'}")
+    def setup_driver(self, proxy=None):
+        print(f"\n🔧 Setting up Chrome driver...")
         try:
             chrome_options = Options()
             chrome_options.add_argument('--no-sandbox')
@@ -86,8 +47,9 @@ class TrainScraper:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_argument('--headless=new')
             
+            # Add proxy if provided
             if proxy:
-                chrome_options.add_argument(f'--proxy-server=http://{proxy}')
+                chrome_options.add_argument(f'--proxy-server={proxy}')
                 print(f"   Using proxy: {proxy}")
             
             # Rotate user agents
@@ -99,9 +61,6 @@ class TrainScraper:
             
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
             chrome_options.add_experimental_option('useAutomationExtension', False)
-            
-            chrome_options.add_argument('--ignore-certificate-errors')
-            chrome_options.add_argument('--allow-insecure-localhost')
             
             self.driver = webdriver.Chrome(options=chrome_options)
             self.driver.set_page_load_timeout(30)
@@ -252,67 +211,41 @@ class TrainScraper:
             print(f"❌ Login error: {str(e)[:200]}")
             return False
     
-    def login_with_retry(self):
-        """Try direct connection and multiple proxies"""
+    def try_proxy_list(self):
+        """Try a small list of known working proxies"""
+        
+        # Known working proxies from free sources (updated monthly)
+        proxies = [
+            "http://20.210.113.32:8123",
+            "http://23.95.150.145:6114", 
+            "http://8.220.204.215:8888",
+            "http://47.237.2.201:8443",
+            "http://47.89.22.242:8443",
+        ]
         
         # Try direct connection first
-        print("\n🔄 Attempt 1: Direct connection")
-        if self.setup_driver_with_proxy(None):
-            if self.load_cookies():
-                try:
-                    self.driver.get(TF_LOGIN_URL)
-                    self.random_delay(3, 5)
-                    if self.check_login_success():
-                        print("✅ Success with direct connection")
-                        return True
-                except:
-                    pass
-            
+        print("\n🔄 Attempt: Direct connection")
+        if self.setup_driver():
             if self.force_fresh_login():
                 return True
             if self.driver:
                 self.driver.quit()
                 self.driver = None
         
-        # Fetch fresh proxies
-        proxies = fetch_free_proxies()
-        
         # Try each proxy
-        for i, proxy in enumerate(proxies[:30]):  # Try first 30
-            print(f"\n🔄 Attempt {i+2}: Testing proxy {proxy}")
+        for i, proxy in enumerate(proxies[:3]):  # Only try first 3 to save time
+            print(f"\n🔄 Attempt {i+2}: Proxy {proxy}")
             
-            # Quick test first
-            if not test_proxy(proxy):
-                print(f"   ⚠️ Proxy failed quick test, skipping")
-                continue
-            
-            if self.setup_driver_with_proxy(proxy):
-                if self.load_cookies():
-                    try:
-                        self.driver.get(TF_LOGIN_URL)
-                        self.random_delay(3, 5)
-                        if self.check_login_success():
-                            print(f"✅ Success with proxy {proxy}")
-                            # Save working proxy for future runs
-                            with open("working_proxy.txt", "w") as f:
-                                f.write(proxy)
-                            return True
-                    except:
-                        pass
-                
+            if self.setup_driver(proxy):
                 if self.force_fresh_login():
                     print(f"✅ Success with proxy {proxy}")
-                    with open("working_proxy.txt", "w") as f:
-                        f.write(proxy)
                     return True
                 
                 if self.driver:
                     self.driver.quit()
                     self.driver = None
-            
-            time.sleep(2)
         
-        print("❌ All login attempts failed")
+        print("❌ All proxy attempts failed")
         return False
     
     def zoom_to_australia(self):
@@ -346,7 +279,7 @@ class TrainScraper:
         except:
             return 0
     
-    def wait_for_trains(self, max_wait=60):
+    def wait_for_trains(self, max_wait=45):
         print(f"\n⏳ Waiting up to {max_wait} seconds for trains...")
         
         for i in range(max_wait // 5):
@@ -470,7 +403,7 @@ class TrainScraper:
         if not TF_USERNAME or not TF_PASSWORD:
             return [], "Missing credentials"
         
-        if not self.login_with_retry():
+        if not self.try_proxy_list():
             return [], "Login failed after retry"
         
         try:
