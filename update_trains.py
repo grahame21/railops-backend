@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER WITH PREMIUM PROXY")
+print("🚂 RAILOPS - TRAIN SCRAPER WITH PROXY")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -27,16 +27,20 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-# Get proxy from environment variables (set in GitHub Secrets)
-PROXY_USER = os.environ.get("PROXY_USER", "").strip()
-PROXY_PASS = os.environ.get("PROXY_PASS", "").strip()
+# Read proxy configuration
 PROXY_HOST = os.environ.get("PROXY_HOST", "").strip()
 PROXY_PORT = os.environ.get("PROXY_PORT", "").strip()
+PROXY_USER = os.environ.get("PROXY_USER", "").strip()
+PROXY_PASS = os.environ.get("PROXY_PASS", "").strip()
 
 print(f"\n🔑 Credentials:")
 print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
 print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
-print(f"   Proxy configured: {'Yes' if PROXY_HOST else 'No'}")
+print(f"\n🔑 Proxy Configuration:")
+print(f"   PROXY_HOST: {'[SET]' if PROXY_HOST else '[NOT SET]'}")
+print(f"   PROXY_PORT: {'[SET]' if PROXY_PORT else '[NOT SET]'}")
+print(f"   PROXY_USER: {'[SET]' if PROXY_USER else '[NOT SET]'}")
+print(f"   PROXY_PASS: {'[SET]' if PROXY_PASS else '[NOT SET]'}")
 
 class TrainScraper:
     def __init__(self):
@@ -56,17 +60,21 @@ class TrainScraper:
             
             # Add proxy if configured
             if use_proxy and PROXY_HOST and PROXY_PORT:
-                proxy_string = f"{PROXY_HOST}:{PROXY_PORT}"
+                # Try different proxy formats
+                proxy_formats = [
+                    f"http://{PROXY_HOST}:{PROXY_PORT}",  # Standard HTTP proxy
+                    f"https://{PROXY_HOST}:{PROXY_PORT}", # HTTPS proxy
+                    f"socks5://{PROXY_HOST}:{PROXY_PORT}", # SOCKS5 proxy
+                ]
                 
                 # Add proxy with authentication if provided
                 if PROXY_USER and PROXY_PASS:
-                    # Selenium doesn't support proxy auth directly, need to use a plugin or different approach
-                    # Option 1: Use authenticated proxy with chrome options (limited support)
-                    chrome_options.add_argument(f'--proxy-server=http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}')
+                    proxy_string = f"http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
+                    chrome_options.add_argument(f'--proxy-server={proxy_string}')
                     print(f"   Using authenticated proxy: {PROXY_HOST}:{PROXY_PORT}")
                 else:
-                    chrome_options.add_argument(f'--proxy-server=http://{proxy_string}')
-                    print(f"   Using proxy: {proxy_string}")
+                    chrome_options.add_argument(f'--proxy-server=http://{PROXY_HOST}:{PROXY_PORT}')
+                    print(f"   Using proxy: {PROXY_HOST}:{PROXY_PORT}")
             
             # Rotate user agents
             user_agents = [
@@ -78,6 +86,10 @@ class TrainScraper:
             
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
             chrome_options.add_experimental_option('useAutomationExtension', False)
+            
+            # Add additional arguments for proxy
+            chrome_options.add_argument('--ignore-certificate-errors')
+            chrome_options.add_argument('--allow-running-insecure-content')
             
             self.driver = webdriver.Chrome(options=chrome_options)
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -225,13 +237,13 @@ class TrainScraper:
                 return False
             
         except Exception as e:
-            print(f"❌ Login error: {e}")
+            print(f"❌ Login error: {str(e)[:200]}")
             return False
     
     def login_with_retry(self):
         """Try with and without proxy"""
         
-        # Try without proxy first (maybe GitHub IP works this time)
+        # Try without proxy first
         print("\n🔄 Attempt 1: Direct connection (no proxy)")
         if self.setup_driver_with_proxy(use_proxy=False):
             if self.load_cookies():
