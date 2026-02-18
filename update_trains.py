@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER WITH PROXY")
+print("🚂 RAILOPS - TRAIN SCRAPER WITH PREMIUM PROXY")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -27,46 +27,24 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-# Free proxy list - updated 2026-02-18
-# Get fresh proxies from: https://free-proxy-list.net/
-PROXIES = [
-    "20.210.113.32:8123",
-    "20.111.54.29:8123",
-    "20.111.54.23:8123", 
-    "8.220.204.215:8888",
-    "8.220.204.92:8888",
-    "8.220.205.172:8888",
-    "47.237.2.201:8443",
-    "47.237.107.38:8443",
-    "47.89.22.242:8443",
-    "47.89.22.202:8443"
-]
+# Get proxy from environment variables (set in GitHub Secrets)
+PROXY_USER = os.environ.get("PROXY_USER", "").strip()
+PROXY_PASS = os.environ.get("PROXY_PASS", "").strip()
+PROXY_HOST = os.environ.get("PROXY_HOST", "").strip()
+PROXY_PORT = os.environ.get("PROXY_PORT", "").strip()
 
 print(f"\n🔑 Credentials:")
 print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
 print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
-print(f"   Proxies configured: {len(PROXIES)}")
-
-def test_proxy(proxy):
-    """Test if a proxy is working"""
-    try:
-        test_url = "http://httpbin.org/ip"
-        proxies = {"http": f"http://{proxy}", "https": f"http://{proxy}"}
-        response = requests.get(test_url, proxies=proxies, timeout=10)
-        if response.status_code == 200:
-            print(f"   ✅ Proxy {proxy} is working")
-            return True
-    except Exception as e:
-        print(f"   ❌ Proxy {proxy} failed: {str(e)[:50]}")
-    return False
+print(f"   Proxy configured: {'Yes' if PROXY_HOST else 'No'}")
 
 class TrainScraper:
     def __init__(self):
         self.driver = None
         print("✅ TrainScraper initialized")
         
-    def setup_driver_with_proxy(self, proxy=None):
-        print(f"\n🔧 Setting up Chrome driver with proxy: {proxy if proxy else 'direct'}")
+    def setup_driver_with_proxy(self, use_proxy=True):
+        print(f"\n🔧 Setting up Chrome driver with proxy: {'YES' if use_proxy and PROXY_HOST else 'NO'}")
         try:
             chrome_options = Options()
             chrome_options.add_argument('--no-sandbox')
@@ -76,10 +54,19 @@ class TrainScraper:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_argument('--headless=new')
             
-            # Add proxy if provided
-            if proxy:
-                chrome_options.add_argument(f'--proxy-server=http://{proxy}')
-                print(f"   Using proxy: {proxy}")
+            # Add proxy if configured
+            if use_proxy and PROXY_HOST and PROXY_PORT:
+                proxy_string = f"{PROXY_HOST}:{PROXY_PORT}"
+                
+                # Add proxy with authentication if provided
+                if PROXY_USER and PROXY_PASS:
+                    # Selenium doesn't support proxy auth directly, need to use a plugin or different approach
+                    # Option 1: Use authenticated proxy with chrome options (limited support)
+                    chrome_options.add_argument(f'--proxy-server=http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}')
+                    print(f"   Using authenticated proxy: {PROXY_HOST}:{PROXY_PORT}")
+                else:
+                    chrome_options.add_argument(f'--proxy-server=http://{proxy_string}')
+                    print(f"   Using proxy: {proxy_string}")
             
             # Rotate user agents
             user_agents = [
@@ -241,12 +228,12 @@ class TrainScraper:
             print(f"❌ Login error: {e}")
             return False
     
-    def login_with_proxy_rotation(self):
-        """Try multiple proxies until one works"""
+    def login_with_retry(self):
+        """Try with and without proxy"""
         
-        # Try direct connection first
+        # Try without proxy first (maybe GitHub IP works this time)
         print("\n🔄 Attempt 1: Direct connection (no proxy)")
-        if self.setup_driver_with_proxy(None):
+        if self.setup_driver_with_proxy(use_proxy=False):
             if self.load_cookies():
                 self.driver.get(TF_LOGIN_URL)
                 self.random_delay(3, 5)
@@ -260,34 +247,26 @@ class TrainScraper:
                 self.driver.quit()
                 self.driver = None
         
-        # Try each proxy
-        working_proxies = []
-        for i, proxy in enumerate(PROXIES):
-            print(f"\n🔄 Attempt {i+2}: Testing proxy {proxy}")
-            
-            # Test proxy first
-            if test_proxy(proxy):
-                working_proxies.append(proxy)
-                
-                if self.setup_driver_with_proxy(proxy):
-                    if self.load_cookies():
-                        self.driver.get(TF_LOGIN_URL)
-                        self.random_delay(3, 5)
-                        if self.check_login_success():
-                            print(f"✅ Success with proxy {proxy}")
-                            return True
-                    
-                    if self.force_fresh_login():
-                        print(f"✅ Success with proxy {proxy}")
+        # Try with proxy if configured
+        if PROXY_HOST:
+            print("\n🔄 Attempt 2: Using proxy")
+            if self.setup_driver_with_proxy(use_proxy=True):
+                if self.load_cookies():
+                    self.driver.get(TF_LOGIN_URL)
+                    self.random_delay(3, 5)
+                    if self.check_login_success():
+                        print("✅ Success with proxy")
                         return True
-                    
-                    if self.driver:
-                        self.driver.quit()
-                        self.driver = None
-                        time.sleep(5)
+                
+                if self.force_fresh_login():
+                    print("✅ Success with proxy")
+                    return True
+                
+                if self.driver:
+                    self.driver.quit()
+                    self.driver = None
         
-        print(f"\n❌ All proxy attempts failed. Working proxies found: {len(working_proxies)}")
-        print(f"   Working proxies: {working_proxies}")
+        print("❌ All login attempts failed")
         return False
     
     def zoom_to_australia(self):
@@ -448,8 +427,8 @@ class TrainScraper:
         if not TF_USERNAME or not TF_PASSWORD:
             return [], "Missing credentials"
         
-        if not self.login_with_proxy_rotation():
-            return [], "Login failed after proxy rotation"
+        if not self.login_with_retry():
+            return [], "Login failed after retry"
         
         try:
             time.sleep(10)
