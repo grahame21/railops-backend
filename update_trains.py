@@ -7,15 +7,15 @@ import math
 import pickle
 import random
 import traceback
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER")
+print("🚂 RAILOPS - TRAIN SCRAPER WITH PROXY ROTATION")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -27,28 +27,56 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-# Read proxy configuration
-PROXY_HOST = os.environ.get("PROXY_HOST", "").strip()
-PROXY_PORT = os.environ.get("PROXY_PORT", "").strip()
-PROXY_USER = os.environ.get("PROXY_USER", "").strip()
-PROXY_PASS = os.environ.get("PROXY_PASS", "").strip()
+# Free proxy sources (updated regularly)
+PROXY_SOURCES = [
+    "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all",
+    "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
+    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
+    "https://raw.githubusercontent.com/almroot/proxylist/master/list.txt",
+]
 
 print(f"\n🔑 Credentials:")
 print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
 print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
-print(f"\n🔑 Proxy Configuration:")
-print(f"   PROXY_HOST: {'[SET]' if PROXY_HOST else '[NOT SET]'}")
-print(f"   PROXY_PORT: {'[SET]' if PROXY_PORT else '[NOT SET]'}")
-print(f"   PROXY_USER: {'[SET]' if PROXY_USER else '[NOT SET]'}")
-print(f"   PROXY_PASS: {'[SET]' if PROXY_PASS else '[NOT SET]'}")
+
+def fetch_free_proxies():
+    """Fetch fresh proxies from multiple free sources"""
+    all_proxies = []
+    print("\n🌐 Fetching free proxies...")
+    
+    for source in PROXY_SOURCES:
+        try:
+            response = requests.get(source, timeout=10)
+            if response.status_code == 200:
+                # Parse proxies (format: ip:port)
+                proxies = response.text.strip().split('\n')
+                # Take first 20 from each source
+                all_proxies.extend([p.strip() for p in proxies if p.strip()][:20])
+                print(f"   ✅ Got {len(proxies[:20])} proxies from {source.split('/')[2]}")
+        except Exception as e:
+            print(f"   ⚠️ Failed to fetch from {source}: {e}")
+    
+    # Remove duplicates
+    all_proxies = list(set(all_proxies))
+    print(f"   📊 Total unique proxies: {len(all_proxies)}")
+    return all_proxies
+
+def test_proxy(proxy):
+    """Quick test if proxy works"""
+    try:
+        proxy_dict = {"http": f"http://{proxy}", "https": f"http://{proxy}"}
+        response = requests.get("http://httpbin.org/ip", proxies=proxy_dict, timeout=5)
+        return response.status_code == 200
+    except:
+        return False
 
 class TrainScraper:
     def __init__(self):
         self.driver = None
         print("✅ TrainScraper initialized")
         
-    def setup_driver_with_proxy(self, use_proxy=True):
-        print(f"\n🔧 Setting up Chrome driver with proxy: {'YES' if use_proxy and PROXY_HOST else 'NO'}")
+    def setup_driver_with_proxy(self, proxy=None):
+        print(f"\n🔧 Setting up Chrome driver with proxy: {proxy if proxy else 'NO'}")
         try:
             chrome_options = Options()
             chrome_options.add_argument('--no-sandbox')
@@ -58,79 +86,9 @@ class TrainScraper:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_argument('--headless=new')
             
-            # Add proxy with authentication using a different method
-            if use_proxy and PROXY_HOST and PROXY_PORT and PROXY_USER and PROXY_PASS:
-                # Set up proxy with authentication
-                proxy_string = f"{PROXY_HOST}:{PROXY_PORT}"
-                
-                # Create proxy auth plugin
-                manifest_json = """
-                {
-                    "version": "1.0.0",
-                    "manifest_version": 2,
-                    "name": "Chrome Proxy",
-                    "permissions": [
-                        "proxy",
-                        "tabs",
-                        "unlimitedStorage",
-                        "storage",
-                        "<all_urls>",
-                        "webRequest",
-                        "webRequestBlocking"
-                    ],
-                    "background": {
-                        "scripts": ["background.js"]
-                    },
-                    "minimum_chrome_version":"22.0.0"
-                }
-                """
-                
-                background_js = f"""
-                var config = {{
-                    mode: "fixed_servers",
-                    rules: {{
-                        singleProxy: {{
-                            scheme: "http",
-                            host: "{PROXY_HOST}",
-                            port: parseInt({PROXY_PORT})
-                        }},
-                        bypassList: ["localhost"]
-                    }}
-                }};
-                
-                chrome.proxy.settings.set({{value: config, scope: "regular"}}, function() {{}});
-                
-                function callbackFn(details) {{
-                    return {{
-                        authCredentials: {{
-                            username: "{PROXY_USER}",
-                            password: "{PROXY_PASS}"
-                        }}
-                    }};
-                }}
-                
-                chrome.webRequest.onAuthRequired.addListener(
-                    callbackFn,
-                    {{urls: ["<all_urls>"]}},
-                    ['blocking']
-                );
-                """
-                
-                # Save the plugin files
-                import os, shutil
-                plugin_dir = "proxy_auth_plugin"
-                if os.path.exists(plugin_dir):
-                    shutil.rmtree(plugin_dir)
-                os.makedirs(plugin_dir)
-                
-                with open(os.path.join(plugin_dir, "manifest.json"), "w") as f:
-                    f.write(manifest_json)
-                with open(os.path.join(plugin_dir, "background.js"), "w") as f:
-                    f.write(background_js)
-                
-                # Add the plugin to Chrome
-                chrome_options.add_argument(f'--load-extension={os.path.abspath(plugin_dir)}')
-                print(f"   Using authenticated proxy: {PROXY_HOST}:{PROXY_PORT}")
+            if proxy:
+                chrome_options.add_argument(f'--proxy-server=http://{proxy}')
+                print(f"   Using proxy: {proxy}")
             
             # Rotate user agents
             user_agents = [
@@ -142,10 +100,8 @@ class TrainScraper:
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
             chrome_options.add_experimental_option('useAutomationExtension', False)
             
-            # Add timeout options
             chrome_options.add_argument('--ignore-certificate-errors')
             chrome_options.add_argument('--allow-insecure-localhost')
-            chrome_options.add_argument('--disable-web-security')
             
             self.driver = webdriver.Chrome(options=chrome_options)
             self.driver.set_page_load_timeout(30)
@@ -154,7 +110,6 @@ class TrainScraper:
             return True
         except Exception as e:
             print(f"❌ Failed to setup Chrome driver: {e}")
-            traceback.print_exc()
             return False
     
     def save_cookies(self):
@@ -187,14 +142,11 @@ class TrainScraper:
         time.sleep(random.uniform(min_sec, max_sec))
     
     def check_login_success(self):
-        """Check if we're logged in and seeing trains"""
         try:
             current_url = self.driver.current_url.lower()
-            
             if "login" in current_url:
                 return False
             
-            # Check if map exists and has train sources
             script = """
             var result = {
                 'map_exists': typeof window.map !== 'undefined',
@@ -239,7 +191,6 @@ class TrainScraper:
         self.random_delay(2, 4)
         
         try:
-            # Find and fill username
             username = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.ID, "useR_name"))
             )
@@ -249,7 +200,6 @@ class TrainScraper:
             
             self.random_delay(1, 2)
             
-            # Find and fill password
             password = self.driver.find_element(By.ID, "pasS_word")
             password.clear()
             password.send_keys(TF_PASSWORD)
@@ -257,7 +207,6 @@ class TrainScraper:
             
             self.random_delay(1, 2)
             
-            # Click login
             self.driver.execute_script("""
                 var buttons = document.querySelectorAll('input[type="button"], button');
                 for(var i = 0; i < buttons.length; i++) {
@@ -272,7 +221,6 @@ class TrainScraper:
             
             time.sleep(5)
             
-            # Close warning
             try:
                 self.driver.execute_script("""
                     var paths = document.getElementsByTagName('path');
@@ -302,15 +250,14 @@ class TrainScraper:
             
         except Exception as e:
             print(f"❌ Login error: {str(e)[:200]}")
-            traceback.print_exc()
             return False
     
     def login_with_retry(self):
-        """Try with and without proxy"""
+        """Try direct connection and multiple proxies"""
         
-        # Try without proxy first
-        print("\n🔄 Attempt 1: Direct connection (no proxy)")
-        if self.setup_driver_with_proxy(use_proxy=False):
+        # Try direct connection first
+        print("\n🔄 Attempt 1: Direct connection")
+        if self.setup_driver_with_proxy(None):
             if self.load_cookies():
                 try:
                     self.driver.get(TF_LOGIN_URL)
@@ -318,8 +265,8 @@ class TrainScraper:
                     if self.check_login_success():
                         print("✅ Success with direct connection")
                         return True
-                except Exception as e:
-                    print(f"⚠️ Direct connection error: {e}")
+                except:
+                    pass
             
             if self.force_fresh_login():
                 return True
@@ -327,27 +274,43 @@ class TrainScraper:
                 self.driver.quit()
                 self.driver = None
         
-        # Try with proxy if configured
-        if PROXY_HOST:
-            print("\n🔄 Attempt 2: Using proxy")
-            if self.setup_driver_with_proxy(use_proxy=True):
+        # Fetch fresh proxies
+        proxies = fetch_free_proxies()
+        
+        # Try each proxy
+        for i, proxy in enumerate(proxies[:30]):  # Try first 30
+            print(f"\n🔄 Attempt {i+2}: Testing proxy {proxy}")
+            
+            # Quick test first
+            if not test_proxy(proxy):
+                print(f"   ⚠️ Proxy failed quick test, skipping")
+                continue
+            
+            if self.setup_driver_with_proxy(proxy):
                 if self.load_cookies():
                     try:
                         self.driver.get(TF_LOGIN_URL)
                         self.random_delay(3, 5)
                         if self.check_login_success():
-                            print("✅ Success with proxy")
+                            print(f"✅ Success with proxy {proxy}")
+                            # Save working proxy for future runs
+                            with open("working_proxy.txt", "w") as f:
+                                f.write(proxy)
                             return True
-                    except Exception as e:
-                        print(f"⚠️ Proxy connection error: {e}")
+                    except:
+                        pass
                 
                 if self.force_fresh_login():
-                    print("✅ Success with proxy")
+                    print(f"✅ Success with proxy {proxy}")
+                    with open("working_proxy.txt", "w") as f:
+                        f.write(proxy)
                     return True
                 
                 if self.driver:
                     self.driver.quit()
                     self.driver = None
+            
+            time.sleep(2)
         
         print("❌ All login attempts failed")
         return False
@@ -421,16 +384,13 @@ class TrainScraper:
                     
                     var coords = geom.getCoordinates();
                     
-                    // Get train identifiers
                     var trainNumber = props.trainNumber || '';
                     var trainName = props.trainName || '';
                     var origin = props.serviceFrom || '';
                     var destination = props.serviceTo || '';
                     
-                    // Skip if no data
                     if (!trainNumber && !trainName && !origin && !destination) return;
                     
-                    // Get speed
                     var speed = 0;
                     if (props.trainSpeed) {
                         var match = String(props.trainSpeed).match(/(\\d+)/);
@@ -529,10 +489,6 @@ class TrainScraper:
         finally:
             if self.driver:
                 self.driver.quit()
-            # Clean up proxy plugin
-            import shutil
-            if os.path.exists("proxy_auth_plugin"):
-                shutil.rmtree("proxy_auth_plugin")
 
 def write_output(trains, note):
     if trains:
