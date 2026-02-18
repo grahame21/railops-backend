@@ -7,15 +7,26 @@ import math
 import pickle
 import random
 import traceback
-import requests
+import signal
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+# Set timeout handler
+class TimeoutException(Exception):
+    pass
+
+def timeout_handler(signum, frame):
+    raise TimeoutException("Operation timed out")
+
+# Set 5 minute timeout for the entire script
+signal.signal(signal.SIGALRM, timeout_handler)
+signal.alarm(300)  # 5 minutes
+
 print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER WITH PROXY")
+print("🚂 RAILOPS - TRAIN SCRAPER WITH TIMEOUT")
 print("=" * 60)
 print(f"Python version: {sys.version}")
 print(f"Current time: {datetime.datetime.now()}")
@@ -60,21 +71,14 @@ class TrainScraper:
             
             # Add proxy if configured
             if use_proxy and PROXY_HOST and PROXY_PORT:
-                # Try different proxy formats
-                proxy_formats = [
-                    f"http://{PROXY_HOST}:{PROXY_PORT}",  # Standard HTTP proxy
-                    f"https://{PROXY_HOST}:{PROXY_PORT}", # HTTPS proxy
-                    f"socks5://{PROXY_HOST}:{PROXY_PORT}", # SOCKS5 proxy
-                ]
-                
-                # Add proxy with authentication if provided
                 if PROXY_USER and PROXY_PASS:
+                    # Format: http://username:password@host:port
                     proxy_string = f"http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
-                    chrome_options.add_argument(f'--proxy-server={proxy_string}')
-                    print(f"   Using authenticated proxy: {PROXY_HOST}:{PROXY_PORT}")
                 else:
-                    chrome_options.add_argument(f'--proxy-server=http://{PROXY_HOST}:{PROXY_PORT}')
-                    print(f"   Using proxy: {PROXY_HOST}:{PROXY_PORT}")
+                    proxy_string = f"http://{PROXY_HOST}:{PROXY_PORT}"
+                
+                chrome_options.add_argument(f'--proxy-server={proxy_string}')
+                print(f"   Using proxy: {PROXY_HOST}:{PROXY_PORT}")
             
             # Rotate user agents
             user_agents = [
@@ -87,11 +91,13 @@ class TrainScraper:
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
             chrome_options.add_experimental_option('useAutomationExtension', False)
             
-            # Add additional arguments for proxy
+            # Add timeout options
             chrome_options.add_argument('--ignore-certificate-errors')
-            chrome_options.add_argument('--allow-running-insecure-content')
+            chrome_options.add_argument('--disable-web-security')
             
             self.driver = webdriver.Chrome(options=chrome_options)
+            self.driver.set_page_load_timeout(30)
+            self.driver.set_script_timeout(30)
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             print("✅ Chrome driver setup successful")
             return True
@@ -171,7 +177,13 @@ class TrainScraper:
             os.remove(COOKIE_FILE)
         
         self.driver.delete_all_cookies()
-        self.driver.get(TF_LOGIN_URL)
+        
+        try:
+            self.driver.get(TF_LOGIN_URL)
+        except Exception as e:
+            print(f"❌ Failed to load login page: {e}")
+            return False
+            
         self.random_delay(2, 4)
         
         try:
@@ -247,11 +259,14 @@ class TrainScraper:
         print("\n🔄 Attempt 1: Direct connection (no proxy)")
         if self.setup_driver_with_proxy(use_proxy=False):
             if self.load_cookies():
-                self.driver.get(TF_LOGIN_URL)
-                self.random_delay(3, 5)
-                if self.check_login_success():
-                    print("✅ Success with direct connection")
-                    return True
+                try:
+                    self.driver.get(TF_LOGIN_URL)
+                    self.random_delay(3, 5)
+                    if self.check_login_success():
+                        print("✅ Success with direct connection")
+                        return True
+                except Exception as e:
+                    print(f"⚠️ Direct connection error: {e}")
             
             if self.force_fresh_login():
                 return True
@@ -264,11 +279,14 @@ class TrainScraper:
             print("\n🔄 Attempt 2: Using proxy")
             if self.setup_driver_with_proxy(use_proxy=True):
                 if self.load_cookies():
-                    self.driver.get(TF_LOGIN_URL)
-                    self.random_delay(3, 5)
-                    if self.check_login_success():
-                        print("✅ Success with proxy")
-                        return True
+                    try:
+                        self.driver.get(TF_LOGIN_URL)
+                        self.random_delay(3, 5)
+                        if self.check_login_success():
+                            print("✅ Success with proxy")
+                            return True
+                    except Exception as e:
+                        print(f"⚠️ Proxy connection error: {e}")
                 
                 if self.force_fresh_login():
                     print("✅ Success with proxy")
@@ -439,10 +457,10 @@ class TrainScraper:
         if not TF_USERNAME or not TF_PASSWORD:
             return [], "Missing credentials"
         
-        if not self.login_with_retry():
-            return [], "Login failed after retry"
-        
         try:
+            if not self.login_with_retry():
+                return [], "Login failed after retry"
+            
             time.sleep(10)
             self.zoom_to_australia()
             self.wait_for_trains(max_wait=45)
@@ -452,6 +470,9 @@ class TrainScraper:
             
             return australian, f"ok - {len(australian)} trains"
             
+        except TimeoutException:
+            print("❌ Script timed out")
+            return [], "timeout"
         except Exception as e:
             print(f"❌ Error: {e}")
             return [], f"error: {type(e).__name__}"
@@ -473,9 +494,16 @@ def write_output(trains, note):
         print("⚠️ No trains to write - keeping existing data")
 
 def main():
-    scraper = TrainScraper()
-    trains, note = scraper.run()
-    write_output(trains, note)
+    try:
+        scraper = TrainScraper()
+        trains, note = scraper.run()
+        write_output(trains, note)
+    except TimeoutException:
+        print("❌ Script timed out - exiting")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Fatal error: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
