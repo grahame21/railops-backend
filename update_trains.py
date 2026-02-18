@@ -27,12 +27,19 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-# Free proxy list - these are examples, you'll need fresh ones
+# Free proxy list - updated 2026-02-18
 # Get fresh proxies from: https://free-proxy-list.net/
 PROXIES = [
-    # Format: "ip:port"
-    # You MUST replace these with working proxies
-    # Example: "123.45.67.89:8080"
+    "20.210.113.32:8123",
+    "20.111.54.29:8123",
+    "20.111.54.23:8123", 
+    "8.220.204.215:8888",
+    "8.220.204.92:8888",
+    "8.220.205.172:8888",
+    "47.237.2.201:8443",
+    "47.237.107.38:8443",
+    "47.89.22.242:8443",
+    "47.89.22.202:8443"
 ]
 
 print(f"\n🔑 Credentials:")
@@ -49,8 +56,8 @@ def test_proxy(proxy):
         if response.status_code == 200:
             print(f"   ✅ Proxy {proxy} is working")
             return True
-    except:
-        pass
+    except Exception as e:
+        print(f"   ❌ Proxy {proxy} failed: {str(e)[:50]}")
     return False
 
 class TrainScraper:
@@ -59,7 +66,7 @@ class TrainScraper:
         print("✅ TrainScraper initialized")
         
     def setup_driver_with_proxy(self, proxy=None):
-        print("\n🔧 Setting up Chrome driver...")
+        print(f"\n🔧 Setting up Chrome driver with proxy: {proxy if proxy else 'direct'}")
         try:
             chrome_options = Options()
             chrome_options.add_argument('--no-sandbox')
@@ -237,7 +244,7 @@ class TrainScraper:
     def login_with_proxy_rotation(self):
         """Try multiple proxies until one works"""
         
-        # First try without proxy (maybe it works)
+        # Try direct connection first
         print("\n🔄 Attempt 1: Direct connection (no proxy)")
         if self.setup_driver_with_proxy(None):
             if self.load_cookies():
@@ -249,33 +256,38 @@ class TrainScraper:
             
             if self.force_fresh_login():
                 return True
-            self.driver.quit()
+            if self.driver:
+                self.driver.quit()
+                self.driver = None
         
         # Try each proxy
+        working_proxies = []
         for i, proxy in enumerate(PROXIES):
             print(f"\n🔄 Attempt {i+2}: Testing proxy {proxy}")
             
             # Test proxy first
-            if not test_proxy(proxy):
-                print(f"   ⚠️ Proxy {proxy} failed test, skipping")
-                continue
-            
-            if self.setup_driver_with_proxy(proxy):
-                if self.load_cookies():
-                    self.driver.get(TF_LOGIN_URL)
-                    self.random_delay(3, 5)
-                    if self.check_login_success():
+            if test_proxy(proxy):
+                working_proxies.append(proxy)
+                
+                if self.setup_driver_with_proxy(proxy):
+                    if self.load_cookies():
+                        self.driver.get(TF_LOGIN_URL)
+                        self.random_delay(3, 5)
+                        if self.check_login_success():
+                            print(f"✅ Success with proxy {proxy}")
+                            return True
+                    
+                    if self.force_fresh_login():
                         print(f"✅ Success with proxy {proxy}")
                         return True
-                
-                if self.force_fresh_login():
-                    print(f"✅ Success with proxy {proxy}")
-                    return True
-                
-                self.driver.quit()
-                time.sleep(5)
+                    
+                    if self.driver:
+                        self.driver.quit()
+                        self.driver = None
+                        time.sleep(5)
         
-        print("❌ All proxy attempts failed")
+        print(f"\n❌ All proxy attempts failed. Working proxies found: {len(working_proxies)}")
+        print(f"   Working proxies: {working_proxies}")
         return False
     
     def zoom_to_australia(self):
