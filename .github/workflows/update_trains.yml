@@ -36,7 +36,7 @@ jobs:
         pip install --upgrade pip
         pip install selenium requests
     
-    - name: Run train scraper with proxy
+    - name: Run train scraper
       env:
         TF_USERNAME: ${{ secrets.TF_USERNAME }}
         TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
