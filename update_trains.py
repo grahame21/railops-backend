@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 print("=" * 60)
 print("🚂 RAILOPS - TRAIN SCRAPER")
@@ -57,21 +58,79 @@ class TrainScraper:
             chrome_options.add_argument('--disable-blink-features=AutomationControlled')
             chrome_options.add_argument('--headless=new')
             
-            # Add proxy if configured
-            if use_proxy and PROXY_HOST and PROXY_PORT:
-                # Try different proxy formats
-                if PROXY_USER and PROXY_PASS:
-                    # Format with authentication
-                    proxy_string = f"http://{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
-                else:
-                    proxy_string = f"http://{PROXY_HOST}:{PROXY_PORT}"
+            # Add proxy with authentication using a different method
+            if use_proxy and PROXY_HOST and PROXY_PORT and PROXY_USER and PROXY_PASS:
+                # Set up proxy with authentication
+                proxy_string = f"{PROXY_HOST}:{PROXY_PORT}"
                 
-                chrome_options.add_argument(f'--proxy-server={proxy_string}')
-                print(f"   Using proxy: {PROXY_HOST}:{PROXY_PORT}")
+                # Create proxy auth plugin
+                manifest_json = """
+                {
+                    "version": "1.0.0",
+                    "manifest_version": 2,
+                    "name": "Chrome Proxy",
+                    "permissions": [
+                        "proxy",
+                        "tabs",
+                        "unlimitedStorage",
+                        "storage",
+                        "<all_urls>",
+                        "webRequest",
+                        "webRequestBlocking"
+                    ],
+                    "background": {
+                        "scripts": ["background.js"]
+                    },
+                    "minimum_chrome_version":"22.0.0"
+                }
+                """
                 
-                # Add these for better proxy compatibility
-                chrome_options.add_argument('--ignore-certificate-errors')
-                chrome_options.add_argument('--allow-insecure-localhost')
+                background_js = f"""
+                var config = {{
+                    mode: "fixed_servers",
+                    rules: {{
+                        singleProxy: {{
+                            scheme: "http",
+                            host: "{PROXY_HOST}",
+                            port: parseInt({PROXY_PORT})
+                        }},
+                        bypassList: ["localhost"]
+                    }}
+                }};
+                
+                chrome.proxy.settings.set({{value: config, scope: "regular"}}, function() {{}});
+                
+                function callbackFn(details) {{
+                    return {{
+                        authCredentials: {{
+                            username: "{PROXY_USER}",
+                            password: "{PROXY_PASS}"
+                        }}
+                    }};
+                }}
+                
+                chrome.webRequest.onAuthRequired.addListener(
+                    callbackFn,
+                    {{urls: ["<all_urls>"]}},
+                    ['blocking']
+                );
+                """
+                
+                # Save the plugin files
+                import os, shutil
+                plugin_dir = "proxy_auth_plugin"
+                if os.path.exists(plugin_dir):
+                    shutil.rmtree(plugin_dir)
+                os.makedirs(plugin_dir)
+                
+                with open(os.path.join(plugin_dir, "manifest.json"), "w") as f:
+                    f.write(manifest_json)
+                with open(os.path.join(plugin_dir, "background.js"), "w") as f:
+                    f.write(background_js)
+                
+                # Add the plugin to Chrome
+                chrome_options.add_argument(f'--load-extension={os.path.abspath(plugin_dir)}')
+                print(f"   Using authenticated proxy: {PROXY_HOST}:{PROXY_PORT}")
             
             # Rotate user agents
             user_agents = [
@@ -83,12 +142,19 @@ class TrainScraper:
             chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
             chrome_options.add_experimental_option('useAutomationExtension', False)
             
+            # Add timeout options
+            chrome_options.add_argument('--ignore-certificate-errors')
+            chrome_options.add_argument('--allow-insecure-localhost')
+            chrome_options.add_argument('--disable-web-security')
+            
             self.driver = webdriver.Chrome(options=chrome_options)
+            self.driver.set_page_load_timeout(30)
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             print("✅ Chrome driver setup successful")
             return True
         except Exception as e:
             print(f"❌ Failed to setup Chrome driver: {e}")
+            traceback.print_exc()
             return False
     
     def save_cookies(self):
@@ -236,6 +302,7 @@ class TrainScraper:
             
         except Exception as e:
             print(f"❌ Login error: {str(e)[:200]}")
+            traceback.print_exc()
             return False
     
     def login_with_retry(self):
@@ -462,6 +529,10 @@ class TrainScraper:
         finally:
             if self.driver:
                 self.driver.quit()
+            # Clean up proxy plugin
+            import shutil
+            if os.path.exists("proxy_auth_plugin"):
+                shutil.rmtree("proxy_auth_plugin")
 
 def write_output(trains, note):
     if trains:
