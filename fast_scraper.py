@@ -48,6 +48,7 @@ class FastScraper:
                 except:
                     pass
             self.driver.get("https://trainfinder.otenko.com/home/nextlevel")
+            print("✅ Page loaded, waiting for map...")
             time.sleep(5)
             return True
         except Exception as e:
@@ -57,11 +58,48 @@ class FastScraper:
     def check_session_valid(self):
         try:
             if "login" in self.driver.current_url.lower():
+                print("❌ Redirected to login page")
                 return False
             map_exists = self.driver.execute_script("return typeof window.map !== 'undefined'")
-            return map_exists
+            if map_exists:
+                print("✅ Map loaded")
+                return True
+            else:
+                print("⚠️ Map not detected")
+                return False
         except:
             return False
+    
+    def wait_for_trains(self, max_wait=30):
+        """Wait for trains to appear"""
+        print("\n⏳ Waiting for trains to load...")
+        
+        script = """
+        var total = 0;
+        var sources = ['regTrainsSource', 'unregTrainsSource'];
+        sources.forEach(function(name) {
+            if (window[name] && window[name].getFeatures) {
+                total += window[name].getFeatures().length;
+            }
+        });
+        return total;
+        """
+        
+        for i in range(max_wait):
+            try:
+                count = self.driver.execute_script(script)
+                if count > 10:
+                    print(f"✅ Found {count} trains after {i} seconds")
+                    return True
+                if i % 5 == 0:
+                    print(f"   ... {count} trains so far")
+                time.sleep(1)
+            except:
+                time.sleep(1)
+        
+        final_count = self.driver.execute_script(script)
+        print(f"⚠️ Only found {final_count} trains after {max_wait} seconds")
+        return final_count > 0
     
     def extract_trains(self):
         script = """
@@ -111,8 +149,11 @@ class FastScraper:
         return trains;
         """
         try:
-            return self.driver.execute_script(script)
-        except:
+            trains = self.driver.execute_script(script)
+            print(f"✅ Extracted {len(trains)} raw trains")
+            return trains
+        except Exception as e:
+            print(f"❌ Extraction error: {e}")
             return []
     
     def webmercator_to_latlon(self, x, y):
@@ -146,23 +187,29 @@ class FastScraper:
     
     def run(self):
         print("\n🚀 Starting fast scrape...")
+        
         cookies = self.load_cookies()
         if not cookies:
             print("❌ No cookies found")
             return []
+        
         if not self.setup_driver():
             return []
+        
         if not self.inject_cookies(cookies):
             self.driver.quit()
             return []
+        
         if not self.check_session_valid():
-            print("❌ Session invalid")
             self.driver.quit()
             return []
-        time.sleep(5)
+        
+        self.wait_for_trains(max_wait=30)
+        
         raw_trains = self.extract_trains()
         australian = self.filter_australian(raw_trains)
         print(f"\n📊 Australian trains: {len(australian)}")
+        
         self.driver.quit()
         return australian
 
