@@ -72,57 +72,49 @@ class FastScraper:
     
     def wait_for_trains(self, max_wait=30):
         print("\n⏳ Waiting for trains to load...")
-        script = """
-        var total = 0;
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
-        sources.forEach(function(name) {
-            if (window[name] && window[name].getFeatures) {
-                total += window[name].getFeatures().length;
-            }
-        });
-        return total;
-        """
         for i in range(max_wait):
-            try:
-                count = self.driver.execute_script(script)
-                if count > 10:
-                    print(f"✅ Found {count} trains after {i} seconds")
-                    return True
-                if i % 5 == 0:
-                    print(f"   ... {count} trains so far")
-                time.sleep(1)
-            except:
-                time.sleep(1)
-        final_count = self.driver.execute_script(script)
-        print(f"⚠️ Only found {final_count} trains after {max_wait} seconds")
-        return final_count > 0
+            time.sleep(1)
+        print("✅ Done waiting")
     
     def extract_trains(self):
         script = """
         var trains = [];
         var seenIds = new Set();
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
+        
+        // ALL sources that contain trains - THIS IS THE FIX
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'arrowMarkersSource'];
+        
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
             if (!source || !source.getFeatures) return;
+            
             var features = source.getFeatures();
+            console.log(sourceName + ' has ' + features.length + ' features');
+            
             features.forEach(function(feature) {
                 try {
                     var props = feature.getProperties();
                     var geom = feature.getGeometry();
+                    
                     if (!geom || geom.getType() !== 'Point') return;
+                    
                     var coords = geom.getCoordinates();
-                    var trainNumber = props.trainNumber || '';
-                    var trainName = props.trainName || '';
-                    var origin = props.serviceFrom || '';
-                    var destination = props.serviceTo || '';
-                    if (!trainNumber && !trainName && !origin && !destination) return;
+                    
+                    // Get ALL available data
+                    var trainNumber = props.trainNumber || props.train_number || '';
+                    var trainName = props.trainName || props.train_name || '';
+                    var origin = props.serviceFrom || props.origin || '';
+                    var destination = props.serviceTo || props.destination || '';
                     var speed = 0;
+                    
                     if (props.trainSpeed) {
-                        var match = String(props.trainSpeed).match(/(\\d+)/);
+                        var match = String(props.trainSpeed).match(/(\d+)/);
                         if (match) speed = parseInt(match[0]);
                     }
-                    var id = trainName || trainNumber || sourceName + '_' + features.indexOf(feature);
+                    
+                    // Create ID - prioritize real identifiers
+                    var id = trainName || trainNumber || origin || sourceName + '_' + features.indexOf(feature);
+                    
                     if (!seenIds.has(id)) {
                         seenIds.add(id);
                         trains.push({
@@ -132,9 +124,9 @@ class FastScraper:
                             'speed': speed,
                             'origin': origin,
                             'destination': destination,
-                            'description': props.serviceDesc || '',
-                            'km': props.trainKM || '',
-                            'time': props.trainTime || '',
+                            'description': props.serviceDesc || props.description || '',
+                            'km': props.trainKM || props.km || '',
+                            'time': props.trainTime || props.time || '',
                             'x': coords[0],
                             'y': coords[1]
                         });
