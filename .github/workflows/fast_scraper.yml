@@ -1,0 +1,56 @@
+name: Fast Train Scraper
+
+on:
+  schedule:
+    - cron: '*/3 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: fast-scraper
+  cancel-in-progress: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install Chrome and dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable xvfb
+        pip install selenium requests
+    
+    - name: Run fast scraper
+      run: |
+        Xvfb :99 -screen 0 1920x1080x24 &
+        sleep 3
+        python fast_scraper.py
+    
+    - name: Update loco database
+      run: |
+        python update_locos.py
+    
+    - name: Export to CSV
+      run: |
+        python export_locos_to_excel.py
+    
+    - name: Commit and push data
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add trains.json locos.json loco_export.csv loco_summary.txt
+        if ! git diff --cached --quiet; then
+          git commit -m "Update train data $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git push
+        else
+          echo "No changes to commit"
+        fi
