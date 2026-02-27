@@ -64,32 +64,32 @@ class FastScraper:
             if map_exists:
                 print("✅ Map loaded")
                 return True
-            else:
-                print("⚠️ Map not detected")
-                return False
+            return False
         except:
             return False
     
-    def wait_for_trains(self, max_wait=30):
-        print("\n⏳ Waiting for trains to load...")
-        for i in range(max_wait):
-            time.sleep(1)
-        print("✅ Done waiting")
-    
     def extract_trains(self):
         script = """
-        var trains = [];
+        var allTrains = [];
         var seenIds = new Set();
         
-        // ALL sources that contain trains - THIS IS THE FIX
-        var sources = ['regTrainsSource', 'unregTrainsSource', 'arrowMarkersSource'];
+        // ALL sources that ever contain trains - COMPLETE LIST
+        var sources = [
+            'regTrainsSource',
+            'unregTrainsSource', 
+            'markerSource',
+            'arrowMarkersSource',
+            'trainSource',
+            'trainMarkers',
+            'trainPoints'
+        ];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
             if (!source || !source.getFeatures) return;
             
             var features = source.getFeatures();
-            console.log(sourceName + ' has ' + features.length + ' features');
+            console.log(sourceName + ': ' + features.length + ' features');
             
             features.forEach(function(feature) {
                 try {
@@ -100,42 +100,47 @@ class FastScraper:
                     
                     var coords = geom.getCoordinates();
                     
-                    // Get ALL available data
-                    var trainNumber = props.trainNumber || props.train_number || '';
-                    var trainName = props.trainName || props.train_name || '';
-                    var origin = props.serviceFrom || props.origin || '';
-                    var destination = props.serviceTo || props.destination || '';
-                    var speed = 0;
+                    // Extract ALL possible train data
+                    var trainData = {
+                        'id': props.id || props.ID || sourceName + '_' + features.indexOf(feature),
+                        'train_number': props.trainNumber || props.train_number || '',
+                        'train_name': props.trainName || props.train_name || '',
+                        'service_name': props.serviceName || props.service_name || '',
+                        'speed': 0,
+                        'origin': props.serviceFrom || props.origin || '',
+                        'destination': props.serviceTo || props.destination || '',
+                        'description': props.serviceDesc || props.description || '',
+                        'km': props.trainKM || props.km || '',
+                        'time': props.trainTime || props.time || '',
+                        'cId': props.cId || '',
+                        'servId': props.servId || '',
+                        'trKey': props.trKey || '',
+                        'source': sourceName,
+                        'x': coords[0],
+                        'y': coords[1]
+                    };
                     
+                    // Parse speed
                     if (props.trainSpeed) {
-                        var match = String(props.trainSpeed).match(/(\d+)/);
-                        if (match) speed = parseInt(match[0]);
+                        var match = String(props.trainSpeed).match(/(\\d+)/);
+                        if (match) trainData.speed = parseInt(match[0]);
                     }
                     
-                    // Create ID - prioritize real identifiers
-                    var id = trainName || trainNumber || origin || sourceName + '_' + features.indexOf(feature);
+                    // Create display ID from real data if available
+                    var displayId = trainData.train_name || trainData.train_number || trainData.id;
                     
-                    if (!seenIds.has(id)) {
-                        seenIds.add(id);
-                        trains.push({
-                            'id': id,
-                            'train_number': trainNumber,
-                            'train_name': trainName,
-                            'speed': speed,
-                            'origin': origin,
-                            'destination': destination,
-                            'description': props.serviceDesc || props.description || '',
-                            'km': props.trainKM || props.km || '',
-                            'time': props.trainTime || props.time || '',
-                            'x': coords[0],
-                            'y': coords[1]
-                        });
+                    if (!seenIds.has(displayId)) {
+                        seenIds.add(displayId);
+                        trainData.id = displayId;
+                        allTrains.push(trainData);
                     }
                 } catch(e) {}
             });
         });
-        return trains;
+        
+        return allTrains;
         """
+        
         try:
             trains = self.driver.execute_script(script)
             print(f"✅ Extracted {len(trains)} raw trains")
@@ -156,13 +161,16 @@ class FastScraper:
     def filter_australian(self, trains):
         result = []
         seen = set()
+        
         for t in trains:
             x = t.get('x', 0)
             y = t.get('y', 0)
+            
             if abs(x) > 180 or abs(y) > 90:
                 lat, lon = self.webmercator_to_latlon(x, y)
             else:
                 lat, lon = y, x
+            
             if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
                 if t['id'] not in seen:
                     seen.add(t['id'])
@@ -171,26 +179,36 @@ class FastScraper:
                     del t['x']
                     del t['y']
                     result.append(t)
+        
         return result
     
     def run(self):
         print("\n🚀 Starting fast scrape...")
+        
         cookies = self.load_cookies()
         if not cookies:
             print("❌ No cookies found")
             return []
+        
         if not self.setup_driver():
             return []
+        
         if not self.inject_cookies(cookies):
             self.driver.quit()
             return []
+        
         if not self.check_session_valid():
             self.driver.quit()
             return []
-        self.wait_for_trains(max_wait=30)
+        
+        # Wait for map to fully load
+        time.sleep(10)
+        
         raw_trains = self.extract_trains()
         australian = self.filter_australian(raw_trains)
+        
         print(f"\n📊 Australian trains: {len(australian)}")
+        
         self.driver.quit()
         return australian
 
@@ -198,13 +216,16 @@ def write_output(trains):
     if not trains:
         print("⚠️ No trains to write - keeping existing data")
         return
+    
     payload = {
         "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
         "note": f"ok - {len(trains)} trains",
         "trains": trains
     }
+    
     with open(OUT_FILE, "w") as f:
         json.dump(payload, f, indent=2)
+    
     print(f"✅ Wrote {len(trains)} trains to {OUT_FILE}")
 
 def main():
