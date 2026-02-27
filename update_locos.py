@@ -16,8 +16,8 @@ def load_json(filename):
     return {}
 
 def save_json(filename, data):
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=2)
 
 def update_loco_database():
     print("=" * 60)
@@ -35,6 +35,7 @@ def update_loco_database():
     now = datetime.datetime.now()
     timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
     date = now.strftime('%Y-%m-%d')
+    time_str = now.strftime('%H:%M:%S')
     
     print(f"\n📊 Processing {len(trains)} trains...")
     
@@ -43,18 +44,22 @@ def update_loco_database():
     if not history:
         history = {'locos': {}, 'updates': []}
     
-    new = updated = 0
+    new_locos = 0
+    updated_locos = 0
     
     for train in trains:
         loco_id = train.get('train_name') or train.get('train_number') or train.get('id')
-        if not loco_id or any(x in loco_id.lower() for x in ['marker', 'arrow']):
+        if not loco_id:
             continue
         
-        data = {
+        loco_data = {
             'last_seen': timestamp,
             'last_date': date,
-            'last_time': now.strftime('%H:%M:%S'),
-            'last_location': {'lat': train.get('lat'), 'lon': train.get('lon')},
+            'last_time': time_str,
+            'last_location': {
+                'lat': train.get('lat'),
+                'lon': train.get('lon')
+            },
             'last_speed': train.get('speed', 0),
             'last_origin': train.get('origin', ''),
             'last_destination': train.get('destination', ''),
@@ -67,12 +72,14 @@ def update_loco_database():
         }
         
         if loco_id in locos:
-            data['total_sightings'] = locos[loco_id].get('total_sightings', 1) + 1
-            updated += 1
+            loco_data['total_sightings'] = locos[loco_id].get('total_sightings', 1) + 1
+            loco_data['first_seen'] = locos[loco_id].get('first_seen', timestamp)
+            updated_locos += 1
         else:
-            new += 1
+            loco_data['first_seen'] = timestamp
+            new_locos += 1
         
-        locos[loco_id] = data
+        locos[loco_id] = loco_data
         
         if loco_id not in history['locos']:
             history['locos'][loco_id] = []
@@ -80,14 +87,16 @@ def update_loco_database():
             'timestamp': timestamp,
             'lat': train.get('lat'),
             'lon': train.get('lon'),
-            'speed': train.get('speed', 0),
-            'origin': train.get('origin', ''),
-            'destination': train.get('destination', '')
+            'speed': train.get('speed', 0)
         })
         if len(history['locos'][loco_id]) > 100:
             history['locos'][loco_id] = history['locos'][loco_id][-100:]
     
-    history['updates'].append({'timestamp': timestamp, 'trains_seen': len(trains), 'locos_seen': len(locos)})
+    history['updates'].append({
+        'timestamp': timestamp,
+        'trains_seen': len(trains),
+        'locos_seen': len(locos)
+    })
     if len(history['updates']) > 1000:
         history['updates'] = history['updates'][-1000:]
     
@@ -95,27 +104,9 @@ def update_loco_database():
     save_json(HISTORY_FILE, history)
     
     print(f"\n📊 Statistics:")
-    print(f"   New locos: {new}")
-    print(f"   Updated locos: {updated}")
-    print(f"   Total locos: {len(locos)}")
-    
-    with open("loco_summary.txt", 'w') as f:
-        f.write(f"LOCO DATABASE SUMMARY - {timestamp}\n")
-        f.write("=" * 60 + "\n\n")
-        f.write(f"Total Locomotives Tracked: {len(locos)}\n\n")
-        for loco_id, data in sorted(locos.items(), key=lambda x: x[1]['last_seen'], reverse=True)[:50]:
-            f.write(f"{loco_id}:\n")
-            f.write(f"  Last Seen: {data['last_seen']}\n")
-            f.write(f"  Location: ({data['last_location']['lat']:.4f}, {data['last_location']['lon']:.4f})\n")
-            f.write(f"  Speed: {data['last_speed']} km/h\n")
-            if data['last_origin'] or data['last_destination']:
-                f.write(f"  Route: {data['last_origin']} → {data['last_destination']}\n")
-            f.write(f"  Sightings: {data['total_sightings']}\n")
-            f.write("-" * 40 + "\n")
-    
-    print(f"\n✅ Summary saved")
-    print(f"✅ Loco database: {LOCOS_FILE}")
-    print(f"✅ History: {HISTORY_FILE}")
+    print(f"   New locos: {new_locos}")
+    print(f"   Updated locos: {updated_locos}")
+    print(f"   Total locos tracked: {len(locos)}")
 
 if __name__ == "__main__":
     update_loco_database()
