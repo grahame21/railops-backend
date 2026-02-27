@@ -73,23 +73,14 @@ class FastScraper:
         var allTrains = [];
         var seenIds = new Set();
         
-        // ALL sources that ever contain trains - COMPLETE LIST
-        var sources = [
-            'regTrainsSource',
-            'unregTrainsSource', 
-            'markerSource',
-            'arrowMarkersSource',
-            'trainSource',
-            'trainMarkers',
-            'trainPoints'
-        ];
+        // THESE ARE THE SOURCES THAT WORKED LAST WEEK
+        var sources = ['regTrainsSource', 'unregTrainsSource', 'markerSource', 'arrowMarkersSource'];
         
         sources.forEach(function(sourceName) {
             var source = window[sourceName];
             if (!source || !source.getFeatures) return;
             
             var features = source.getFeatures();
-            console.log(sourceName + ': ' + features.length + ' features');
             
             features.forEach(function(feature) {
                 try {
@@ -100,44 +91,38 @@ class FastScraper:
                     
                     var coords = geom.getCoordinates();
                     
-                    // Extract ALL possible train data
-                    var trainData = {
-                        'id': props.id || props.ID || sourceName + '_' + features.indexOf(feature),
-                        'train_number': props.trainNumber || props.train_number || '',
-                        'train_name': props.trainName || props.train_name || '',
-                        'service_name': props.serviceName || props.service_name || '',
-                        'speed': 0,
-                        'origin': props.serviceFrom || props.origin || '',
-                        'destination': props.serviceTo || props.destination || '',
-                        'description': props.serviceDesc || props.description || '',
-                        'km': props.trainKM || props.km || '',
-                        'time': props.trainTime || props.time || '',
-                        'cId': props.cId || '',
-                        'servId': props.servId || '',
-                        'trKey': props.trKey || '',
-                        'source': sourceName,
-                        'x': coords[0],
-                        'y': coords[1]
-                    };
+                    var trainNumber = props.trainNumber || props.train_number || '';
+                    var trainName = props.trainName || props.train_name || '';
+                    var origin = props.serviceFrom || props.origin || '';
+                    var destination = props.serviceTo || props.destination || '';
                     
-                    // Parse speed
+                    var speed = 0;
                     if (props.trainSpeed) {
-                        var match = String(props.trainSpeed).match(/(\\d+)/);
-                        if (match) trainData.speed = parseInt(match[0]);
+                        var match = String(props.trainSpeed).match(/(\d+)/);
+                        if (match) speed = parseInt(match[0]);
                     }
                     
-                    // Create display ID from real data if available
-                    var displayId = trainData.train_name || trainData.train_number || trainData.id;
+                    var id = trainName || trainNumber || sourceName + '_' + features.indexOf(feature);
                     
-                    if (!seenIds.has(displayId)) {
-                        seenIds.add(displayId);
-                        trainData.id = displayId;
-                        allTrains.push(trainData);
+                    if (!seenIds.has(id)) {
+                        seenIds.add(id);
+                        allTrains.push({
+                            'id': id,
+                            'train_number': trainNumber,
+                            'train_name': trainName,
+                            'speed': speed,
+                            'origin': origin,
+                            'destination': destination,
+                            'description': props.serviceDesc || props.description || '',
+                            'km': props.trainKM || props.km || '',
+                            'time': props.trainTime || props.time || '',
+                            'x': coords[0],
+                            'y': coords[1]
+                        });
                     }
                 } catch(e) {}
             });
         });
-        
         return allTrains;
         """
         
@@ -201,7 +186,6 @@ class FastScraper:
             self.driver.quit()
             return []
         
-        # Wait for map to fully load
         time.sleep(10)
         
         raw_trains = self.extract_trains()
