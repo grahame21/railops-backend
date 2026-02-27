@@ -71,9 +71,7 @@ class FastScraper:
             return False
     
     def wait_for_trains(self, max_wait=30):
-        """Wait for trains to appear"""
         print("\n⏳ Waiting for trains to load...")
-        
         script = """
         var total = 0;
         var sources = ['regTrainsSource', 'unregTrainsSource'];
@@ -84,7 +82,6 @@ class FastScraper:
         });
         return total;
         """
-        
         for i in range(max_wait):
             try:
                 count = self.driver.execute_script(script)
@@ -96,7 +93,6 @@ class FastScraper:
                 time.sleep(1)
             except:
                 time.sleep(1)
-        
         final_count = self.driver.execute_script(script)
         print(f"⚠️ Only found {final_count} trains after {max_wait} seconds")
         return final_count > 0
@@ -187,29 +183,22 @@ class FastScraper:
     
     def run(self):
         print("\n🚀 Starting fast scrape...")
-        
         cookies = self.load_cookies()
         if not cookies:
             print("❌ No cookies found")
             return []
-        
         if not self.setup_driver():
             return []
-        
         if not self.inject_cookies(cookies):
             self.driver.quit()
             return []
-        
         if not self.check_session_valid():
             self.driver.quit()
             return []
-        
         self.wait_for_trains(max_wait=30)
-        
         raw_trains = self.extract_trains()
         australian = self.filter_australian(raw_trains)
         print(f"\n📊 Australian trains: {len(australian)}")
-        
         self.driver.quit()
         return australian
 
