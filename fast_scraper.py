@@ -23,10 +23,13 @@ with open(COOKIE_FILE, 'rb') as f:
 options = Options()
 options.add_argument('--headless=new')
 options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--window-size=1920,1080')
 driver = webdriver.Chrome(options=options)
 
 # Inject cookies
 driver.get("https://trainfinder.otenko.com")
+time.sleep(2)
 for cookie in cookies:
     try:
         driver.add_cookie(cookie)
@@ -35,28 +38,23 @@ for cookie in cookies:
 
 # Load map page
 driver.get("https://trainfinder.otenko.com/home/nextlevel")
-time.sleep(5)
+print("✅ Page loaded, waiting for map...")
+time.sleep(10)
 
-# Extract trains from ALL possible sources
+# Extract trains - EXACTLY as it worked before
 trains = driver.execute_script("""
 var allTrains = [];
 var seenIds = new Set();
 
-// ALL sources that ever contained trains
-var sources = [
-    'regTrainsSource',
-    'unregTrainsSource',
-    'markerSource',
-    'arrowMarkersSource',
-    'trainSource',
-    'trainMarkers'
-];
+// ONLY these sources - they worked before
+var sources = ['regTrainsSource', 'unregTrainsSource'];
 
 sources.forEach(function(sourceName) {
     var source = window[sourceName];
     if (!source || !source.getFeatures) return;
     
     var features = source.getFeatures();
+    console.log(sourceName + ' has ' + features.length + ' features');
     
     features.forEach(function(feature) {
         try {
@@ -77,35 +75,37 @@ sources.forEach(function(sourceName) {
             // Skip if not in Australia
             if (lat < -45 || lat > -9 || lon < 110 || lon > 155) return;
             
-            // Get train data
-            var trainNumber = props.trainNumber || props.train_number || '';
-            var trainName = props.trainName || props.train_name || '';
-            var origin = props.serviceFrom || props.origin || '';
-            var destination = props.serviceTo || props.destination || '';
+            // Get ALL the rich data from that successful run
+            var trainData = {
+                'id': props.trainName || props.trainNumber || sourceName + '_' + features.indexOf(feature),
+                'train_number': props.trainNumber || '',
+                'train_name': props.trainName || '',
+                'service_name': props.serviceName || '',
+                'cId': props.cId || '',
+                'servId': props.servId || '',
+                'trKey': props.trKey || '',
+                'speed': 0,
+                'km': props.trainKM || '',
+                'origin': props.serviceFrom || '',
+                'destination': props.serviceTo || '',
+                'description': props.serviceDesc || '',
+                'date': props.trainDate || '',
+                'time': props.trainTime || '',
+                'tooltip': props.tooltipHTML || '',
+                'is_train': props.is_train || false,
+                'lat': lat,
+                'lon': lon
+            };
             
-            var speed = 0;
+            // Parse speed
             if (props.trainSpeed) {
                 var match = String(props.trainSpeed).match(/(\d+)/);
-                if (match) speed = parseInt(match[0]);
+                if (match) trainData.speed = parseInt(match[0]);
             }
             
-            var id = trainName || trainNumber || origin || sourceName + '_' + features.indexOf(feature);
-            
-            if (!seenIds.has(id)) {
-                seenIds.add(id);
-                allTrains.push({
-                    'id': id,
-                    'train_number': trainNumber,
-                    'train_name': trainName,
-                    'speed': speed,
-                    'origin': origin,
-                    'destination': destination,
-                    'description': props.serviceDesc || props.description || '',
-                    'km': props.trainKM || props.km || '',
-                    'time': props.trainTime || props.time || '',
-                    'lat': lat,
-                    'lon': lon
-                });
+            if (!seenIds.has(trainData.id)) {
+                seenIds.add(trainData.id);
+                allTrains.push(trainData);
             }
         } catch(e) {}
     });
@@ -115,12 +115,12 @@ return allTrains;
 """)
 
 driver.quit()
-
-print(f"✅ Found {len(trains)} trains")
+print(f"✅ Extracted {len(trains)} trains")
 
 # Write output
 output = {
     "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+    "note": f"ok - {len(trains)} trains",
     "trains": trains
 }
 
