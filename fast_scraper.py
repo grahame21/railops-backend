@@ -19,13 +19,18 @@ if not os.path.exists(COOKIE_FILE):
 with open(COOKIE_FILE, 'rb') as f:
     cookies = pickle.load(f)
 
-# Setup driver
+# Setup driver with better options
 options = Options()
 options.add_argument('--headless=new')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 options.add_argument('--window-size=1920,1080')
+options.add_argument('--disable-blink-features=AutomationControlled')
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
+options.add_experimental_option('useAutomationExtension', False)
+
 driver = webdriver.Chrome(options=options)
+driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
 # Inject cookies
 driver.get("https://trainfinder.otenko.com")
@@ -41,13 +46,21 @@ driver.get("https://trainfinder.otenko.com/home/nextlevel")
 print("✅ Page loaded, waiting for map...")
 time.sleep(10)
 
-# Extract trains - EXACTLY as it worked before
+# Extract trains from ALL sources that ever contained trains
 trains = driver.execute_script("""
 var allTrains = [];
 var seenIds = new Set();
 
-// ONLY these sources - they worked before
-var sources = ['regTrainsSource', 'unregTrainsSource'];
+// ALL sources that have ever contained trains
+var sources = [
+    'regTrainsSource',
+    'unregTrainsSource', 
+    'markerSource',
+    'arrowMarkersSource',
+    'trainSource',
+    'trainMarkers',
+    'trainPoints'
+];
 
 sources.forEach(function(sourceName) {
     var source = window[sourceName];
@@ -75,37 +88,47 @@ sources.forEach(function(sourceName) {
             // Skip if not in Australia
             if (lat < -45 || lat > -9 || lon < 110 || lon > 155) return;
             
-            // Get ALL the rich data from that successful run
-            var trainData = {
-                'id': props.trainName || props.trainNumber || sourceName + '_' + features.indexOf(feature),
-                'train_number': props.trainNumber || '',
-                'train_name': props.trainName || '',
-                'service_name': props.serviceName || '',
-                'cId': props.cId || '',
-                'servId': props.servId || '',
-                'trKey': props.trKey || '',
-                'speed': 0,
-                'km': props.trainKM || '',
-                'origin': props.serviceFrom || '',
-                'destination': props.serviceTo || '',
-                'description': props.serviceDesc || '',
-                'date': props.trainDate || '',
-                'time': props.trainTime || '',
-                'tooltip': props.tooltipHTML || '',
-                'is_train': props.is_train || false,
-                'lat': lat,
-                'lon': lon
-            };
+            // Get ALL available train data
+            var trainNumber = props.trainNumber || props.train_number || '';
+            var trainName = props.trainName || props.train_name || '';
+            var origin = props.serviceFrom || props.origin || '';
+            var destination = props.serviceTo || props.destination || '';
+            var description = props.serviceDesc || props.description || '';
+            var km = props.trainKM || props.km || '';
+            var trainTime = props.trainTime || props.time || '';
+            var trainDate = props.trainDate || props.date || '';
+            var cId = props.cId || '';
+            var servId = props.servId || '';
+            var trKey = props.trKey || '';
             
-            // Parse speed
+            var speed = 0;
             if (props.trainSpeed) {
-                var match = String(props.trainSpeed).match(/(\d+)/);
-                if (match) trainData.speed = parseInt(match[0]);
+                var match = String(props.trainSpeed).match(/(\\d+)/);
+                if (match) speed = parseInt(match[0]);
             }
             
-            if (!seenIds.has(trainData.id)) {
-                seenIds.add(trainData.id);
-                allTrains.push(trainData);
+            // Create unique ID
+            var id = trainName || trainNumber || origin || sourceName + '_' + features.indexOf(feature);
+            
+            if (!seenIds.has(id)) {
+                seenIds.add(id);
+                allTrains.push({
+                    'id': id,
+                    'train_number': trainNumber,
+                    'train_name': trainName,
+                    'speed': speed,
+                    'origin': origin,
+                    'destination': destination,
+                    'description': description,
+                    'km': km,
+                    'time': trainTime,
+                    'date': trainDate,
+                    'cId': cId,
+                    'servId': servId,
+                    'trKey': trKey,
+                    'lat': lat,
+                    'lon': lon
+                });
             }
         } catch(e) {}
     });
@@ -119,12 +142,12 @@ print(f"✅ Extracted {len(trains)} trains")
 
 # Write output
 output = {
-    "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+    "lastUpdated": datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z'),
     "note": f"ok - {len(trains)} trains",
     "trains": trains
 }
 
-with open(OUT_FILE, 'w') as f:
+with open(OUT_FILE, 'w', encoding='utf-8') as f:
     json.dump(output, f, indent=2)
 
 print(f"✅ Saved to {OUT_FILE}")
