@@ -9,7 +9,8 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -21,8 +22,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable xvfb
       
-      - name: Install dependencies
-        run: pip install selenium
+      - name: Install Python packages
+        run: |
+          pip install --upgrade pip
+          pip install selenium
       
       - name: Run scraper
         run: |
@@ -33,9 +36,9 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add trains.json
+          git add trains.json locos.json
           if ! git diff --cached --quiet; then
-            git commit -m "Update trains"
+            git commit -m "Update trains $(date -u +'%Y-%m-%d %H:%M:%S')"
             git pull --rebase origin main
             git push
           fi
