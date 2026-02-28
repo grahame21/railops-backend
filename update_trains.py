@@ -1,444 +1,219 @@
 import os
-import sys
 import json
 import datetime
 import time
 import math
-import pickle
-import random
-import traceback
-import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-print("=" * 60)
-print("🚂 RAILOPS - TRAIN SCRAPER")
-print("=" * 60)
-print(f"Python version: {sys.version}")
-print(f"Current time: {datetime.datetime.now()}")
-print("=" * 60)
-
 OUT_FILE = "trains.json"
-COOKIE_FILE = "trainfinder_cookies.pkl"
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
+
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-print(f"\n🔑 Credentials:")
-print(f"   Username set: {'Yes' if TF_USERNAME else 'No'}")
-print(f"   Password set: {'Yes' if TF_PASSWORD else 'No'}")
+def write_output(trains, note=""):
+    payload = {
+        "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
+        "note": note,
+        "trains": trains or []
+    }
+    with open(OUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+    print(f"📝 Output: {len(trains or [])} trains, status: {note}")
 
-class TrainScraper:
-    def __init__(self):
-        self.driver = None
-        print("✅ TrainScraper initialized")
-        
-    def setup_driver(self, proxy=None):
-        print(f"\n🔧 Setting up Chrome driver...")
-        try:
-            chrome_options = Options()
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument('--disable-dev-shm-usage')
-            chrome_options.add_argument('--disable-gpu')
-            chrome_options.add_argument('--window-size=1920,1080')
-            chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-            chrome_options.add_argument('--headless=new')
-            
-            # Add proxy if provided
-            if proxy:
-                chrome_options.add_argument(f'--proxy-server={proxy}')
-                print(f"   Using proxy: {proxy}")
-            
-            # Rotate user agents
-            user_agents = [
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            ]
-            chrome_options.add_argument(f'--user-agent={random.choice(user_agents)}')
-            
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option('useAutomationExtension', False)
-            
-            self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.set_page_load_timeout(30)
-            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            print("✅ Chrome driver setup successful")
-            return True
-        except Exception as e:
-            print(f"❌ Failed to setup Chrome driver: {e}")
-            return False
+def webmercator_to_latlon(x, y):
+    try:
+        x = float(x)
+        y = float(y)
+        lon = (x / 20037508.34) * 180
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        return lat, lon
+    except:
+        return None, None
+
+def login_and_get_trains():
+    print("=" * 60)
+    print("🚂 RAILOPS - ULTRA PATIENT VERSION")
+    print("=" * 60)
     
-    def save_cookies(self):
-        try:
-            with open(COOKIE_FILE, "wb") as f:
-                pickle.dump(self.driver.get_cookies(), f)
-            print("✅ Cookies saved")
-        except Exception as e:
-            print(f"❌ Failed to save cookies: {e}")
+    chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--window-size=1920,1080')
     
-    def load_cookies(self):
-        if os.path.exists(COOKIE_FILE):
-            try:
-                with open(COOKIE_FILE, "rb") as f:
-                    cookies = pickle.load(f)
-                self.driver.get("https://trainfinder.otenko.com")
-                time.sleep(2)
-                for cookie in cookies:
-                    try:
-                        self.driver.add_cookie(cookie)
-                    except:
-                        pass
-                print("✅ Cookies loaded")
-                return True
-            except Exception as e:
-                print(f"⚠️ Could not load cookies: {e}")
-        return False
-    
-    def random_delay(self, min_sec=1, max_sec=3):
-        time.sleep(random.uniform(min_sec, max_sec))
-    
-    def check_login_success(self):
-        try:
-            current_url = self.driver.current_url.lower()
-            if "login" in current_url:
-                return False
-            
-            script = """
-            var result = {
-                'map_exists': typeof window.map !== 'undefined',
-                'train_sources': {}
-            };
-            var sources = ['regTrainsSource', 'unregTrainsSource'];
-            sources.forEach(function(name) {
-                if (window[name] && window[name].getFeatures) {
-                    result.train_sources[name] = window[name].getFeatures().length;
-                } else {
-                    result.train_sources[name] = 0;
-                }
-            });
-            return result;
-            """
-            
-            result = self.driver.execute_script(script)
-            total_trains = sum(result['train_sources'].values())
-            
-            print(f"   Map exists: {result['map_exists']}")
-            print(f"   Train sources: {result['train_sources']}")
-            
-            return total_trains > 5
-        except Exception as e:
-            print(f"   Login check error: {e}")
-            return False
-    
-    def force_fresh_login(self):
-        print("\n🔐 Performing fresh login...")
+    driver = None
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
         
-        if os.path.exists(COOKIE_FILE):
-            os.remove(COOKIE_FILE)
+        print("\n📌 Logging in...")
+        driver.get(TF_LOGIN_URL)
+        time.sleep(5)
         
-        self.driver.delete_all_cookies()
+        username = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "useR_name"))
+        )
+        username.send_keys(TF_USERNAME)
+        print("✅ Username entered")
         
-        try:
-            self.driver.get(TF_LOGIN_URL)
-        except Exception as e:
-            print(f"❌ Failed to load login page: {e}")
-            return False
-            
-        self.random_delay(2, 4)
+        password = driver.find_element(By.ID, "pasS_word")
+        password.send_keys(TF_PASSWORD)
+        print("✅ Password entered")
         
-        try:
-            username = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.ID, "useR_name"))
-            )
-            username.clear()
-            username.send_keys(TF_USERNAME)
-            print("✅ Username entered")
-            
-            self.random_delay(1, 2)
-            
-            password = self.driver.find_element(By.ID, "pasS_word")
-            password.clear()
-            password.send_keys(TF_PASSWORD)
-            print("✅ Password entered")
-            
-            self.random_delay(1, 2)
-            
-            self.driver.execute_script("""
-                var buttons = document.querySelectorAll('input[type="button"], button');
-                for(var i = 0; i < buttons.length; i++) {
-                    if(buttons[i].value === 'Log In' || buttons[i].textContent.includes('Log In')) {
-                        buttons[i].click();
-                        return true;
-                    }
-                }
-                return false;
-            """)
-            print("✅ Login button clicked")
-            
-            time.sleep(5)
-            
-            try:
-                self.driver.execute_script("""
-                    var paths = document.getElementsByTagName('path');
-                    for(var i = 0; i < paths.length; i++) {
-                        var d = paths[i].getAttribute('d') || '';
-                        if(d.includes('M13.7,11l6.1-6.1')) {
-                            var parent = paths[i].parentElement;
-                            while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
-                                parent = parent.parentElement;
-                            }
-                            if(parent) parent.click();
+        driver.execute_script("""
+            var tables = document.getElementsByClassName('popup_table');
+            for(var i = 0; i < tables.length; i++) {
+                if(tables[i].className.includes('login')) {
+                    var elements = tables[i].getElementsByTagName('*');
+                    for(var j = 0; j < elements.length; j++) {
+                        if(elements[j].textContent.trim() === 'Log In') {
+                            elements[j].click();
+                            return;
                         }
                     }
-                """)
-                print("✅ Warning closed")
-            except:
-                pass
-            
-            time.sleep(3)
-            
-            if self.check_login_success():
-                self.save_cookies()
-                return True
-            else:
-                print("❌ Login verification failed - no trains visible")
-                return False
-            
-        except Exception as e:
-            print(f"❌ Login error: {str(e)[:200]}")
-            return False
-    
-    def try_proxy_list(self):
-        """Try a small list of known working proxies"""
-        
-        # Known working proxies from free sources (updated monthly)
-        proxies = [
-            "http://20.210.113.32:8123",
-            "http://23.95.150.145:6114", 
-            "http://8.220.204.215:8888",
-            "http://47.237.2.201:8443",
-            "http://47.89.22.242:8443",
-        ]
-        
-        # Try direct connection first
-        print("\n🔄 Attempt: Direct connection")
-        if self.setup_driver():
-            if self.force_fresh_login():
-                return True
-            if self.driver:
-                self.driver.quit()
-                self.driver = None
-        
-        # Try each proxy
-        for i, proxy in enumerate(proxies[:3]):  # Only try first 3 to save time
-            print(f"\n🔄 Attempt {i+2}: Proxy {proxy}")
-            
-            if self.setup_driver(proxy):
-                if self.force_fresh_login():
-                    print(f"✅ Success with proxy {proxy}")
-                    return True
-                
-                if self.driver:
-                    self.driver.quit()
-                    self.driver = None
-        
-        print("❌ All proxy attempts failed")
-        return False
-    
-    def zoom_to_australia(self):
-        try:
-            self.driver.execute_script("""
-                if (window.map) {
-                    var australia = [112, -44, 154, -10];
-                    var proj = window.map.getView().getProjection();
-                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                    window.map.getView().fit(extent, { duration: 2000, maxZoom: 8 });
                 }
-            """)
-            print("🌏 Zoomed to Australia")
-            time.sleep(3)
-        except:
-            print("⚠️ Could not zoom")
-    
-    def get_train_count(self):
-        script = """
-        var total = 0;
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
-        sources.forEach(function(name) {
-            if (window[name] && window[name].getFeatures) {
-                total += window[name].getFeatures().length;
             }
-        });
-        return total;
-        """
-        try:
-            return self.driver.execute_script(script)
-        except:
-            return 0
-    
-    def wait_for_trains(self, max_wait=45):
-        print(f"\n⏳ Waiting up to {max_wait} seconds for trains...")
+        """)
+        print("✅ Login button clicked")
+        time.sleep(8)
         
-        for i in range(max_wait // 5):
-            count = self.get_train_count()
-            if count > 5:
-                print(f"   ✅ Found {count} trains after {i*5}s")
-                return True
-            print(f"   ... {count} trains so far")
-            time.sleep(5)
+        driver.execute_script("""
+            var paths = document.getElementsByTagName('path');
+            for(var i = 0; i < paths.length; i++) {
+                var d = paths[i].getAttribute('d') || '';
+                if(d.includes('M13.7,11l6.1-6.1')) {
+                    var parent = paths[i].parentElement;
+                    while(parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                        parent = parent.parentElement;
+                    }
+                    if(parent) parent.click();
+                }
+            }
+        """)
+        print("✅ Warning page closed")
         
-        print(f"   ⚠️ Only found {self.get_train_count()} trains")
-        return False
-    
-    def extract_trains(self):
+        # Wait for map to fully initialize
+        print("\n⏳ Waiting 30 seconds for map to stabilize...")
+        time.sleep(30)
+        
+        # Zoom to Australia multiple times
+        print("🌏 Zooming to Australia (slowly)...")
+        driver.execute_script("""
+            if (window.map) {
+                var australia = [112, -44, 154, -10];
+                var proj = window.map.getView().getProjection();
+                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+            }
+        """)
+        
+        # Wait a LONG time for trains to load
+        print("⏳ Waiting 60 seconds for Australian trains to load...")
+        time.sleep(60)
+        
+        # Extract trains
         print("\n🔍 Extracting trains...")
         
         script = """
-        var trains = [];
+        var allTrains = [];
         var seenIds = new Set();
         
-        var sources = ['regTrainsSource', 'unregTrainsSource'];
-        
-        sources.forEach(function(sourceName) {
-            var source = window[sourceName];
-            if (!source || !source.getFeatures) return;
+        function extractFromSource(src, sourceName) {
+            if (!src || !src.getFeatures) return;
             
-            var features = source.getFeatures();
-            
-            features.forEach(function(feature) {
-                try {
-                    var props = feature.getProperties();
-                    var geom = feature.getGeometry();
-                    
-                    if (!geom || geom.getType() !== 'Point') return;
-                    
-                    var coords = geom.getCoordinates();
-                    
-                    var trainNumber = props.trainNumber || '';
-                    var trainName = props.trainName || '';
-                    var origin = props.serviceFrom || '';
-                    var destination = props.serviceTo || '';
-                    
-                    if (!trainNumber && !trainName && !origin && !destination) return;
-                    
-                    var speed = 0;
-                    if (props.trainSpeed) {
-                        var match = String(props.trainSpeed).match(/(\\d+)/);
-                        if (match) speed = parseInt(match[0]);
-                    }
-                    
-                    var id = trainName || trainNumber || sourceName + '_' + features.indexOf(feature);
-                    
-                    if (!seenIds.has(id)) {
-                        seenIds.add(id);
-                        trains.push({
-                            'id': id,
-                            'train_number': trainNumber,
-                            'train_name': trainName,
-                            'speed': speed,
-                            'origin': origin,
-                            'destination': destination,
-                            'description': props.serviceDesc || '',
-                            'km': props.trainKM || '',
-                            'time': props.trainTime || '',
-                            'x': coords[0],
-                            'y': coords[1]
-                        });
-                    }
-                } catch(e) {}
-            });
-        });
+            try {
+                var features = src.getFeatures();
+                console.log(sourceName + ' has ' + features.length + ' features');
+                
+                features.forEach(function(f, index) {
+                    try {
+                        var props = f.getProperties();
+                        var geom = f.getGeometry();
+                        
+                        if (geom && geom.getType() === 'Point') {
+                            var coords = geom.getCoordinates();
+                            
+                            // Convert to lat/lon for Australia check
+                            var x = coords[0];
+                            var y = coords[1];
+                            var lon = (x / 20037508.34) * 180;
+                            var lat = (y / 20037508.34) * 180;
+                            lat = 180 / 3.14159 * (2 * Math.atan(Math.exp(lat * 3.14159 / 180)) - 3.14159 / 2);
+                            
+                            // Australia bounds (expanded slightly)
+                            if (lat >= -45 && lat <= -5 && lon >= 110 && lon <= 160) {
+                                
+                                var id = props.id || props.ID || 
+                                        props.name || props.NAME ||
+                                        props.loco || props.Loco ||
+                                        props.unit || props.Unit ||
+                                        props.trainId || props.TrainId ||
+                                        sourceName + '_' + index;
+                                
+                                id = String(id).trim();
+                                
+                                if (!seenIds.has(id)) {
+                                    seenIds.add(id);
+                                    allTrains.push({
+                                        'id': id,
+                                        'train_id': String(props.trainId || props.TrainId || props.trainNumber || ''),
+                                        'service': String(props.service || props.Service || ''),
+                                        'operator': String(props.operator || props.Operator || ''),
+                                        'lat': lat,
+                                        'lon': lon,
+                                        'heading': Number(props.heading || props.Heading || 0),
+                                        'speed': Number(props.speed || props.Speed || 0),
+                                        'destination': String(props.destination || props.Destination || ''),
+                                        'timestamp': String(props.timestamp || props.Timestamp || '')
+                                    });
+                                }
+                            }
+                        }
+                    } catch(e) {}
+                });
+            } catch(e) {}
+        }
         
-        return trains;
+        // Extract from all sources
+        extractFromSource(window.regTrainsSource, 'reg');
+        extractFromSource(window.unregTrainsSource, 'unreg');
+        extractFromSource(window.markerSource, 'marker');
+        extractFromSource(window.arrowMarkersSource, 'arrow');
+        
+        return allTrains;
         """
         
-        try:
-            trains = self.driver.execute_script(script)
-            print(f"   ✅ Extracted {len(trains)} trains")
-            return trains
-        except Exception as e:
-            print(f"   ❌ Error: {e}")
-            return []
-    
-    def webmercator_to_latlon(self, x, y):
-        try:
-            lon = (x / 20037508.34) * 180
-            lat = (y / 20037508.34) * 180
-            lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
-            return round(lat, 6), round(lon, 6)
-        except:
-            return None, None
-    
-    def filter_australian(self, trains):
-        result = []
-        seen = set()
+        trains = driver.execute_script(script)
+        print(f"\n✅ Extracted {len(trains)} Australian trains")
         
-        for t in trains:
-            x = t.get('x', 0)
-            y = t.get('y', 0)
-            
-            if abs(x) > 180 or abs(y) > 90:
-                lat, lon = self.webmercator_to_latlon(x, y)
-            else:
-                lat, lon = y, x
-            
-            if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
-                if t['id'] not in seen:
-                    seen.add(t['id'])
-                    t['lat'] = lat
-                    t['lon'] = lon
-                    del t['x']
-                    del t['y']
-                    result.append(t)
+        if trains:
+            print(f"\n📋 Sample train:")
+            t = trains[0]
+            print(f"   ID: {t['id']}")
+            print(f"   Location: {t['lat']:.4f}, {t['lon']:.4f}")
         
-        print(f"\n📊 Found {len(result)} Australian trains")
-        return result
-    
-    def run(self):
-        print("\n🚀 Starting scraper run...")
+        return trains, f"ok - {len(trains)} trains"
         
-        if not TF_USERNAME or not TF_PASSWORD:
-            return [], "Missing credentials"
-        
-        if not self.try_proxy_list():
-            return [], "Login failed after retry"
-        
-        try:
-            time.sleep(10)
-            self.zoom_to_australia()
-            self.wait_for_trains(max_wait=45)
-            
-            trains = self.extract_trains()
-            australian = self.filter_australian(trains)
-            
-            return australian, f"ok - {len(australian)} trains"
-            
-        except Exception as e:
-            print(f"❌ Error: {e}")
-            return [], f"error: {type(e).__name__}"
-        finally:
-            if self.driver:
-                self.driver.quit()
-
-def write_output(trains, note):
-    if trains:
-        payload = {
-            "lastUpdated": datetime.datetime.utcnow().isoformat() + "Z",
-            "note": note,
-            "trains": trains
-        }
-        with open(OUT_FILE, "w") as f:
-            json.dump(payload, f, indent=2)
-        print(f"✅ Wrote {len(trains)} trains")
-    else:
-        print("⚠️ No trains to write - keeping existing data")
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return [], f"error: {type(e).__name__}"
+    finally:
+        if driver:
+            driver.quit()
 
 def main():
-    scraper = TrainScraper()
-    trains, note = scraper.run()
+    if not TF_USERNAME or not TF_PASSWORD:
+        print("❌ Missing credentials")
+        write_output([], "Missing credentials")
+        return
+    
+    trains, note = login_and_get_trains()
     write_output(trains, note)
 
 if __name__ == "__main__":
