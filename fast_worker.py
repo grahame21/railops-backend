@@ -6,7 +6,6 @@ import pickle
 import random
 import datetime
 import signal
-import sys
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -21,29 +20,26 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-# Jitter timing
 BASE_MIN_SECONDS = int(os.environ.get("BASE_MIN_SECONDS", "30"))
 BASE_MAX_SECONDS = int(os.environ.get("BASE_MAX_SECONDS", "60"))
 
-# Backoff
 MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "50"))
 MAX_BACKOFF_SECONDS = int(os.environ.get("MAX_BACKOFF_SECONDS", "900"))
 
-# Chromium paths inside the container
 CHROME_BIN = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
 CHROMEDRIVER_BIN = os.environ.get("CHROMEDRIVER_BIN", "/usr/bin/chromedriver")
 
 STOP = False
 
-def handle_sigint(sig, frame):
+def handle_stop(sig, frame):
     global STOP
     STOP = True
 
-signal.signal(signal.SIGINT, handle_sigint)
-signal.signal(signal.SIGTERM, handle_sigint)
+signal.signal(signal.SIGINT, handle_stop)
+signal.signal(signal.SIGTERM, handle_stop)
 
 print("=" * 60)
-print("🚂 RAILOPS - FAST WORKER (Xvfb + proven OL extraction)")
+print("🚂 RAILOPS - FAST WORKER (never wipe trains on hiccup)")
 print("=" * 60)
 
 def utc_now_z():
@@ -61,8 +57,7 @@ def write_output(trains, note=""):
 
 def webmercator_to_latlon(x, y):
     try:
-        x = float(x)
-        y = float(y)
+        x = float(x); y = float(y)
         lon = (x / 20037508.34) * 180
         lat = (y / 20037508.34) * 180
         lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
@@ -73,24 +68,21 @@ def webmercator_to_latlon(x, y):
 def make_driver():
     chrome_options = Options()
     chrome_options.binary_location = CHROME_BIN
-
-    # IMPORTANT: we will run under Xvfb, so we do NOT need --headless
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--lang=en-AU")
-
-    # Reduce automation fingerprints a bit
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
 
     service = webdriver.ChromeService(executable_path=CHROMEDRIVER_BIN)
     driver = webdriver.Chrome(service=service, options=chrome_options)
-    driver.set_page_load_timeout(60)
 
-    # further reduce webdriver flag
+    driver.set_page_load_timeout(120)
+    driver.set_script_timeout(120)
+
     try:
         driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
             "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
@@ -123,7 +115,7 @@ def ensure_logged_in(driver):
     driver.get(TF_LOGIN_URL)
     time.sleep(5)
 
-    # Load cookies if exist
+    # Load cookies first
     if os.path.exists(COOKIE_FILE):
         try:
             with open(COOKIE_FILE, "rb") as f:
@@ -139,16 +131,15 @@ def ensure_logged_in(driver):
         except:
             pass
 
-    # If login inputs appear, login
     page = (driver.page_source or "").lower()
-    if ("user_name" in page) or ("pass_word" in page) or ("useR_name".lower() in page):
+
+    # If login form exists -> log in
+    if ("user_name" in page) or ("pass_word" in page) or ("log in" in page and "nextlevel" in driver.current_url.lower()):
         if not TF_USERNAME or not TF_PASSWORD:
             raise RuntimeError("Missing TF_USERNAME / TF_PASSWORD")
 
         print("🔐 Logging in…")
-        username = WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.ID, "useR_name"))
-        )
+        username = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "useR_name")))
         username.clear()
         username.send_keys(TF_USERNAME)
 
@@ -156,7 +147,6 @@ def ensure_logged_in(driver):
         password.clear()
         password.send_keys(TF_PASSWORD)
 
-        # click Log In
         driver.execute_script("""
             var buttons = document.querySelectorAll('input[type="button"], button, div.button-green');
             for (var i=0;i<buttons.length;i++){
@@ -168,7 +158,6 @@ def ensure_logged_in(driver):
         """)
         time.sleep(6)
 
-        # Save cookies
         try:
             with open(COOKIE_FILE, "wb") as f:
                 pickle.dump(driver.get_cookies(), f)
@@ -181,11 +170,9 @@ def ensure_logged_in(driver):
     close_warning(driver)
 
 def warmup_map(driver):
-    # Let map stabilise and load trains
     print("⏳ Warmup: waiting 25s for map…")
     time.sleep(25)
 
-    # Zoom to Australia
     print("🌏 Zooming to Australia…")
     driver.execute_script("""
         try {
@@ -204,16 +191,11 @@ def warmup_map(driver):
 
 EXTRACT_SCRIPT = r"""
 var allTrains = [];
-var sources = [
-  'regTrainsSource','unregTrainsSource','markerSource',
-  'arrowMarkersSource','trainSource','trainMarkers'
-];
-
+var sources = ['regTrainsSource','unregTrainsSource','markerSource','arrowMarkersSource','trainSource','trainMarkers'];
 sources.forEach(function(sourceName){
   var source = window[sourceName];
   if (!source || !source.getFeatures) return;
   var features = source.getFeatures();
-
   features.forEach(function(feature, idx){
     try {
       var props = feature.getProperties();
@@ -247,23 +229,26 @@ sources.forEach(function(sourceName){
         var match = String(props.trainSpeed).match(/(\d+)/);
         if (match) trainData.speed = parseInt(match[0]);
       }
-
       allTrains.push(trainData);
     } catch(e) {}
   });
 });
-
 return allTrains;
 """
 
 def extract_trains(driver):
-    # try multiple times quickly (in case layers are still updating)
-    for _ in range(10):
-        raw = driver.execute_script(EXTRACT_SCRIPT) or []
-        if len(raw) >= 50:
-            return raw
+    # try a few times before declaring "low"
+    last = []
+    for _ in range(8):
+        try:
+            raw = driver.execute_script(EXTRACT_SCRIPT) or []
+            last = raw
+            if len(raw) >= MIN_TRAINS_OK:
+                return raw
+        except:
+            pass
         time.sleep(2)
-    return driver.execute_script(EXTRACT_SCRIPT) or []
+    return last
 
 def normalize(raw_trains):
     trains = []
@@ -297,6 +282,8 @@ def main():
         raise RuntimeError("Missing TF_USERNAME/TF_PASSWORD Fly secrets")
 
     backoff = 0
+    last_good = None
+    last_good_count = 0
     driver = None
 
     try:
@@ -308,30 +295,45 @@ def main():
 
         while not STOP:
             try:
+                time.sleep(random.uniform(0.2, 2.5))
+
                 raw = extract_trains(driver)
                 trains = normalize(raw)
 
                 if len(trains) < MIN_TRAINS_OK:
                     backoff = min(MAX_BACKOFF_SECONDS, (backoff * 2) if backoff else 120)
-                    write_output(trains, f"Low train count ({len(trains)}). Backoff {backoff}s")
+
+                    # ✅ critical: do NOT wipe trains.json with 0 trains if we have a good one
+                    if last_good is not None:
+                        write_output(last_good, f"Low/empty ({len(trains)}). Keeping last good ({last_good_count}). Backoff {backoff}s")
+                    else:
+                        write_output(trains, f"Low/empty ({len(trains)}). Backoff {backoff}s")
+
                     time.sleep(backoff)
-                    driver.refresh()
-                    time.sleep(10)
-                    close_warning(driver)
+                    try:
+                        driver.refresh()
+                        time.sleep(10)
+                        close_warning(driver)
+                    except:
+                        pass
                     continue
 
+                # ✅ success
+                last_good = trains
+                last_good_count = len(trains)
                 backoff = 0
                 write_output(trains, "OK")
 
-                sleep_for = random.randint(BASE_MIN_SECONDS, BASE_MAX_SECONDS)
-                time.sleep(sleep_for)
-
-                # Light refresh occasionally to keep map fresh
-                driver.execute_script("try { if(window.map){ window.map.renderSync(); } } catch(e) {}")
+                time.sleep(random.randint(BASE_MIN_SECONDS, BASE_MAX_SECONDS))
 
             except Exception as e:
                 backoff = min(MAX_BACKOFF_SECONDS, (backoff * 2) if backoff else 120)
-                write_output([], f"Error: {type(e).__name__}. Backoff {backoff}s")
+
+                if last_good is not None:
+                    write_output(last_good, f"Error: {type(e).__name__}. Keeping last good ({last_good_count}). Backoff {backoff}s")
+                else:
+                    write_output([], f"Error: {type(e).__name__}. Backoff {backoff}s")
+
                 time.sleep(backoff)
                 try:
                     driver.refresh()
@@ -340,7 +342,10 @@ def main():
                 except:
                     pass
 
-        write_output([], "Stopping gracefully")
+        if last_good is not None:
+            write_output(last_good, "Stopping gracefully (kept last good)")
+        else:
+            write_output([], "Stopping gracefully")
 
     finally:
         try:
