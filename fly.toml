@@ -11,7 +11,7 @@ primary_region = "syd"
 
 [processes]
   web = "python server.py"
-  worker = "python live_worker.py"
+  worker = "xvfb-run -a python fast_worker.py"
 
 [[vm]]
   size = "shared-cpu-1x"
