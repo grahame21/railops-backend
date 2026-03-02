@@ -23,7 +23,7 @@ TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 BASE_MIN_SECONDS = int(os.environ.get("BASE_MIN_SECONDS", "15"))
 BASE_MAX_SECONDS = int(os.environ.get("BASE_MAX_SECONDS", "30"))
 
-MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "800"))
+MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "300"))  # lowered: avoid perpetual LOW if TrainFinder changes counts
 
 MAX_BACKOFF_SECONDS = int(os.environ.get("MAX_BACKOFF_SECONDS", "120"))
 INITIAL_BACKOFF_SECONDS = int(os.environ.get("INITIAL_BACKOFF_SECONDS", "15"))
@@ -32,7 +32,6 @@ BACKOFF_MULTIPLIER = float(os.environ.get("BACKOFF_MULTIPLIER", "1.6"))
 PUSH_URL = os.environ.get("PUSH_URL", "https://railops-live-au.fly.dev/push")
 PUSH_TOKEN = os.environ.get("PUSH_TOKEN", "").strip()
 
-# Used only to seed last_good_trains so the map doesn't go blank on startup
 PUBLIC_TRAINS_JSON_URL = os.environ.get("PUBLIC_TRAINS_JSON_URL", "https://railops-live-au.fly.dev/trains.json")
 
 CHROME_BIN = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
@@ -87,19 +86,31 @@ def push_to_web(payload):
 
 
 def webmercator_to_latlon(x, y):
+    """
+    TrainFinder features appear to be WebMercator meters sometimes.
+    If not, we also attempt to treat them as lon/lat directly (fallback).
+    """
     try:
         x = float(x)
         y = float(y)
-        lon = (x / 20037508.34) * 180
-        lat = (y / 20037508.34) * 180
-        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
-        return round(lat, 6), round(lon, 6)
+
+        # Heuristic: WebMercator is usually huge numbers (millions)
+        if abs(x) > 1000 and abs(y) > 1000:
+            lon = (x / 20037508.34) * 180.0
+            lat = (y / 20037508.34) * 180.0
+            lat = 180.0 / math.pi * (2.0 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
+            return round(lat, 6), round(lon, 6)
+
+        # If coords are already lon/lat degrees
+        if -180 <= x <= 180 and -90 <= y <= 90:
+            return round(y, 6), round(x, 6)
+
+        return None, None
     except Exception:
         return None, None
 
 
 def load_seed_trains():
-    # 1) Try local OUT_FILE
     try:
         if os.path.exists(OUT_FILE):
             with open(OUT_FILE, "r", encoding="utf-8") as f:
@@ -111,7 +122,6 @@ def load_seed_trains():
     except Exception:
         pass
 
-    # 2) Try public trains.json from your own web app
     try:
         r = requests.get(PUBLIC_TRAINS_JSON_URL, timeout=10, headers={"Cache-Control": "no-cache"})
         if r.ok:
@@ -144,9 +154,8 @@ def make_driver():
     service = webdriver.ChromeService(executable_path=CHROMEDRIVER_BIN)
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    # IMPORTANT: give TrainFinder more time (timeouts were biting you)
-    driver.set_page_load_timeout(140)
-    driver.set_script_timeout(60)
+    driver.set_page_load_timeout(180)
+    driver.set_script_timeout(80)
 
     try:
         driver.execute_cdp_cmd(
@@ -227,37 +236,56 @@ def ensure_logged_in(driver):
             pass
 
     page = (driver.page_source or "").lower()
-    if ("useR_name".lower() in page) or ("pasS_word".lower() in page) or ("user_name" in page) or ("pass_word" in page):
+    if ("user_name" in page) or ("pass_word" in page) or ("user" in page and "password" in page):
         if not TF_USERNAME or not TF_PASSWORD:
             raise RuntimeError("Missing TF_USERNAME / TF_PASSWORD")
 
         print("🔐 Login form detected — attempting login…")
-
-        # NOTE: you previously used IDs useR_name and pasS_word
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support.ui import WebDriverWait
         from selenium.webdriver.support import expected_conditions as EC
 
-        username = WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.ID, "useR_name")))
-        username.clear()
-        username.send_keys(TF_USERNAME)
+        # Try common IDs
+        user_el = None
+        for cand in ["useR_name", "user_name", "username", "email"]:
+            try:
+                user_el = WebDriverWait(driver, 8).until(EC.presence_of_element_located((By.ID, cand)))
+                break
+            except Exception:
+                continue
 
-        password = driver.find_element(By.ID, "pasS_word")
-        password.clear()
-        password.send_keys(TF_PASSWORD)
+        if user_el is None:
+            raise RuntimeError("Could not find username field")
+
+        user_el.clear()
+        user_el.send_keys(TF_USERNAME)
+
+        pass_el = None
+        for cand in ["pasS_word", "pass_word", "password"]:
+            try:
+                pass_el = driver.find_element(By.ID, cand)
+                break
+            except Exception:
+                continue
+
+        if pass_el is None:
+            raise RuntimeError("Could not find password field")
+
+        pass_el.clear()
+        pass_el.send_keys(TF_PASSWORD)
 
         driver.execute_script(
             """
             var buttons = document.querySelectorAll('input[type="button"], button, div.button-green');
             for (var i=0;i<buttons.length;i++){
               var t = (buttons[i].value || buttons[i].textContent || '').toLowerCase();
-              if (t.includes('log in') || buttons[i].className.includes('button-green')) {
+              if (t.includes('log in') || t.includes('login') || buttons[i].className.includes('button-green')) {
                 buttons[i].click(); break;
               }
             }
             """
         )
-        time.sleep(7)
+        time.sleep(8)
 
         try:
             with open(COOKIE_FILE, "wb") as f:
@@ -294,103 +322,163 @@ def warmup_map(driver):
 
     time.sleep(10)
 
-    print("⏳ Warmup: waiting 45s for trains…")
-    time.sleep(45)
+    print("⏳ Warmup: waiting 60s for trains…")
+    time.sleep(60)
 
 
-def wait_for_sources(driver, timeout_s=45):
-    """
-    TrainFinder builds vector sources asynchronously.
-    We wait for at least one of the known sources to exist and have features.
-    """
-    end = time.time() + timeout_s
-    js = """
-    try {
-      var names = ['regTrainsSource','unregTrainsSource','markerSource','arrowMarkersSource','trainSource','trainMarkers'];
-      for (var i=0;i<names.length;i++){
-        var s = window[names[i]];
-        if (s && s.getFeatures) {
-          var n = s.getFeatures().length;
-          if (n > 0) return {ok:true, name:names[i], count:n};
+WAIT_FOR_ANY_SOURCE_JS = r"""
+try {
+  var names = [
+    'regTrainsSource','unregTrainsSource','markerSource','arrowMarkersSource','trainSource','trainMarkers',
+    'trainsSource','trains','markers','regTrains','unregTrains'
+  ];
+
+  function hasFeatures(s){
+    try{
+      if (!s) return 0;
+      if (typeof s.getFeatures === 'function') return s.getFeatures().length;
+      if (Array.isArray(s.features)) return s.features.length;
+      if (Array.isArray(s)) return s.length;
+      return 0;
+    }catch(e){ return 0; }
+  }
+
+  for (var i=0;i<names.length;i++){
+    var s = window[names[i]];
+    var n = hasFeatures(s);
+    if (n > 0) return {ok:true, name:names[i], count:n};
+  }
+
+  // Fallback: scan window for objects with getFeatures()
+  var found = 0;
+  var foundName = null;
+  for (var k in window){
+    try{
+      var s2 = window[k];
+      if (s2 && typeof s2.getFeatures === 'function'){
+        var n2 = s2.getFeatures().length;
+        if (n2 > found){
+          found = n2;
+          foundName = k;
         }
       }
-      return {ok:false};
-    } catch(e) { return {ok:false, err:String(e)}; }
-    """
+    }catch(e){}
+  }
+  if (found > 0) return {ok:true, name:foundName, count:found};
+
+  return {ok:false};
+} catch(e) { return {ok:false, err:String(e)}; }
+"""
+
+
+EXTRACT_ANY_SOURCES_JS = r"""
+try {
+  var trains = [];
+
+  function extractFromSource(sourceName, sourceObj){
+    if (!sourceObj) return;
+
+    var features = null;
+    try{
+      if (typeof sourceObj.getFeatures === 'function') features = sourceObj.getFeatures();
+    }catch(e){}
+
+    if (!features || !features.length) return;
+
+    for (var i=0;i<features.length;i++){
+      try{
+        var f = features[i];
+        var props = (f.getProperties && f.getProperties()) ? f.getProperties() : (f.values_ || {});
+        var geom = (f.getGeometry && f.getGeometry()) ? f.getGeometry() : null;
+        if (!geom || !geom.getType || geom.getType() !== 'Point') continue;
+        var coords = geom.getCoordinates ? geom.getCoordinates() : null;
+        if (!coords || coords.length < 2) continue;
+
+        var t = {
+          id: props.id || props.ID || (sourceName + "_" + i),
+          train_number: props.trainNumber || props.train_number || props.trainNo || "",
+          train_name: props.trainName || props.train_name || "",
+          service_name: props.serviceName || "",
+          loco: props.loco || "",
+          operator: props.operator || "",
+          origin: props.serviceFrom || props.origin || "",
+          destination: props.serviceTo || props.destination || "",
+          speed: 0,
+          heading: props.heading || 0,
+          km: props.trainKM || "",
+          time: props.trainTime || "",
+          date: props.trainDate || "",
+          description: props.serviceDesc || props.description || "",
+          cId: props.cId || "",
+          servId: props.servId || "",
+          trKey: props.trKey || "",
+          x: coords[0],
+          y: coords[1]
+        };
+
+        if (props.trainSpeed) {
+          var m = String(props.trainSpeed).match(/(\d+)/);
+          if (m) t.speed = parseInt(m[0]);
+        }
+        trains.push(t);
+      }catch(e){}
+    }
+  }
+
+  var names = [
+    'regTrainsSource','unregTrainsSource','markerSource','arrowMarkersSource','trainSource','trainMarkers',
+    'trainsSource','trains','markers','regTrains','unregTrains'
+  ];
+
+  for (var i=0;i<names.length;i++){
+    extractFromSource(names[i], window[names[i]]);
+  }
+
+  // Fallback: scan window for getFeatures sources and extract the biggest few
+  var candidates = [];
+  for (var k in window){
+    try{
+      var s = window[k];
+      if (s && typeof s.getFeatures === 'function'){
+        var n = s.getFeatures().length;
+        if (n > 0) candidates.push({name:k, count:n});
+      }
+    }catch(e){}
+  }
+  candidates.sort(function(a,b){ return b.count - a.count; });
+  for (var j=0;j<Math.min(6, candidates.length); j++){
+    var c = candidates[j];
+    extractFromSource(c.name, window[c.name]);
+  }
+
+  return trains;
+} catch(e) {
+  return [];
+}
+"""
+
+
+def wait_for_any_source(driver, timeout_s=90):
+    end = time.time() + timeout_s
     while time.time() < end:
         try:
-            res = driver.execute_script(js)
+            res = driver.execute_script(WAIT_FOR_ANY_SOURCE_JS)
             if isinstance(res, dict) and res.get("ok"):
+                print(f"✅ Found source: {res.get('name')} ({res.get('count')} features)")
                 return True
         except Exception:
             pass
         time.sleep(2)
+    print("⚠️ No sources with features found within timeout")
     return False
 
 
-EXTRACT_SCRIPT = r"""
-var allTrains = [];
-var sources = [
-  'regTrainsSource','unregTrainsSource','markerSource',
-  'arrowMarkersSource','trainSource','trainMarkers'
-];
-
-sources.forEach(function(sourceName){
-  var source = window[sourceName];
-  if (!source || !source.getFeatures) return;
-  var features = source.getFeatures();
-
-  features.forEach(function(feature, idx){
-    try {
-      var props = feature.getProperties();
-      var geom = feature.getGeometry();
-      if (!geom || geom.getType() !== 'Point') return;
-      var coords = geom.getCoordinates();
-
-      var trainData = {
-        'id': props.id || props.ID || (sourceName + '_' + idx),
-        'train_number': props.trainNumber || props.train_number || '',
-        'train_name': props.trainName || props.train_name || '',
-        'service_name': props.serviceName || '',
-        'loco': props.loco || '',
-        'operator': props.operator || '',
-        'origin': props.serviceFrom || props.origin || '',
-        'destination': props.serviceTo || props.destination || '',
-        'speed': 0,
-        'heading': props.heading || 0,
-        'km': props.trainKM || '',
-        'time': props.trainTime || '',
-        'date': props.trainDate || '',
-        'description': props.serviceDesc || '',
-        'cId': props.cId || '',
-        'servId': props.servId || '',
-        'trKey': props.trKey || '',
-        'x': coords[0],
-        'y': coords[1]
-      };
-
-      if (props.trainSpeed) {
-        var match = String(props.trainSpeed).match(/(\d+)/);
-        if (match) trainData.speed = parseInt(match[0]);
-      }
-
-      allTrains.push(trainData);
-    } catch(e) {}
-  });
-});
-
-return allTrains;
-"""
-
-
 def extract_trains(driver):
-    # wait for sources briefly; if not ready, return empty (handled upstream)
-    if not wait_for_sources(driver, timeout_s=35):
+    if not wait_for_any_source(driver, timeout_s=90):
         return []
-    # Try several times (sources can update while we scrape)
-    for _ in range(8):
+    for _ in range(6):
         try:
-            raw = driver.execute_script(EXTRACT_SCRIPT) or []
+            raw = driver.execute_script(EXTRACT_ANY_SOURCES_JS) or []
             if len(raw) >= 50:
                 return raw
         except TimeoutException:
@@ -399,7 +487,7 @@ def extract_trains(driver):
             pass
         time.sleep(2)
     try:
-        return driver.execute_script(EXTRACT_SCRIPT) or []
+        return driver.execute_script(EXTRACT_ANY_SOURCES_JS) or []
     except Exception:
         return []
 
@@ -408,7 +496,9 @@ def normalize(raw_trains):
     trains = []
     for t in raw_trains or []:
         lat, lon = webmercator_to_latlon(t.get("x"), t.get("y"))
-        if lat and lon and -45 <= lat <= -9 and 110 <= lon <= 155:
+        if lat is None or lon is None:
+            continue
+        if -45 <= lat <= -9 and 110 <= lon <= 155:
             trains.append(
                 {
                     "id": t.get("id", "unknown"),
@@ -446,7 +536,7 @@ def main():
         raise RuntimeError("Missing TF_USERNAME/TF_PASSWORD (set as Fly secrets)")
 
     print("=" * 60)
-    print("🚂 RAILOPS - FAST WORKER (stability + no 900s dead zones)")
+    print("🚂 RAILOPS - FAST WORKER (expanded source extraction)")
     print("=" * 60)
     print(f"BASE_MIN_SECONDS={BASE_MIN_SECONDS} BASE_MAX_SECONDS={BASE_MAX_SECONDS}")
     print(f"MIN_TRAINS_OK={MIN_TRAINS_OK}")
@@ -457,7 +547,6 @@ def main():
     consecutive_failures = 0
     driver = None
 
-    # IMPORTANT: seed last_good_trains so map won't go blank on early failures
     last_good_trains = load_seed_trains()
     last_good_note = "Seeded from previous trains.json" if last_good_trains else "No good data yet"
 
@@ -466,12 +555,15 @@ def main():
         ensure_logged_in(driver)
         warmup_map(driver)
 
-        print("🚦 Worker loop started (seeded last-good + source waiting + gentle backoff)")
+        print("🚦 Worker loop started (seeded last-good + expanded sources + gentle backoff)")
 
         while not STOP:
             try:
                 raw = extract_trains(driver)
+                print(f"🔎 Raw feature count: {len(raw)}")
+
                 trains = normalize(raw)
+                print(f"🚂 Normalized train count: {len(trains)}")
 
                 if len(trains) < MIN_TRAINS_OK:
                     backoff = next_backoff(backoff)
