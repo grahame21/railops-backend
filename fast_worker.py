@@ -6,11 +6,12 @@ import pickle
 import random
 import datetime
 import signal
+from collections import deque
 
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 
 
@@ -21,18 +22,17 @@ TF_LOGIN_URL = os.environ.get("TF_LOGIN_URL", "https://trainfinder.otenko.com/ho
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 
-BASE_MIN_SECONDS = int(os.environ.get("BASE_MIN_SECONDS", "15"))
-BASE_MAX_SECONDS = int(os.environ.get("BASE_MAX_SECONDS", "30"))
+BASE_MIN_SECONDS = int(os.environ.get("BASE_MIN_SECONDS", "12"))
+BASE_MAX_SECONDS = int(os.environ.get("BASE_MAX_SECONDS", "20"))
 
-MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "10"))  # XHR may return smaller/variable sets
+MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "10"))
 
-MAX_BACKOFF_SECONDS = int(os.environ.get("MAX_BACKOFF_SECONDS", "120"))
-INITIAL_BACKOFF_SECONDS = int(os.environ.get("INITIAL_BACKOFF_SECONDS", "15"))
-BACKOFF_MULTIPLIER = float(os.environ.get("BACKOFF_MULTIPLIER", "1.6"))
+MAX_BACKOFF_SECONDS = int(os.environ.get("MAX_BACKOFF_SECONDS", "90"))
+INITIAL_BACKOFF_SECONDS = int(os.environ.get("INITIAL_BACKOFF_SECONDS", "10"))
+BACKOFF_MULTIPLIER = float(os.environ.get("BACKOFF_MULTIPLIER", "1.4"))
 
 PUSH_URL = os.environ.get("PUSH_URL", "https://railops-live-au.fly.dev/push")
 PUSH_TOKEN = os.environ.get("PUSH_TOKEN", "").strip()
-
 PUBLIC_TRAINS_JSON_URL = os.environ.get("PUBLIC_TRAINS_JSON_URL", "https://railops-live-au.fly.dev/trains.json")
 
 CHROME_BIN = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
@@ -77,10 +77,10 @@ def push_to_web(payload):
             headers={"X-Auth-Token": PUSH_TOKEN},
             timeout=20,
         )
-        if 200 <= r.status_code < 300:
-            return True
-        print(f"⚠️ Push failed: HTTP {r.status_code} {r.text[:200]}")
-        return False
+        ok = 200 <= r.status_code < 300
+        if not ok:
+            print(f"⚠️ Push failed: HTTP {r.status_code} {r.text[:200]}")
+        return ok
     except Exception:
         print("⚠️ Push exception")
         return False
@@ -91,14 +91,12 @@ def webmercator_to_latlon(x, y):
         x = float(x)
         y = float(y)
 
-        # WebMercator meters heuristic
         if abs(x) > 1000 and abs(y) > 1000:
             lon = (x / 20037508.34) * 180.0
             lat = (y / 20037508.34) * 180.0
             lat = 180.0 / math.pi * (2.0 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
             return round(lat, 6), round(lon, 6)
 
-        # lon/lat degrees fallback
         if -180 <= x <= 180 and -90 <= y <= 90:
             return round(y, 6), round(x, 6)
 
@@ -143,16 +141,24 @@ def make_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--lang=en-AU")
-
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
+
+    # ✅ ENABLE performance logs so we can read network events
+    chrome_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
 
     service = webdriver.ChromeService(executable_path=CHROMEDRIVER_BIN)
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.set_page_load_timeout(180)
     driver.set_script_timeout(120)
+
+    # ✅ Enable CDP Network
+    try:
+        driver.execute_cdp_cmd("Network.enable", {})
+    except Exception:
+        pass
 
     try:
         driver.execute_cdp_cmd(
@@ -170,20 +176,7 @@ def safe_get(driver, url):
         driver.get(url)
         return True
     except TimeoutException:
-        print("⚠️ Page load timeout on GET — stopping load and continuing")
-        try:
-            driver.execute_script("window.stop();")
-        except Exception:
-            pass
-        return False
-
-
-def safe_refresh(driver):
-    try:
-        driver.refresh()
-        return True
-    except TimeoutException:
-        print("⚠️ Page load timeout on REFRESH — stopping load and continuing")
+        print("⚠️ Page load timeout on GET — stopping load")
         try:
             driver.execute_script("window.stop();")
         except Exception:
@@ -233,20 +226,17 @@ def find_username_field(driver):
         try:
             if not element_visible(el):
                 continue
-            attrs = {
-                "id": (el.get_attribute("id") or "").lower(),
-                "name": (el.get_attribute("name") or "").lower(),
-                "placeholder": (el.get_attribute("placeholder") or "").lower(),
-                "aria": (el.get_attribute("aria-label") or "").lower(),
-            }
-            blob = " ".join(attrs.values())
+            blob = " ".join([
+                (el.get_attribute("id") or "").lower(),
+                (el.get_attribute("name") or "").lower(),
+                (el.get_attribute("placeholder") or "").lower(),
+                (el.get_attribute("aria-label") or "").lower(),
+            ])
             score = 0
             if "email" in blob:
                 score += 5
             if "user" in blob or "username" in blob:
                 score += 4
-            if "login" in blob:
-                score += 2
             if score > 0:
                 scored.append((score, el))
         except Exception:
@@ -275,14 +265,7 @@ def find_password_field(driver):
 
 
 def click_login_button(driver):
-    selectors = [
-        "button[type='submit']",
-        "input[type='submit']",
-        "button",
-        "input[type='button']",
-        "div.button-green",
-        "div[class*='button']",
-    ]
+    selectors = ["button[type='submit']", "input[type='submit']", "button", "input[type='button']"]
     for sel in selectors:
         try:
             btns = driver.find_elements(By.CSS_SELECTOR, sel)
@@ -321,14 +304,14 @@ def ensure_logged_in(driver):
             pass
 
     page_lower = (driver.page_source or "").lower()
-    password_inputs = []
+    pw_inputs = []
     try:
-        password_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='password']")
+        pw_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='password']")
     except Exception:
         pass
 
     login_needed = ("password" in page_lower and ("log in" in page_lower or "login" in page_lower)) or any(
-        element_visible(p) for p in password_inputs
+        element_visible(p) for p in pw_inputs
     )
 
     if not login_needed:
@@ -345,7 +328,7 @@ def ensure_logged_in(driver):
     pass_el = find_password_field(driver)
 
     if user_el is None or pass_el is None:
-        snippet = (driver.page_source or "")[:2000].replace("\n", " ")
+        snippet = (driver.page_source or "")[:1800].replace("\n", " ")
         print("❌ Login fields not found. HTML snippet:", snippet)
         raise RuntimeError("Could not find login fields")
 
@@ -361,8 +344,7 @@ def ensure_logged_in(driver):
         pass
     pass_el.send_keys(TF_PASSWORD)
 
-    clicked = click_login_button(driver)
-    if not clicked:
+    if not click_login_button(driver):
         try:
             pass_el.send_keys("\n")
         except Exception:
@@ -380,123 +362,82 @@ def ensure_logged_in(driver):
     close_warning(driver)
 
 
-# --- XHR capture + replay ------------------------------------------------------
+# --- CDP helpers ---------------------------------------------------------------
 
-HOOK_XHR_JS = r"""
-try {
-  window.__railops = window.__railops || {};
-  window.__railops.last = null;
+KEYWORDS = ("getviewportdata", "viewport", "view", "train", "marker", "getview")
 
-  // Hook fetch
-  if (!window.__railops._fetchHooked) {
-    window.__railops._fetchHooked = true;
-    const origFetch = window.fetch;
-    window.fetch = function() {
-      try {
-        const url = arguments[0];
-        const opts = arguments[1] || {};
-        if (String(url).includes('GetViewPortData')) {
-          window.__railops.last = {
-            kind: 'fetch',
-            url: String(url),
-            method: (opts.method || 'GET'),
-            body: opts.body || null
-          };
-        }
-      } catch(e) {}
-      return origFetch.apply(this, arguments);
-    };
-  }
 
-  // Hook XHR
-  if (!window.__railops._xhrHooked) {
-    window.__railops._xhrHooked = true;
+def nudge_map(driver):
+    # Simple “poke” to make the app request data
+    try:
+        driver.execute_script(
+            """
+            try{
+              if (window.map && map.getView){
+                var v = map.getView();
+                var z = v.getZoom() || 7;
+                v.setZoom(z + 0.2);
+                setTimeout(function(){ v.setZoom(z); }, 400);
+              } else {
+                window.scrollTo(0, 200);
+                setTimeout(function(){ window.scrollTo(0, 0); }, 400);
+              }
+            }catch(e){}
+            """
+        )
+    except Exception:
+        pass
 
-    const origOpen = XMLHttpRequest.prototype.open;
-    const origSend = XMLHttpRequest.prototype.send;
 
-    XMLHttpRequest.prototype.open = function(method, url) {
-      this.__railops = { method: method, url: url };
-      return origOpen.apply(this, arguments);
-    };
+def read_network_candidate(driver):
+    """
+    Reads Chrome performance logs and tries to find the latest request matching keywords.
+    Returns dict: {url, method, postData, headers} or None
+    """
+    try:
+        logs = driver.get_log("performance")
+    except Exception:
+        return None
 
-    XMLHttpRequest.prototype.send = function(body) {
-      try {
-        if (this.__railops && String(this.__railops.url).includes('GetViewPortData')) {
-          window.__railops.last = {
-            kind: 'xhr',
-            url: String(this.__railops.url),
-            method: String(this.__railops.method || 'POST'),
-            body: body || null
-          };
-        }
-      } catch(e) {}
-      return origSend.apply(this, arguments);
-    };
-  }
-
-  return { ok: true };
-} catch(e) {
-  return { ok: false, err: String(e) };
-}
-"""
-
-# Make the page trigger viewport data
-TRIGGER_VIEWPORT_JS = r"""
-try {
-  // Try to force the map to request data: zoom/pan nudge
-  if (window.map && map.getView) {
-    var v = map.getView();
-    var z = v.getZoom();
-    v.setZoom(z + 0.0001);
-    setTimeout(function(){ v.setZoom(z); }, 250);
-  } else {
-    window.scrollTo(0, 200);
-    setTimeout(function(){ window.scrollTo(0, 0); }, 250);
-  }
-  return true;
-} catch(e) { return false; }
-"""
-
-def capture_viewport_request(driver, timeout_s=90):
-    print("🪝 Installing XHR hooks…")
-    driver.execute_script(HOOK_XHR_JS)
-
-    end = time.time() + timeout_s
-    while time.time() < end:
+    # Search backwards (most recent first)
+    for entry in reversed(logs):
         try:
-            driver.execute_script(TRIGGER_VIEWPORT_JS)
-            time.sleep(1.2)
-            last = driver.execute_script("return (window.__railops && window.__railops.last) ? window.__railops.last : null;")
-            if isinstance(last, dict) and last.get("url") and "GetViewPortData" in last.get("url", ""):
-                print(f"✅ Captured GetViewPortData request: {last.get('method')} {last.get('url')}")
-                body_preview = last.get("body")
-                if body_preview:
-                    s = str(body_preview)
-                    print(f"✅ Captured body length: {len(s)}")
-                else:
-                    print("⚠️ Captured request has no body (GET?) — still usable")
-                return last
-        except Exception:
-            pass
+            msg = json.loads(entry["message"])["message"]
+            if msg.get("method") != "Network.requestWillBeSent":
+                continue
+            params = msg.get("params", {})
+            req = params.get("request", {})
+            url = (req.get("url") or "")
+            if not url:
+                continue
+            low = url.lower()
+            if not any(k in low for k in KEYWORDS):
+                continue
 
-    print("❌ Failed to capture GetViewPortData request within timeout")
+            method = (req.get("method") or "GET").upper()
+            headers = req.get("headers") or {}
+            postData = req.get("postData")
+
+            # Normalize relative URLs
+            if url.startswith("/"):
+                url = "https://trainfinder.otenko.com" + url
+
+            return {"url": url, "method": method, "headers": headers, "body": postData}
+        except Exception:
+            continue
+
     return None
 
 
-def fetch_viewport_data(driver, req):
+def replay_request_in_page(driver, req):
     """
-    Replays the captured GetViewPortData request INSIDE the page context,
-    so session/cookies are automatically applied.
+    Use fetch inside page (cookies automatically included).
     """
-    url = req.get("url")
-    method = (req.get("method") or "POST").upper()
-    body = req.get("body")
+    url = req["url"]
+    method = req.get("method", "GET")
+    body = req.get("body", None)
 
-    # Build absolute URL if needed
-    if url.startswith("/"):
-        url = "https://trainfinder.otenko.com" + url
-
+    # keep only safe headers to avoid CORS/blocked ones
     headers = {
         "Accept": "application/json, text/plain, */*",
         "Content-Type": "application/json;charset=UTF-8",
@@ -513,34 +454,27 @@ def fetch_viewport_data(driver, req):
     fetch(url, {
       method: method,
       headers: headers,
-      body: body,
+      body: body ? body : undefined,
       credentials: 'include'
     }).then(r => r.text())
       .then(t => cb({ok:true, text:t}))
       .catch(e => cb({ok:false, err:String(e)}));
     """
     try:
-        res = driver.execute_async_script(script, url, method, headers, body)
-        return res
+        return driver.execute_async_script(script, url, method, headers, body)
     except Exception as e:
         return {"ok": False, "err": f"{type(e).__name__}"}
 
 
 def deep_find_points(obj, found):
-    """
-    Recursively finds dict-like items containing coordinates.
-    Accepts x/y or lon/lat keys (various spellings).
-    """
     if obj is None:
         return
     if isinstance(obj, dict):
         keys = {k.lower(): k for k in obj.keys()}
-        # Possible coordinate keys
         xk = keys.get("x") or keys.get("lon") or keys.get("longitude")
         yk = keys.get("y") or keys.get("lat") or keys.get("latitude")
         if xk and yk:
             found.append(obj)
-
         for v in obj.values():
             deep_find_points(v, found)
     elif isinstance(obj, list):
@@ -551,7 +485,6 @@ def deep_find_points(obj, found):
 def normalize_candidates(cands):
     trains = []
     for t in cands:
-        # Try many possible coordinate key names
         x = t.get("x", t.get("lon", t.get("longitude")))
         y = t.get("y", t.get("lat", t.get("latitude")))
         lat, lon = webmercator_to_latlon(x, y)
@@ -560,7 +493,6 @@ def normalize_candidates(cands):
         if not (-45 <= lat <= -9 and 110 <= lon <= 155):
             continue
 
-        # Pull likely train keys, but keep it tolerant
         train = {
             "id": t.get("id") or t.get("ID") or t.get("trKey") or t.get("key") or "",
             "train_number": t.get("train_number") or t.get("trainNumber") or t.get("trainNo") or t.get("train") or "",
@@ -578,7 +510,6 @@ def normalize_candidates(cands):
             "lon": lon,
         }
 
-        # If speed appears as "trainSpeed": "88 km/h"
         if not train["speed"] and t.get("trainSpeed"):
             s = str(t.get("trainSpeed"))
             digits = "".join([ch for ch in s if ch.isdigit()])
@@ -590,7 +521,6 @@ def normalize_candidates(cands):
 
         trains.append(train)
 
-    # Dedup by (lat,lon,id-ish) to avoid repeats from nested objects
     seen = set()
     out = []
     for tr in trains:
@@ -614,11 +544,10 @@ def main():
         raise RuntimeError("Missing TF_USERNAME/TF_PASSWORD (Fly secrets)")
 
     print("=" * 60)
-    print("🚂 RAILOPS - FAST WORKER (GetViewPortData replay)")
+    print("🚂 RAILOPS - FAST WORKER (CDP capture + replay)")
     print("=" * 60)
 
     backoff = 0
-    consecutive_failures = 0
     driver = None
 
     last_good_trains = load_seed_trains()
@@ -627,66 +556,71 @@ def main():
     try:
         driver = make_driver()
         ensure_logged_in(driver)
+        print("⏳ Warmup: waiting 25s for app JS…")
+        time.sleep(25)
 
-        print("⏳ Warmup: waiting 20s for map page JS…")
-        time.sleep(20)
-
-        # Capture the live request body TrainFinder uses
-        req = capture_viewport_request(driver, timeout_s=120)
-        if not req:
-            raise RuntimeError("Could not capture GetViewPortData request")
+        # Keep last captured request
+        captured = None
 
         print("🚦 Worker loop started")
-
         while not STOP:
             try:
-                res = fetch_viewport_data(driver, req)
+                # Try to capture a matching request if we don't have one yet
+                if captured is None:
+                    nudge_map(driver)
+                    time.sleep(2)
+                    captured = read_network_candidate(driver)
+                    if captured:
+                        print(f"✅ Captured network request: {captured['method']} {captured['url']}")
+                        if captured.get("body"):
+                            print(f"✅ Captured body length: {len(str(captured['body']))}")
+                    else:
+                        # Don't crash — keep trying
+                        payload = build_payload(last_good_trains, "Waiting for viewport/train request to appear (no capture yet)")
+                        write_local(payload)
+                        push_to_web(payload)
+                        print("📝 Output: keeping last good | waiting for capture")
+                        time.sleep(8)
+                        continue
+
+                # Replay captured request
+                res = replay_request_in_page(driver, captured)
                 if not isinstance(res, dict) or not res.get("ok"):
-                    raise RuntimeError(f"Viewport fetch failed: {res.get('err')}")
+                    raise RuntimeError(f"Replay failed: {res.get('err')}")
 
                 text = res.get("text") or ""
                 try:
                     data = json.loads(text)
                 except Exception:
-                    # Sometimes servers return HTML on auth errors
                     if "<html" in text.lower():
+                        # Logged out or blocked — reset capture so we capture the new flow after re-login
+                        captured = None
                         raise RuntimeError("Non-JSON response (likely logged out)")
                     raise
 
                 candidates = []
                 deep_find_points(data, candidates)
-                print(f"🔎 Candidate point objects found: {len(candidates)}")
-
                 trains = normalize_candidates(candidates)
-                print(f"🚂 Normalized train count: {len(trains)}")
+
+                print(f"🔎 Candidate points: {len(candidates)} | 🚂 Trains: {len(trains)}")
 
                 if len(trains) < MIN_TRAINS_OK:
                     backoff = next_backoff(backoff)
-
-                    payload = build_payload(
-                        last_good_trains,
-                        f"Low train count ({len(trains)}). Keeping last good. Retry in {backoff}s | prev: {last_good_note}"
-                    )
-
-                    # If we got some trains, accept them as last-good
                     if trains:
                         last_good_trains = trains
                         last_good_note = f"Low but usable ({len(trains)})"
-
+                    payload = build_payload(last_good_trains, f"Low train count ({len(trains)}). Retry in {backoff}s | prev: {last_good_note}")
                     write_local(payload)
                     push_to_web(payload)
-                    print(f"📝 Output: {len(payload.get('trains') or [])} trains | LOW -> backoff {backoff}s")
-
+                    print(f"📝 Output: {len(payload.get('trains') or [])} trains | LOW -> {backoff}s")
                     time.sleep(backoff)
                     continue
 
                 backoff = 0
-                consecutive_failures = 0
+                last_good_trains = trains
+                last_good_note = "OK"
 
                 payload = build_payload(trains, "OK")
-                last_good_trains = trains
-                last_good_note = payload["note"]
-
                 write_local(payload)
                 push_to_web(payload)
                 print(f"📝 Output: {len(trains)} trains | OK")
@@ -694,31 +628,24 @@ def main():
                 time.sleep(random.randint(BASE_MIN_SECONDS, BASE_MAX_SECONDS))
 
             except Exception as e:
-                consecutive_failures += 1
                 backoff = next_backoff(backoff)
-
-                payload = build_payload(
-                    last_good_trains,
-                    f"Error: {type(e).__name__}. Keeping last good. Retry in {backoff}s | prev: {last_good_note}"
-                )
+                payload = build_payload(last_good_trains, f"Error: {type(e).__name__}. Keeping last good. Retry in {backoff}s | prev: {last_good_note}")
                 write_local(payload)
                 push_to_web(payload)
-                print(f"📝 Output: {len(payload.get('trains') or [])} trains | ERROR {type(e).__name__} -> backoff {backoff}s")
+                print(f"📝 Output: {len(payload.get('trains') or [])} trains | ERROR {type(e).__name__} -> {backoff}s")
 
-                time.sleep(backoff)
-
-                # If it looks like we got logged out, re-login
-                if consecutive_failures >= 3:
+                # If we likely got logged out, re-login and reset capture
+                if "logged out" in str(e).lower() or "non-json" in str(e).lower():
                     try:
                         driver.quit()
                     except Exception:
                         pass
                     driver = make_driver()
                     ensure_logged_in(driver)
-                    time.sleep(15)
+                    time.sleep(20)
+                    captured = None
 
-                    req = capture_viewport_request(driver, timeout_s=120) or req
-                    consecutive_failures = 0
+                time.sleep(backoff)
 
         payload = build_payload(last_good_trains, "Stopping gracefully (keeping last good)")
         write_local(payload)
