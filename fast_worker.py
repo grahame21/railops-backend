@@ -24,8 +24,7 @@ TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 BASE_MIN_SECONDS = int(os.environ.get("BASE_MIN_SECONDS", "15"))
 BASE_MAX_SECONDS = int(os.environ.get("BASE_MAX_SECONDS", "30"))
 
-# Tolerant so we don't get stuck in LOW forever if TrainFinder feature counts vary
-MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "50"))
+MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "10"))  # XHR may return smaller/variable sets
 
 MAX_BACKOFF_SECONDS = int(os.environ.get("MAX_BACKOFF_SECONDS", "120"))
 INITIAL_BACKOFF_SECONDS = int(os.environ.get("INITIAL_BACKOFF_SECONDS", "15"))
@@ -88,10 +87,6 @@ def push_to_web(payload):
 
 
 def webmercator_to_latlon(x, y):
-    """
-    TrainFinder features appear to be WebMercator meters most of the time.
-    We also support lon/lat degrees if they ever appear.
-    """
     try:
         x = float(x)
         y = float(y)
@@ -103,7 +98,7 @@ def webmercator_to_latlon(x, y):
             lat = 180.0 / math.pi * (2.0 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
             return round(lat, 6), round(lon, 6)
 
-        # Already lon/lat degrees fallback
+        # lon/lat degrees fallback
         if -180 <= x <= 180 and -90 <= y <= 90:
             return round(y, 6), round(x, 6)
 
@@ -157,7 +152,7 @@ def make_driver():
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.set_page_load_timeout(180)
-    driver.set_script_timeout(80)
+    driver.set_script_timeout(120)
 
     try:
         driver.execute_cdp_cmd(
@@ -385,226 +380,226 @@ def ensure_logged_in(driver):
     close_warning(driver)
 
 
-def warmup_map(driver):
-    print("⏳ Warmup: waiting 25s for map…")
-    time.sleep(25)
+# --- XHR capture + replay ------------------------------------------------------
 
-    print("🌏 Zooming to Australia…")
-    try:
-        driver.execute_script(
-            """
-            try {
-              if (window.map && window.ol && ol.proj && window.map.getView) {
-                var australia = [112, -44, 154, -10];
-                var proj = window.map.getView().getProjection();
-                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 0, maxZoom: 8 });
-              }
-            } catch(e) {}
-            """
-        )
-    except Exception:
-        pass
-
-    time.sleep(10)
-
-    print("⏳ Warmup: waiting 60s for trains…")
-    time.sleep(60)
-
-
-# ✅ NEW: Wait for ANY vector features in the map layers (not window globals)
-WAIT_FOR_MAP_FEATURES_JS = r"""
+HOOK_XHR_JS = r"""
 try {
-  if (!window.map || !map.getLayers) return {ok:false, reason:"no map"};
-  var layers = map.getLayers().getArray();
-  var best = {name:null, count:0};
+  window.__railops = window.__railops || {};
+  window.__railops.last = null;
 
-  for (var i=0;i<layers.length;i++){
-    try{
-      var layer = layers[i];
-      if (!layer || !layer.getSource) continue;
-      var src = layer.getSource();
-      if (!src) continue;
-
-      // Vector sources usually have getFeatures()
-      if (typeof src.getFeatures === 'function'){
-        var n = src.getFeatures().length;
-        if (n > best.count){
-          best.count = n;
-          best.name = (layer.get('title') || layer.get('name') || layer.constructor && layer.constructor.name) || ("layer_"+i);
+  // Hook fetch
+  if (!window.__railops._fetchHooked) {
+    window.__railops._fetchHooked = true;
+    const origFetch = window.fetch;
+    window.fetch = function() {
+      try {
+        const url = arguments[0];
+        const opts = arguments[1] || {};
+        if (String(url).includes('GetViewPortData')) {
+          window.__railops.last = {
+            kind: 'fetch',
+            url: String(url),
+            method: (opts.method || 'GET'),
+            body: opts.body || null
+          };
         }
-      }
-
-      // Some layers use source.getSource() (e.g., cluster)
-      if (typeof src.getSource === 'function'){
-        var inner = src.getSource();
-        if (inner && typeof inner.getFeatures === 'function'){
-          var n2 = inner.getFeatures().length;
-          if (n2 > best.count){
-            best.count = n2;
-            best.name = (layer.get('title') || layer.get('name') || layer.constructor && layer.constructor.name) || ("layer_"+i);
-          }
-        }
-      }
-    }catch(e){}
+      } catch(e) {}
+      return origFetch.apply(this, arguments);
+    };
   }
 
-  if (best.count > 0) return {ok:true, name:best.name, count:best.count};
-  return {ok:false, reason:"no vector features yet"};
-} catch(e) { return {ok:false, err:String(e)}; }
-"""
+  // Hook XHR
+  if (!window.__railops._xhrHooked) {
+    window.__railops._xhrHooked = true;
 
+    const origOpen = XMLHttpRequest.prototype.open;
+    const origSend = XMLHttpRequest.prototype.send;
 
-# ✅ NEW: Extract point features from ALL map vector layers
-EXTRACT_FROM_MAP_LAYERS_JS = r"""
-try {
-  if (!window.map || !map.getLayers) return [];
-  var out = [];
-  var layers = map.getLayers().getArray();
+    XMLHttpRequest.prototype.open = function(method, url) {
+      this.__railops = { method: method, url: url };
+      return origOpen.apply(this, arguments);
+    };
 
-  function addFeature(sourceName, feature, idx){
-    try{
-      var props = (feature.getProperties && feature.getProperties()) ? feature.getProperties() : (feature.values_ || {});
-      var geom = (feature.getGeometry && feature.getGeometry()) ? feature.getGeometry() : null;
-      if (!geom || !geom.getType || geom.getType() !== 'Point') return;
-
-      var coords = geom.getCoordinates ? geom.getCoordinates() : null;
-      if (!coords || coords.length < 2) return;
-
-      // TrainFinder-like properties
-      var t = {
-        id: props.id || props.ID || (sourceName + "_" + idx),
-        train_number: props.trainNumber || props.train_number || props.trainNo || "",
-        train_name: props.trainName || props.train_name || "",
-        service_name: props.serviceName || "",
-        loco: props.loco || "",
-        operator: props.operator || "",
-        origin: props.serviceFrom || props.origin || "",
-        destination: props.serviceTo || props.destination || "",
-        speed: 0,
-        heading: props.heading || 0,
-        km: props.trainKM || "",
-        time: props.trainTime || "",
-        date: props.trainDate || "",
-        description: props.serviceDesc || props.description || "",
-        cId: props.cId || "",
-        servId: props.servId || "",
-        trKey: props.trKey || "",
-        x: coords[0],
-        y: coords[1]
-      };
-
-      if (props.trainSpeed) {
-        var m = String(props.trainSpeed).match(/(\d+)/);
-        if (m) t.speed = parseInt(m[0]);
-      }
-
-      out.push(t);
-    }catch(e){}
+    XMLHttpRequest.prototype.send = function(body) {
+      try {
+        if (this.__railops && String(this.__railops.url).includes('GetViewPortData')) {
+          window.__railops.last = {
+            kind: 'xhr',
+            url: String(this.__railops.url),
+            method: String(this.__railops.method || 'POST'),
+            body: body || null
+          };
+        }
+      } catch(e) {}
+      return origSend.apply(this, arguments);
+    };
   }
 
-  for (var i=0;i<layers.length;i++){
-    try{
-      var layer = layers[i];
-      if (!layer || !layer.getSource) continue;
-      var src = layer.getSource();
-      if (!src) continue;
-
-      var srcName = (layer.get('title') || layer.get('name') || layer.constructor && layer.constructor.name) || ("layer_"+i);
-
-      if (typeof src.getFeatures === 'function'){
-        var feats = src.getFeatures();
-        for (var j=0;j<feats.length;j++){
-          addFeature(srcName, feats[j], j);
-        }
-      }
-
-      if (typeof src.getSource === 'function'){
-        var inner = src.getSource();
-        if (inner && typeof inner.getFeatures === 'function'){
-          var feats2 = inner.getFeatures();
-          for (var k=0;k<feats2.length;k++){
-            addFeature(srcName+"_inner", feats2[k], k);
-          }
-        }
-      }
-    }catch(e){}
-  }
-
-  return out;
+  return { ok: true };
 } catch(e) {
-  return [];
+  return { ok: false, err: String(e) };
 }
 """
 
+# Make the page trigger viewport data
+TRIGGER_VIEWPORT_JS = r"""
+try {
+  // Try to force the map to request data: zoom/pan nudge
+  if (window.map && map.getView) {
+    var v = map.getView();
+    var z = v.getZoom();
+    v.setZoom(z + 0.0001);
+    setTimeout(function(){ v.setZoom(z); }, 250);
+  } else {
+    window.scrollTo(0, 200);
+    setTimeout(function(){ window.scrollTo(0, 0); }, 250);
+  }
+  return true;
+} catch(e) { return false; }
+"""
 
-def wait_for_map_features(driver, timeout_s=120):
+def capture_viewport_request(driver, timeout_s=90):
+    print("🪝 Installing XHR hooks…")
+    driver.execute_script(HOOK_XHR_JS)
+
     end = time.time() + timeout_s
     while time.time() < end:
         try:
-            res = driver.execute_script(WAIT_FOR_MAP_FEATURES_JS)
-            if isinstance(res, dict) and res.get("ok"):
-                print(f"✅ Map layer features found: {res.get('name')} ({res.get('count')} features)")
-                return True
+            driver.execute_script(TRIGGER_VIEWPORT_JS)
+            time.sleep(1.2)
+            last = driver.execute_script("return (window.__railops && window.__railops.last) ? window.__railops.last : null;")
+            if isinstance(last, dict) and last.get("url") and "GetViewPortData" in last.get("url", ""):
+                print(f"✅ Captured GetViewPortData request: {last.get('method')} {last.get('url')}")
+                body_preview = last.get("body")
+                if body_preview:
+                    s = str(body_preview)
+                    print(f"✅ Captured body length: {len(s)}")
+                else:
+                    print("⚠️ Captured request has no body (GET?) — still usable")
+                return last
         except Exception:
             pass
-        time.sleep(2)
 
-    print("⚠️ No map-layer vector features found within timeout")
-    return False
+    print("❌ Failed to capture GetViewPortData request within timeout")
+    return None
 
 
-def extract_trains(driver):
-    if not wait_for_map_features(driver, timeout_s=120):
-        return []
+def fetch_viewport_data(driver, req):
+    """
+    Replays the captured GetViewPortData request INSIDE the page context,
+    so session/cookies are automatically applied.
+    """
+    url = req.get("url")
+    method = (req.get("method") or "POST").upper()
+    body = req.get("body")
 
-    for _ in range(6):
-        try:
-            raw = driver.execute_script(EXTRACT_FROM_MAP_LAYERS_JS) or []
-            if len(raw) >= 50:
-                return raw
-        except TimeoutException:
-            print("⚠️ Script timeout during extract — retrying")
-        except WebDriverException:
-            pass
-        time.sleep(2)
+    # Build absolute URL if needed
+    if url.startswith("/"):
+        url = "https://trainfinder.otenko.com" + url
 
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Content-Type": "application/json;charset=UTF-8",
+        "X-Requested-With": "XMLHttpRequest",
+    }
+
+    script = """
+    const cb = arguments[arguments.length - 1];
+    const url = arguments[0];
+    const method = arguments[1];
+    const headers = arguments[2];
+    const body = arguments[3];
+
+    fetch(url, {
+      method: method,
+      headers: headers,
+      body: body,
+      credentials: 'include'
+    }).then(r => r.text())
+      .then(t => cb({ok:true, text:t}))
+      .catch(e => cb({ok:false, err:String(e)}));
+    """
     try:
-        return driver.execute_script(EXTRACT_FROM_MAP_LAYERS_JS) or []
-    except Exception:
-        return []
+        res = driver.execute_async_script(script, url, method, headers, body)
+        return res
+    except Exception as e:
+        return {"ok": False, "err": f"{type(e).__name__}"}
 
 
-def normalize(raw_trains):
+def deep_find_points(obj, found):
+    """
+    Recursively finds dict-like items containing coordinates.
+    Accepts x/y or lon/lat keys (various spellings).
+    """
+    if obj is None:
+        return
+    if isinstance(obj, dict):
+        keys = {k.lower(): k for k in obj.keys()}
+        # Possible coordinate keys
+        xk = keys.get("x") or keys.get("lon") or keys.get("longitude")
+        yk = keys.get("y") or keys.get("lat") or keys.get("latitude")
+        if xk and yk:
+            found.append(obj)
+
+        for v in obj.values():
+            deep_find_points(v, found)
+    elif isinstance(obj, list):
+        for v in obj:
+            deep_find_points(v, found)
+
+
+def normalize_candidates(cands):
     trains = []
-    for t in raw_trains or []:
-        lat, lon = webmercator_to_latlon(t.get("x"), t.get("y"))
+    for t in cands:
+        # Try many possible coordinate key names
+        x = t.get("x", t.get("lon", t.get("longitude")))
+        y = t.get("y", t.get("lat", t.get("latitude")))
+        lat, lon = webmercator_to_latlon(x, y)
         if lat is None or lon is None:
             continue
-        if -45 <= lat <= -9 and 110 <= lon <= 155:
-            trains.append(
-                {
-                    "id": t.get("id", "unknown"),
-                    "train_number": t.get("train_number", ""),
-                    "train_name": t.get("train_name", ""),
-                    "loco": t.get("loco", ""),
-                    "operator": t.get("operator", ""),
-                    "origin": t.get("origin", ""),
-                    "destination": t.get("destination", ""),
-                    "speed": t.get("speed", 0),
-                    "heading": t.get("heading", 0),
-                    "km": t.get("km", ""),
-                    "time": t.get("time", ""),
-                    "date": t.get("date", ""),
-                    "description": t.get("description", ""),
-                    "cId": t.get("cId", ""),
-                    "servId": t.get("servId", ""),
-                    "trKey": t.get("trKey", ""),
-                    "lat": lat,
-                    "lon": lon,
-                }
-            )
-    return trains
+        if not (-45 <= lat <= -9 and 110 <= lon <= 155):
+            continue
+
+        # Pull likely train keys, but keep it tolerant
+        train = {
+            "id": t.get("id") or t.get("ID") or t.get("trKey") or t.get("key") or "",
+            "train_number": t.get("train_number") or t.get("trainNumber") or t.get("trainNo") or t.get("train") or "",
+            "train_name": t.get("train_name") or t.get("trainName") or t.get("name") or "",
+            "loco": t.get("loco") or t.get("Loco") or t.get("locomotive") or "",
+            "origin": t.get("origin") or t.get("serviceFrom") or t.get("from") or "",
+            "destination": t.get("destination") or t.get("serviceTo") or t.get("to") or "",
+            "speed": t.get("speed") or 0,
+            "heading": t.get("heading") or 0,
+            "description": t.get("description") or t.get("serviceDesc") or "",
+            "trKey": t.get("trKey") or "",
+            "cId": t.get("cId") or "",
+            "servId": t.get("servId") or "",
+            "lat": lat,
+            "lon": lon,
+        }
+
+        # If speed appears as "trainSpeed": "88 km/h"
+        if not train["speed"] and t.get("trainSpeed"):
+            s = str(t.get("trainSpeed"))
+            digits = "".join([ch for ch in s if ch.isdigit()])
+            if digits:
+                try:
+                    train["speed"] = int(digits)
+                except Exception:
+                    pass
+
+        trains.append(train)
+
+    # Dedup by (lat,lon,id-ish) to avoid repeats from nested objects
+    seen = set()
+    out = []
+    for tr in trains:
+        key = (round(tr["lat"], 5), round(tr["lon"], 5), tr.get("id") or tr.get("train_number") or tr.get("trKey") or "")
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(tr)
+    return out
 
 
 def next_backoff(current):
@@ -619,9 +614,7 @@ def main():
         raise RuntimeError("Missing TF_USERNAME/TF_PASSWORD (Fly secrets)")
 
     print("=" * 60)
-    print("🚂 RAILOPS - FAST WORKER (map-layer extraction)")
-    print("=" * 60)
-    print(f"MIN_TRAINS_OK={MIN_TRAINS_OK}")
+    print("🚂 RAILOPS - FAST WORKER (GetViewPortData replay)")
     print("=" * 60)
 
     backoff = 0
@@ -634,40 +627,57 @@ def main():
     try:
         driver = make_driver()
         ensure_logged_in(driver)
-        warmup_map(driver)
+
+        print("⏳ Warmup: waiting 20s for map page JS…")
+        time.sleep(20)
+
+        # Capture the live request body TrainFinder uses
+        req = capture_viewport_request(driver, timeout_s=120)
+        if not req:
+            raise RuntimeError("Could not capture GetViewPortData request")
 
         print("🚦 Worker loop started")
 
         while not STOP:
             try:
-                raw = extract_trains(driver)
-                print(f"🔎 Raw feature count: {len(raw)}")
+                res = fetch_viewport_data(driver, req)
+                if not isinstance(res, dict) or not res.get("ok"):
+                    raise RuntimeError(f"Viewport fetch failed: {res.get('err')}")
 
-                trains = normalize(raw)
+                text = res.get("text") or ""
+                try:
+                    data = json.loads(text)
+                except Exception:
+                    # Sometimes servers return HTML on auth errors
+                    if "<html" in text.lower():
+                        raise RuntimeError("Non-JSON response (likely logged out)")
+                    raise
+
+                candidates = []
+                deep_find_points(data, candidates)
+                print(f"🔎 Candidate point objects found: {len(candidates)}")
+
+                trains = normalize_candidates(candidates)
                 print(f"🚂 Normalized train count: {len(trains)}")
 
                 if len(trains) < MIN_TRAINS_OK:
                     backoff = next_backoff(backoff)
 
+                    payload = build_payload(
+                        last_good_trains,
+                        f"Low train count ({len(trains)}). Keeping last good. Retry in {backoff}s | prev: {last_good_note}"
+                    )
+
+                    # If we got some trains, accept them as last-good
                     if trains:
-                        payload = build_payload(trains, f"Low train count ({len(trains)}). Retry in {backoff}s")
                         last_good_trains = trains
-                        last_good_note = payload["note"]
-                    else:
-                        payload = build_payload(
-                            last_good_trains,
-                            f"Low train count (0). Keeping last good. Retry in {backoff}s | prev: {last_good_note}"
-                        )
+                        last_good_note = f"Low but usable ({len(trains)})"
 
                     write_local(payload)
                     push_to_web(payload)
                     print(f"📝 Output: {len(payload.get('trains') or [])} trains | LOW -> backoff {backoff}s")
 
                     time.sleep(backoff)
-                    safe_refresh(driver)
-                    time.sleep(10)
-                    close_warning(driver)
-                    consecutive_failures = 0
                     continue
 
                 backoff = 0
@@ -693,10 +703,11 @@ def main():
                 )
                 write_local(payload)
                 push_to_web(payload)
-
                 print(f"📝 Output: {len(payload.get('trains') or [])} trains | ERROR {type(e).__name__} -> backoff {backoff}s")
+
                 time.sleep(backoff)
 
+                # If it looks like we got logged out, re-login
                 if consecutive_failures >= 3:
                     try:
                         driver.quit()
@@ -704,12 +715,10 @@ def main():
                         pass
                     driver = make_driver()
                     ensure_logged_in(driver)
-                    warmup_map(driver)
+                    time.sleep(15)
+
+                    req = capture_viewport_request(driver, timeout_s=120) or req
                     consecutive_failures = 0
-                else:
-                    safe_refresh(driver)
-                    time.sleep(10)
-                    close_warning(driver)
 
         payload = build_payload(last_good_trains, "Stopping gracefully (keeping last good)")
         write_local(payload)
