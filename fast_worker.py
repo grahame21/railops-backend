@@ -24,8 +24,8 @@ TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
 BASE_MIN_SECONDS = int(os.environ.get("BASE_MIN_SECONDS", "15"))
 BASE_MAX_SECONDS = int(os.environ.get("BASE_MAX_SECONDS", "30"))
 
-# Keep it tolerant so we don't get stuck in LOW forever if TrainFinder changes feature counts
-MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "300"))
+# Tolerant so we don't get stuck in LOW forever if TrainFinder feature counts vary
+MIN_TRAINS_OK = int(os.environ.get("MIN_TRAINS_OK", "50"))
 
 MAX_BACKOFF_SECONDS = int(os.environ.get("MAX_BACKOFF_SECONDS", "120"))
 INITIAL_BACKOFF_SECONDS = int(os.environ.get("INITIAL_BACKOFF_SECONDS", "15"))
@@ -82,12 +82,16 @@ def push_to_web(payload):
             return True
         print(f"⚠️ Push failed: HTTP {r.status_code} {r.text[:200]}")
         return False
-    except Exception as e:
-        print(f"⚠️ Push exception: {type(e).__name__}")
+    except Exception:
+        print("⚠️ Push exception")
         return False
 
 
 def webmercator_to_latlon(x, y):
+    """
+    TrainFinder features appear to be WebMercator meters most of the time.
+    We also support lon/lat degrees if they ever appear.
+    """
     try:
         x = float(x)
         y = float(y)
@@ -99,7 +103,7 @@ def webmercator_to_latlon(x, y):
             lat = 180.0 / math.pi * (2.0 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
             return round(lat, 6), round(lon, 6)
 
-        # Already lon/lat degrees (fallback)
+        # Already lon/lat degrees fallback
         if -180 <= x <= 180 and -90 <= y <= 90:
             return round(y, 6), round(x, 6)
 
@@ -222,17 +226,13 @@ def element_visible(el):
 
 
 def find_username_field(driver):
-    # Prefer: input[type=email], common ids/names, placeholders with email/user
     candidates = []
-
-    # by CSS types
     try:
         candidates += driver.find_elements(By.CSS_SELECTOR, "input[type='email']")
         candidates += driver.find_elements(By.CSS_SELECTOR, "input[type='text']")
     except Exception:
         pass
 
-    # filter by attributes that suggest username/email
     scored = []
     for el in candidates:
         try:
@@ -261,7 +261,6 @@ def find_username_field(driver):
         scored.sort(key=lambda x: x[0], reverse=True)
         return scored[0][1]
 
-    # fallback: first visible text/email input on page
     for el in candidates:
         if element_visible(el):
             return el
@@ -281,7 +280,6 @@ def find_password_field(driver):
 
 
 def click_login_button(driver):
-    # Try common buttons
     selectors = [
         "button[type='submit']",
         "input[type='submit']",
@@ -305,8 +303,6 @@ def click_login_button(driver):
                         continue
         except Exception:
             continue
-
-    # last resort: press Enter in password field handled by caller
     return False
 
 
@@ -314,7 +310,6 @@ def ensure_logged_in(driver):
     safe_get(driver, TF_LOGIN_URL)
     time.sleep(6)
 
-    # load cookies and reload
     if os.path.exists(COOKIE_FILE):
         try:
             with open(COOKIE_FILE, "rb") as f:
@@ -330,7 +325,6 @@ def ensure_logged_in(driver):
         except Exception:
             pass
 
-    # Determine if login form is present (heuristic)
     page_lower = (driver.page_source or "").lower()
     password_inputs = []
     try:
@@ -355,11 +349,10 @@ def ensure_logged_in(driver):
     user_el = find_username_field(driver)
     pass_el = find_password_field(driver)
 
-    # If still not found, dump a small snippet for debugging (first 2000 chars)
     if user_el is None or pass_el is None:
         snippet = (driver.page_source or "")[:2000].replace("\n", " ")
         print("❌ Login fields not found. HTML snippet:", snippet)
-        raise RuntimeError("Could not find username field" if user_el is None else "Could not find password field")
+        raise RuntimeError("Could not find login fields")
 
     try:
         user_el.clear()
@@ -375,7 +368,6 @@ def ensure_logged_in(driver):
 
     clicked = click_login_button(driver)
     if not clicked:
-        # fallback: press Enter in password field
         try:
             pass_el.send_keys("\n")
         except Exception:
@@ -383,7 +375,6 @@ def ensure_logged_in(driver):
 
     time.sleep(10)
 
-    # save cookies
     try:
         with open(COOKIE_FILE, "wb") as f:
             pickle.dump(driver.get_cookies(), f)
@@ -421,159 +412,155 @@ def warmup_map(driver):
     time.sleep(60)
 
 
-WAIT_FOR_ANY_SOURCE_JS = r"""
+# ✅ NEW: Wait for ANY vector features in the map layers (not window globals)
+WAIT_FOR_MAP_FEATURES_JS = r"""
 try {
-  var names = [
-    'regTrainsSource','unregTrainsSource','markerSource','arrowMarkersSource','trainSource','trainMarkers',
-    'trainsSource','trains','markers','regTrains','unregTrains'
-  ];
+  if (!window.map || !map.getLayers) return {ok:false, reason:"no map"};
+  var layers = map.getLayers().getArray();
+  var best = {name:null, count:0};
 
-  function hasFeatures(s){
+  for (var i=0;i<layers.length;i++){
     try{
-      if (!s) return 0;
-      if (typeof s.getFeatures === 'function') return s.getFeatures().length;
-      if (Array.isArray(s.features)) return s.features.length;
-      if (Array.isArray(s)) return s.length;
-      return 0;
-    }catch(e){ return 0; }
-  }
+      var layer = layers[i];
+      if (!layer || !layer.getSource) continue;
+      var src = layer.getSource();
+      if (!src) continue;
 
-  for (var i=0;i<names.length;i++){
-    var s = window[names[i]];
-    var n = hasFeatures(s);
-    if (n > 0) return {ok:true, name:names[i], count:n};
-  }
+      // Vector sources usually have getFeatures()
+      if (typeof src.getFeatures === 'function'){
+        var n = src.getFeatures().length;
+        if (n > best.count){
+          best.count = n;
+          best.name = (layer.get('title') || layer.get('name') || layer.constructor && layer.constructor.name) || ("layer_"+i);
+        }
+      }
 
-  // Fallback: scan window for objects with getFeatures()
-  var found = 0;
-  var foundName = null;
-  for (var k in window){
-    try{
-      var s2 = window[k];
-      if (s2 && typeof s2.getFeatures === 'function'){
-        var n2 = s2.getFeatures().length;
-        if (n2 > found){
-          found = n2;
-          foundName = k;
+      // Some layers use source.getSource() (e.g., cluster)
+      if (typeof src.getSource === 'function'){
+        var inner = src.getSource();
+        if (inner && typeof inner.getFeatures === 'function'){
+          var n2 = inner.getFeatures().length;
+          if (n2 > best.count){
+            best.count = n2;
+            best.name = (layer.get('title') || layer.get('name') || layer.constructor && layer.constructor.name) || ("layer_"+i);
+          }
         }
       }
     }catch(e){}
   }
-  if (found > 0) return {ok:true, name:foundName, count:found};
 
-  return {ok:false};
+  if (best.count > 0) return {ok:true, name:best.name, count:best.count};
+  return {ok:false, reason:"no vector features yet"};
 } catch(e) { return {ok:false, err:String(e)}; }
 """
 
 
-EXTRACT_ANY_SOURCES_JS = r"""
+# ✅ NEW: Extract point features from ALL map vector layers
+EXTRACT_FROM_MAP_LAYERS_JS = r"""
 try {
-  var trains = [];
+  if (!window.map || !map.getLayers) return [];
+  var out = [];
+  var layers = map.getLayers().getArray();
 
-  function extractFromSource(sourceName, sourceObj){
-    if (!sourceObj) return;
-
-    var features = null;
+  function addFeature(sourceName, feature, idx){
     try{
-      if (typeof sourceObj.getFeatures === 'function') features = sourceObj.getFeatures();
+      var props = (feature.getProperties && feature.getProperties()) ? feature.getProperties() : (feature.values_ || {});
+      var geom = (feature.getGeometry && feature.getGeometry()) ? feature.getGeometry() : null;
+      if (!geom || !geom.getType || geom.getType() !== 'Point') return;
+
+      var coords = geom.getCoordinates ? geom.getCoordinates() : null;
+      if (!coords || coords.length < 2) return;
+
+      // TrainFinder-like properties
+      var t = {
+        id: props.id || props.ID || (sourceName + "_" + idx),
+        train_number: props.trainNumber || props.train_number || props.trainNo || "",
+        train_name: props.trainName || props.train_name || "",
+        service_name: props.serviceName || "",
+        loco: props.loco || "",
+        operator: props.operator || "",
+        origin: props.serviceFrom || props.origin || "",
+        destination: props.serviceTo || props.destination || "",
+        speed: 0,
+        heading: props.heading || 0,
+        km: props.trainKM || "",
+        time: props.trainTime || "",
+        date: props.trainDate || "",
+        description: props.serviceDesc || props.description || "",
+        cId: props.cId || "",
+        servId: props.servId || "",
+        trKey: props.trKey || "",
+        x: coords[0],
+        y: coords[1]
+      };
+
+      if (props.trainSpeed) {
+        var m = String(props.trainSpeed).match(/(\d+)/);
+        if (m) t.speed = parseInt(m[0]);
+      }
+
+      out.push(t);
     }catch(e){}
-
-    if (!features || !features.length) return;
-
-    for (var i=0;i<features.length;i++){
-      try{
-        var f = features[i];
-        var props = (f.getProperties && f.getProperties()) ? f.getProperties() : (f.values_ || {});
-        var geom = (f.getGeometry && f.getGeometry()) ? f.getGeometry() : null;
-        if (!geom || !geom.getType || geom.getType() !== 'Point') continue;
-        var coords = geom.getCoordinates ? geom.getCoordinates() : null;
-        if (!coords || coords.length < 2) continue;
-
-        var t = {
-          id: props.id || props.ID || (sourceName + "_" + i),
-          train_number: props.trainNumber || props.train_number || props.trainNo || "",
-          train_name: props.trainName || props.train_name || "",
-          service_name: props.serviceName || "",
-          loco: props.loco || "",
-          operator: props.operator || "",
-          origin: props.serviceFrom || props.origin || "",
-          destination: props.serviceTo || props.destination || "",
-          speed: 0,
-          heading: props.heading || 0,
-          km: props.trainKM || "",
-          time: props.trainTime || "",
-          date: props.trainDate || "",
-          description: props.serviceDesc || props.description || "",
-          cId: props.cId || "",
-          servId: props.servId || "",
-          trKey: props.trKey || "",
-          x: coords[0],
-          y: coords[1]
-        };
-
-        if (props.trainSpeed) {
-          var m = String(props.trainSpeed).match(/(\d+)/);
-          if (m) t.speed = parseInt(m[0]);
-        }
-        trains.push(t);
-      }catch(e){}
-    }
   }
 
-  var names = [
-    'regTrainsSource','unregTrainsSource','markerSource','arrowMarkersSource','trainSource','trainMarkers',
-    'trainsSource','trains','markers','regTrains','unregTrains'
-  ];
-
-  for (var i=0;i<names.length;i++){
-    extractFromSource(names[i], window[names[i]]);
-  }
-
-  // Fallback: scan window for getFeatures sources and extract top few
-  var candidates = [];
-  for (var k in window){
+  for (var i=0;i<layers.length;i++){
     try{
-      var s = window[k];
-      if (s && typeof s.getFeatures === 'function'){
-        var n = s.getFeatures().length;
-        if (n > 0) candidates.push({name:k, count:n});
+      var layer = layers[i];
+      if (!layer || !layer.getSource) continue;
+      var src = layer.getSource();
+      if (!src) continue;
+
+      var srcName = (layer.get('title') || layer.get('name') || layer.constructor && layer.constructor.name) || ("layer_"+i);
+
+      if (typeof src.getFeatures === 'function'){
+        var feats = src.getFeatures();
+        for (var j=0;j<feats.length;j++){
+          addFeature(srcName, feats[j], j);
+        }
+      }
+
+      if (typeof src.getSource === 'function'){
+        var inner = src.getSource();
+        if (inner && typeof inner.getFeatures === 'function'){
+          var feats2 = inner.getFeatures();
+          for (var k=0;k<feats2.length;k++){
+            addFeature(srcName+"_inner", feats2[k], k);
+          }
+        }
       }
     }catch(e){}
   }
-  candidates.sort(function(a,b){ return b.count - a.count; });
-  for (var j=0;j<Math.min(6, candidates.length); j++){
-    var c = candidates[j];
-    extractFromSource(c.name, window[c.name]);
-  }
 
-  return trains;
+  return out;
 } catch(e) {
   return [];
 }
 """
 
 
-def wait_for_any_source(driver, timeout_s=90):
+def wait_for_map_features(driver, timeout_s=120):
     end = time.time() + timeout_s
     while time.time() < end:
         try:
-            res = driver.execute_script(WAIT_FOR_ANY_SOURCE_JS)
+            res = driver.execute_script(WAIT_FOR_MAP_FEATURES_JS)
             if isinstance(res, dict) and res.get("ok"):
-                print(f"✅ Found source: {res.get('name')} ({res.get('count')} features)")
+                print(f"✅ Map layer features found: {res.get('name')} ({res.get('count')} features)")
                 return True
         except Exception:
             pass
         time.sleep(2)
-    print("⚠️ No sources with features found within timeout")
+
+    print("⚠️ No map-layer vector features found within timeout")
     return False
 
 
 def extract_trains(driver):
-    if not wait_for_any_source(driver, timeout_s=90):
+    if not wait_for_map_features(driver, timeout_s=120):
         return []
+
     for _ in range(6):
         try:
-            raw = driver.execute_script(EXTRACT_ANY_SOURCES_JS) or []
+            raw = driver.execute_script(EXTRACT_FROM_MAP_LAYERS_JS) or []
             if len(raw) >= 50:
                 return raw
         except TimeoutException:
@@ -581,8 +568,9 @@ def extract_trains(driver):
         except WebDriverException:
             pass
         time.sleep(2)
+
     try:
-        return driver.execute_script(EXTRACT_ANY_SOURCES_JS) or []
+        return driver.execute_script(EXTRACT_FROM_MAP_LAYERS_JS) or []
     except Exception:
         return []
 
@@ -628,10 +616,12 @@ def next_backoff(current):
 
 def main():
     if not TF_USERNAME or not TF_PASSWORD:
-        raise RuntimeError("Missing TF_USERNAME/TF_PASSWORD (set as Fly secrets)")
+        raise RuntimeError("Missing TF_USERNAME/TF_PASSWORD (Fly secrets)")
 
     print("=" * 60)
-    print("🚂 RAILOPS - FAST WORKER (login-robust + expanded extract)")
+    print("🚂 RAILOPS - FAST WORKER (map-layer extraction)")
+    print("=" * 60)
+    print(f"MIN_TRAINS_OK={MIN_TRAINS_OK}")
     print("=" * 60)
 
     backoff = 0
