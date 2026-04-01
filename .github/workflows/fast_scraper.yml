@@ -1,0 +1,44 @@
+name: Fast Train Scraper
+
+on:
+  schedule:
+    - cron: '*/3 * * * *'
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable xvfb
+      
+      - name: Install Python packages
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run scraper
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          python fast_scraper.py
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add trains.json cookie.txt trainfinder_cookies.pkl locos.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update trains $(date -u +'%Y-%m-%d %H:%M:%S')"
+            git pull --rebase origin main
+            git push
+          fi
