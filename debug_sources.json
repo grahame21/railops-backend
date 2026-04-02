@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 372,
+      "count": 253,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 87,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 409,
+      "count": 407,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 466,
+      "count": 340,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1137,
-  "au_count": 1099,
+  "raw_count": 884,
+  "au_count": 848,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J541",
-    "train_number": "J541",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J541",
+    "id": "ACD6055",
+    "train_number": "1801S",
+    "train_name": "ACD6055",
     "loco": "",
     "operator": "",
-    "origin": "Rosewood",
-    "destination": "Ipswich",
-    "speed": 0,
+    "origin": "Gillman Yard (Port Flat)",
+    "destination": "Pimba",
+    "speed": 1,
     "heading": 0,
-    "km": "",
-    "time": "01:12:29",
+    "km": "273 km",
+    "time": "01:36:00",
     "date": "03/04/2026",
-    "description": "RWIP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J541",
-    "lat": -27.606159,
-    "lon": 152.677063
+    "description": "Aurizon Empty Copper",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "5dbb9969-ad0a-48bc-85a1-663360ee18b0",
+    "trKey": "ACD6055",
+    "lat": -31.2469,
+    "lon": 136.801893
   }
 }
