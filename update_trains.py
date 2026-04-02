@@ -1,6 +1,6 @@
 from trainfinder_backend import (
     ensure_session,
-    scrape_trains_from_page,
+    scrape_trains_from_endpoint,
     write_trains_json,
     write_debug_json,
 )
@@ -14,20 +14,19 @@ def main():
         if not ok:
             raise RuntimeError(msg)
 
-        trains, debug = scrape_trains_from_page(driver)
+        trains, debug = scrape_trains_from_endpoint(driver)
         write_debug_json(debug, out_file="debug_sources.json")
 
-        globals_info = debug.get("globals", [])
-        nonzero = [
-            g for g in globals_info
-            if isinstance(g, dict) and (g.get("featureCount") or 0) > 0
-        ]
+        print(f"debug method: {debug.get('method')}")
+        print(f"debug requests: {len(debug.get('requests', []))}")
+        print(f"debug total trains found: {debug.get('total_trains_found', 0)}")
 
-        print(f"debug globals checked: {len(globals_info)}")
-        print(f"debug globals with features: {len(nonzero)}")
-
-        for g in nonzero[:20]:
-            print(f"source {g.get('name')} -> {g.get('featureCount')} features")
+        for i, req in enumerate(debug.get("requests", [])[:20], start=1):
+            print(
+                f"request {i}: parsed={req.get('parsed')} "
+                f"new_trains_found={req.get('new_trains_found')} "
+                f"keys={req.get('dict_keys', [])[:10]}"
+            )
 
         result = write_trains_json(
             trains,
