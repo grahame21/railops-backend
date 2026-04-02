@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 243,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 485,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 329,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 901,
+  "au_count": 804,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "5039",
+    "train_number": "MP137",
+    "train_name": "5039",
+    "loco": "",
+    "operator": "",
+    "origin": "PWCS Kooragang",
+    "destination": "Mt Pleasant",
+    "speed": 76,
+    "heading": 0,
+    "km": "262 km",
+    "time": "04:28:00",
+    "date": "03/04/2026",
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "1319ab6f-2c5c-4328-827c-33686b2de80d",
+    "trKey": "5039",
+    "lat": -32.421393,
+    "lon": 151.049827
+  }
 }
