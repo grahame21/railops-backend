@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 218,
+      "count": 183,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 421,
+      "count": 81,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 300,
+      "count": 265,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 811,
-  "au_count": 694,
+  "raw_count": 571,
+  "au_count": 554,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5039",
-    "train_number": "MP137",
-    "train_name": "5039",
+    "id": "TE2808",
+    "train_number": "KN96",
+    "train_name": "TE2808",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Mt Pleasant",
-    "speed": 10,
+    "origin": "",
+    "destination": "",
+    "speed": 69,
     "heading": 0,
-    "km": "167 km",
-    "time": "02:54:00",
+    "km": "121 km",
+    "time": "03:36:00",
     "date": "03/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "1319ab6f-2c5c-4328-827c-33686b2de80d",
-    "trKey": "5039",
-    "lat": -32.874207,
-    "lon": 151.716027
+    "description": "",
+    "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
+    "servId": "",
+    "trKey": "TE2808",
+    "lat": -34.692097,
+    "lon": 150.848947
   }
 }
