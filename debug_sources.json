@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 183,
+      "count": 187,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 81,
+      "count": 371,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 265,
+      "count": 272,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 571,
-  "au_count": 554,
+  "raw_count": 730,
+  "au_count": 715,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TE2808",
-    "train_number": "KN96",
-    "train_name": "TE2808",
+    "id": "CSR023",
+    "train_number": "3MB9",
+    "train_name": "CSR023",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 69,
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Bromelton",
+    "speed": 8,
     "heading": 0,
-    "km": "121 km",
-    "time": "03:36:00",
+    "km": "926 km",
+    "time": "03:44:00",
     "date": "03/04/2026",
-    "description": "",
-    "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "",
-    "trKey": "TE2808",
-    "lat": -34.692097,
-    "lon": 150.848947
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "87c91a04-eaf7-46a7-9379-98afec71d012",
+    "trKey": "CSR023",
+    "lat": -27.963633,
+    "lon": 152.921893
   }
 }
