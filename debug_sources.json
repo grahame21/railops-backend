@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 243,
+      "count": 286,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 86,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 485,
+      "count": 417,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 329,
+      "count": 374,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 901,
-  "au_count": 804,
+  "raw_count": 957,
+  "au_count": 909,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5039",
-    "train_number": "MP137",
-    "train_name": "5039",
+    "id": "9025",
+    "train_number": "ND377",
+    "train_name": "9025",
     "loco": "",
     "operator": "",
     "origin": "PWCS Kooragang",
-    "destination": "Mt Pleasant",
-    "speed": 76,
+    "destination": "Newdell",
+    "speed": 1,
     "heading": 0,
-    "km": "262 km",
-    "time": "04:28:00",
+    "km": "266 km",
+    "time": "05:05:00",
     "date": "03/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "1319ab6f-2c5c-4328-827c-33686b2de80d",
-    "trKey": "5039",
-    "lat": -32.421393,
-    "lon": 151.049827
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "b6adf774-26a2-4d94-a4e9-710a4a123a53",
+    "trKey": "9025",
+    "lat": -32.402923,
+    "lon": 151.017747
   }
 }
