@@ -10,22 +10,17 @@ from typing import Any, Dict, List, Optional, Tuple
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
-TF_HOME_URL = "https://trainfinder.otenko.com/home/nextlevel"
-TF_VIEWPORT_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
-
 COOKIE_PKL = "trainfinder_cookies.pkl"
 COOKIE_TXT = "cookie.txt"
 
-TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
-TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
-
 
 def now_utc_iso() -> str:
-    return dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 def load_text_cookie() -> Optional[str]:
@@ -41,11 +36,9 @@ def load_text_cookie() -> Optional[str]:
         raw = open(COOKIE_TXT, "r", encoding="utf-8").read().strip()
         if not raw:
             return None
-
         m = re.search(r"\.ASPXAUTH=([^;\s]+)", raw)
         if m:
             return m.group(1).strip()
-
         return raw
 
     return None
@@ -70,13 +63,15 @@ def get_aspxauth_from_driver(driver: webdriver.Chrome) -> Optional[str]:
 
 
 def save_cookies(driver: webdriver.Chrome) -> None:
-    cookies = driver.get_cookies()
-    with open(COOKIE_PKL, "wb") as f:
-        pickle.dump(cookies, f)
-
-    aspxauth = get_aspxauth_from_driver(driver)
-    if aspxauth:
-        save_text_cookie(aspxauth)
+    try:
+        cookies = driver.get_cookies()
+        with open(COOKIE_PKL, "wb") as f:
+            pickle.dump(cookies, f)
+        aspxauth = get_aspxauth_from_driver(driver)
+        if aspxauth:
+            save_text_cookie(aspxauth)
+    except Exception:
+        pass
 
 
 def load_cookie_pickle() -> List[Dict[str, Any]]:
@@ -92,28 +87,75 @@ def load_cookie_pickle() -> List[Dict[str, Any]]:
     return []
 
 
-def make_driver(headless: bool = True) -> webdriver.Chrome:
-    options = Options()
-    if headless:
-        options.add_argument("--headless=new")
+def write_trains_json(
+    trains: List[Dict[str, Any]],
+    out_file: str = "trains.json",
+    note: str = "ok",
+    preserve_existing_if_empty: bool = True,
+) -> Dict[str, Any]:
+    payload = {
+        "lastUpdated": now_utc_iso(),
+        "note": f"{note} - {len(trains)} trains",
+        "trains": trains or [],
+    }
 
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1920,1080")
-    options.add_argument("--lang=en-AU")
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--disable-features=VizDisplayCompositor")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
-    options.add_argument(
+    if preserve_existing_if_empty and len(trains) == 0 and os.path.exists(out_file):
+        try:
+            with open(out_file, "r", encoding="utf-8") as f:
+                old = json.load(f)
+            old_trains = old.get("trains", [])
+            if isinstance(old_trains, list) and len(old_trains) > 0:
+                old["lastUpdated"] = now_utc_iso()
+                old["note"] = f"{note} - kept previous {len(old_trains)} trains"
+                with open(out_file, "w", encoding="utf-8") as f:
+                    json.dump(old, f, ensure_ascii=False, indent=2)
+                return old
+        except Exception:
+            pass
+
+    with open(out_file, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+    return payload
+
+
+def write_debug_json(debug: Dict[str, Any], out_file: str = "debug_sources.json") -> None:
+    with open(out_file, "w", encoding="utf-8") as f:
+        json.dump(debug, f, ensure_ascii=False, indent=2)
+
+
+def webmercator_to_latlon(x: Any, y: Any) -> Tuple[Optional[float], Optional[float]]:
+    try:
+        x = float(x)
+        y = float(y)
+        lon = (x / 20037508.34) * 180
+        lat = (y / 20037508.34) * 180
+        lat = 180 / math.pi * (2 * math.atan(math.exp(lat * math.pi / 180)) - math.pi / 2)
+        return round(lat, 6), round(lon, 6)
+    except Exception:
+        return None, None
+
+
+def make_driver(headless: bool = True) -> webdriver.Chrome:
+    chrome_options = Options()
+    if headless:
+        chrome_options.add_argument("--headless=new")
+
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--lang=en-AU")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_argument(
         "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/123.0.0.0 Safari/537.36"
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
     )
 
-    driver = webdriver.Chrome(options=options)
-    driver.set_page_load_timeout(60)
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.set_page_load_timeout(90)
 
     try:
         driver.execute_script(
@@ -125,18 +167,42 @@ def make_driver(headless: bool = True) -> webdriver.Chrome:
     return driver
 
 
-def wait_for_page(seconds: float = 5.0) -> None:
-    time.sleep(seconds)
+def _add_cookie_pickle_to_browser(driver: webdriver.Chrome, cookies: List[Dict[str, Any]]) -> bool:
+    if not cookies:
+        return False
+
+    try:
+        driver.get("https://trainfinder.otenko.com/")
+        time.sleep(2)
+
+        added = False
+        for cookie in cookies:
+            try:
+                c = dict(cookie)
+                c.pop("sameSite", None)
+                if c.get("expiry") is None:
+                    c.pop("expiry", None)
+                if "domain" not in c or not c["domain"]:
+                    c["domain"] = "trainfinder.otenko.com"
+                if "path" not in c or not c["path"]:
+                    c["path"] = "/"
+                driver.add_cookie(c)
+                added = True
+            except Exception:
+                continue
+        return added
+    except Exception:
+        return False
 
 
-def add_aspxauth_cookie(driver: webdriver.Chrome, cookie_value: str) -> bool:
+def _add_aspxauth_to_browser(driver: webdriver.Chrome, cookie_value: str) -> bool:
     cookie_value = (cookie_value or "").strip()
     if not cookie_value:
         return False
 
     try:
         driver.get("https://trainfinder.otenko.com/")
-        wait_for_page(2)
+        time.sleep(2)
         driver.add_cookie(
             {
                 "name": ".ASPXAUTH",
@@ -151,467 +217,276 @@ def add_aspxauth_cookie(driver: webdriver.Chrome, cookie_value: str) -> bool:
         return False
 
 
-def add_pickle_cookies(driver: webdriver.Chrome, cookies: List[Dict[str, Any]]) -> bool:
-    if not cookies:
-        return False
-
+def dismiss_warning(driver: webdriver.Chrome) -> None:
     try:
-        driver.get("https://trainfinder.otenko.com/")
-        wait_for_page(2)
-
-        added_any = False
-        for c in cookies:
-            try:
-                cookie = dict(c)
-                cookie.pop("sameSite", None)
-                if cookie.get("expiry") is None:
-                    cookie.pop("expiry", None)
-                if "domain" not in cookie or not cookie["domain"]:
-                    cookie["domain"] = "trainfinder.otenko.com"
-                if "path" not in cookie or not cookie["path"]:
-                    cookie["path"] = "/"
-                driver.add_cookie(cookie)
-                added_any = True
-            except Exception:
-                continue
-        return added_any
+        driver.execute_script(
+            """
+            var paths = document.getElementsByTagName('path');
+            for (var i = 0; i < paths.length; i++) {
+                var d = paths[i].getAttribute('d') || '';
+                if (d.includes('M13.7,11l6.1-6.1')) {
+                    var parent = paths[i].parentElement;
+                    while (parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                        parent = parent.parentElement;
+                    }
+                    if (parent) {
+                        parent.click();
+                    }
+                }
+            }
+            """
+        )
+        time.sleep(2)
     except Exception:
-        return False
+        pass
 
 
-def looks_logged_in(driver: webdriver.Chrome) -> bool:
+def _looks_logged_in(driver: webdriver.Chrome) -> bool:
     try:
-        current = (driver.current_url or "").lower()
-        source = (driver.page_source or "").lower()
+        url = (driver.current_url or "").lower()
+        src = (driver.page_source or "").lower()
 
-        if "returnurl=" in current:
+        if "useR_name".lower() in src or "pasS_word".lower() in src:
             return False
-        if "/account/login" in current:
-            return False
-        if "login" in current and "nextlevel" not in current:
+        if "returnurl=" in url:
             return False
 
         cookies_json = json.dumps(driver.get_cookies()).lower()
-        if ".aspxauth" in cookies_json and "sign in" not in source and "password" not in source:
+        if ".aspxauth" in cookies_json:
             return True
 
-        if "logout" in source:
-            return True
-        if "nextlevel" in current and "password" not in source:
-            return True
-    except Exception:
-        pass
-    return False
-
-
-def dismiss_overlays(driver: webdriver.Chrome) -> None:
-    selectors = [
-        "button",
-        ".close",
-        ".btn-close",
-        ".modal .close",
-        ".modal button",
-        ".swal2-confirm",
-    ]
-    texts = {"ok", "okay", "close", "dismiss", "continue", "accept"}
-
-    for _ in range(3):
-        try:
-            for sel in selectors:
-                els = driver.find_elements(By.CSS_SELECTOR, sel)
-                for el in els:
-                    try:
-                        txt = (el.text or "").strip().lower()
-                        if txt in texts:
-                            driver.execute_script("arguments[0].click();", el)
-                            time.sleep(1)
-                    except Exception:
-                        continue
-        except Exception:
-            pass
-
-
-def try_cookie_login(driver: webdriver.Chrome) -> bool:
-    raw_cookie = load_text_cookie()
-    pickle_cookies = load_cookie_pickle()
-
-    if raw_cookie:
-        add_aspxauth_cookie(driver, raw_cookie)
-        driver.get(TF_HOME_URL)
-        wait_for_page(6)
-        dismiss_overlays(driver)
-        if looks_logged_in(driver):
-            save_cookies(driver)
-            return True
-
-    if pickle_cookies:
-        add_pickle_cookies(driver, pickle_cookies)
-        driver.get(TF_HOME_URL)
-        wait_for_page(6)
-        dismiss_overlays(driver)
-        if looks_logged_in(driver):
-            save_cookies(driver)
-            return True
-
-    return False
-
-
-def find_first(driver: webdriver.Chrome, selectors: List[Tuple[str, str]]):
-    for by, value in selectors:
-        try:
-            el = driver.find_element(by, value)
-            if el:
-                return el
-        except NoSuchElementException:
-            continue
-    return None
-
-
-def try_password_login(driver: webdriver.Chrome) -> bool:
-    if not TF_USERNAME or not TF_PASSWORD:
-        return False
-
-    driver.get(TF_LOGIN_URL)
-    wait_for_page(5)
-    dismiss_overlays(driver)
-
-    user = find_first(
-        driver,
-        [
-            (By.ID, "useR_name"),
-            (By.NAME, "useR_name"),
-            (By.ID, "Email"),
-            (By.NAME, "Email"),
-            (By.CSS_SELECTOR, "input[type='email']"),
-            (By.CSS_SELECTOR, "input[type='text']"),
-        ],
-    )
-
-    pw = find_first(
-        driver,
-        [
-            (By.ID, "pasS_word"),
-            (By.NAME, "pasS_word"),
-            (By.ID, "Password"),
-            (By.NAME, "Password"),
-            (By.CSS_SELECTOR, "input[type='password']"),
-        ],
-    )
-
-    if not user or not pw:
-        return False
-
-    try:
-        user.clear()
-        user.send_keys(TF_USERNAME)
-        pw.clear()
-        pw.send_keys(TF_PASSWORD)
-        pw.send_keys("\n")
-        time.sleep(8)
-        dismiss_overlays(driver)
-
-        if looks_logged_in(driver):
-            save_cookies(driver)
-            return True
+        return "nextlevel" in url and "password" not in src
     except Exception:
         return False
 
-    return False
 
+def ensure_session(
+    headless: bool = True,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+) -> Tuple[webdriver.Chrome, bool, str]:
+    username = (username or os.environ.get("TF_USERNAME", "")).strip()
+    password = (password or os.environ.get("TF_PASSWORD", "")).strip()
 
-def ensure_session(headless: bool = True):
     driver = make_driver(headless=headless)
 
     try:
-        if try_cookie_login(driver):
-            return driver, True, "cookie login ok"
+        driver.get(TF_LOGIN_URL)
+        time.sleep(5)
 
-        if try_password_login(driver):
+        raw_cookie = load_text_cookie()
+        if raw_cookie:
+            _add_aspxauth_to_browser(driver, raw_cookie)
+            driver.get(TF_LOGIN_URL)
+            time.sleep(4)
+            dismiss_warning(driver)
+            if _looks_logged_in(driver):
+                save_cookies(driver)
+                return driver, True, "cookie login ok"
+
+        pickle_cookies = load_cookie_pickle()
+        if pickle_cookies:
+            _add_cookie_pickle_to_browser(driver, pickle_cookies)
+            driver.get(TF_LOGIN_URL)
+            time.sleep(4)
+            dismiss_warning(driver)
+            if _looks_logged_in(driver):
+                save_cookies(driver)
+                return driver, True, "cookie login ok"
+
+        username_box = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "useR_name"))
+        )
+        password_box = driver.find_element(By.ID, "pasS_word")
+
+        if not username or not password:
+            return driver, False, "missing credentials"
+
+        username_box.clear()
+        username_box.send_keys(username)
+        password_box.clear()
+        password_box.send_keys(password)
+
+        driver.execute_script(
+            """
+            var buttons = document.querySelectorAll('input[type="button"], button');
+            for (var i = 0; i < buttons.length; i++) {
+                var value = buttons[i].value || '';
+                var text = buttons[i].textContent || '';
+                if (value === 'Log In' || text.includes('Log In')) {
+                    buttons[i].click();
+                    return true;
+                }
+            }
+            return false;
+            """
+        )
+
+        time.sleep(6)
+        dismiss_warning(driver)
+        save_cookies(driver)
+
+        if _looks_logged_in(driver):
             return driver, True, "password login ok"
 
         return driver, False, "could not establish TrainFinder session"
     except Exception as e:
-        return driver, False, f"session error: {e}"
+        return driver, False, f"session error: {type(e).__name__}: {e}"
 
 
-def _safe_float(v: Any) -> Optional[float]:
-    try:
-        if v is None or v == "":
-            return None
-        return float(v)
-    except Exception:
-        return None
-
-
-def _extract_numeric(v: Any, default: float = 0.0) -> float:
-    if v is None:
-        return default
-    s = str(v)
-    m = re.search(r"-?\d+(?:\.\d+)?", s)
-    if not m:
-        return default
-    try:
-        return float(m.group(0))
-    except Exception:
-        return default
-
-
-def _wm_to_latlon(x: float, y: float) -> Tuple[float, float]:
-    lon = (x / 20037508.34) * 180.0
-    lat = (y / 20037508.34) * 180.0
-    lat = 180.0 / math.pi * (2.0 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
-    return lat, lon
-
-
-def _iter_dicts(obj: Any):
-    if isinstance(obj, dict):
-        yield obj
-        for v in obj.values():
-            yield from _iter_dicts(v)
-    elif isinstance(obj, list):
-        for item in obj:
-            yield from _iter_dicts(item)
-
-
-def _parse_feature_like(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    lat = None
-    lon = None
-
-    if isinstance(item.get("geometry"), dict):
-        coords = item["geometry"].get("coordinates")
-        if isinstance(coords, list) and len(coords) >= 2:
-            x = _safe_float(coords[0])
-            y = _safe_float(coords[1])
-            if x is not None and y is not None:
-                if abs(x) > 1000 or abs(y) > 1000:
-                    lat, lon = _wm_to_latlon(x, y)
-                else:
-                    lon, lat = x, y
-
-    if lat is None or lon is None:
-        lat = _safe_float(
-            item.get("lat")
-            or item.get("latitude")
-            or item.get("y")
-            or item.get("Latitude")
-        )
-        lon = _safe_float(
-            item.get("lon")
-            or item.get("lng")
-            or item.get("longitude")
-            or item.get("x")
-            or item.get("Longitude")
-        )
-
-    if lat is None or lon is None:
-        return None
-
-    if not (-90 < lat < 90 and -180 < lon < 180):
-        return None
-
-    if lat < -45 or lat > -8 or lon < 110 or lon > 155:
-        return None
-
-    train_number = (
-        item.get("trainNumber")
-        or item.get("train_number")
-        or item.get("ID")
-        or item.get("id")
-        or ""
-    )
-    train_name = item.get("trainName") or item.get("train_name") or item.get("name") or ""
-    loco = item.get("loco") or item.get("locoNumber") or item.get("loco_number") or ""
-    origin = item.get("serviceFrom") or item.get("origin") or item.get("from") or ""
-    destination = item.get("serviceTo") or item.get("destination") or item.get("to") or ""
-    description = item.get("serviceDesc") or item.get("description") or item.get("service") or ""
-    km = item.get("trainKM") or item.get("km") or ""
-    train_time = item.get("trainTime") or item.get("time") or ""
-    train_date = item.get("trainDate") or item.get("date") or ""
-    cid = item.get("cId") or ""
-    serv_id = item.get("servId") or ""
-    tr_key = item.get("trKey") or ""
-    heading = _extract_numeric(item.get("heading") or item.get("bearing") or item.get("dir") or 0, 0)
-    speed = _extract_numeric(item.get("trainSpeed") or item.get("speed") or item.get("spd") or 0, 0)
-
-    rec_id = str(tr_key or cid or train_name or train_number or loco or f"{lat:.5f},{lon:.5f}").strip()
-    if not rec_id:
-        return None
-
-    return {
-        "id": rec_id,
-        "train_number": str(train_number or ""),
-        "train_name": str(train_name or ""),
-        "loco": str(loco or ""),
-        "speed": speed,
-        "heading": heading,
-        "origin": str(origin or ""),
-        "destination": str(destination or ""),
-        "description": str(description or ""),
-        "km": str(km or ""),
-        "time": str(train_time or ""),
-        "date": str(train_date or ""),
-        "cId": str(cid or ""),
-        "servId": str(serv_id or ""),
-        "trKey": str(tr_key or ""),
-        "lat": lat,
-        "lon": lon,
-        "raw": item,
-    }
-
-
-def fetch_viewport_data(driver: webdriver.Chrome, payload: Dict[str, Any]) -> Tuple[Optional[Any], str]:
-    script = """
-    const done = arguments[arguments.length - 1];
-    const payload = arguments[0];
-
-    fetch(arguments[1], {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json, text/plain, */*'
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(async (resp) => {
-      const text = await resp.text();
-      done({
-        ok: resp.ok,
-        status: resp.status,
-        text: text
-      });
-    })
-    .catch((err) => {
-      done({
-        ok: false,
-        status: 0,
-        text: String(err)
-      });
-    });
-    """
-    try:
-        result = driver.execute_async_script(script, payload, TF_VIEWPORT_URL)
-        text = result.get("text", "") if isinstance(result, dict) else ""
-        if not isinstance(result, dict) or not result.get("ok"):
-            return None, text
-
-        try:
-            return json.loads(text), text
-        except Exception:
-            return None, text
-    except Exception as e:
-        return None, str(e)
-
-
-def build_au_payloads() -> List[Dict[str, Any]]:
-    centers = [
-        (-27.0, 133.0, 4),
-        (-33.5, 151.0, 6),
-        (-37.8, 144.9, 6),
-        (-31.95, 115.86, 6),
-        (-34.93, 138.60, 6),
-        (-27.47, 153.03, 6),
-        (-42.88, 147.33, 6),
-        (-12.46, 130.84, 6),
-    ]
-
-    payloads: List[Dict[str, Any]] = []
-    for lat, lng, zm in centers:
-        payloads.append(
-            {
-                "lat": lat,
-                "lng": lng,
-                "zm": zm,
-                "favs": None,
-                "alerts": None,
-                "places": None,
-                "tts": None,
-                "webcams": None,
-                "atcsGomi": None,
-                "atcsObj": None,
-            }
-        )
-    return payloads
-
-
-def scrape_trains_from_endpoint(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     debug: Dict[str, Any] = {
-        "method": "endpoint",
-        "requests": [],
+        "method": "page_sources",
+        "sources_found": [],
+        "raw_count": 0,
+        "au_count": 0,
     }
 
-    driver.get(TF_HOME_URL)
-    wait_for_page(6)
-    dismiss_overlays(driver)
+    driver.get(TF_LOGIN_URL)
+    time.sleep(5)
+    dismiss_warning(driver)
 
-    all_trains: List[Dict[str, Any]] = []
-    seen: set[str] = set()
+    debug["url_after_open"] = driver.current_url
 
-    for payload in build_au_payloads():
-        data, raw_text = fetch_viewport_data(driver, payload)
+    print("\n⏳ Waiting 30 seconds for map to stabilize...")
+    time.sleep(30)
 
-        entry: Dict[str, Any] = {
-            "payload": payload,
-            "raw_prefix": raw_text[:500] if isinstance(raw_text, str) else "",
-            "parsed": isinstance(data, (dict, list)),
-            "dict_keys": list(data.keys())[:50] if isinstance(data, dict) else [],
+    print("🌏 Zooming to Australia...")
+    try:
+        driver.execute_script(
+            """
+            if (window.map && window.ol) {
+                var australia = [112, -44, 154, -10];
+                var proj = window.map.getView().getProjection();
+                var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+            }
+            """
+        )
+    except Exception:
+        pass
+
+    print("⏳ Waiting 60 seconds for trains to load...")
+    time.sleep(60)
+
+    script = r"""
+    var allTrains = [];
+    var sourceStats = [];
+    var sources = [
+        'regTrainsSource',
+        'unregTrainsSource',
+        'markerSource',
+        'arrowMarkersSource',
+        'trainSource',
+        'trainMarkers'
+    ];
+
+    sources.forEach(function(sourceName) {
+        var source = window[sourceName];
+        if (!source || !source.getFeatures) {
+            sourceStats.push({ name: sourceName, exists: false, count: 0 });
+            return;
         }
 
-        request_count_before = len(all_trains)
+        var features = source.getFeatures() || [];
+        sourceStats.push({ name: sourceName, exists: true, count: features.length });
 
-        if data is not None:
-            for obj in _iter_dicts(data):
-                rec = _parse_feature_like(obj)
-                if not rec:
-                    continue
+        features.forEach(function(feature, idx) {
+            try {
+                var props = feature.getProperties ? feature.getProperties() : {};
+                var geom = feature.getGeometry ? feature.getGeometry() : null;
 
-                dedup = f"{rec['id']}|{rec['lat']:.5f}|{rec['lon']:.5f}"
-                if dedup in seen:
-                    continue
+                if (!geom || geom.getType() !== 'Point') return;
 
-                seen.add(dedup)
-                all_trains.append(rec)
+                var coords = geom.getCoordinates();
+                if (!coords || coords.length < 2) return;
 
-        entry["new_trains_found"] = len(all_trains) - request_count_before
-        debug["requests"].append(entry)
+                var speed = 0;
+                if (props.trainSpeed) {
+                    var match = String(props.trainSpeed).match(/(\d+)/);
+                    if (match) speed = parseInt(match[0]);
+                }
 
-    debug["total_trains_found"] = len(all_trains)
-    return all_trains, debug
+                allTrains.push({
+                    id: props.id || props.ID || props.trKey || props.cId || (sourceName + '_' + idx),
+                    train_number: props.trainNumber || props.train_number || '',
+                    train_name: props.trainName || props.train_name || '',
+                    service_name: props.serviceName || '',
+                    loco: props.loco || '',
+                    operator: props.operator || '',
+                    origin: props.serviceFrom || props.origin || '',
+                    destination: props.serviceTo || props.destination || '',
+                    speed: speed,
+                    heading: props.heading || 0,
+                    km: props.trainKM || '',
+                    time: props.trainTime || '',
+                    date: props.trainDate || '',
+                    description: props.serviceDesc || '',
+                    cId: props.cId || '',
+                    servId: props.servId || '',
+                    trKey: props.trKey || '',
+                    x: coords[0],
+                    y: coords[1]
+                });
+            } catch (e) {}
+        });
+    });
 
+    return {
+        allTrains: allTrains,
+        sourceStats: sourceStats,
+        hasMap: !!window.map,
+        hasOl: !!window.ol
+    };
+    """
 
-def write_debug_json(debug: Dict[str, Any], out_file: str = "debug_sources.json") -> None:
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump(debug, f, indent=2)
+    result = driver.execute_script(script)
+    raw_trains = result.get("allTrains", []) if isinstance(result, dict) else []
+    debug["sources_found"] = result.get("sourceStats", []) if isinstance(result, dict) else []
+    debug["hasMap"] = result.get("hasMap", False) if isinstance(result, dict) else False
+    debug["hasOl"] = result.get("hasOl", False) if isinstance(result, dict) else False
+    debug["raw_count"] = len(raw_trains)
 
+    trains: List[Dict[str, Any]] = []
+    seen: set[str] = set()
 
-def write_trains_json(
-    trains: List[Dict[str, Any]],
-    out_file: str = "trains.json",
-    note: str = "ok",
-    preserve_existing_if_empty: bool = True,
-) -> Dict[str, Any]:
-    payload = {
-        "lastUpdated": now_utc_iso(),
-        "note": f"{note} - {len(trains)} trains",
-        "trains": trains,
-    }
+    for t in raw_trains:
+        lat, lon = webmercator_to_latlon(t.get("x"), t.get("y"))
+        if lat is None or lon is None:
+            continue
+        if not (-45 <= lat <= -9 and 110 <= lon <= 155):
+            continue
 
-    if preserve_existing_if_empty and len(trains) == 0 and os.path.exists(out_file):
-        try:
-            with open(out_file, "r", encoding="utf-8") as f:
-                old = json.load(f)
-            old_trains = old.get("trains", [])
-            if isinstance(old_trains, list) and len(old_trains) > 0:
-                old["lastUpdated"] = now_utc_iso()
-                old["note"] = f"{note} - kept previous {len(old_trains)} trains"
-                with open(out_file, "w", encoding="utf-8") as f:
-                    json.dump(old, f, indent=2)
-                return old
-        except Exception:
-            pass
+        rec = {
+            "id": t.get("id", "unknown"),
+            "train_number": t.get("train_number", ""),
+            "train_name": t.get("train_name", ""),
+            "loco": t.get("loco", ""),
+            "operator": t.get("operator", ""),
+            "origin": t.get("origin", ""),
+            "destination": t.get("destination", ""),
+            "speed": t.get("speed", 0),
+            "heading": t.get("heading", 0),
+            "km": t.get("km", ""),
+            "time": t.get("time", ""),
+            "date": t.get("date", ""),
+            "description": t.get("description", ""),
+            "cId": t.get("cId", ""),
+            "servId": t.get("servId", ""),
+            "trKey": t.get("trKey", ""),
+            "lat": lat,
+            "lon": lon,
+        }
 
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
+        dedup = f"{rec['id']}|{rec['lat']:.5f}|{rec['lon']:.5f}"
+        if dedup in seen:
+            continue
+        seen.add(dedup)
+        trains.append(rec)
 
-    return payload
+    debug["au_count"] = len(trains)
+
+    if trains:
+        debug["sample"] = trains[0]
+
+    return trains, debug
