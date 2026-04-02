@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 606,
+      "count": 638,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 103,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 651,
+      "count": 747,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 709,
+      "count": 740,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1744,
-  "au_count": 1639,
+  "raw_count": 1854,
+  "au_count": 1726,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9305",
-    "train_number": "NB928",
-    "train_name": "9305",
+    "id": "NR16",
+    "train_number": "4PS6",
+    "train_name": "NR16",
     "loco": "",
     "operator": "",
-    "origin": "Narrabri",
-    "destination": "NCIG Kooragang",
-    "speed": 56,
+    "origin": "Kewdale",
+    "destination": "SFT (Chullora)",
+    "speed": 11,
     "heading": 0,
-    "km": "199 km",
-    "time": "10:21:00",
+    "km": "93 km",
+    "time": "10:53:00",
     "date": "03/04/2026",
-    "description": "PN Coal",
+    "description": "PN Intermodal",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "e8ede4f9-c6ac-4b0f-9cbc-7f5f67e3c2a1",
-    "trKey": "9305",
-    "lat": -32.719667,
-    "lon": 151.48688
+    "servId": "0eb505d2-d1c7-414a-b504-867a074521ca",
+    "trKey": "NR16",
+    "lat": -32.4833,
+    "lon": 137.7706
   }
 }
