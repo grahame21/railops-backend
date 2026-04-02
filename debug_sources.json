@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 195,
+      "count": 218,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 367,
+      "count": 421,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 279,
+      "count": 300,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 742,
-  "au_count": 689,
+  "raw_count": 811,
+  "au_count": 694,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-Bombardier Flexity 2 (01)",
-    "train_number": "GCR1",
-    "train_name": "GCLR-Bombardier Flexity 2 (01)",
+    "id": "5039",
+    "train_number": "MP137",
+    "train_name": "5039",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "PWCS Kooragang",
+    "destination": "Mt Pleasant",
+    "speed": 10,
     "heading": 0,
-    "km": "",
-    "time": "02:20:49",
+    "km": "167 km",
+    "time": "02:54:00",
     "date": "03/04/2026",
-    "description": "GCR1",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "GCLR-Bombardier Flexity 2 (01)",
-    "lat": -27.963449,
-    "lon": 153.384857
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "1319ab6f-2c5c-4328-827c-33686b2de80d",
+    "trKey": "5039",
+    "lat": -32.874207,
+    "lon": 151.716027
   }
 }
