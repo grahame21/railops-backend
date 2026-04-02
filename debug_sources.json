@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 200,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 385,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 286,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 765,
+  "au_count": 718,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "1432",
+    "train_number": "T230",
+    "train_name": "1432",
+    "loco": "",
+    "operator": "",
+    "origin": "IMEX Rail Terminal Moorebank",
+    "destination": "Port Botany",
+    "speed": 17,
+    "heading": 0,
+    "km": "8 km",
+    "time": "03:58:00",
+    "date": "03/04/2026",
+    "description": "QUBE Trip Train",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "e037fad6-e77e-4506-b184-dbe2651a4d0e",
+    "trKey": "1432",
+    "lat": -33.919593,
+    "lon": 151.16756
+  }
 }
