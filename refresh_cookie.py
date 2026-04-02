@@ -1,14 +1,19 @@
-from trainfinder_backend import ensure_session, make_driver, save_cookies
+from trainfinder_backend import ensure_session, save_cookies
 
-if __name__ == "__main__":
-    driver = make_driver(headless=True)
+
+def main():
+    driver, ok, msg = ensure_session(headless=True)
+    print(msg)
+
     try:
-        ok, note = ensure_session(driver)
+        if not ok:
+            raise RuntimeError(msg)
+
         save_cookies(driver)
-        if ok:
-            print(f"✅ Cookie/session refreshed: {note}")
-        else:
-            print(f"❌ Could not refresh cookie/session: {note}")
-            raise SystemExit(1)
+        print("Cookie refresh complete")
     finally:
         driver.quit()
+
+
+if __name__ == "__main__":
+    main()
