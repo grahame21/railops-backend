@@ -1,150 +1,60 @@
 {
-  "method": "endpoint",
-  "requests": [
+  "method": "page_sources",
+  "sources_found": [
     {
-      "payload": {
-        "lat": -27.0,
-        "lng": 133.0,
-        "zm": 4,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
+      "count": 372,
+      "exists": true,
+      "name": "regTrainsSource"
     },
     {
-      "payload": {
-        "lat": -33.5,
-        "lng": 151.0,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
+      "count": 94,
+      "exists": true,
+      "name": "unregTrainsSource"
     },
     {
-      "payload": {
-        "lat": -37.8,
-        "lng": 144.9,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
+      "count": 409,
+      "exists": true,
+      "name": "markerSource"
     },
     {
-      "payload": {
-        "lat": -31.95,
-        "lng": 115.86,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
+      "count": 466,
+      "exists": true,
+      "name": "arrowMarkersSource"
     },
     {
-      "payload": {
-        "lat": -34.93,
-        "lng": 138.6,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
+      "count": 0,
+      "exists": false,
+      "name": "trainSource"
     },
     {
-      "payload": {
-        "lat": -27.47,
-        "lng": 153.03,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
-    },
-    {
-      "payload": {
-        "lat": -42.88,
-        "lng": 147.33,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
-    },
-    {
-      "payload": {
-        "lat": -12.46,
-        "lng": 130.84,
-        "zm": 6,
-        "favs": null,
-        "alerts": null,
-        "places": null,
-        "tts": null,
-        "webcams": null,
-        "atcsGomi": null,
-        "atcsObj": null
-      },
-      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
-      "parsed": false,
-      "dict_keys": [],
-      "new_trains_found": 0
+      "count": 0,
+      "exists": false,
+      "name": "trainMarkers"
     }
   ],
-  "total_trains_found": 0
+  "raw_count": 1137,
+  "au_count": 1099,
+  "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
+  "hasMap": true,
+  "hasOl": true,
+  "sample": {
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J541",
+    "train_number": "J541",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J541",
+    "loco": "",
+    "operator": "",
+    "origin": "Rosewood",
+    "destination": "Ipswich",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "01:12:29",
+    "date": "03/04/2026",
+    "description": "RWIP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J541",
+    "lat": -27.606159,
+    "lon": 152.677063
+  }
 }
