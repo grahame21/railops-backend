@@ -2,6 +2,7 @@ import os
 import re
 import json
 import time
+import math
 import pickle
 import datetime as dt
 from typing import Any, Dict, List, Optional, Tuple
@@ -9,7 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
+from selenium.common.exceptions import NoSuchElementException
 
 
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
@@ -101,6 +102,8 @@ def make_driver(headless: bool = True) -> webdriver.Chrome:
     options.add_argument("--lang=en-AU")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-features=VizDisplayCompositor")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
     options.add_argument(
         "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -109,10 +112,18 @@ def make_driver(headless: bool = True) -> webdriver.Chrome:
 
     driver = webdriver.Chrome(options=options)
     driver.set_page_load_timeout(60)
+
+    try:
+        driver.execute_script(
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+        )
+    except Exception:
+        pass
+
     return driver
 
 
-def wait_for_page(driver: webdriver.Chrome, seconds: float = 5.0) -> None:
+def wait_for_page(seconds: float = 5.0) -> None:
     time.sleep(seconds)
 
 
@@ -123,16 +134,17 @@ def add_aspxauth_cookie(driver: webdriver.Chrome, cookie_value: str) -> bool:
 
     try:
         driver.get("https://trainfinder.otenko.com/")
-        wait_for_page(driver, 2)
+        wait_for_page(2)
 
-        cookie = {
-            "name": ".ASPXAUTH",
-            "value": cookie_value,
-            "domain": "trainfinder.otenko.com",
-            "path": "/",
-            "secure": True,
-        }
-        driver.add_cookie(cookie)
+        driver.add_cookie(
+            {
+                "name": ".ASPXAUTH",
+                "value": cookie_value,
+                "domain": "trainfinder.otenko.com",
+                "path": "/",
+                "secure": True,
+            }
+        )
         return True
     except Exception:
         return False
@@ -144,14 +156,15 @@ def add_pickle_cookies(driver: webdriver.Chrome, cookies: List[Dict[str, Any]]) 
 
     try:
         driver.get("https://trainfinder.otenko.com/")
-        wait_for_page(driver, 2)
+        wait_for_page(2)
 
         added_any = False
         for c in cookies:
             try:
                 cookie = dict(c)
                 cookie.pop("sameSite", None)
-                cookie.pop("expiry", None) if cookie.get("expiry") is None else None
+                if cookie.get("expiry") is None:
+                    cookie.pop("expiry", None)
                 if "domain" not in cookie or not cookie["domain"]:
                     cookie["domain"] = "trainfinder.otenko.com"
                 if "path" not in cookie or not cookie["path"]:
@@ -177,13 +190,13 @@ def looks_logged_in(driver: webdriver.Chrome) -> bool:
         if "login" in current and "nextlevel" not in current:
             return False
 
-        if ".aspxauth" in json.dumps(driver.get_cookies()).lower():
-            if "sign in" not in source and "username" not in source and "password" not in source:
-                return True
+        cookies_json = json.dumps(driver.get_cookies()).lower()
+        if ".aspxauth" in cookies_json and "sign in" not in source and "password" not in source:
+            return True
 
         if "logout" in source:
             return True
-        if "atcsobj" in source or "viewport" in source or "openlayers" in source:
+        if "regtrainssource" in source or "unregtrainssource" in source:
             return True
     except Exception:
         pass
@@ -199,7 +212,6 @@ def dismiss_overlays(driver: webdriver.Chrome) -> None:
         ".modal button",
         ".swal2-confirm",
     ]
-
     texts = {"ok", "okay", "close", "dismiss", "continue", "accept"}
 
     for _ in range(3):
@@ -217,6 +229,25 @@ def dismiss_overlays(driver: webdriver.Chrome) -> None:
         except Exception:
             pass
 
+    try:
+        driver.execute_script(
+            """
+            var paths = document.getElementsByTagName('path');
+            for (var i = 0; i < paths.length; i++) {
+                var d = paths[i].getAttribute('d') || '';
+                if (d.includes('M13.7,11l6.1-6.1')) {
+                    var parent = paths[i].parentElement;
+                    while (parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
+                        parent = parent.parentElement;
+                    }
+                    if (parent) { parent.click(); break; }
+                }
+            }
+            """
+        )
+    except Exception:
+        pass
+
 
 def try_cookie_login(driver: webdriver.Chrome) -> bool:
     raw_cookie = load_text_cookie()
@@ -225,7 +256,7 @@ def try_cookie_login(driver: webdriver.Chrome) -> bool:
     if raw_cookie:
         add_aspxauth_cookie(driver, raw_cookie)
         driver.get(TF_HOME_URL)
-        wait_for_page(driver, 5)
+        wait_for_page(6)
         dismiss_overlays(driver)
         if looks_logged_in(driver):
             save_cookies(driver)
@@ -234,7 +265,7 @@ def try_cookie_login(driver: webdriver.Chrome) -> bool:
     if pickle_cookies:
         add_pickle_cookies(driver, pickle_cookies)
         driver.get(TF_HOME_URL)
-        wait_for_page(driver, 5)
+        wait_for_page(6)
         dismiss_overlays(driver)
         if looks_logged_in(driver):
             save_cookies(driver)
@@ -259,7 +290,7 @@ def try_password_login(driver: webdriver.Chrome) -> bool:
         return False
 
     driver.get(TF_LOGIN_URL)
-    wait_for_page(driver, 5)
+    wait_for_page(5)
     dismiss_overlays(driver)
 
     user = find_first(
@@ -306,7 +337,7 @@ def try_password_login(driver: webdriver.Chrome) -> bool:
     return False
 
 
-def ensure_session(headless: bool = True) -> Tuple[webdriver.Chrome, bool, str]:
+def ensure_session(headless: bool = True):
     driver = make_driver(headless=headless)
 
     try:
@@ -321,159 +352,138 @@ def ensure_session(headless: bool = True) -> Tuple[webdriver.Chrome, bool, str]:
         return driver, False, f"session error: {e}"
 
 
-def _safe_float(v: Any) -> Optional[float]:
-    try:
-        if v is None or v == "":
-            return None
-        return float(v)
-    except Exception:
-        return None
-
-
-def _best(d: Dict[str, Any], keys: List[str], default: Any = None) -> Any:
-    for k in keys:
-        if k in d and d[k] not in (None, "", []):
-            return d[k]
-    return default
-
-
-def _looks_like_marker_junk(name: str) -> bool:
-    s = (name or "").lower()
-    junk_bits = [
-        "arrowmarkerssource_",
-        "markersource_",
-        "regtrainssource_",
-        "unregtrainssource_",
-        "trainsource_",
-    ]
-    return any(j in s for j in junk_bits)
-
-
-def _flatten_features(obj: Any, out: List[Dict[str, Any]]) -> None:
-    if isinstance(obj, dict):
-        if "features" in obj and isinstance(obj["features"], list):
-            for f in obj["features"]:
-                if isinstance(f, dict):
-                    out.append(f)
-        for v in obj.values():
-            _flatten_features(v, out)
-    elif isinstance(obj, list):
-        for item in obj:
-            _flatten_features(item, out)
-
-
-def _parse_geometry(feature: Dict[str, Any]) -> Tuple[Optional[float], Optional[float]]:
-    geom = feature.get("geometry") or {}
-    coords = geom.get("coordinates")
-
-    if isinstance(coords, list) and len(coords) >= 2:
-        lon = _safe_float(coords[0])
-        lat = _safe_float(coords[1])
-
-        if lon is not None and lat is not None:
-            if abs(lon) <= 180 and abs(lat) <= 90:
-                return lat, lon
-
-    props = feature.get("properties") or {}
-    lat = _safe_float(_best(props, ["lat", "latitude", "y"]))
-    lon = _safe_float(_best(props, ["lon", "lng", "longitude", "x"]))
-    return lat, lon
-
-
-def _build_train_record(feature: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-    props = feature.get("properties") or {}
-    lat, lon = _parse_geometry(feature)
-
-    if lat is None or lon is None:
-        return None
-
-    identifier = _best(
-        props,
-        [
-            "trKey",
-            "train_number",
-            "trainNumber",
-            "trainNo",
-            "id",
-            "ID",
-            "loco",
-            "locoNumber",
-            "name",
-            "train_name",
-            "trainName",
-        ],
-        "",
-    )
-
-    loco = _best(props, ["loco", "locoNumber", "loco_number", "engine"], "")
-    speed = _safe_float(_best(props, ["speed", "spd", "velocity"], 0)) or 0
-    heading = _safe_float(_best(props, ["heading", "bearing", "dir", "direction"], 0)) or 0
-
-    rec = {
-        "id": str(identifier or loco or f"{lat},{lon}"),
-        "train_number": str(identifier or ""),
-        "loco": str(loco or ""),
-        "lat": lat,
-        "lon": lon,
-        "speed": speed,
-        "heading": heading,
-        "origin": str(_best(props, ["origin", "from", "orig"], "") or ""),
-        "destination": str(_best(props, ["destination", "dest", "to"], "") or ""),
-        "description": str(_best(props, ["description", "desc", "service"], "") or ""),
-        "time": str(_best(props, ["time", "lastUpdated", "updated"], "") or ""),
-        "km": str(_best(props, ["km", "kilometres", "kilometers"], "") or ""),
-        "raw": props,
-    }
-    return rec
-
-
 def scrape_trains_from_page(driver: webdriver.Chrome) -> List[Dict[str, Any]]:
-    trains: List[Dict[str, Any]] = []
-
-    script = r"""
-const out = [];
-try {
-  for (const k of Object.keys(window)) {
-    try {
-      const v = window[k];
-      if (!v) continue;
-      if (typeof v === 'object') {
-        out.push(v);
-      }
-    } catch (e) {}
-  }
-} catch (e) {}
-return JSON.stringify(out);
-"""
-
-    raw_objects = []
     try:
-        payload = driver.execute_script(script)
-        raw_objects = json.loads(payload)
+        driver.get(TF_HOME_URL)
+        wait_for_page(8)
+        dismiss_overlays(driver)
+
+        driver.execute_script(
+            """
+            try {
+                if (window.map && window.ol) {
+                    var australia = [112, -44, 154, -10];
+                    var proj = window.map.getView().getProjection();
+                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                    window.map.getView().fit(extent, { duration: 0, maxZoom: 8 });
+                }
+            } catch (e) {}
+            """
+        )
+
+        wait_for_page(20)
+
+        trains = driver.execute_script(
+            r"""
+            var allTrains = [];
+            var seenIds = new Set();
+
+            function wmToLatLon(x, y) {
+                var lon = (x / 20037508.34) * 180;
+                var lat = (y / 20037508.34) * 180;
+                lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI / 2);
+                return [lat, lon];
+            }
+
+            function numFromText(v) {
+                if (v === null || v === undefined) return 0;
+                var m = String(v).match(/-?\d+(\.\d+)?/);
+                return m ? Number(m[0]) : 0;
+            }
+
+            function addFromSource(sourceName) {
+                var src = window[sourceName];
+                if (!src || !src.getFeatures) return;
+
+                var features = [];
+                try {
+                    features = src.getFeatures() || [];
+                } catch (e) {
+                    return;
+                }
+
+                features.forEach(function(feature, index) {
+                    try {
+                        var props = feature.getProperties ? (feature.getProperties() || {}) : {};
+                        var geom = feature.getGeometry ? feature.getGeometry() : null;
+                        if (!geom || !geom.getCoordinates) return;
+
+                        var coords = geom.getCoordinates();
+                        if (!coords || coords.length < 2) return;
+
+                        var latlon = wmToLatLon(coords[0], coords[1]);
+                        var lat = latlon[0];
+                        var lon = latlon[1];
+
+                        if (lat < -45 || lat > -9 || lon < 110 || lon > 155) return;
+
+                        var trainNumber = props.trainNumber || props.train_number || '';
+                        var trainName = props.trainName || props.train_name || '';
+                        var loco = props.loco || props.locoNumber || props.loco_number || '';
+                        var origin = props.serviceFrom || props.origin || props.from || '';
+                        var destination = props.serviceTo || props.destination || props.to || '';
+                        var description = props.serviceDesc || props.description || props.service || '';
+                        var km = props.trainKM || props.km || '';
+                        var trainTime = props.trainTime || props.time || '';
+                        var trainDate = props.trainDate || props.date || '';
+                        var cId = props.cId || '';
+                        var servId = props.servId || '';
+                        var trKey = props.trKey || '';
+                        var heading = Number(props.heading || props.bearing || props.dir || 0) || 0;
+                        var speed = numFromText(props.trainSpeed || props.speed || props.spd || 0);
+
+                        var id = String(
+                            trKey || cId || trainName || trainNumber || loco || (sourceName + '_' + index)
+                        ).trim();
+
+                        if (!id) return;
+                        if (String(id).toLowerCase().indexOf('arrowmarkerssource_') !== -1) return;
+                        if (String(id).toLowerCase().indexOf('markersource_') !== -1) return;
+
+                        if (!seenIds.has(id)) {
+                            seenIds.add(id);
+                            allTrains.push({
+                                id: id,
+                                train_number: String(trainNumber || ''),
+                                train_name: String(trainName || ''),
+                                loco: String(loco || ''),
+                                speed: speed,
+                                heading: heading,
+                                origin: String(origin || ''),
+                                destination: String(destination || ''),
+                                description: String(description || ''),
+                                km: String(km || ''),
+                                time: String(trainTime || ''),
+                                date: String(trainDate || ''),
+                                cId: String(cId || ''),
+                                servId: String(servId || ''),
+                                trKey: String(trKey || ''),
+                                lat: lat,
+                                lon: lon,
+                                raw: props
+                            });
+                        }
+                    } catch (e) {}
+                });
+            }
+
+            [
+                'regTrainsSource',
+                'unregTrainsSource',
+                'markerSource',
+                'arrowMarkersSource',
+                'trainSource',
+                'trainMarkers',
+                'trainPoints'
+            ].forEach(addFromSource);
+
+            return allTrains;
+            """
+        )
+
+        return trains if isinstance(trains, list) else []
     except Exception:
-        raw_objects = []
-
-    features: List[Dict[str, Any]] = []
-    for obj in raw_objects:
-        _flatten_features(obj, features)
-
-    dedup: Dict[str, Dict[str, Any]] = {}
-    for feature in features:
-        rec = _build_train_record(feature)
-        if not rec:
-            continue
-
-        key = rec["id"]
-        if _looks_like_marker_junk(key):
-            continue
-
-        if abs(rec["lat"]) > 90 or abs(rec["lon"]) > 180:
-            continue
-
-        dedup[key] = rec
-
-    trains = list(dedup.values())
-    return trains
+        return []
 
 
 def write_trains_json(
