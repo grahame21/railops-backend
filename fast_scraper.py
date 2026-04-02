@@ -27,9 +27,7 @@ def main():
         print(f"debug globals with features: {len(nonzero)}")
 
         for g in nonzero[:20]:
-            print(
-                f"source {g.get('name')} -> {g.get('featureCount')} features"
-            )
+            print(f"source {g.get('name')} -> {g.get('featureCount')} features")
 
         result = write_trains_json(
             trains,
