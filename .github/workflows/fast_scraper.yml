@@ -18,10 +18,14 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Chrome
+      - name: Install Chrome and Xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable xvfb
+          sudo apt-get install -y wget gnupg xvfb
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-linux.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
 
       - name: Install Python packages
         run: |
@@ -29,6 +33,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run scraper
+        env:
+          TF_USERNAME: ${{ secrets.TF_USERNAME }}
+          TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
         run: |
           Xvfb :99 -screen 0 1920x1080x24 &
           export DISPLAY=:99
