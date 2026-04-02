@@ -15,6 +15,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 TF_HOME_URL = "https://trainfinder.otenko.com/home/nextlevel"
+TF_VIEWPORT_URL = "https://trainfinder.otenko.com/Home/GetViewPortData"
+
 COOKIE_PKL = "trainfinder_cookies.pkl"
 COOKIE_TXT = "cookie.txt"
 
@@ -57,6 +59,16 @@ def save_text_cookie(cookie_value: str) -> None:
         f.write(cookie_value)
 
 
+def get_aspxauth_from_driver(driver: webdriver.Chrome) -> Optional[str]:
+    try:
+        for c in driver.get_cookies():
+            if c.get("name") == ".ASPXAUTH" and c.get("value"):
+                return c["value"]
+    except Exception:
+        pass
+    return None
+
+
 def save_cookies(driver: webdriver.Chrome) -> None:
     cookies = driver.get_cookies()
     with open(COOKIE_PKL, "wb") as f:
@@ -78,16 +90,6 @@ def load_cookie_pickle() -> List[Dict[str, Any]]:
     except Exception:
         pass
     return []
-
-
-def get_aspxauth_from_driver(driver: webdriver.Chrome) -> Optional[str]:
-    try:
-        for c in driver.get_cookies():
-            if c.get("name") == ".ASPXAUTH" and c.get("value"):
-                return c["value"]
-    except Exception:
-        pass
-    return None
 
 
 def make_driver(headless: bool = True) -> webdriver.Chrome:
@@ -195,7 +197,7 @@ def looks_logged_in(driver: webdriver.Chrome) -> bool:
 
         if "logout" in source:
             return True
-        if "openlayers" in source:
+        if "nextlevel" in current and "password" not in source:
             return True
     except Exception:
         pass
@@ -227,25 +229,6 @@ def dismiss_overlays(driver: webdriver.Chrome) -> None:
                         continue
         except Exception:
             pass
-
-    try:
-        driver.execute_script(
-            """
-            var paths = document.getElementsByTagName('path');
-            for (var i = 0; i < paths.length; i++) {
-                var d = paths[i].getAttribute('d') || '';
-                if (d.includes('M13.7,11l6.1-6.1')) {
-                    var parent = paths[i].parentElement;
-                    while (parent && parent.tagName !== 'BUTTON' && parent.tagName !== 'DIV' && parent.tagName !== 'A') {
-                        parent = parent.parentElement;
-                    }
-                    if (parent) { parent.click(); break; }
-                }
-            }
-            """
-        )
-    except Exception:
-        pass
 
 
 def try_cookie_login(driver: webdriver.Chrome) -> bool:
@@ -380,227 +363,221 @@ def _wm_to_latlon(x: float, y: float) -> Tuple[float, float]:
     return lat, lon
 
 
-def debug_page_state(driver: webdriver.Chrome) -> Dict[str, Any]:
-    js = r"""
-    function getCountFromObj(obj) {
-      try {
-        if (!obj) return null;
-        if (typeof obj.getFeatures === 'function') {
-          var f = obj.getFeatures() || [];
-          return f.length;
-        }
-        if (obj.source && typeof obj.source.getFeatures === 'function') {
-          var f2 = obj.source.getFeatures() || [];
-          return f2.length;
-        }
-      } catch (e) {}
-      return null;
+def _iter_dicts(obj: Any):
+    if isinstance(obj, dict):
+        yield obj
+        for v in obj.values():
+            yield from _iter_dicts(v)
+    elif isinstance(obj, list):
+        for item in obj:
+            yield from _iter_dicts(item)
+
+
+def _parse_feature_like(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    lat = None
+    lon = None
+
+    if isinstance(item.get("geometry"), dict):
+        coords = item["geometry"].get("coordinates")
+        if isinstance(coords, list) and len(coords) >= 2:
+            x = _safe_float(coords[0])
+            y = _safe_float(coords[1])
+            if x is not None and y is not None:
+                if abs(x) > 1000 or abs(y) > 1000:
+                    lat, lon = _wm_to_latlon(x, y)
+                else:
+                    lon, lat = x, y
+
+    if lat is None or lon is None:
+        lat = _safe_float(
+            item.get("lat")
+            or item.get("latitude")
+            or item.get("y")
+            or item.get("Latitude")
+        )
+        lon = _safe_float(
+            item.get("lon")
+            or item.get("lng")
+            or item.get("longitude")
+            or item.get("x")
+            or item.get("Longitude")
+        )
+
+    if lat is None or lon is None:
+        return None
+
+    if not (-90 < lat < 90 and -180 < lon < 180):
+        return None
+
+    if lat < -45 or lat > -8 or lon < 110 or lon > 155:
+        return None
+
+    train_number = (
+        item.get("trainNumber")
+        or item.get("train_number")
+        or item.get("ID")
+        or item.get("id")
+        or ""
+    )
+    train_name = item.get("trainName") or item.get("train_name") or item.get("name") or ""
+    loco = item.get("loco") or item.get("locoNumber") or item.get("loco_number") or ""
+    origin = item.get("serviceFrom") or item.get("origin") or item.get("from") or ""
+    destination = item.get("serviceTo") or item.get("destination") or item.get("to") or ""
+    description = item.get("serviceDesc") or item.get("description") or item.get("service") or ""
+    km = item.get("trainKM") or item.get("km") or ""
+    train_time = item.get("trainTime") or item.get("time") or ""
+    train_date = item.get("trainDate") or item.get("date") or ""
+    cid = item.get("cId") or ""
+    serv_id = item.get("servId") or ""
+    tr_key = item.get("trKey") or ""
+    heading = _extract_numeric(item.get("heading") or item.get("bearing") or item.get("dir") or 0, 0)
+    speed = _extract_numeric(item.get("trainSpeed") or item.get("speed") or item.get("spd") or 0, 0)
+
+    rec_id = str(tr_key or cid or train_name or train_number or loco or f"{lat:.5f},{lon:.5f}").strip()
+    if not rec_id:
+        return None
+
+    return {
+        "id": rec_id,
+        "train_number": str(train_number or ""),
+        "train_name": str(train_name or ""),
+        "loco": str(loco or ""),
+        "speed": speed,
+        "heading": heading,
+        "origin": str(origin or ""),
+        "destination": str(destination or ""),
+        "description": str(description or ""),
+        "km": str(km or ""),
+        "time": str(train_time or ""),
+        "date": str(train_date or ""),
+        "cId": str(cid or ""),
+        "servId": str(serv_id or ""),
+        "trKey": str(tr_key or ""),
+        "lat": lat,
+        "lon": lon,
+        "raw": item,
     }
 
-    var result = {
-      url: location.href,
-      title: document.title,
-      readyState: document.readyState,
-      globals: [],
-      pageHints: {
-        hasOl: !!window.ol,
-        hasMap: !!window.map,
-        bodyTextSnippet: (document.body && document.body.innerText ? document.body.innerText.slice(0, 1000) : '')
-      }
-    };
 
-    var keys = Object.keys(window).sort();
-    for (var i = 0; i < keys.length; i++) {
-      var k = keys[i];
-      if (
-        /train|marker|source|layer|map|feature|ol/i.test(k)
-      ) {
-        try {
-          var v = window[k];
-          var count = getCountFromObj(v);
-          var item = {
-            name: k,
-            type: typeof v,
-            hasGetFeatures: !!(v && typeof v.getFeatures === 'function'),
-            featureCount: count
-          };
-          result.globals.push(item);
-        } catch (e) {}
-      }
-    }
+def fetch_viewport_data(driver: webdriver.Chrome, payload: Dict[str, Any]) -> Tuple[Optional[Any], str]:
+    script = """
+    const done = arguments[arguments.length - 1];
+    const payload = arguments[0];
 
-    return result;
+    fetch(arguments[1], {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json, text/plain, */*'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(async (resp) => {
+      const text = await resp.text();
+      done({
+        ok: resp.ok,
+        status: resp.status,
+        text: text
+      });
+    })
+    .catch((err) => {
+      done({
+        ok: false,
+        status: 0,
+        text: String(err)
+      });
+    });
     """
     try:
-        return driver.execute_script(js)
-    except Exception as e:
-        return {"error": str(e)}
-
-
-def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    debug: Dict[str, Any] = {}
-
-    try:
-        driver.get(TF_HOME_URL)
-        wait_for_page(8)
-        dismiss_overlays(driver)
+        result = driver.execute_async_script(script, payload, TF_VIEWPORT_URL)
+        text = result.get("text", "") if isinstance(result, dict) else ""
+        if not isinstance(result, dict) or not result.get("ok"):
+            return None, text
 
         try:
-            driver.execute_script(
-                """
-                try {
-                    if (window.map && window.ol) {
-                        var australia = [112, -44, 154, -10];
-                        var proj = window.map.getView().getProjection();
-                        var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                        window.map.getView().fit(extent, { duration: 0, maxZoom: 8 });
-                    }
-                } catch (e) {}
-                """
-            )
+            return json.loads(text), text
         except Exception:
-            pass
-
-        wait_for_page(20)
-
-        debug = debug_page_state(driver)
-
-        js = r"""
-        function numFromText(v) {
-          if (v === null || v === undefined) return 0;
-          var m = String(v).match(/-?\d+(\.\d+)?/);
-          return m ? Number(m[0]) : 0;
-        }
-
-        function wmToLatLon(x, y) {
-          var lon = (x / 20037508.34) * 180;
-          var lat = (y / 20037508.34) * 180;
-          lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI / 2);
-          return [lat, lon];
-        }
-
-        function extractFromFeature(feature, sourceName, index) {
-          try {
-            var props = feature && feature.getProperties ? (feature.getProperties() || {}) : {};
-            var geom = feature && feature.getGeometry ? feature.getGeometry() : null;
-            if (!geom || !geom.getCoordinates) return null;
-
-            var coords = geom.getCoordinates();
-            if (!coords || coords.length < 2) return null;
-
-            var lat = null;
-            var lon = null;
-
-            if (Math.abs(coords[0]) > 1000 || Math.abs(coords[1]) > 1000) {
-              var ll = wmToLatLon(coords[0], coords[1]);
-              lat = ll[0];
-              lon = ll[1];
-            } else {
-              lon = Number(coords[0]);
-              lat = Number(coords[1]);
-            }
-
-            if (!(lat > -90 && lat < 90 && lon > -180 && lon < 180)) return null;
-            if (lat < -45 || lat > -8 || lon < 110 || lon > 155) return null;
-
-            var trainNumber = props.trainNumber || props.train_number || props.ID || props.id || '';
-            var trainName = props.trainName || props.train_name || props.name || '';
-            var loco = props.loco || props.locoNumber || props.loco_number || '';
-            var origin = props.serviceFrom || props.origin || props.from || '';
-            var destination = props.serviceTo || props.destination || props.to || '';
-            var description = props.serviceDesc || props.description || props.service || '';
-            var km = props.trainKM || props.km || '';
-            var trainTime = props.trainTime || props.time || '';
-            var trainDate = props.trainDate || props.date || '';
-            var cId = props.cId || '';
-            var servId = props.servId || '';
-            var trKey = props.trKey || '';
-            var heading = Number(props.heading || props.bearing || props.dir || 0) || 0;
-            var speed = numFromText(props.trainSpeed || props.speed || props.spd || 0);
-
-            var id = String(trKey || cId || trainName || trainNumber || loco || (sourceName + '_' + index)).trim();
-            if (!id) return null;
-
-            return {
-              id: id,
-              train_number: String(trainNumber || ''),
-              train_name: String(trainName || ''),
-              loco: String(loco || ''),
-              speed: speed,
-              heading: heading,
-              origin: String(origin || ''),
-              destination: String(destination || ''),
-              description: String(description || ''),
-              km: String(km || ''),
-              time: String(trainTime || ''),
-              date: String(trainDate || ''),
-              cId: String(cId || ''),
-              servId: String(servId || ''),
-              trKey: String(trKey || ''),
-              lat: lat,
-              lon: lon,
-              raw: props
-            };
-          } catch (e) {
-            return null;
-          }
-        }
-
-        function collectFeaturesFromAnyObject(name, obj) {
-          var out = [];
-          try {
-            if (!obj) return out;
-
-            if (typeof obj.getFeatures === 'function') {
-              var arr = obj.getFeatures() || [];
-              for (var i = 0; i < arr.length; i++) {
-                out.push({ sourceName: name, feature: arr[i], index: i });
-              }
-              return out;
-            }
-
-            if (obj.source && typeof obj.source.getFeatures === 'function') {
-              var arr2 = obj.source.getFeatures() || [];
-              for (var j = 0; j < arr2.length; j++) {
-                out.push({ sourceName: name, feature: arr2[j], index: j });
-              }
-              return out;
-            }
-          } catch (e) {}
-          return out;
-        }
-
-        var results = [];
-        var seen = {};
-        var keys = Object.keys(window);
-
-        for (var k = 0; k < keys.length; k++) {
-          var name = keys[k];
-          if (!/train|marker|source|layer|feature/i.test(name)) continue;
-
-          var entries = collectFeaturesFromAnyObject(name, window[name]);
-          for (var x = 0; x < entries.length; x++) {
-            var row = extractFromFeature(entries[x].feature, entries[x].sourceName, entries[x].index);
-            if (!row) continue;
-
-            var dedupKey = row.id + '|' + row.lat.toFixed(5) + '|' + row.lon.toFixed(5);
-            if (!seen[dedupKey]) {
-              seen[dedupKey] = true;
-              results.push(row);
-            }
-          }
-        }
-
-        return results;
-        """
-        trains = driver.execute_script(js)
-        if not isinstance(trains, list):
-            trains = []
-
-        return trains, debug
+            return None, text
     except Exception as e:
-        debug = {"error": str(e)}
-        return [], debug
+        return None, str(e)
+
+
+def build_au_payloads() -> List[Dict[str, Any]]:
+    centers = [
+        (-27.0, 133.0, 4),
+        (-33.5, 151.0, 6),
+        (-37.8, 144.9, 6),
+        (-31.95, 115.86, 6),
+        (-34.93, 138.60, 6),
+        (-27.47, 153.03, 6),
+        (-42.88, 147.33, 6),
+        (-12.46, 130.84, 6),
+    ]
+
+    payloads: List[Dict[str, Any]] = []
+    for lat, lng, zm in centers:
+        payloads.append(
+            {
+                "lat": lat,
+                "lng": lng,
+                "zm": zm,
+                "favs": None,
+                "alerts": None,
+                "places": None,
+                "tts": None,
+                "webcams": None,
+                "atcsGomi": None,
+                "atcsObj": None,
+            }
+        )
+    return payloads
+
+
+def scrape_trains_from_endpoint(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    debug: Dict[str, Any] = {
+        "method": "endpoint",
+        "requests": [],
+    }
+
+    driver.get(TF_HOME_URL)
+    wait_for_page(6)
+    dismiss_overlays(driver)
+
+    all_trains: List[Dict[str, Any]] = []
+    seen: set[str] = set()
+
+    for payload in build_au_payloads():
+        data, raw_text = fetch_viewport_data(driver, payload)
+
+        entry: Dict[str, Any] = {
+            "payload": payload,
+            "raw_prefix": raw_text[:500] if isinstance(raw_text, str) else "",
+            "parsed": isinstance(data, (dict, list)),
+            "dict_keys": list(data.keys())[:50] if isinstance(data, dict) else [],
+        }
+
+        request_count_before = len(all_trains)
+
+        if data is not None:
+            for obj in _iter_dicts(data):
+                rec = _parse_feature_like(obj)
+                if not rec:
+                    continue
+
+                dedup = f"{rec['id']}|{rec['lat']:.5f}|{rec['lon']:.5f}"
+                if dedup in seen:
+                    continue
+
+                seen.add(dedup)
+                all_trains.append(rec)
+
+        entry["new_trains_found"] = len(all_trains) - request_count_before
+        debug["requests"].append(entry)
+
+    debug["total_trains_found"] = len(all_trains)
+    return all_trains, debug
 
 
 def write_debug_json(debug: Dict[str, Any], out_file: str = "debug_sources.json") -> None:
