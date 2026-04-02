@@ -135,7 +135,6 @@ def add_aspxauth_cookie(driver: webdriver.Chrome, cookie_value: str) -> bool:
     try:
         driver.get("https://trainfinder.otenko.com/")
         wait_for_page(2)
-
         driver.add_cookie(
             {
                 "name": ".ASPXAUTH",
@@ -196,7 +195,7 @@ def looks_logged_in(driver: webdriver.Chrome) -> bool:
 
         if "logout" in source:
             return True
-        if "regtrainssource" in source or "unregtrainssource" in source:
+        if "openlayers" in source:
             return True
     except Exception:
         pass
@@ -352,138 +351,261 @@ def ensure_session(headless: bool = True):
         return driver, False, f"session error: {e}"
 
 
-def scrape_trains_from_page(driver: webdriver.Chrome) -> List[Dict[str, Any]]:
+def _safe_float(v: Any) -> Optional[float]:
+    try:
+        if v is None or v == "":
+            return None
+        return float(v)
+    except Exception:
+        return None
+
+
+def _extract_numeric(v: Any, default: float = 0.0) -> float:
+    if v is None:
+        return default
+    s = str(v)
+    m = re.search(r"-?\d+(?:\.\d+)?", s)
+    if not m:
+        return default
+    try:
+        return float(m.group(0))
+    except Exception:
+        return default
+
+
+def _wm_to_latlon(x: float, y: float) -> Tuple[float, float]:
+    lon = (x / 20037508.34) * 180.0
+    lat = (y / 20037508.34) * 180.0
+    lat = 180.0 / math.pi * (2.0 * math.atan(math.exp(lat * math.pi / 180.0)) - math.pi / 2.0)
+    return lat, lon
+
+
+def debug_page_state(driver: webdriver.Chrome) -> Dict[str, Any]:
+    js = r"""
+    function getCountFromObj(obj) {
+      try {
+        if (!obj) return null;
+        if (typeof obj.getFeatures === 'function') {
+          var f = obj.getFeatures() || [];
+          return f.length;
+        }
+        if (obj.source && typeof obj.source.getFeatures === 'function') {
+          var f2 = obj.source.getFeatures() || [];
+          return f2.length;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    var result = {
+      url: location.href,
+      title: document.title,
+      readyState: document.readyState,
+      globals: [],
+      pageHints: {
+        hasOl: !!window.ol,
+        hasMap: !!window.map,
+        bodyTextSnippet: (document.body && document.body.innerText ? document.body.innerText.slice(0, 1000) : '')
+      }
+    };
+
+    var keys = Object.keys(window).sort();
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      if (
+        /train|marker|source|layer|map|feature|ol/i.test(k)
+      ) {
+        try {
+          var v = window[k];
+          var count = getCountFromObj(v);
+          var item = {
+            name: k,
+            type: typeof v,
+            hasGetFeatures: !!(v && typeof v.getFeatures === 'function'),
+            featureCount: count
+          };
+          result.globals.push(item);
+        } catch (e) {}
+      }
+    }
+
+    return result;
+    """
+    try:
+        return driver.execute_script(js)
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    debug: Dict[str, Any] = {}
+
     try:
         driver.get(TF_HOME_URL)
         wait_for_page(8)
         dismiss_overlays(driver)
 
-        driver.execute_script(
-            """
-            try {
-                if (window.map && window.ol) {
-                    var australia = [112, -44, 154, -10];
-                    var proj = window.map.getView().getProjection();
-                    var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                    window.map.getView().fit(extent, { duration: 0, maxZoom: 8 });
-                }
-            } catch (e) {}
-            """
-        )
+        try:
+            driver.execute_script(
+                """
+                try {
+                    if (window.map && window.ol) {
+                        var australia = [112, -44, 154, -10];
+                        var proj = window.map.getView().getProjection();
+                        var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
+                        window.map.getView().fit(extent, { duration: 0, maxZoom: 8 });
+                    }
+                } catch (e) {}
+                """
+            )
+        except Exception:
+            pass
 
         wait_for_page(20)
 
-        trains = driver.execute_script(
-            r"""
-            var allTrains = [];
-            var seenIds = new Set();
+        debug = debug_page_state(driver)
 
-            function wmToLatLon(x, y) {
-                var lon = (x / 20037508.34) * 180;
-                var lat = (y / 20037508.34) * 180;
-                lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI / 2);
-                return [lat, lon];
+        js = r"""
+        function numFromText(v) {
+          if (v === null || v === undefined) return 0;
+          var m = String(v).match(/-?\d+(\.\d+)?/);
+          return m ? Number(m[0]) : 0;
+        }
+
+        function wmToLatLon(x, y) {
+          var lon = (x / 20037508.34) * 180;
+          var lat = (y / 20037508.34) * 180;
+          lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180)) - Math.PI / 2);
+          return [lat, lon];
+        }
+
+        function extractFromFeature(feature, sourceName, index) {
+          try {
+            var props = feature && feature.getProperties ? (feature.getProperties() || {}) : {};
+            var geom = feature && feature.getGeometry ? feature.getGeometry() : null;
+            if (!geom || !geom.getCoordinates) return null;
+
+            var coords = geom.getCoordinates();
+            if (!coords || coords.length < 2) return null;
+
+            var lat = null;
+            var lon = null;
+
+            if (Math.abs(coords[0]) > 1000 || Math.abs(coords[1]) > 1000) {
+              var ll = wmToLatLon(coords[0], coords[1]);
+              lat = ll[0];
+              lon = ll[1];
+            } else {
+              lon = Number(coords[0]);
+              lat = Number(coords[1]);
             }
 
-            function numFromText(v) {
-                if (v === null || v === undefined) return 0;
-                var m = String(v).match(/-?\d+(\.\d+)?/);
-                return m ? Number(m[0]) : 0;
+            if (!(lat > -90 && lat < 90 && lon > -180 && lon < 180)) return null;
+            if (lat < -45 || lat > -8 || lon < 110 || lon > 155) return null;
+
+            var trainNumber = props.trainNumber || props.train_number || props.ID || props.id || '';
+            var trainName = props.trainName || props.train_name || props.name || '';
+            var loco = props.loco || props.locoNumber || props.loco_number || '';
+            var origin = props.serviceFrom || props.origin || props.from || '';
+            var destination = props.serviceTo || props.destination || props.to || '';
+            var description = props.serviceDesc || props.description || props.service || '';
+            var km = props.trainKM || props.km || '';
+            var trainTime = props.trainTime || props.time || '';
+            var trainDate = props.trainDate || props.date || '';
+            var cId = props.cId || '';
+            var servId = props.servId || '';
+            var trKey = props.trKey || '';
+            var heading = Number(props.heading || props.bearing || props.dir || 0) || 0;
+            var speed = numFromText(props.trainSpeed || props.speed || props.spd || 0);
+
+            var id = String(trKey || cId || trainName || trainNumber || loco || (sourceName + '_' + index)).trim();
+            if (!id) return null;
+
+            return {
+              id: id,
+              train_number: String(trainNumber || ''),
+              train_name: String(trainName || ''),
+              loco: String(loco || ''),
+              speed: speed,
+              heading: heading,
+              origin: String(origin || ''),
+              destination: String(destination || ''),
+              description: String(description || ''),
+              km: String(km || ''),
+              time: String(trainTime || ''),
+              date: String(trainDate || ''),
+              cId: String(cId || ''),
+              servId: String(servId || ''),
+              trKey: String(trKey || ''),
+              lat: lat,
+              lon: lon,
+              raw: props
+            };
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function collectFeaturesFromAnyObject(name, obj) {
+          var out = [];
+          try {
+            if (!obj) return out;
+
+            if (typeof obj.getFeatures === 'function') {
+              var arr = obj.getFeatures() || [];
+              for (var i = 0; i < arr.length; i++) {
+                out.push({ sourceName: name, feature: arr[i], index: i });
+              }
+              return out;
             }
 
-            function addFromSource(sourceName) {
-                var src = window[sourceName];
-                if (!src || !src.getFeatures) return;
-
-                var features = [];
-                try {
-                    features = src.getFeatures() || [];
-                } catch (e) {
-                    return;
-                }
-
-                features.forEach(function(feature, index) {
-                    try {
-                        var props = feature.getProperties ? (feature.getProperties() || {}) : {};
-                        var geom = feature.getGeometry ? feature.getGeometry() : null;
-                        if (!geom || !geom.getCoordinates) return;
-
-                        var coords = geom.getCoordinates();
-                        if (!coords || coords.length < 2) return;
-
-                        var latlon = wmToLatLon(coords[0], coords[1]);
-                        var lat = latlon[0];
-                        var lon = latlon[1];
-
-                        if (lat < -45 || lat > -9 || lon < 110 || lon > 155) return;
-
-                        var trainNumber = props.trainNumber || props.train_number || '';
-                        var trainName = props.trainName || props.train_name || '';
-                        var loco = props.loco || props.locoNumber || props.loco_number || '';
-                        var origin = props.serviceFrom || props.origin || props.from || '';
-                        var destination = props.serviceTo || props.destination || props.to || '';
-                        var description = props.serviceDesc || props.description || props.service || '';
-                        var km = props.trainKM || props.km || '';
-                        var trainTime = props.trainTime || props.time || '';
-                        var trainDate = props.trainDate || props.date || '';
-                        var cId = props.cId || '';
-                        var servId = props.servId || '';
-                        var trKey = props.trKey || '';
-                        var heading = Number(props.heading || props.bearing || props.dir || 0) || 0;
-                        var speed = numFromText(props.trainSpeed || props.speed || props.spd || 0);
-
-                        var id = String(
-                            trKey || cId || trainName || trainNumber || loco || (sourceName + '_' + index)
-                        ).trim();
-
-                        if (!id) return;
-                        if (String(id).toLowerCase().indexOf('arrowmarkerssource_') !== -1) return;
-                        if (String(id).toLowerCase().indexOf('markersource_') !== -1) return;
-
-                        if (!seenIds.has(id)) {
-                            seenIds.add(id);
-                            allTrains.push({
-                                id: id,
-                                train_number: String(trainNumber || ''),
-                                train_name: String(trainName || ''),
-                                loco: String(loco || ''),
-                                speed: speed,
-                                heading: heading,
-                                origin: String(origin || ''),
-                                destination: String(destination || ''),
-                                description: String(description || ''),
-                                km: String(km || ''),
-                                time: String(trainTime || ''),
-                                date: String(trainDate || ''),
-                                cId: String(cId || ''),
-                                servId: String(servId || ''),
-                                trKey: String(trKey || ''),
-                                lat: lat,
-                                lon: lon,
-                                raw: props
-                            });
-                        }
-                    } catch (e) {}
-                });
+            if (obj.source && typeof obj.source.getFeatures === 'function') {
+              var arr2 = obj.source.getFeatures() || [];
+              for (var j = 0; j < arr2.length; j++) {
+                out.push({ sourceName: name, feature: arr2[j], index: j });
+              }
+              return out;
             }
+          } catch (e) {}
+          return out;
+        }
 
-            [
-                'regTrainsSource',
-                'unregTrainsSource',
-                'markerSource',
-                'arrowMarkersSource',
-                'trainSource',
-                'trainMarkers',
-                'trainPoints'
-            ].forEach(addFromSource);
+        var results = [];
+        var seen = {};
+        var keys = Object.keys(window);
 
-            return allTrains;
-            """
-        )
+        for (var k = 0; k < keys.length; k++) {
+          var name = keys[k];
+          if (!/train|marker|source|layer|feature/i.test(name)) continue;
 
-        return trains if isinstance(trains, list) else []
-    except Exception:
-        return []
+          var entries = collectFeaturesFromAnyObject(name, window[name]);
+          for (var x = 0; x < entries.length; x++) {
+            var row = extractFromFeature(entries[x].feature, entries[x].sourceName, entries[x].index);
+            if (!row) continue;
+
+            var dedupKey = row.id + '|' + row.lat.toFixed(5) + '|' + row.lon.toFixed(5);
+            if (!seen[dedupKey]) {
+              seen[dedupKey] = true;
+              results.push(row);
+            }
+          }
+        }
+
+        return results;
+        """
+        trains = driver.execute_script(js)
+        if not isinstance(trains, list):
+            trains = []
+
+        return trains, debug
+    except Exception as e:
+        debug = {"error": str(e)}
+        return [], debug
+
+
+def write_debug_json(debug: Dict[str, Any], out_file: str = "debug_sources.json") -> None:
+    with open(out_file, "w", encoding="utf-8") as f:
+        json.dump(debug, f, indent=2)
 
 
 def write_trains_json(
