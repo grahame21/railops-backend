@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 544,
+      "count": 566,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 111,
+      "count": 103,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 797,
+      "count": 881,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 655,
+      "count": 669,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1709,
-  "au_count": 1651,
+  "raw_count": 1779,
+  "au_count": 1700,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TT07",
-    "train_number": "BE542",
-    "train_name": "TT07",
+    "id": "X04-X49",
+    "train_number": "L3",
+    "train_name": "X04-X49",
     "loco": "",
     "operator": "",
-    "origin": "Boggabri East",
-    "destination": "PWCS Kooragang",
-    "speed": 0,
+    "origin": "",
+    "destination": "",
+    "speed": 14,
     "heading": 0,
-    "km": "272 km",
-    "time": "08:49:00",
+    "km": "",
+    "time": "09:21:34",
     "date": "03/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "b3dd2cb6-0ee3-46ee-8b39-57355fda1b12",
-    "trKey": "TT07",
-    "lat": -32.34703,
-    "lon": 150.98836
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "servId": "",
+    "trKey": "X04-X49",
+    "lat": -33.880249,
+    "lon": 151.205124
   }
 }
