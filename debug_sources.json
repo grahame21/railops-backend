@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 187,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 85,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 371,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 272,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 730,
-  "au_count": 715,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "CSR023",
-    "train_number": "3MB9",
-    "train_name": "CSR023",
-    "loco": "",
-    "operator": "",
-    "origin": "SCT, Laverton",
-    "destination": "SCT, Bromelton",
-    "speed": 8,
-    "heading": 0,
-    "km": "926 km",
-    "time": "03:44:00",
-    "date": "03/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "87c91a04-eaf7-46a7-9379-98afec71d012",
-    "trKey": "CSR023",
-    "lat": -27.963633,
-    "lon": 152.921893
-  }
+  "hasOl": true
 }
