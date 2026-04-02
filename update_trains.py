@@ -10,7 +10,12 @@ def main():
             raise RuntimeError(msg)
 
         trains = scrape_trains_from_page(driver)
-        result = write_trains_json(trains, out_file="trains.json", note="ok", preserve_existing_if_empty=True)
+        result = write_trains_json(
+            trains,
+            out_file="trains.json",
+            note="ok",
+            preserve_existing_if_empty=True,
+        )
         print(result["note"])
     finally:
         driver.quit()
