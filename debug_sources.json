@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 286,
+      "count": 324,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 88,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 417,
+      "count": 491,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 374,
+      "count": 409,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 957,
-  "au_count": 909,
+  "raw_count": 1064,
+  "au_count": 1035,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9025",
-    "train_number": "ND377",
-    "train_name": "9025",
+    "id": "TNSW-5049-3994",
+    "train_number": "661D",
+    "train_name": "TNSW-5049-3994",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Newdell",
-    "speed": 1,
+    "origin": "City Circle",
+    "destination": "Waterfall",
+    "speed": 0,
     "heading": 0,
-    "km": "266 km",
-    "time": "05:05:00",
+    "km": "",
+    "time": "06:13:41",
     "date": "03/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "b6adf774-26a2-4d94-a4e9-710a4a123a53",
-    "trKey": "9025",
-    "lat": -32.402923,
-    "lon": 151.017747
+    "description": "T4 Eastern Suburbs & Illawarra Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5049-3994",
+    "lat": -33.87341,
+    "lon": 151.20693
   }
 }
