@@ -1,3 +1,150 @@
 {
-  "error": "Message: javascript error: circular reference\n  (Session info: chrome=146.0.7680.177)\nStacktrace:\n#0 0x55bd3a31ba6a <unknown>\n#1 0x55bd39d2aab5 <unknown>\n#2 0x55bd39d3192b <unknown>\n#3 0x55bd39d344ab <unknown>\n#4 0x55bd39dc68d9 <unknown>\n#5 0x55bd39dc57b6 <unknown>\n#6 0x55bd39d70cbf <unknown>\n#7 0x55bd39d71a81 <unknown>\n#8 0x55bd3a2e1a64 <unknown>\n#9 0x55bd3a2e4951 <unknown>\n#10 0x55bd3a2ce21e <unknown>\n#11 0x55bd3a2e551e <unknown>\n#12 0x55bd3a2b4be0 <unknown>\n#13 0x55bd3a3089b8 <unknown>\n#14 0x55bd3a308b88 <unknown>\n#15 0x55bd3a31a4de <unknown>\n#16 0x7f6cfaa9caa4 <unknown>\n#17 0x7f6cfab29c6c <unknown>\n"
+  "method": "endpoint",
+  "requests": [
+    {
+      "payload": {
+        "lat": -27.0,
+        "lng": 133.0,
+        "zm": 4,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -33.5,
+        "lng": 151.0,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -37.8,
+        "lng": 144.9,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -31.95,
+        "lng": 115.86,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -34.93,
+        "lng": 138.6,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -27.47,
+        "lng": 153.03,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -42.88,
+        "lng": 147.33,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    },
+    {
+      "payload": {
+        "lat": -12.46,
+        "lng": 130.84,
+        "zm": 6,
+        "favs": null,
+        "alerts": null,
+        "places": null,
+        "tts": null,
+        "webcams": null,
+        "atcsGomi": null,
+        "atcsObj": null
+      },
+      "raw_prefix": "\r\n\r\n<hgroup class=\"title\">\r\n    <h1 class=\"error\">Error.</h1>\r\n    <h2 class=\"error\">An error occurred while processing your request.</h2>\r\n</hgroup>\r\n",
+      "parsed": false,
+      "dict_keys": [],
+      "new_trains_found": 0
+    }
+  ],
+  "total_trains_found": 0
 }
