@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 622,
+      "count": 599,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 86,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 883,
+      "count": 573,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 708,
+      "count": 690,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1858,
-  "au_count": 1762,
+  "raw_count": 1667,
+  "au_count": 1575,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7719-7937",
-    "train_number": "78-U",
-    "train_name": "TNSW-7719-7937",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPF7",
+    "train_number": "DPF7",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPF7",
     "loco": "",
     "operator": "",
-    "origin": "Parramatta",
-    "destination": "City Circle ",
+    "origin": "Caboolture",
+    "destination": "Airport",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "19:46:44",
+    "time": "20:33:55",
     "date": "03/04/2026",
-    "description": "T2 Leppington & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "CABD",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-7719-7937",
-    "lat": -33.86692,
-    "lon": 151.08623
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPF7",
+    "lat": -27.412439,
+    "lon": 153.055084
   }
 }
