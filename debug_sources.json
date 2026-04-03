@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 430,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 67,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 621,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 497,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1305,
+  "au_count": 1152,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "5030",
+    "train_number": "AT706",
+    "train_name": "5030",
+    "loco": "",
+    "operator": "",
+    "origin": "Wilpinjong",
+    "destination": "Mac Generation Antiene",
+    "speed": 1,
+    "heading": 0,
+    "km": "269 km",
+    "time": "00:24:00",
+    "date": "04/04/2026",
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "ed4c5742-21ad-4789-9602-5f10b1f1ddff",
+    "trKey": "5030",
+    "lat": -32.34414,
+    "lon": 150.974107
+  }
 }
