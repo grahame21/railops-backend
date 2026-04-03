@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 631,
+      "count": 623,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 96,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 859,
+      "count": 639,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 727,
+      "count": 714,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1884,
-  "au_count": 1821,
+  "raw_count": 1748,
+  "au_count": 1682,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2842-5991",
-    "train_number": "W806",
-    "train_name": "TNSW-2842-5991",
+    "id": "MM-9915M",
+    "train_number": "CBE",
+    "train_name": "MM-9915M",
     "loco": "",
     "operator": "",
-    "origin": "Lithgow",
-    "destination": "Central",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "16:26:22",
+    "time": "17:46:01",
     "date": "03/04/2026",
-    "description": "Blue Mountains Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-2842-5991",
-    "lat": -33.70438,
-    "lon": 150.58382
+    "description": "Cranbourne Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "20cc1e8d-3c1c-4efd-9cdd-1346c485fec9",
+    "trKey": "MM-9915M",
+    "lat": -37.857929,
+    "lon": 145.020828
   }
 }
