@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 497,
+      "count": 567,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 625,
+      "count": 51,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 579,
+      "count": 655,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1471,
-  "au_count": 1443,
+  "raw_count": 1336,
+  "au_count": 1233,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "X02-X08",
-    "train_number": "L3",
-    "train_name": "X02-X08",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DLM0",
+    "train_number": "DLM0",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DLM0",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "Airport",
+    "destination": "Caboolture",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "07:50:48",
+    "time": "07:59:28",
     "date": "04/04/2026",
-    "description": "Kingsford Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "description": "BDCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "X02-X08",
-    "lat": -33.871929,
-    "lon": 151.206985
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DLM0",
+    "lat": -27.41024,
+    "lon": 153.060104
   }
 }
