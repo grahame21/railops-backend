@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 623,
+      "count": 654,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 639,
+      "count": 921,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 714,
+      "count": 745,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1748,
-  "au_count": 1682,
+  "raw_count": 1951,
+  "au_count": 1861,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-9915M",
-    "train_number": "CBE",
-    "train_name": "MM-9915M",
+    "id": "7218",
+    "train_number": "L1",
+    "train_name": "7218",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 0,
+    "speed": 4,
     "heading": 0,
     "km": "",
-    "time": "17:46:01",
+    "time": "18:26:50",
     "date": "03/04/2026",
-    "description": "Cranbourne Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "20cc1e8d-3c1c-4efd-9cdd-1346c485fec9",
-    "trKey": "MM-9915M",
-    "lat": -37.857929,
-    "lon": 145.020828
+    "description": "Dulwich Hill Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "servId": "",
+    "trKey": "7218",
+    "lat": -33.88261,
+    "lon": 151.207153
   }
 }
