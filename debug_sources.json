@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 607,
+      "count": 638,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 101,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 883,
+      "count": 613,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 708,
+      "count": 740,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1858,
-  "au_count": 1764,
+  "raw_count": 1787,
+  "au_count": 1661,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR65",
-    "train_number": "6BS6",
-    "train_name": "NR65",
+    "id": "CSR019",
+    "train_number": "5PM9",
+    "train_name": "CSR019",
     "loco": "",
     "operator": "",
-    "origin": "Acacia Ridge",
-    "destination": "SFT (Chullora)",
-    "speed": 80,
+    "origin": "SCT, Forrestfield",
+    "destination": "SCT, Laverton",
+    "speed": 107,
     "heading": 0,
-    "km": "117 km",
-    "time": "09:55:00",
+    "km": "1121 km",
+    "time": "10:24:00",
     "date": "04/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "e903b5f5-d1bf-4b2f-ad8a-7ee7e373ff87",
-    "trKey": "NR65",
-    "lat": -33.155867,
-    "lon": 151.487453
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "3bb248fa-8323-4428-8d45-85d922b2f762",
+    "trKey": "CSR019",
+    "lat": -30.83432,
+    "lon": 128.279187
   }
 }
