@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 485,
+      "count": 497,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 503,
+      "count": 625,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 562,
+      "count": 579,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1376,
-  "au_count": 1270,
+  "raw_count": 1471,
+  "au_count": 1443,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK04",
-    "train_number": "DK04",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK04",
+    "id": "X02-X08",
+    "train_number": "L3",
+    "train_name": "X02-X08",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Springfield",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "07:03:02",
+    "time": "07:50:48",
     "date": "04/04/2026",
-    "description": "BRSP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK04",
-    "lat": -27.456409,
-    "lon": 153.033371
+    "trKey": "X02-X08",
+    "lat": -33.871929,
+    "lon": 151.206985
   }
 }
