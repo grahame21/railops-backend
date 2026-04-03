@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 578,
+      "count": 554,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 90,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 817,
+      "count": 767,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 668,
+      "count": 645,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1745,
-  "au_count": 1661,
+  "raw_count": 1674,
+  "au_count": 1567,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWA001",
-    "train_number": "6DA2",
-    "train_name": "GWA001",
+    "id": "TNSW-5397-4375",
+    "train_number": "S9CF",
+    "train_name": "TNSW-5397-4375",
     "loco": "",
     "operator": "",
-    "origin": "Berrimah (Darwin)",
-    "destination": "Gillman Yard (Port Flat)",
-    "speed": 103,
+    "origin": "Central",
+    "destination": "Olympic Park",
+    "speed": 0,
     "heading": 0,
-    "km": "2214 km",
-    "time": "20:52:00",
+    "km": "",
+    "time": "22:03:33",
     "date": "03/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "3ae8cb94-c601-445a-bfe3-a2b33ee78e1b",
-    "trKey": "GWA001",
-    "lat": -16.327582,
-    "lon": 132.814093
+    "description": "T7 Olympic Park Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5397-4375",
+    "lat": -33.889791,
+    "lon": 151.13633
   }
 }
