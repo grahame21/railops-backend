@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 293,
+      "count": 224,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 78,
+      "count": 72,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 387,
+      "count": 379,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 371,
+      "count": 296,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 936,
-  "au_count": 825,
+  "raw_count": 782,
+  "au_count": 740,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWB101",
-    "train_number": "1801",
-    "train_name": "GWB101",
+    "id": "TNSW-3187-7504",
+    "train_number": "93-A",
+    "train_name": "TNSW-3187-7504",
     "loco": "",
     "operator": "",
-    "origin": "Gillman Yard (Port Flat)",
-    "destination": "Pimba",
-    "speed": 86,
+    "origin": "Leppington",
+    "destination": "City Circle via Granville",
+    "speed": 0,
     "heading": 0,
-    "km": "26 km",
-    "time": "02:07:00",
+    "km": "",
+    "time": "02:53:33",
     "date": "04/04/2026",
-    "description": "Aurizon Empty Copper",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "077e41d4-7a58-4a1d-abcf-182d72599c0d",
-    "trKey": "GWB101",
-    "lat": -34.731767,
-    "lon": 138.623173
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-3187-7504",
+    "lat": -33.952049,
+    "lon": 150.792267
   }
 }
