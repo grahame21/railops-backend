@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 638,
+      "count": 645,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 102,
+      "count": 111,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 613,
+      "count": 683,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 740,
+      "count": 756,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1787,
-  "au_count": 1661,
+  "raw_count": 1854,
+  "au_count": 1705,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CSR019",
-    "train_number": "5PM9",
-    "train_name": "CSR019",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TTC5",
+    "train_number": "TTC5",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TTC5",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Forrestfield",
-    "destination": "SCT, Laverton",
-    "speed": 107,
+    "origin": "Ipswich",
+    "destination": "Brisbane City",
+    "speed": 0,
     "heading": 0,
-    "km": "1121 km",
-    "time": "10:24:00",
+    "km": "",
+    "time": "10:56:13",
     "date": "04/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "3bb248fa-8323-4428-8d45-85d922b2f762",
-    "trKey": "CSR019",
-    "lat": -30.83432,
-    "lon": 128.279187
+    "description": "IPBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TTC5",
+    "lat": -27.61294,
+    "lon": 152.760666
   }
 }
