@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 193,
+      "count": 212,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 72,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 279,
+      "count": 361,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 266,
+      "count": 284,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,8 +32,8 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 672,
-  "au_count": 654,
+  "raw_count": 749,
+  "au_count": 736,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
@@ -45,16 +45,16 @@
     "operator": "",
     "origin": "Bomaderry",
     "destination": "Manildra",
-    "speed": 5,
+    "speed": 11,
     "heading": 0,
-    "km": "384 km",
-    "time": "03:22:00",
+    "km": "385 km",
+    "time": "03:47:00",
     "date": "04/04/2026",
     "description": "SSR Empty Manildra Flour",
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "e28ee266-1882-43fe-b115-212c36d81791",
     "trKey": "MAN003",
-    "lat": -33.18686,
-    "lon": 148.699987
+    "lat": -33.186713,
+    "lon": 148.694973
   }
 }
