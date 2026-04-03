@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 654,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 91,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 921,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 745,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1951,
-  "au_count": 1861,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "7218",
-    "train_number": "L1",
-    "train_name": "7218",
-    "loco": "",
-    "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 4,
-    "heading": 0,
-    "km": "",
-    "time": "18:26:50",
-    "date": "03/04/2026",
-    "description": "Dulwich Hill Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "7218",
-    "lat": -33.88261,
-    "lon": 151.207153
-  }
+  "hasOl": true
 }
