@@ -32,22 +32,48 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run scraper
+      - name: Run scraper and update loco files
         env:
           TF_USERNAME: ${{ secrets.TF_USERNAME }}
           TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
         run: |
           Xvfb :99 -screen 0 1920x1080x24 &
           export DISPLAY=:99
+
+          echo "=== RUNNING fast_scraper.py ==="
           python fast_scraper.py
+
+          echo "=== RUNNING update_locos.py ==="
+          python update_locos.py
+
+          echo "=== RUNNING export_locos_to_excel.py ==="
+          python export_locos_to_excel.py
+
+          echo "=== FILE CHECK ==="
+          ls -lah
+          echo "----- loco_export.csv preview -----"
+          if [ -f loco_export.csv ]; then
+            head -20 loco_export.csv
+          else
+            echo "loco_export.csv not found"
+          fi
 
       - name: Commit and push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add trains.json cookie.txt trainfinder_cookies.pkl locos.json debug_sources.json
+
+          git add trains.json
+          git add cookie.txt
+          git add trainfinder_cookies.pkl
+          git add locos.json
+          git add loco_history.json
+          git add loco_export.csv
+          git add loco_summary.txt
+          git add debug_sources.json
+
           if ! git diff --cached --quiet; then
-            git commit -m "Update trains $(date -u +'%Y-%m-%d %H:%M:%S')"
+            git commit -m "Update trains and loco export $(date -u +'%Y-%m-%d %H:%M:%S')"
             git pull --rebase origin main
             git push
           else
