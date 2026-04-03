@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 599,
+      "count": 578,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 91,
+      "count": 90,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 573,
+      "count": 817,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 690,
+      "count": 668,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1667,
-  "au_count": 1575,
+  "raw_count": 1745,
+  "au_count": 1661,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPF7",
-    "train_number": "DPF7",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPF7",
+    "id": "GWA001",
+    "train_number": "6DA2",
+    "train_name": "GWA001",
     "loco": "",
     "operator": "",
-    "origin": "Caboolture",
-    "destination": "Airport",
-    "speed": 0,
+    "origin": "Berrimah (Darwin)",
+    "destination": "Gillman Yard (Port Flat)",
+    "speed": 103,
     "heading": 0,
-    "km": "",
-    "time": "20:33:55",
+    "km": "2214 km",
+    "time": "20:52:00",
     "date": "03/04/2026",
-    "description": "CABD",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPF7",
-    "lat": -27.412439,
-    "lon": 153.055084
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "3ae8cb94-c601-445a-bfe3-a2b33ee78e1b",
+    "trKey": "GWA001",
+    "lat": -16.327582,
+    "lon": 132.814093
   }
 }
