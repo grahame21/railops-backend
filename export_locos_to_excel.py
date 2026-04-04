@@ -2,11 +2,11 @@ import os
 import json
 import re
 from datetime import datetime
-from math import ceil
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.page import PageMargins
+from openpyxl.worksheet.pagebreak import Break
 
 LOCOS_FILE = "locos.json"
 BLOCKED_FILE = "blocked_locos.txt"
@@ -18,8 +18,9 @@ NUMBERS_ONLY_FILE = os.path.join(DOWNLOAD_DIR, "loco_numbers_only.xlsx")
 CM_TO_INCH = 1 / 2.54
 MARGIN_1_5CM = 1.5 * CM_TO_INCH
 NUMBERS_ONLY_COLUMNS = 10
-NUMBERS_ONLY_COL_WIDTH = 14
-
+NUMBERS_ONLY_COL_WIDTH = 12
+NUMBERS_ONLY_ROWS_PER_PAGE = 56
+NUMBERS_ONLY_PAGE_GAP = 1
 
 SKIP_PREFIXES = (
     "ARROWMARKERSSOURCE_",
@@ -50,17 +51,40 @@ def normalize_loco(value):
     return str(value).strip().upper()
 
 
-def load_blocked_locos():
-    blocked = []
+def safe_text(value):
+    if value is None:
+        return ""
+    return str(value).strip()
+
+
+def load_blocked_loco_rules():
+    exact = set()
+    prefixes = []
     if not os.path.exists(BLOCKED_FILE):
-        return blocked
+        return exact, prefixes
     with open(BLOCKED_FILE, 'r', encoding='utf-8') as f:
         for raw_line in f:
             line = raw_line.strip()
             if not line or line.startswith('#'):
                 continue
-            blocked.append(normalize_loco(line))
-    return blocked
+            value = normalize_loco(line)
+            if value.endswith('*'):
+                prefix = value[:-1]
+                if prefix:
+                    prefixes.append(prefix)
+            else:
+                exact.add(value)
+    prefixes.sort(key=len, reverse=True)
+    return exact, prefixes
+
+
+def loco_is_blocked(loco_id, blocked_exact, blocked_prefixes):
+    loco = normalize_loco(loco_id)
+    if not loco:
+        return False
+    if loco in blocked_exact:
+        return True
+    return any(loco.startswith(prefix) for prefix in blocked_prefixes)
 
 
 def load_blocked_descriptions():
@@ -81,12 +105,6 @@ def description_is_blocked(description, blocked_descriptions):
     if not desc or not blocked_descriptions:
         return False
     return any(term in desc for term in blocked_descriptions)
-
-
-def safe_text(value):
-    if value is None:
-        return ""
-    return str(value).strip()
 
 
 def natural_sort_key(value):
@@ -114,11 +132,11 @@ def parse_datetime_sort(value):
 
 
 def get_visible_locos(locos):
-    blocked = set(load_blocked_locos())
+    blocked_exact, blocked_prefixes = load_blocked_loco_rules()
     blocked_descriptions = load_blocked_descriptions()
     visible = []
     for loco_number, data in locos.items():
-        if normalize_loco(loco_number) in blocked:
+        if loco_is_blocked(loco_number, blocked_exact, blocked_prefixes):
             continue
         if not isinstance(data, dict):
             continue
@@ -168,37 +186,40 @@ def write_header(ws, headers, bold, center):
         cell.alignment = center
 
 
-def write_numbers_grid(ws, running_order, bold, center, columns=NUMBERS_ONLY_COLUMNS):
-    headers = [f"Loco Number {i}" for i in range(1, columns + 1)]
-    ws.append(headers)
-    for cell in ws[1]:
-        cell.font = bold
-        cell.alignment = center
-
+def write_numbers_pages(ws, running_order, center, columns=NUMBERS_ONLY_COLUMNS, rows_per_page=NUMBERS_ONLY_ROWS_PER_PAGE):
     loco_numbers = [loco_number for loco_number, _data in running_order]
-    total = len(loco_numbers)
-    rows_needed = ceil(total / columns) if total else 0
-
-    for _ in range(rows_needed):
-        ws.append([""] * columns)
-
-    for idx, loco in enumerate(loco_numbers):
-        col_index = idx // rows_needed if rows_needed else 0
-        row_index = idx % rows_needed if rows_needed else 0
-        ws.cell(row=row_index + 2, column=col_index + 1, value=loco)
 
     for col in range(1, columns + 1):
         ws.column_dimensions[get_column_letter(col)].width = NUMBERS_ONLY_COL_WIDTH
-    ws.freeze_panes = 'A2'
-    apply_print_settings(ws, orientation='portrait')
 
+    row_pointer = 1
+    total_per_page = columns * rows_per_page
+
+    for page_start in range(0, len(loco_numbers), total_per_page):
+        page_items = loco_numbers[page_start:page_start + total_per_page]
+
+        for index, loco in enumerate(page_items):
+            column_offset = index // rows_per_page
+            row_offset = index % rows_per_page
+            cell = ws.cell(row=row_pointer + row_offset, column=1 + column_offset, value=loco)
+            cell.alignment = center
+
+        next_page_row = row_pointer + rows_per_page
+        if page_start + total_per_page < len(loco_numbers):
+            ws.row_breaks.append(Break(id=next_page_row - 1))
+            row_pointer = next_page_row + NUMBERS_ONLY_PAGE_GAP
+
+    apply_print_settings(ws, orientation='portrait', repeat_header=False)
 
 
 def build_workbooks(locos):
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
     visible_locos = get_visible_locos(locos)
-    blocked = sorted(load_blocked_locos(), key=natural_sort_key)
+    blocked_exact, blocked_prefixes = load_blocked_loco_rules()
     blocked_descriptions = sorted(load_blocked_descriptions())
+
+    blocked_exact_sorted = sorted(blocked_exact, key=natural_sort_key)
+    blocked_prefix_sorted = sorted(blocked_prefixes, key=natural_sort_key)
 
     running_order = sorted(visible_locos, key=lambda x: natural_sort_key(x[0]))
     recently_added = sorted(
@@ -209,7 +230,7 @@ def build_workbooks(locos):
 
     headers = ["Loco Number", "Current Operator", "Vehicle Description", "Date/Time Added"]
     bold = Font(bold=True)
-    center = Alignment(horizontal="center")
+    center = Alignment(horizontal="center", vertical="center")
     widths = {1: 18, 2: 24, 3: 40, 4: 22}
 
     wb = Workbook()
@@ -236,14 +257,16 @@ def build_workbooks(locos):
     ws_recent.freeze_panes = 'A2'
     apply_print_settings(ws_recent, orientation='landscape')
 
-    write_numbers_grid(ws_numbers, running_order, bold, center)
+    write_numbers_pages(ws_numbers, running_order, center)
 
-    ws_blocked.append(["Blocked Loco Number"])
+    ws_blocked.append(["Blocked Loco Rule"])
     ws_blocked['A1'].font = bold
     ws_blocked['A1'].alignment = center
-    ws_blocked.column_dimensions['A'].width = 22
-    for loco in blocked:
+    ws_blocked.column_dimensions['A'].width = 24
+    for loco in blocked_exact_sorted:
         ws_blocked.append([loco])
+    for prefix in blocked_prefix_sorted:
+        ws_blocked.append([f"{prefix}*"])
     apply_print_settings(ws_blocked, orientation='portrait')
 
     ws_blocked_desc.append(['Blocked Vehicle Description'])
@@ -259,12 +282,13 @@ def build_workbooks(locos):
         "",
         "Locos: full loco list in running order.",
         "Recently Added: newest locos first, based on Date/Time Added.",
-        "Numbers Only: loco numbers only, in running order, laid out down each column first to save print space.",
-        "Blocked: one loco number per line in blocked_locos.txt.",
+        "Numbers Only: loco numbers only, printed down each column first, then across the same page before moving to the next page.",
+        "Blocked: add one loco rule per line in blocked_locos.txt.",
+        "Use an exact rule like NR74 or a prefix rule like TNSW*.",
         "Blocked Descriptions: partial-match vehicle description filters from blocked_descriptions.txt.",
         "",
         "Print margins on the print sheets are set to about 1.5 cm.",
-        f"Numbers Only layout uses {NUMBERS_ONLY_COLUMNS} columns across each page, filling down each column first before moving across/page.",
+        f"Numbers Only layout uses {NUMBERS_ONLY_COLUMNS} columns and about {NUMBERS_ONLY_ROWS_PER_PAGE} rows per printed page.",
         "Download files:",
         "- /downloads/loco_database.xlsx",
         "- /downloads/loco_numbers_only.xlsx",
@@ -279,12 +303,13 @@ def build_workbooks(locos):
     wb_numbers = Workbook()
     ws_only = wb_numbers.active
     ws_only.title = "Loco Numbers"
-    write_numbers_grid(ws_only, running_order, bold, center)
+    write_numbers_pages(ws_only, running_order, center)
     wb_numbers.save(NUMBERS_ONLY_FILE)
 
     return {
         'visible_count': len(running_order),
-        'blocked_count': len(blocked),
+        'blocked_exact_count': len(blocked_exact_sorted),
+        'blocked_prefix_count': len(blocked_prefix_sorted),
         'blocked_description_count': len(blocked_descriptions),
         'recent_count': len(recently_added),
     }
@@ -300,7 +325,9 @@ def main():
     print(f"✅ Numbers-only workbook saved to {NUMBERS_ONLY_FILE}")
     print(f"🚂 Visible locos: {stats['visible_count']}")
     print(f"🆕 Recently added rows: {stats['recent_count']}")
-    print(f"🚫 Blocked locos listed: {stats['blocked_count']}")
+    print(f"🚫 Blocked exact locos listed: {stats['blocked_exact_count']}")
+    print(f"🚫 Blocked loco prefixes listed: {stats['blocked_prefix_count']}")
+    print(f"🚫 Blocked descriptions listed: {stats['blocked_description_count']}")
 
 
 if __name__ == '__main__':

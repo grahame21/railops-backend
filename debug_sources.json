@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 161,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 64,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 101,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 225,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 501,
-  "au_count": 497,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "TNSW-1608-2644",
-    "train_number": "70AC",
-    "train_name": "TNSW-1608-2644",
-    "loco": "",
-    "operator": "",
-    "origin": "Bankstown",
-    "destination": "Lidcombe",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "03:47:26",
-    "date": "05/04/2026",
-    "description": "T6 Lidcombe & Bankstown Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-1608-2644",
-    "lat": -33.917801,
-    "lon": 151.034393
-  }
+  "hasOl": true
 }
