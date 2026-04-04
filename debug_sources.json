@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 525,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 537,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 613,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1495,
+  "au_count": 1370,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-1952-7838",
+    "train_number": "101D",
+    "train_name": "TNSW-1952-7838",
+    "loco": "",
+    "operator": "",
+    "origin": "City",
+    "destination": "Hornsby and Berowra via Gordon",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "07:58:06",
+    "date": "05/04/2026",
+    "description": "T1 North Shore Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-1952-7838",
+    "lat": -33.777195,
+    "lon": 151.169796
+  }
 }
