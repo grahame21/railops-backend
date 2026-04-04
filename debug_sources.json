@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 620,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 80,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 617,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 700,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1709,
+  "au_count": 1639,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "NR1",
+    "train_number": "D812",
+    "train_name": "NR1",
+    "loco": "",
+    "operator": "",
+    "origin": "",
+    "destination": "",
+    "speed": 8,
+    "heading": 0,
+    "km": "1775 km",
+    "time": "18:45:00",
+    "date": "04/04/2026",
+    "description": "PN Light Engine",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "15fc7d63-f2cd-4502-ae79-3a86390959e3",
+    "trKey": "NR1",
+    "lat": -30.739387,
+    "lon": 121.514867
+  }
 }
