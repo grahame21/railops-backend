@@ -72,6 +72,7 @@ jobs:
           git add loco_summary.txt
           git add debug_sources.json
           git add blocked_locos.txt
+          git add blocked_descriptions.txt
           git add static/downloads/loco_database.xlsx
           git add static/downloads/loco_numbers_only.xlsx
 
