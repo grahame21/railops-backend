@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 316,
+      "count": 338,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 75,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 465,
+      "count": 473,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 385,
+      "count": 413,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1003,
-  "au_count": 999,
+  "raw_count": 1063,
+  "au_count": 1038,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWA004",
-    "train_number": "1DW4",
-    "train_name": "GWA004",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1M2",
+    "train_number": "D1M2",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1M2",
     "loco": "",
     "operator": "",
-    "origin": "Berrimah",
-    "destination": "Argyle Siding",
-    "speed": 99,
+    "origin": "Airport",
+    "destination": "Caboolture",
+    "speed": 0,
     "heading": 0,
-    "km": "2397 km",
-    "time": "05:45:00",
+    "km": "",
+    "time": "06:01:42",
     "date": "05/04/2026",
-    "description": "Aurizon Empty Ore",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "75d26352-3887-4667-81da-a81b315357d9",
-    "trKey": "GWA004",
-    "lat": -14.775813,
-    "lon": 132.601387
+    "description": "BDCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1M2",
+    "lat": -27.415501,
+    "lon": 153.051529
   }
 }
