@@ -62,9 +62,16 @@ def download_loco_database():
         return cors(make_response(jsonify({"ok": False, "error": "loco_database.xlsx not found"}), 404))
     return cors(make_response(send_file(path, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", as_attachment=True, download_name="loco_database.xlsx")))
 
+@app.get("/downloads/loco_numbers_only.xlsx")
+def download_loco_numbers_only():
+    path = os.path.join("static", "downloads", "loco_numbers_only.xlsx")
+    if not os.path.exists(path):
+        return cors(make_response(jsonify({"ok": False, "error": "loco_numbers_only.xlsx not found"}), 404))
+    return cors(make_response(send_file(path, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", as_attachment=True, download_name="loco_numbers_only.xlsx")))
+
 @app.get("/")
 def root():
-    return cors(make_response(jsonify({"ok": True, "hint": "Use /trains.json or /downloads/loco_database.xlsx"})))
+    return cors(make_response(jsonify({"ok": True, "hint": "Use /trains.json, /downloads/loco_database.xlsx, or /downloads/loco_numbers_only.xlsx"})))
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "8080"))

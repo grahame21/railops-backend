@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 194,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 30,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 247,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 224,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 572,
-  "au_count": 534,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "MM-154M",
-    "train_number": "GWY",
-    "train_name": "MM-154M",
-    "loco": "",
-    "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "02:26:12",
-    "date": "05/04/2026",
-    "description": "Glen Waverley Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "21d6cc2d-a94c-409c-80d6-3e53362ebf1a",
-    "trKey": "MM-154M",
-    "lat": -37.840023,
-    "lon": 145.034012
-  }
+  "hasOl": true
 }
