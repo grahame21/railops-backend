@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 275,
+      "count": 316,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 74,
+      "count": 69,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 457,
+      "count": 465,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 349,
+      "count": 385,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 927,
-  "au_count": 899,
+  "raw_count": 1003,
+  "au_count": 999,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QL017",
-    "train_number": "DWM7",
-    "train_name": "QL017",
+    "id": "GWA004",
+    "train_number": "1DW4",
+    "train_name": "GWA004",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 2,
+    "origin": "Berrimah",
+    "destination": "Argyle Siding",
+    "speed": 99,
     "heading": 0,
-    "km": "118 km",
-    "time": "05:13:00",
+    "km": "2397 km",
+    "time": "05:45:00",
     "date": "05/04/2026",
-    "description": "",
-    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "",
-    "trKey": "QL017",
-    "lat": -34.55021,
-    "lon": 150.64128
+    "description": "Aurizon Empty Ore",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "75d26352-3887-4667-81da-a81b315357d9",
+    "trKey": "GWA004",
+    "lat": -14.775813,
+    "lon": 132.601387
   }
 }
