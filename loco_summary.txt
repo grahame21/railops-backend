@@ -1,8 +1,8 @@
 ================================================================================
-LOCO DATABASE SUMMARY - 2026-04-04 09:07:10
+LOCO DATABASE SUMMARY - 2026-04-04 09:55:02
 ================================================================================
 
-Active Locomotives Tracked: 7216
+Active Locomotives Tracked: 7351
 Blocked Locomotives: 0
 
 
@@ -10,23 +10,35 @@ Blocked Locomotives: 0
 LOCO: XRN027
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    ORA Coal
-  Sightings:       36
-  Location:        (-32.431757, 150.213867)
-  Speed:           32 km/h
+  Sightings:       37
+  Location:        (-32.414627, 150.330813)
+  Speed:           0 km/h
   Route:           Ulan → PWCS Kooragang
+
+========================================
+LOCO: XRN001
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    ORA Coal
+  Sightings:       28
+  Location:        (-32.873693, 151.767653)
+  Speed:           1 km/h
+  Route:           Ravensworth → PWCS Kooragang
 
 ========================================
 LOCO: TT131
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       36
-  Location:        (-32.286473, 150.825747)
+  Sightings:       37
+  Location:        (-32.28849, 150.829453)
   Speed:           1 km/h
   Route:           PWCS Kooragang → Bengalla
 
@@ -34,34 +46,22 @@ LOCO: TT131
 LOCO: HM2757
 ========================================
   Date/Time Added: 2026-04-03 09:34:58
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Hunter Line Service
-  Sightings:       11
-  Location:        (-32.59851, 151.617533)
-  Speed:           56 km/h
+  Sightings:       12
+  Location:        (-32.870017, 151.7018)
+  Speed:           97 km/h
   Route:           Dungog → Newcastle Interchange
-
-========================================
-LOCO: HM2753
-========================================
-  Date/Time Added: 2026-04-03 10:12:34
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    Hunter Line Service
-  Sightings:       16
-  Location:        (-32.047727, 150.866747)
-  Speed:           19 km/h
-  Route:           Newcastle Interchange → Singleton (Weekdays) / Scone (Weekends)
 
 ========================================
 LOCO: 6011
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    AZ Coal
-  Sightings:       28
+  Sightings:       29
   Location:        (-32.836963, 151.687267)
   Speed:           0 km/h
   Route:           Whitehaven → PWCS Kooragang
@@ -70,413 +70,436 @@ LOCO: 6011
 LOCO: HM2706
 ========================================
   Date/Time Added: 2026-04-03 10:12:34
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Hunter Line Service
-  Sightings:       23
-  Location:        (-32.739997, 151.55724)
-  Speed:           68 km/h
-  Route:           Telarah → Newcastle Interchange
+  Sightings:       24
+  Location:        (-32.92372, 151.758253)
+  Speed:           9 km/h
 
 ========================================
-LOCO: 8211
+LOCO: CF4403
 ========================================
-  Date/Time Added: 2026-04-03 23:29:39
-  Last Seen:       2026-04-04 09:07:08
+  Date/Time Added: 2026-04-03 08:48:43
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
-  Vehicle Desc:    PN Garbage Train
-  Sightings:       12
-  Location:        (-33.953027, 151.216547)
-  Speed:           4 km/h
+  Vehicle Desc:    SSR Loaded Aggregates
+  Sightings:       24
+  Location:        (-34.694363, 150.154133)
+  Speed:           50 km/h
+  Route:           Peppertree Quarry → Boral, Cooks River
 
 ========================================
 LOCO: TE2802
 ========================================
   Date/Time Added: 2026-04-03 09:34:58
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Bathurst Bullet
-  Sightings:       7
-  Location:        (-33.626223, 150.281813)
-  Speed:           58 km/h
+  Sightings:       8
+  Location:        (-33.432287, 150.110773)
+  Speed:           97 km/h
   Route:           Central → Bathurst
 
 ========================================
 LOCO: NR9
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Intermodal
-  Sightings:       36
-  Location:        (-38.015783, 144.421667)
-  Speed:           76 km/h
+  Sightings:       37
+  Location:        (-37.812303, 144.853147)
+  Speed:           34 km/h
   Route:           Kewdale → MFT (South Dynon)
 
 ========================================
 LOCO: WH001
 ========================================
   Date/Time Added: 2026-04-03 11:04:25
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       33
-  Location:        (-31.677557, 150.752333)
-  Speed:           1 km/h
+  Sightings:       34
+  Location:        (-31.77731, 150.86616)
+  Speed:           54 km/h
   Route:           Narrabri → NCIG Kooragang
 
 ========================================
 LOCO: TT202
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       34
-  Location:        (-32.313417, 149.85696)
-  Speed:           3 km/h
+  Sightings:       35
+  Location:        (-32.369083, 149.98208)
+  Speed:           0 km/h
   Route:           Moolarben → PWCS Kooragang
 
 ========================================
 LOCO: 9313
 ========================================
   Date/Time Added: 2026-04-03 10:12:34
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       20
-  Location:        (-32.263633, 150.8874)
-  Speed:           42 km/h
+  Sightings:       21
+  Location:        (-31.97594, 150.867947)
+  Speed:           73 km/h
   Route:           PWCS Kooragang → Boggabri East
 
 ========================================
 LOCO: CF4426
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    AZ Coal
-  Sightings:       35
-  Location:        (-32.87132, 151.76332)
-  Speed:           1 km/h
-  Route:           Maules Creek → PWCS Kooragang
+  Sightings:       36
+  Location:        (-32.86576, 151.747427)
+  Speed:           10 km/h
+  Route:           NCIG Kooragang → Maules Creek
 
 ========================================
 LOCO: TT122
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       19
-  Location:        (-32.41851, 151.045893)
-  Speed:           11 km/h
+  Sightings:       20
+  Location:        (-32.534943, 151.154573)
+  Speed:           41 km/h
   Route:           Newdell → PWCS Kooragang
 
 ========================================
 LOCO: GWU005
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    ORA Coal
-  Sightings:       35
-  Location:        (-32.920393, 151.738)
-  Speed:           24 km/h
+  Sightings:       36
+  Location:        (-32.771117, 151.624973)
+  Speed:           69 km/h
 
 ========================================
 LOCO: TT103
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       33
-  Location:        (-32.372973, 149.99544)
-  Speed:           42 km/h
+  Sightings:       34
+  Location:        (-32.442633, 150.186067)
+  Speed:           23 km/h
   Route:           Moolarben → NCIG Kooragang
+
+========================================
+LOCO: XP2014
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    Unknown
+  Sightings:       19
+  Location:        (-33.890977, 151.199733)
+  Speed:           12 km/h
+
+========================================
+LOCO: 9302
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    PN Coal
+  Sightings:       36
+  Location:        (-32.53861, 151.15548)
+  Speed:           58 km/h
+  Route:           NCIG Kooragang → Maules Creek
+
+========================================
+LOCO: TE2808
+========================================
+  Date/Time Added: 2026-04-03 09:34:58
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    South Coast Service
+  Sightings:       18
+  Location:        (-34.775873, 150.732173)
+  Speed:           104 km/h
+  Route:           Bomaderry (Nowra) → Kiama
+
+========================================
+LOCO: TE2807
+========================================
+  Date/Time Added: 2026-04-03 10:12:34
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    Hunter Line Service
+  Sightings:       4
+  Location:        (-32.752237, 151.599347)
+  Speed:           69 km/h
+  Route:           Newcastle Interchange → Singleton
 
 ========================================
 LOCO: 8171
 ========================================
   Date/Time Added: 2026-04-03 11:49:23
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Maintenance Train
-  Sightings:       25
-  Location:        (-34.374443, 150.905467)
-  Speed:           7 km/h
+  Sightings:       26
+  Location:        (-34.3143, 150.921813)
+  Speed:           9 km/h
 
 ========================================
 LOCO: NR1
 ========================================
   Date/Time Added: 2026-04-03 19:04:14
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Light Engine
-  Sightings:       8
-  Location:        (-30.930347, 122.183533)
-  Speed:           103 km/h
+  Sightings:       9
+  Location:        (-30.971577, 122.555853)
+  Speed:           9 km/h
 
 ========================================
 LOCO: MM-9967M
 ========================================
   Date/Time Added: 2026-04-03 20:07:20
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Pakenham Line
-  Sightings:       18
-  Location:        (-37.947285, 145.15065)
+  Sightings:       19
+  Location:        (-38.084354, 145.506592)
   Speed:           0 km/h
+
+========================================
+LOCO: VLINE-8451
+========================================
+  Date/Time Added: 2026-04-03 09:34:58
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    Traralgon - Melbourne Via Pakenham, Moe & Morwell
+  Sightings:       7
+  Location:        (-37.92741, 145.12442)
+  Speed:           44 km/h
 
 ========================================
 LOCO: MM-64M
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Hurstbridge Line
-  Sightings:       32
-  Location:        (-37.815903, 144.973969)
+  Sightings:       33
+  Location:        (-37.72554, 145.069183)
   Speed:           0 km/h
 
 ========================================
 LOCO: MM-9904M
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
-  Vehicle Desc:    Cranbourne Line
-  Sightings:       29
-  Location:        (-37.840614, 144.992935)
+  Vehicle Desc:    Sunbury Line
+  Sightings:       30
+  Location:        (-37.799129, 144.923126)
   Speed:           0 km/h
 
 ========================================
 LOCO: MM-9950M
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Sunbury Line
-  Sightings:       26
-  Location:        (-37.807129, 144.962769)
+  Sightings:       27
+  Location:        (-37.580109, 144.72731)
   Speed:           0 km/h
 
 ========================================
-LOCO: MM-764M
+LOCO: VLINE-8454
 ========================================
-  Date/Time Added: 2026-04-04 08:27:37
-  Last Seen:       2026-04-04 09:07:08
+  Date/Time Added: 2026-04-03 09:34:58
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
-  Vehicle Desc:    Sandringham Line
-  Sightings:       4
-  Location:        (-37.850468, 144.989731)
+  Vehicle Desc:    Traralgon - Melbourne Via Pakenham, Moe & Morwell
+  Sightings:       10
+  Location:        (-38.18911, 146.221161)
   Speed:           0 km/h
 
 ========================================
 LOCO: 3VS97
 ========================================
   Date/Time Added: 2026-04-03 11:04:25
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    North East SG Line Service
-  Sightings:       15
-  Location:        (-36.62725, 145.749413)
-  Speed:           120 km/h
+  Sightings:       16
+  Location:        (-36.341423, 146.330747)
+  Speed:           81 km/h
   Route:           Southern Cross Station → Albury Station
 
 ========================================
 LOCO: MM-9922M
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
-  Vehicle Desc:    Sunbury Line
-  Sightings:       29
-  Location:        (-37.801453, 144.881348)
+  Vehicle Desc:    Cranbourne Line
+  Sightings:       30
+  Location:        (-37.941231, 145.142487)
   Speed:           0 km/h
 
 ========================================
 LOCO: MM-858M
 ========================================
   Date/Time Added: 2026-04-04 03:56:58
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Werribee Line
-  Sightings:       9
-  Location:        (-37.831177, 144.885803)
+  Sightings:       10
+  Location:        (-37.899807, 144.66011)
   Speed:           0 km/h
 
 ========================================
 LOCO: VLINE-8089
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Swan Hill - Melbourne Via Bendigo
-  Sightings:       13
-  Location:        (-37.223549, 144.406204)
+  Sightings:       14
+  Location:        (-36.766361, 144.281601)
+  Speed:           0 km/h
+
+========================================
+LOCO: VLINE-8053
+========================================
+  Date/Time Added: 2026-04-03 09:34:58
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    Bendigo - Melbourne Via Sunbury
+  Sightings:       7
+  Location:        (-37.799561, 144.924332)
   Speed:           0 km/h
 
 ========================================
 LOCO: CSR015
 ========================================
   Date/Time Added: 2026-04-04 09:07:08
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    SCT Intermodal
-  Sightings:       3
-  Location:        (-37.855427, 144.804133)
-  Speed:           7 km/h
+  Sightings:       4
+  Location:        (-37.78997, 144.834293)
+  Speed:           33 km/h
   Route:           SCT, Laverton → SCT, Bromelton
 
 ========================================
 LOCO: MM-9969M
 ========================================
   Date/Time Added: 2026-04-03 19:45:41
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
-  Vehicle Desc:    Sunbury Line
-  Sightings:       19
-  Location:        (-37.80125, 144.941879)
+  Vehicle Desc:    Pakenham Line
+  Sightings:       20
+  Location:        (-37.989204, 145.208008)
   Speed:           0 km/h
 
 ========================================
 LOCO: MM-920M
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
-  Vehicle Desc:    Hurstbridge Line
-  Sightings:       27
-  Location:        (-37.774956, 145.038528)
+  Vehicle Desc:    Lilydale Line
+  Sightings:       28
+  Location:        (-37.823776, 145.020523)
   Speed:           0 km/h
 
 ========================================
 LOCO: VLINE-8869
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Warrnambool - Melbourne Via Geelong & Colac
-  Sightings:       9
-  Location:        (-38.154018, 144.353195)
-  Speed:           48 km/h
-
-========================================
-LOCO: QL014
-========================================
-  Date/Time Added: 2026-04-03 21:55:05
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    QUBE Container Train
-  Sightings:       12
-  Location:        (-33.954477, 150.923573)
-  Speed:           13 km/h
-  Route:           RIFL (Bomen) → Moorebank IMEX Terminal / Cooks River
+  Sightings:       10
+  Location:        (-38.326191, 143.7659)
+  Speed:           110 km/h
 
 ========================================
 LOCO: 6029
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Aurizon Intermodal
-  Sightings:       23
-  Location:        (-34.784587, 149.030947)
-  Speed:           61 km/h
+  Sightings:       24
+  Location:        (-34.78382, 149.407547)
+  Speed:           73 km/h
   Route:           North Dynon → Glenlee
-
-========================================
-LOCO: CSR014
-========================================
-  Date/Time Added: 2026-04-03 17:42:46
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    SCT Aurizon Loading Transfer
-  Sightings:       19
-  Location:        (-37.85566, 144.790853)
-  Speed:           2 km/h
 
 ========================================
 LOCO: ACD6058
 ========================================
   Date/Time Added: 2026-04-03 10:12:34
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Unknown
-  Sightings:       7
-  Location:        (-34.70375, 138.599547)
-  Speed:           2 km/h
-
-========================================
-LOCO: XRN005
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    ORA Coal
-  Sightings:       33
-  Location:        (-32.865677, 151.747)
-  Speed:           25 km/h
-  Route:           Mangoola → PWCS Kooragang
+  Sightings:       8
+  Location:        (-34.706657, 138.601107)
+  Speed:           14 km/h
 
 ========================================
 LOCO: TT114
 ========================================
   Date/Time Added: 2026-04-03 10:12:34
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       32
-  Location:        (-32.868117, 151.756733)
-  Speed:           1 km/h
+  Sightings:       33
+  Location:        (-32.867283, 151.752933)
+  Speed:           5 km/h
   Route:           Moolarben → PWCS Kooragang
 
 ========================================
 LOCO: CF4424
 ========================================
   Date/Time Added: 2026-04-03 20:07:20
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Aurizon Loaded Grain
-  Sightings:       10
-  Location:        (-30.654307, 150.000347)
-  Speed:           46 km/h
+  Sightings:       11
+  Location:        (-30.884783, 150.10628)
+  Speed:           0 km/h
   Route:           North West NSW → Carrington
 
 ========================================
 LOCO: TT115
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Coal
-  Sightings:       35
-  Location:        (-32.45781, 151.09648)
-  Speed:           32 km/h
+  Sightings:       36
+  Location:        (-32.583427, 151.180213)
+  Speed:           23 km/h
   Route:           Bengalla → PWCS Kooragang
-
-========================================
-LOCO: C506
-========================================
-  Date/Time Added: 2026-04-03 22:58:27
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    SSR Containerised Freight
-  Sightings:       14
-  Location:        (-33.961307, 151.218733)
-  Speed:           7 km/h
 
 ========================================
 LOCO: 6022
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Aurizon Intermodal
-  Sightings:       36
-  Location:        (-30.583857, 130.66924)
+  Sightings:       37
+  Location:        (-30.583863, 130.669253)
   Speed:           0 km/h
   Route:           Glenlee → Kwinana
 
@@ -484,102 +507,79 @@ LOCO: 6022
 LOCO: CF4428
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    SCT Intermodal
-  Sightings:       36
-  Location:        (-31.023297, 123.203107)
-  Speed:           95 km/h
+  Sightings:       37
+  Location:        (-30.97851, 122.660413)
+  Speed:           50 km/h
   Route:           SCT, Laverton → SCT, Forrestfield
+
+========================================
+LOCO: NR77
+========================================
+  Date/Time Added: 2026-04-04 03:56:58
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    Unknown
+  Sightings:       7
+  Location:        (-37.8047, 144.913627)
+  Speed:           2 km/h
+
+========================================
+LOCO: NR68
+========================================
+  Date/Time Added: 2026-04-03 15:09:22
+  Last Seen:       2026-04-04 09:55:00
+  Operator:        Unknown
+  Vehicle Desc:    PN Infrabuild Steel
+  Sightings:       4
+  Location:        (-33.883313, 151.06268)
+  Speed:           8 km/h
+  Route:           Chullora → Acacia Ridge
 
 ========================================
 LOCO: ACD6048
 ========================================
   Date/Time Added: 2026-04-03 22:58:27
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Unknown
-  Sightings:       11
-  Location:        (-30.884703, 120.961733)
-  Speed:           74 km/h
+  Sightings:       12
+  Location:        (-30.801417, 121.37092)
+  Speed:           31 km/h
 
 ========================================
 LOCO: Q4014
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    Unknown
-  Sightings:       36
-  Location:        (-30.780725, 121.41674)
+  Sightings:       37
+  Location:        (-30.780718, 121.416748)
   Speed:           0 km/h
 
 ========================================
 LOCO: NR93
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    PN Intermodal
-  Sightings:       22
-  Location:        (-28.178413, 152.892653)
-  Speed:           74 km/h
+  Sightings:       23
+  Location:        (-28.410903, 152.97744)
+  Speed:           58 km/h
   Route:           Acacia Ridge → MFT (South Dynon)
 
 ========================================
 LOCO: 6027
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
+  Last Seen:       2026-04-04 09:55:00
   Operator:        Unknown
   Vehicle Desc:    AZ Coal
-  Sightings:       33
-  Location:        (-31.08951, 150.271253)
-  Speed:           32 km/h
+  Sightings:       34
+  Location:        (-31.275953, 150.492347)
+  Speed:           58 km/h
   Route:           Whitehaven → PWCS Kooragang
-
-========================================
-LOCO: M31
-========================================
-  Date/Time Added: 2026-04-03 09:34:58
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    Unknown
-  Sightings:       16
-  Location:        (-34.30942, 150.925787)
-  Speed:           8 km/h
-
-========================================
-LOCO: XP2013
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    NSW Trainlink XPT
-  Sightings:       13
-  Location:        (-31.89252, 152.44732)
-  Speed:           68 km/h
-  Route:           Central Station (Sydney) → Roma St (Brisbane)
-
-========================================
-LOCO: Q4005
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    Unknown
-  Sightings:       36
-  Location:        (-30.546831, 121.402367)
-  Speed:           56 km/h
-
-========================================
-LOCO: Q4003
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  Last Seen:       2026-04-04 09:07:08
-  Operator:        Unknown
-  Vehicle Desc:    Gold Valley Iron Ore
-  Sightings:       36
-  Location:        (-30.203373, 121.178352)
-  Speed:           31 km/h
-  Route:           Malcolm → West Kalgoorlie
