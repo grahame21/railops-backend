@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 159,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 87,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 230,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 504,
+  "au_count": 503,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "5025",
+    "train_number": "AZBKDN",
+    "train_name": "5025",
+    "loco": "",
+    "operator": "",
+    "origin": "Ardglen Loop",
+    "destination": "Chilcotts Creek Loop",
+    "speed": 34,
+    "heading": 0,
+    "km": "371 km",
+    "time": "03:29:00",
+    "date": "05/04/2026",
+    "description": "Down Ardglen Bank Engines",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "dc9c80fe-26e9-4431-ad60-1de8903b5212",
+    "trKey": "5025",
+    "lat": -31.680983,
+    "lon": 150.762613
+  }
 }
