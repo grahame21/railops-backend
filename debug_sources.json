@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 617,
+      "count": 604,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 81,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 619,
+      "count": 917,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 698,
+      "count": 690,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1706,
-  "au_count": 1622,
+  "raw_count": 1839,
+  "au_count": 1738,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN020",
-    "train_number": "ER406",
-    "train_name": "XRN020",
+    "id": "TNSW-5240-5652",
+    "train_number": "140L",
+    "train_name": "TNSW-5240-5652",
     "loco": "",
     "operator": "",
-    "origin": "Various Mines",
-    "destination": "Eraring",
-    "speed": 38,
+    "origin": "Richmond",
+    "destination": "Berowra via City ",
+    "speed": 0,
     "heading": 0,
-    "km": "156 km",
-    "time": "19:25:00",
+    "km": "",
+    "time": "19:55:40",
     "date": "04/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "06e8daed-b674-488e-a1aa-6966c2ecffbc",
-    "trKey": "XRN020",
-    "lat": -32.93958,
-    "lon": 151.676613
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5240-5652",
+    "lat": -33.884975,
+    "lon": 151.206256
   }
 }
