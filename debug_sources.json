@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 68,
+      "count": 182,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 50,
+      "count": 63,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 141,
+      "count": 229,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 118,
+      "count": 245,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 307,
-  "au_count": 303,
+  "raw_count": 605,
+  "au_count": 601,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-5032-5884",
-    "train_number": "N704",
-    "train_name": "TNSW-5032-5884",
+    "id": "CF4426",
+    "train_number": "MB925",
+    "train_name": "CF4426",
     "loco": "",
     "operator": "",
-    "origin": "Newcastle Interchange",
-    "destination": "Central via Strathfield",
+    "origin": "NCIG Kooragang",
+    "destination": "Maules Creek",
     "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "03:46:44",
+    "km": "447 km",
+    "time": "04:27:00",
     "date": "05/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-5032-5884",
-    "lat": -33.88347,
-    "lon": 151.20566
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "2ea479d2-8af9-4a95-a723-f3a27588f691",
+    "trKey": "CF4426",
+    "lat": -31.186933,
+    "lon": 150.34796
   }
 }
