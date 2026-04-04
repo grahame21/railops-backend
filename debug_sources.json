@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 527,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 99,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 971,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 626,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1738,
+  "au_count": 1667,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "8102",
+    "train_number": "MDOO",
+    "train_name": "8102",
+    "loco": "",
+    "operator": "",
+    "origin": "Morandoo",
+    "destination": "",
+    "speed": 11,
+    "heading": 0,
+    "km": "165 km",
+    "time": "08:31:00",
+    "date": "05/04/2026",
+    "description": "PN Morandoo Shunter",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "bc910d3d-94d2-4454-b333-2329c6ea91db",
+    "trKey": "8102",
+    "lat": -32.899417,
+    "lon": 151.758133
+  }
 }
