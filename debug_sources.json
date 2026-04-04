@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 68,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 50,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 141,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 118,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 307,
+  "au_count": 303,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-5032-5884",
+    "train_number": "N704",
+    "train_name": "TNSW-5032-5884",
+    "loco": "",
+    "operator": "",
+    "origin": "Newcastle Interchange",
+    "destination": "Central via Strathfield",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "03:46:44",
+    "date": "05/04/2026",
+    "description": "Central Coast & Newcastle Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "servId": "",
+    "trKey": "TNSW-5032-5884",
+    "lat": -33.88347,
+    "lon": 151.20566
+  }
 }
