@@ -73,6 +73,7 @@ jobs:
           git add debug_sources.json
           git add blocked_locos.txt
           git add static/downloads/loco_database.xlsx
+          git add static/downloads/loco_numbers_only.xlsx
 
           if ! git diff --cached --quiet; then
             git commit -m "Update trains and loco export $(date -u +'%Y-%m-%d %H:%M:%S')"
