@@ -1,0 +1,18 @@
+app = "railops-live-au"
+primary_region = "syd"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = false
+  min_machines_running = 1
+  processes = ["web"]
+
+[processes]
+  web = "python server.py"
+  worker = "xvfb-run -a python fast_worker.py"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1024mb"
