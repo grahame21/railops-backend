@@ -1,0 +1,43 @@
+name: Refresh TrainFinder Cookie
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable xvfb
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Refresh cookie
+        env:
+          TF_USERNAME: ${{ secrets.TF_USERNAME }}
+          TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          python refresh_cookie.py
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add trainfinder_cookies.pkl cookie.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh cookie $(date -u +'%Y-%m-%d %H:%M:%S')"
+            git push
+          fi
