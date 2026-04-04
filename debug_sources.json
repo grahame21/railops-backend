@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 506,
+      "count": 484,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 78,
+      "count": 83,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 489,
+      "count": 481,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 584,
+      "count": 567,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,15 +32,15 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1413,
-  "au_count": 1314,
+  "raw_count": 1375,
+  "au_count": 1277,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-6370-1829",
-    "train_number": "15-T",
-    "train_name": "TNSW-6370-1829",
+    "id": "TNSW-1451-1495",
+    "train_number": "85-V",
+    "train_name": "TNSW-1451-1495",
     "loco": "",
     "operator": "",
     "origin": "Parramatta",
@@ -48,13 +48,13 @@
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "22:31:56",
+    "time": "22:55:05",
     "date": "04/04/2026",
     "description": "T2 Leppington & Inner West Line",
     "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "TNSW-6370-1829",
-    "lat": -33.886962,
-    "lon": 151.203697
+    "trKey": "TNSW-1451-1495",
+    "lat": -33.86126,
+    "lon": 151.21031
   }
 }
