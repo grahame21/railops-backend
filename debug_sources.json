@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 182,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 63,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 229,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 245,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 605,
-  "au_count": 601,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "CF4426",
-    "train_number": "MB925",
-    "train_name": "CF4426",
-    "loco": "",
-    "operator": "",
-    "origin": "NCIG Kooragang",
-    "destination": "Maules Creek",
-    "speed": 0,
-    "heading": 0,
-    "km": "447 km",
-    "time": "04:27:00",
-    "date": "05/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "2ea479d2-8af9-4a95-a723-f3a27588f691",
-    "trKey": "CF4426",
-    "lat": -31.186933,
-    "lon": 150.34796
-  }
+  "hasOl": true
 }
