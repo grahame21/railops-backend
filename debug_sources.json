@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 215,
+      "count": 249,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 70,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 373,
+      "count": 175,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 288,
+      "count": 319,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 763,
-  "au_count": 759,
+  "raw_count": 726,
+  "au_count": 723,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_17A2",
-    "train_number": "17A2",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_17A2",
+    "id": "9307",
+    "train_number": "BE541",
+    "train_name": "9307",
     "loco": "",
     "operator": "",
-    "origin": "Beenleigh",
-    "destination": "Beenleigh",
-    "speed": 0,
+    "origin": "PWCS Kooragang",
+    "destination": "Boggabri East",
+    "speed": 53,
     "heading": 0,
-    "km": "",
-    "time": "04:46:10",
+    "km": "518 km",
+    "time": "04:59:00",
     "date": "05/04/2026",
-    "description": "BNBN",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_17A2",
-    "lat": -27.681101,
-    "lon": 153.15329
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "95d4ba27-ecda-4a3c-9e05-03ecacbed845",
+    "trKey": "9307",
+    "lat": -30.680657,
+    "lon": 150.032973
   }
 }
