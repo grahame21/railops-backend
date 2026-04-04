@@ -10,6 +10,7 @@ HISTORY_FILE = "loco_history.json"
 EXPORT_FILE = "loco_export.csv"
 SUMMARY_FILE = "loco_summary.txt"
 BLOCKED_FILE = "blocked_locos.txt"
+BLOCKED_DESCRIPTIONS_FILE = "blocked_descriptions.txt"
 
 
 SKIP_PREFIXES = (
@@ -67,19 +68,45 @@ def load_blocked_locos() -> Set[str]:
     return blocked
 
 
-def purge_blocked_records(locos: Dict[str, Any], history: Dict[str, Any], blocked: Set[str]):
+def load_blocked_descriptions() -> Set[str]:
+    blocked: Set[str] = set()
+    if not os.path.exists(BLOCKED_DESCRIPTIONS_FILE):
+        return blocked
+
+    with open(BLOCKED_DESCRIPTIONS_FILE, 'r', encoding='utf-8') as f:
+        for raw_line in f:
+            line = raw_line.strip().lower()
+            if not line or line.startswith('#'):
+                continue
+            blocked.add(line)
+    return blocked
+
+
+def description_is_blocked(description: Any, blocked_descriptions: Set[str]) -> bool:
+    desc = str(description or '').strip().lower()
+    if not desc or not blocked_descriptions:
+        return False
+    return any(term in desc for term in blocked_descriptions)
+
+
+def purge_blocked_records(locos: Dict[str, Any], history: Dict[str, Any], blocked: Set[str], blocked_descriptions: Set[str]):
     removed_from_locos = 0
     removed_from_history = 0
+    blocked_by_description = set()
 
     for loco_id in list(locos.keys()):
-        if normalize_loco(loco_id) in blocked:
+        data = locos.get(loco_id, {}) if isinstance(locos.get(loco_id), dict) else {}
+        description = data.get('vehicle_description') or data.get('last_description') or ''
+        if normalize_loco(loco_id) in blocked or description_is_blocked(description, blocked_descriptions):
+            if description_is_blocked(description, blocked_descriptions):
+                blocked_by_description.add(normalize_loco(loco_id))
             del locos[loco_id]
             removed_from_locos += 1
 
     history_locos = history.get('locos', {}) if isinstance(history, dict) else {}
     if isinstance(history_locos, dict):
         for loco_id in list(history_locos.keys()):
-            if normalize_loco(loco_id) in blocked:
+            if normalize_loco(loco_id) in blocked or normalize_loco(loco_id) in blocked_by_description:
                 del history_locos[loco_id]
                 removed_from_history += 1
 
@@ -207,7 +234,9 @@ def update_loco_database():
     locos = load_json(LOCOS_FILE)
     history = load_json(HISTORY_FILE)
     blocked = load_blocked_locos()
+    blocked_descriptions = load_blocked_descriptions()
     print(f"🚫 Blocked locos loaded: {len(blocked)}")
+    print(f"🚫 Blocked descriptions loaded: {len(blocked_descriptions)}")
 
     if not isinstance(locos, dict):
         locos = {}
@@ -220,7 +249,7 @@ def update_loco_database():
     if 'updates' not in history or not isinstance(history['updates'], list):
         history['updates'] = []
 
-    removed_locos, removed_history = purge_blocked_records(locos, history, blocked)
+    removed_locos, removed_history = purge_blocked_records(locos, history, blocked, blocked_descriptions)
     if removed_locos or removed_history:
         print(f"🧹 Removed blocked records: {removed_locos} from locos.json, {removed_history} from history")
 
@@ -234,17 +263,14 @@ def update_loco_database():
         if not is_real_loco_id(loco_id):
             continue
 
-        if loco_id in blocked:
+        previous_data = locos.get(loco_id, {}) if isinstance(locos.get(loco_id), dict) else {}
+        if loco_id in blocked or description_is_blocked(vehicle_description, blocked_descriptions):
             skipped_blocked += 1
             continue
 
-        previous_data = locos.get(loco_id, {}) if isinstance(locos.get(loco_id), dict) else {}
         first_seen = previous_data.get('first_seen', timestamp)
         date_time_added = previous_data.get('date_time_added', first_seen)
         total_sightings = int(previous_data.get('total_sightings', 0) or 0) + 1
-
-        current_operator = str(train.get('operator') or previous_data.get('current_operator') or '').strip()
-        vehicle_description = str(train.get('description') or previous_data.get('vehicle_description') or '').strip()
 
         loco_data = {
             'date_time_added': date_time_added,

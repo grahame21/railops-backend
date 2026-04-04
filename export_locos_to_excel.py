@@ -10,6 +10,7 @@ from openpyxl.worksheet.page import PageMargins
 
 LOCOS_FILE = "locos.json"
 BLOCKED_FILE = "blocked_locos.txt"
+BLOCKED_DESCRIPTIONS_FILE = "blocked_descriptions.txt"
 DOWNLOAD_DIR = os.path.join("static", "downloads")
 XLSX_FILE = os.path.join(DOWNLOAD_DIR, "loco_database.xlsx")
 NUMBERS_ONLY_FILE = os.path.join(DOWNLOAD_DIR, "loco_numbers_only.xlsx")
@@ -62,6 +63,26 @@ def load_blocked_locos():
     return blocked
 
 
+def load_blocked_descriptions():
+    blocked = []
+    if not os.path.exists(BLOCKED_DESCRIPTIONS_FILE):
+        return blocked
+    with open(BLOCKED_DESCRIPTIONS_FILE, 'r', encoding='utf-8') as f:
+        for raw_line in f:
+            line = raw_line.strip().lower()
+            if not line or line.startswith('#'):
+                continue
+            blocked.append(line)
+    return blocked
+
+
+def description_is_blocked(description, blocked_descriptions):
+    desc = safe_text(description).lower()
+    if not desc or not blocked_descriptions:
+        return False
+    return any(term in desc for term in blocked_descriptions)
+
+
 def safe_text(value):
     if value is None:
         return ""
@@ -94,6 +115,7 @@ def parse_datetime_sort(value):
 
 def get_visible_locos(locos):
     blocked = set(load_blocked_locos())
+    blocked_descriptions = load_blocked_descriptions()
     visible = []
     for loco_number, data in locos.items():
         if normalize_loco(loco_number) in blocked:
@@ -101,6 +123,9 @@ def get_visible_locos(locos):
         if not isinstance(data, dict):
             continue
         if not is_real_loco_id(loco_number):
+            continue
+        description = data.get('vehicle_description') or data.get('last_description') or ''
+        if description_is_blocked(description, blocked_descriptions):
             continue
         visible.append((normalize_loco(loco_number), data))
     return visible
@@ -173,6 +198,7 @@ def build_workbooks(locos):
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
     visible_locos = get_visible_locos(locos)
     blocked = sorted(load_blocked_locos(), key=natural_sort_key)
+    blocked_descriptions = sorted(load_blocked_descriptions())
 
     running_order = sorted(visible_locos, key=lambda x: natural_sort_key(x[0]))
     recently_added = sorted(
@@ -193,6 +219,7 @@ def build_workbooks(locos):
     ws_recent = wb.create_sheet("Recently Added")
     ws_numbers = wb.create_sheet("Numbers Only")
     ws_blocked = wb.create_sheet("Blocked")
+    ws_blocked_desc = wb.create_sheet("Blocked Descriptions")
     ws_info = wb.create_sheet("Instructions")
 
     write_header(ws_locos, headers, bold, center)
@@ -219,6 +246,14 @@ def build_workbooks(locos):
         ws_blocked.append([loco])
     apply_print_settings(ws_blocked, orientation='portrait')
 
+    ws_blocked_desc.append(['Blocked Vehicle Description'])
+    ws_blocked_desc['A1'].font = bold
+    ws_blocked_desc['A1'].alignment = center
+    ws_blocked_desc.column_dimensions['A'].width = 36
+    for desc in blocked_descriptions:
+        ws_blocked_desc.append([desc])
+    apply_print_settings(ws_blocked_desc, orientation='portrait')
+
     lines = [
         "This workbook is rebuilt automatically by the loco updater.",
         "",
@@ -226,6 +261,7 @@ def build_workbooks(locos):
         "Recently Added: newest locos first, based on Date/Time Added.",
         "Numbers Only: loco numbers only, in running order, laid out down each column first to save print space.",
         "Blocked: one loco number per line in blocked_locos.txt.",
+        "Blocked Descriptions: partial-match vehicle description filters from blocked_descriptions.txt.",
         "",
         "Print margins on the print sheets are set to about 1.5 cm.",
         f"Numbers Only layout uses {NUMBERS_ONLY_COLUMNS} columns across each page, filling down each column first before moving across/page.",
@@ -249,6 +285,7 @@ def build_workbooks(locos):
     return {
         'visible_count': len(running_order),
         'blocked_count': len(blocked),
+        'blocked_description_count': len(blocked_descriptions),
         'recent_count': len(recently_added),
     }
 
