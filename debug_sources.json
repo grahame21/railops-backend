@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 275,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 74,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 457,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 349,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 927,
+  "au_count": 899,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "QL017",
+    "train_number": "DWM7",
+    "train_name": "QL017",
+    "loco": "",
+    "operator": "",
+    "origin": "",
+    "destination": "",
+    "speed": 2,
+    "heading": 0,
+    "km": "118 km",
+    "time": "05:13:00",
+    "date": "05/04/2026",
+    "description": "",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "",
+    "trKey": "QL017",
+    "lat": -34.55021,
+    "lon": 150.64128
+  }
 }
