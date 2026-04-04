@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import html
 from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
@@ -14,6 +15,9 @@ BLOCKED_DESCRIPTIONS_FILE = "blocked_descriptions.txt"
 DOWNLOAD_DIR = os.path.join("static", "downloads")
 XLSX_FILE = os.path.join(DOWNLOAD_DIR, "loco_database.xlsx")
 NUMBERS_ONLY_FILE = os.path.join(DOWNLOAD_DIR, "loco_numbers_only.xlsx")
+HTML_DATABASE_FILE = os.path.join(DOWNLOAD_DIR, "loco_database.html")
+HTML_RECENT_FILE = os.path.join(DOWNLOAD_DIR, "recently_added.html")
+HTML_NUMBERS_FILE = os.path.join(DOWNLOAD_DIR, "loco_numbers_only.html")
 
 CM_TO_INCH = 1 / 2.54
 MARGIN_1_5CM = 1.5 * CM_TO_INCH
@@ -212,6 +216,179 @@ def write_numbers_pages(ws, running_order, center, columns=NUMBERS_ONLY_COLUMNS,
     apply_print_settings(ws, orientation='portrait', repeat_header=False)
 
 
+def format_dt_display(value):
+    text = safe_text(value)
+    if not text:
+        return ""
+    dt = parse_datetime_sort(text)
+    if dt == datetime.min:
+        return text
+    return dt.strftime("%d %b %Y %H:%M")
+
+
+def build_numbers_columns_html(running_order, columns=NUMBERS_ONLY_COLUMNS):
+    locos = [loco for loco, _data in running_order]
+    if not locos:
+        return '<div class="empty">No loco numbers available.</div>'
+
+    rows = (len(locos) + columns - 1) // columns
+    groups = []
+    for col in range(columns):
+        start = col * rows
+        end = start + rows
+        chunk = locos[start:end]
+        if chunk:
+            items = "".join(f"<li>{html.escape(item)}</li>" for item in chunk)
+            groups.append(f"<ol class=\"number-col\" start=\"{start + 1}\">{items}</ol>")
+    return f"<div class=\"numbers-columns\">{''.join(groups)}</div>"
+
+
+def render_html_page(title, subtitle, body, stats, active_tab):
+    updated = html.escape(stats.get('generated_at', ''))
+    visible_count = stats.get('visible_count', 0)
+    nav = [
+        ('database', 'Full database', 'loco_database.html'),
+        ('recent', 'Recently added', 'recently_added.html'),
+        ('numbers', 'Numbers only', 'loco_numbers_only.html'),
+        ('xlsx', 'Download workbook', 'loco_database.xlsx'),
+        ('numbers_xlsx', 'Download numbers workbook', 'loco_numbers_only.xlsx'),
+    ]
+    nav_html = ''.join(
+        f'<a class="nav-link {"active" if key == active_tab else ""}" href="{html.escape(link)}">{html.escape(label)}</a>'
+        for key, label, link in nav
+    )
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html.escape(title)}</title>
+  <style>
+    :root {{
+      --bg: #08111f;
+      --panel: #101c30;
+      --panel-2: #16243b;
+      --text: #e9f1ff;
+      --muted: #9fb1cf;
+      --accent: #5bb5ff;
+      --border: #28415f;
+      --chip: #0f3154;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{ margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }}
+    .wrap {{ max-width: 1280px; margin: 0 auto; padding: 16px; }}
+    .hero {{ background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--border); border-radius: 18px; padding: 18px; margin-bottom: 16px; }}
+    h1 {{ margin: 0 0 6px; font-size: 1.7rem; }}
+    .subtitle {{ color: var(--muted); margin-bottom: 10px; }}
+    .stats {{ display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }}
+    .chip {{ background: var(--chip); border: 1px solid var(--border); border-radius: 999px; padding: 8px 12px; color: var(--text); font-size: 0.92rem; }}
+    .nav {{ display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }}
+    .nav-link {{ text-decoration: none; color: var(--text); background: #0c1525; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }}
+    .nav-link.active {{ background: var(--accent); color: #00111f; border-color: var(--accent); font-weight: 700; }}
+    .panel {{ background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 14px; overflow: hidden; }}
+    .table-wrap {{ overflow: auto; border-radius: 12px; border: 1px solid var(--border); }}
+    table {{ width: 100%; border-collapse: collapse; min-width: 720px; }}
+    th, td {{ padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }}
+    th {{ position: sticky; top: 0; background: #112039; z-index: 1; }}
+    tr:nth-child(even) td {{ background: rgba(255,255,255,0.02); }}
+    .numbers-columns {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 14px; }}
+    .number-col {{ margin: 0; padding-left: 28px; background: #0c1525; border: 1px solid var(--border); border-radius: 12px; min-height: 100%; }}
+    .number-col li {{ padding: 6px 8px 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }}
+    .number-col li:last-child {{ border-bottom: 0; }}
+    .hint {{ color: var(--muted); font-size: 0.92rem; margin-top: 10px; }}
+    .empty {{ padding: 16px; color: var(--muted); }}
+    @media (max-width: 760px) {{
+      .wrap {{ padding: 10px; }}
+      h1 {{ font-size: 1.35rem; }}
+      .hero, .panel {{ border-radius: 14px; }}
+      table {{ min-width: 620px; }}
+      .numbers-columns {{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }}
+    }}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>{html.escape(title)}</h1>
+      <div class="subtitle">{html.escape(subtitle)}</div>
+      <div class="stats">
+        <span class="chip">Visible locos: {visible_count}</span>
+        <span class="chip">Updated: {updated}</span>
+      </div>
+      <nav class="nav">{nav_html}</nav>
+    </section>
+    <section class="panel">{body}</section>
+  </div>
+</body>
+</html>
+"""
+
+
+def build_database_table(rows):
+    if not rows:
+        return '<div class="empty">No locos available.</div>'
+    body_rows = ''.join(
+        '<tr>' + ''.join(f'<td>{html.escape(value)}</td>' for value in row) + '</tr>'
+        for row in rows
+    )
+    return (
+        '<div class="table-wrap"><table><thead><tr>'
+        '<th>Loco Number</th><th>Current Operator</th><th>Vehicle Description</th><th>Date/Time Added</th>'
+        '</tr></thead><tbody>' + body_rows + '</tbody></table></div>'
+        '<div class="hint">This page is rebuilt automatically every time the loco updater runs.</div>'
+    )
+
+
+def write_text_file(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+
+def build_html_exports(running_order, recently_added, stats):
+    running_rows = [make_row(loco_number, data) for loco_number, data in running_order]
+    recent_rows = [make_row(loco_number, data) for loco_number, data in recently_added]
+
+    running_rows = [[row[0], row[1], row[2], format_dt_display(row[3])] for row in running_rows]
+    recent_rows = [[row[0], row[1], row[2], format_dt_display(row[3])] for row in recent_rows]
+
+    write_text_file(
+        HTML_DATABASE_FILE,
+        render_html_page(
+            title='RailOps Loco Database',
+            subtitle='Full loco list in running order. Handy for phone viewing and quick searching in-browser.',
+            body=build_database_table(running_rows),
+            stats=stats,
+            active_tab='database',
+        )
+    )
+
+    write_text_file(
+        HTML_RECENT_FILE,
+        render_html_page(
+            title='RailOps Recently Added Locos',
+            subtitle='Newest locos first, based on the Date/Time Added field.',
+            body=build_database_table(recent_rows),
+            stats=stats,
+            active_tab='recent',
+        )
+    )
+
+    numbers_body = (
+        build_numbers_columns_html(running_order, columns=NUMBERS_ONLY_COLUMNS)
+        + '<div class="hint">Numbers run down each column first, then continue into the next column.</div>'
+    )
+    write_text_file(
+        HTML_NUMBERS_FILE,
+        render_html_page(
+            title='RailOps Loco Numbers Only',
+            subtitle='Numbers-only mobile page in running order.',
+            body=numbers_body,
+            stats=stats,
+            active_tab='numbers',
+        )
+    )
+
+
 def build_workbooks(locos):
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
     visible_locos = get_visible_locos(locos)
@@ -248,14 +425,14 @@ def build_workbooks(locos):
         ws_locos.append(make_row(loco_number, data))
     autosize_columns(ws_locos, widths)
     ws_locos.freeze_panes = 'A2'
-    apply_print_settings(ws_locos, orientation='landscape')
+    apply_print_settings(ws_locos, orientation='portrait')
 
     write_header(ws_recent, headers, bold, center)
     for loco_number, data in recently_added:
         ws_recent.append(make_row(loco_number, data))
     autosize_columns(ws_recent, widths)
     ws_recent.freeze_panes = 'A2'
-    apply_print_settings(ws_recent, orientation='landscape')
+    apply_print_settings(ws_recent, orientation='portrait')
 
     write_numbers_pages(ws_numbers, running_order, center)
 
@@ -289,6 +466,10 @@ def build_workbooks(locos):
         "",
         "Print margins on the print sheets are set to about 1.5 cm.",
         f"Numbers Only layout uses {NUMBERS_ONLY_COLUMNS} columns and about {NUMBERS_ONLY_ROWS_PER_PAGE} rows per printed page.",
+        "Phone-friendly HTML pages are generated automatically too:",
+        "- /downloads/loco_database.html",
+        "- /downloads/recently_added.html",
+        "- /downloads/loco_numbers_only.html",
         "Download files:",
         "- /downloads/loco_database.xlsx",
         "- /downloads/loco_numbers_only.xlsx",
@@ -306,13 +487,17 @@ def build_workbooks(locos):
     write_numbers_pages(ws_only, running_order, center)
     wb_numbers.save(NUMBERS_ONLY_FILE)
 
-    return {
+    stats = {
         'visible_count': len(running_order),
         'blocked_exact_count': len(blocked_exact_sorted),
         'blocked_prefix_count': len(blocked_prefix_sorted),
         'blocked_description_count': len(blocked_descriptions),
         'recent_count': len(recently_added),
+        'generated_at': datetime.now().strftime('%d %b %Y %H:%M'),
     }
+    build_html_exports(running_order, recently_added, stats)
+
+    return stats
 
 
 
@@ -323,6 +508,9 @@ def main():
     stats = build_workbooks(locos)
     print(f"✅ Workbook saved to {XLSX_FILE}")
     print(f"✅ Numbers-only workbook saved to {NUMBERS_ONLY_FILE}")
+    print(f"✅ HTML database saved to {HTML_DATABASE_FILE}")
+    print(f"✅ HTML recent page saved to {HTML_RECENT_FILE}")
+    print(f"✅ HTML numbers page saved to {HTML_NUMBERS_FILE}")
     print(f"🚂 Visible locos: {stats['visible_count']}")
     print(f"🆕 Recently added rows: {stats['recent_count']}")
     print(f"🚫 Blocked exact locos listed: {stats['blocked_exact_count']}")

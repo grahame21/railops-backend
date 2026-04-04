@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 479,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 92,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 769,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 571,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1527,
-  "au_count": 1475,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "X26-X46",
-    "train_number": "L3",
-    "train_name": "X26-X46",
-    "loco": "",
-    "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 47,
-    "heading": 0,
-    "km": "",
-    "time": "07:51:18",
-    "date": "05/04/2026",
-    "description": "Kingsford Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "X26-X46",
-    "lat": -33.903469,
-    "lon": 151.223541
-  }
+  "hasOl": true
 }
