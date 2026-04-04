@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 73,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 55,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 63,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 128,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 288,
-  "au_count": 267,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "TT122",
-    "train_number": "ND268",
-    "train_name": "TT122",
-    "loco": "",
-    "operator": "",
-    "origin": "Newdell",
-    "destination": "PWCS Kooragang",
-    "speed": 3,
-    "heading": 0,
-    "km": "171 km",
-    "time": "02:48:00",
-    "date": "05/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "5fb32041-2ee1-44a3-979c-2594c9b0da6b",
-    "trKey": "TT122",
-    "lat": -32.86716,
-    "lon": 151.75452
-  }
+  "hasOl": true
 }
