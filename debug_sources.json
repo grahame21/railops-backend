@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 338,
+      "count": 378,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 77,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 473,
+      "count": 299,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 413,
+      "count": 455,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1063,
-  "au_count": 1038,
+  "raw_count": 1060,
+  "au_count": 1033,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1M2",
-    "train_number": "D1M2",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1M2",
+    "id": "GCLR-Bombardier Flexity 2 (03)",
+    "train_number": "GCR1",
+    "train_name": "GCLR-Bombardier Flexity 2 (03)",
     "loco": "",
     "operator": "",
-    "origin": "Airport",
-    "destination": "Caboolture",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:01:42",
+    "time": "06:41:28",
     "date": "05/04/2026",
-    "description": "BDCA",
+    "description": "GCR1",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1M2",
-    "lat": -27.415501,
-    "lon": 153.051529
+    "trKey": "GCLR-Bombardier Flexity 2 (03)",
+    "lat": -27.968149,
+    "lon": 153.392975
   }
 }
