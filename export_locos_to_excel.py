@@ -2,6 +2,7 @@ import os
 import json
 import re
 from datetime import datetime
+from math import ceil
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
@@ -15,6 +16,24 @@ NUMBERS_ONLY_FILE = os.path.join(DOWNLOAD_DIR, "loco_numbers_only.xlsx")
 
 CM_TO_INCH = 1 / 2.54
 MARGIN_1_5CM = 1.5 * CM_TO_INCH
+NUMBERS_ONLY_COLUMNS = 10
+NUMBERS_ONLY_COL_WIDTH = 14
+
+
+SKIP_PREFIXES = (
+    "ARROWMARKERSSOURCE_",
+    "MARKERSOURCE_",
+    "REGTRAINSSOURCE_",
+    "UNREGTRAINSSOURCE_",
+    "TRAINSOURCE_",
+)
+
+
+def is_real_loco_id(value):
+    loco = normalize_loco(value)
+    if not loco:
+        return False
+    return not any(prefix in loco for prefix in SKIP_PREFIXES)
 
 
 def load_json(filename):
@@ -81,6 +100,8 @@ def get_visible_locos(locos):
             continue
         if not isinstance(data, dict):
             continue
+        if not is_real_loco_id(loco_number):
+            continue
         visible.append((normalize_loco(loco_number), data))
     return visible
 
@@ -122,6 +143,32 @@ def write_header(ws, headers, bold, center):
         cell.alignment = center
 
 
+def write_numbers_grid(ws, running_order, bold, center, columns=NUMBERS_ONLY_COLUMNS):
+    headers = [f"Loco Number {i}" for i in range(1, columns + 1)]
+    ws.append(headers)
+    for cell in ws[1]:
+        cell.font = bold
+        cell.alignment = center
+
+    loco_numbers = [loco_number for loco_number, _data in running_order]
+    total = len(loco_numbers)
+    rows_needed = ceil(total / columns) if total else 0
+
+    for _ in range(rows_needed):
+        ws.append([""] * columns)
+
+    for idx, loco in enumerate(loco_numbers):
+        col_index = idx // rows_needed if rows_needed else 0
+        row_index = idx % rows_needed if rows_needed else 0
+        ws.cell(row=row_index + 2, column=col_index + 1, value=loco)
+
+    for col in range(1, columns + 1):
+        ws.column_dimensions[get_column_letter(col)].width = NUMBERS_ONLY_COL_WIDTH
+    ws.freeze_panes = 'A2'
+    apply_print_settings(ws, orientation='portrait')
+
+
+
 def build_workbooks(locos):
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
     visible_locos = get_visible_locos(locos)
@@ -139,7 +186,6 @@ def build_workbooks(locos):
     center = Alignment(horizontal="center")
     widths = {1: 18, 2: 24, 3: 40, 4: 22}
 
-    # Main workbook
     wb = Workbook()
     wb.remove(wb.active)
 
@@ -163,14 +209,7 @@ def build_workbooks(locos):
     ws_recent.freeze_panes = 'A2'
     apply_print_settings(ws_recent, orientation='landscape')
 
-    ws_numbers.append(["Loco Number"])
-    ws_numbers['A1'].font = bold
-    ws_numbers['A1'].alignment = center
-    for loco_number, _data in running_order:
-        ws_numbers.append([loco_number])
-    ws_numbers.column_dimensions['A'].width = 18
-    ws_numbers.freeze_panes = 'A2'
-    apply_print_settings(ws_numbers, orientation='portrait')
+    write_numbers_grid(ws_numbers, running_order, bold, center)
 
     ws_blocked.append(["Blocked Loco Number"])
     ws_blocked['A1'].font = bold
@@ -185,33 +224,26 @@ def build_workbooks(locos):
         "",
         "Locos: full loco list in running order.",
         "Recently Added: newest locos first, based on Date/Time Added.",
-        "Numbers Only: loco numbers only, in running order, ready to print.",
+        "Numbers Only: loco numbers only, in running order, laid out down each column first to save print space.",
         "Blocked: one loco number per line in blocked_locos.txt.",
         "",
         "Print margins on the print sheets are set to about 1.5 cm.",
+        f"Numbers Only layout uses {NUMBERS_ONLY_COLUMNS} columns across each page, filling down each column first before moving across/page.",
         "Download files:",
         "- /downloads/loco_database.xlsx",
         "- /downloads/loco_numbers_only.xlsx",
     ]
     for line in lines:
         ws_info.append([line])
-    ws_info.column_dimensions['A'].width = 95
+    ws_info.column_dimensions['A'].width = 110
     apply_print_settings(ws_info, orientation='portrait', repeat_header=False)
 
     wb.save(XLSX_FILE)
 
-    # Numbers-only workbook
     wb_numbers = Workbook()
     ws_only = wb_numbers.active
     ws_only.title = "Loco Numbers"
-    ws_only.append(["Loco Number"])
-    ws_only['A1'].font = bold
-    ws_only['A1'].alignment = center
-    for loco_number, _data in running_order:
-        ws_only.append([loco_number])
-    ws_only.column_dimensions['A'].width = 18
-    ws_only.freeze_panes = 'A2'
-    apply_print_settings(ws_only, orientation='portrait')
+    write_numbers_grid(ws_only, running_order, bold, center)
     wb_numbers.save(NUMBERS_ONLY_FILE)
 
     return {
@@ -219,6 +251,7 @@ def build_workbooks(locos):
         'blocked_count': len(blocked),
         'recent_count': len(recently_added),
     }
+
 
 
 def main():

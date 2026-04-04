@@ -12,6 +12,22 @@ SUMMARY_FILE = "loco_summary.txt"
 BLOCKED_FILE = "blocked_locos.txt"
 
 
+SKIP_PREFIXES = (
+    "ARROWMARKERSSOURCE_",
+    "MARKERSOURCE_",
+    "REGTRAINSSOURCE_",
+    "UNREGTRAINSSOURCE_",
+    "TRAINSOURCE_",
+)
+
+
+def is_real_loco_id(value: str) -> bool:
+    loco = normalize_loco(value)
+    if not loco:
+        return False
+    return not any(prefix in loco for prefix in SKIP_PREFIXES)
+
+
 def load_json(filename):
     if os.path.exists(filename):
         try:
@@ -215,7 +231,7 @@ def update_loco_database():
     for train in trains:
         raw_loco_id = train.get('train_name') or train.get('train_number') or train.get('id')
         loco_id = normalize_loco(raw_loco_id)
-        if not loco_id:
+        if not is_real_loco_id(loco_id):
             continue
 
         if loco_id in blocked:
