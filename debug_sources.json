@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 274,
+      "count": 194,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 20,
+      "count": 30,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 355,
+      "count": 247,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 294,
+      "count": 224,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,15 +32,15 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 766,
-  "au_count": 728,
+  "raw_count": 572,
+  "au_count": 534,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-816M",
-    "train_number": "FKN",
-    "train_name": "MM-816M",
+    "id": "MM-154M",
+    "train_number": "GWY",
+    "train_name": "MM-154M",
     "loco": "",
     "operator": "",
     "origin": "",
@@ -48,13 +48,13 @@
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "01:42:09",
+    "time": "02:26:12",
     "date": "05/04/2026",
-    "description": "Frankston Line",
+    "description": "Glen Waverley Line",
     "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "686a3a8d-cbaf-4cf2-a8e5-2b00e1144ddc",
-    "trKey": "MM-816M",
-    "lat": -37.818523,
-    "lon": 144.966782
+    "servId": "21d6cc2d-a94c-409c-80d6-3e53362ebf1a",
+    "trKey": "MM-154M",
+    "lat": -37.840023,
+    "lon": 145.034012
   }
 }
