@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 355,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 27,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 259,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 382,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 894,
+  "au_count": 833,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "MM-964M",
+    "train_number": "HBE",
+    "train_name": "MM-964M",
+    "loco": "",
+    "operator": "",
+    "origin": "",
+    "destination": "",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "00:53:06",
+    "date": "05/04/2026",
+    "description": "Hurstbridge Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "c2419555-1aeb-4be5-af36-18bffa093a97",
+    "trKey": "MM-964M",
+    "lat": -37.813606,
+    "lon": 144.991974
+  }
 }
