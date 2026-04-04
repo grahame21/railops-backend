@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 178,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 24,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 285,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 202,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 547,
+  "au_count": 518,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "SSR103",
+    "train_number": "1289",
+    "train_name": "SSR103",
+    "loco": "",
+    "operator": "",
+    "origin": "Boral, Cooks River",
+    "destination": "Peppertree Quarry",
+    "speed": 71,
+    "heading": 0,
+    "km": "105 km",
+    "time": "02:56:00",
+    "date": "05/04/2026",
+    "description": "SSR Empty Aggregates",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "caabbe17-ed15-466c-981f-ac59691ecd3b",
+    "trKey": "SSR103",
+    "lat": -34.308567,
+    "lon": 150.596947
+  }
 }
