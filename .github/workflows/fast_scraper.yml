@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -75,11 +77,14 @@ jobs:
           git add blocked_descriptions.txt
           git add static/downloads/loco_database.xlsx
           git add static/downloads/loco_numbers_only.xlsx
+          git add static/downloads/loco_database.html
+          git add static/downloads/recently_added.html
+          git add static/downloads/loco_numbers_only.html
 
           if ! git diff --cached --quiet; then
             git commit -m "Update trains and loco export $(date -u +'%Y-%m-%d %H:%M:%S')"
             git pull --rebase origin main
-            git push
+            git push origin main
           else
             echo "No changes to commit"
           fi
