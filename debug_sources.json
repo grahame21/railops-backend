@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 274,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 20,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 355,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 294,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 766,
+  "au_count": 728,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "MM-816M",
+    "train_number": "FKN",
+    "train_name": "MM-816M",
+    "loco": "",
+    "operator": "",
+    "origin": "",
+    "destination": "",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "01:42:09",
+    "date": "05/04/2026",
+    "description": "Frankston Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "686a3a8d-cbaf-4cf2-a8e5-2b00e1144ddc",
+    "trKey": "MM-816M",
+    "lat": -37.818523,
+    "lon": 144.966782
+  }
 }
