@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 375,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 26,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 463,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 401,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1034,
-  "au_count": 974,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "TT110",
-    "train_number": "MR152",
-    "train_name": "TT110",
-    "loco": "",
-    "operator": "",
-    "origin": "Moolarben",
-    "destination": "PWCS Kooragang",
-    "speed": 0,
-    "heading": 0,
-    "km": "176 km",
-    "time": "01:02:00",
-    "date": "05/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "edff2c33-fd7f-438f-9eac-8fb05e07a52e",
-    "trKey": "TT110",
-    "lat": -32.874127,
-    "lon": 151.774173
-  }
+  "hasOl": true
 }
