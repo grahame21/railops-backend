@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 527,
+      "count": 525,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 971,
+      "count": 497,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 626,
+      "count": 613,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1738,
-  "au_count": 1667,
+  "raw_count": 1475,
+  "au_count": 1409,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8102",
-    "train_number": "MDOO",
-    "train_name": "8102",
+    "id": "TNSW-9018-4614",
+    "train_number": "N426",
+    "train_name": "TNSW-9018-4614",
     "loco": "",
     "operator": "",
-    "origin": "Morandoo",
-    "destination": "",
-    "speed": 11,
+    "origin": "Newcastle Interchange",
+    "destination": "Central via Strathfield",
+    "speed": 0,
     "heading": 0,
-    "km": "165 km",
-    "time": "08:31:00",
+    "km": "",
+    "time": "08:50:57",
     "date": "05/04/2026",
-    "description": "PN Morandoo Shunter",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "bc910d3d-94d2-4454-b333-2329c6ea91db",
-    "trKey": "8102",
-    "lat": -32.899417,
-    "lon": 151.758133
+    "description": "Central Coast & Newcastle Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "servId": "",
+    "trKey": "TNSW-9018-4614",
+    "lat": -33.494746,
+    "lon": 151.248488
   }
 }
