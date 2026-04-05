@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 613,
+      "count": 624,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 845,
+      "count": 909,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 695,
+      "count": 708,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1813,
-  "au_count": 1752,
+  "raw_count": 1871,
+  "au_count": 1800,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9311",
-    "train_number": "WH519",
-    "train_name": "9311",
+    "id": "GCLR-Bombardier Flexity 2 (04)",
+    "train_number": "GCR1",
+    "train_name": "GCLR-Bombardier Flexity 2 (04)",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Whitehaven",
-    "speed": 1,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "481 km",
-    "time": "15:48:00",
+    "km": "",
+    "time": "16:55:06",
     "date": "05/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "984ea363-8286-41e7-9c30-0de9ef122af6",
-    "trKey": "9311",
-    "lat": -30.952117,
-    "lon": 150.199427
+    "description": "GCR1",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "GCLR-Bombardier Flexity 2 (04)",
+    "lat": -27.951981,
+    "lon": 153.347183
   }
 }
