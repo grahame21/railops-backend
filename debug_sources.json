@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 595,
+      "count": 613,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 88,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 929,
+      "count": 845,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 683,
+      "count": 695,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1831,
-  "au_count": 1762,
+  "raw_count": 1813,
+  "au_count": 1752,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2191-7868",
-    "train_number": "153J",
-    "train_name": "TNSW-2191-7868",
+    "id": "9311",
+    "train_number": "WH519",
+    "train_name": "9311",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Richmond",
-    "speed": 0,
+    "origin": "PWCS Kooragang",
+    "destination": "Whitehaven",
+    "speed": 1,
     "heading": 0,
-    "km": "",
-    "time": "14:09:58",
+    "km": "481 km",
+    "time": "15:48:00",
     "date": "05/04/2026",
-    "description": "T1 Western Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-2191-7868",
-    "lat": -33.810951,
-    "lon": 150.992905
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "984ea363-8286-41e7-9c30-0de9ef122af6",
+    "trKey": "9311",
+    "lat": -30.952117,
+    "lon": 150.199427
   }
 }
