@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 192,
+      "count": 275,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 79,
+      "count": 72,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 479,
+      "count": 233,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 271,
+      "count": 347,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 782,
-  "au_count": 749,
+  "raw_count": 811,
+  "au_count": 786,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CEY007",
-    "train_number": "1287",
-    "train_name": "CEY007",
+    "id": "GCLR-16",
+    "train_number": "GCR1",
+    "train_name": "GCLR-16",
     "loco": "",
     "operator": "",
-    "origin": "Boral, Enfield",
-    "destination": "Peppertree Quarry",
-    "speed": 1,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "197 km",
-    "time": "04:21:00",
+    "km": "",
+    "time": "05:04:43",
     "date": "06/04/2026",
-    "description": "SSR Empty Aggregates",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "1b4d0a2f-8b45-460d-aa6e-dc4e178f550f",
-    "trKey": "CEY007",
-    "lat": -34.754107,
-    "lon": 150.02388
+    "description": "GCR1",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "GCLR-16",
+    "lat": -28.03409,
+    "lon": 153.430786
   }
 }
