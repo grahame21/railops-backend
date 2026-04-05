@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 160,
+      "count": 158,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 79,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 289,
+      "count": 49,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 239,
+      "count": 231,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 623,
-  "au_count": 609,
+  "raw_count": 487,
+  "au_count": 476,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "N473",
-    "train_number": "9194",
-    "train_name": "N473",
+    "id": "TT122",
+    "train_number": "ND318",
+    "train_name": "TT122",
     "loco": "",
     "operator": "",
-    "origin": "Manangatang Line / Sea Lake Line",
-    "destination": "Tottenham Yard",
-    "speed": 36,
+    "origin": "Newdell",
+    "destination": "PWCS Kooragang",
+    "speed": 47,
     "heading": 0,
-    "km": "10 km",
-    "time": "02:25:00",
+    "km": "179 km",
+    "time": "03:04:00",
     "date": "06/04/2026",
-    "description": "SSR BG Grain",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "98f22096-d043-4f16-aa82-5bacbf281006",
-    "trKey": "N473",
-    "lat": -37.78852,
-    "lon": 144.856533
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "7d0f426e-1eb0-431e-b64d-d53bf5df6701",
+    "trKey": "TT122",
+    "lat": -32.80132,
+    "lon": 151.66048
   }
 }
