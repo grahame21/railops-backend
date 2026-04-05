@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 316,
+      "count": 290,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 76,
+      "count": 68,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 425,
+      "count": 199,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 392,
+      "count": 358,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 997,
-  "au_count": 947,
+  "raw_count": 816,
+  "au_count": 717,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8162",
-    "train_number": "T131",
-    "train_name": "8162",
+    "id": "TNSW-9165-2432",
+    "train_number": "121Y",
+    "train_name": "TNSW-9165-2432",
     "loco": "",
     "operator": "",
-    "origin": "Port Botany / Banksmeadow",
-    "destination": "Enfield / Clyde",
-    "speed": 6,
+    "origin": "City",
+    "destination": "Hornsby and Berowra via Gordon",
+    "speed": 0,
     "heading": 0,
-    "km": "20 km",
-    "time": "00:50:00",
+    "km": "",
+    "time": "01:26:10",
     "date": "06/04/2026",
-    "description": "PN Trip Train",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "67ac10c6-4fb7-48c2-a33d-36ce45942f5a",
-    "trKey": "8162",
-    "lat": -33.840737,
-    "lon": 151.02484
+    "description": "T1 North Shore Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-9165-2432",
+    "lat": -33.791167,
+    "lon": 151.180694
   }
 }
