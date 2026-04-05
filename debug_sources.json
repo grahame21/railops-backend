@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 620,
+      "count": 595,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 103,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 895,
+      "count": 929,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 723,
+      "count": 683,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1894,
-  "au_count": 1792,
+  "raw_count": 1831,
+  "au_count": 1762,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J513",
-    "train_number": "J513",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J513",
+    "id": "TNSW-2191-7868",
+    "train_number": "153J",
+    "train_name": "TNSW-2191-7868",
     "loco": "",
     "operator": "",
-    "origin": "Rosewood",
-    "destination": "Ipswich",
+    "origin": "City",
+    "destination": "Richmond",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "11:06:32",
+    "time": "14:09:58",
     "date": "05/04/2026",
-    "description": "RWIP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_J513",
-    "lat": -27.641978,
-    "lon": 152.595859
+    "trKey": "TNSW-2191-7868",
+    "lat": -33.810951,
+    "lon": 150.992905
   }
 }
