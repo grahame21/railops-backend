@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 275,
+      "count": 366,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 72,
+      "count": 81,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 233,
+      "count": 567,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 347,
+      "count": 447,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 811,
-  "au_count": 786,
+  "raw_count": 1178,
+  "au_count": 1139,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-16",
-    "train_number": "GCR1",
-    "train_name": "GCLR-16",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D802",
+    "train_number": "D802",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D802",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "Brisbane City",
+    "destination": "Cleveland",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "05:04:43",
+    "time": "05:48:52",
     "date": "06/04/2026",
-    "description": "GCR1",
+    "description": "BRCL",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "GCLR-16",
-    "lat": -28.03409,
-    "lon": 153.430786
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D802",
+    "lat": -27.46681,
+    "lon": 153.022995
   }
 }
