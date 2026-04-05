@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 466,
+      "count": 527,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 95,
+      "count": 97,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 475,
+      "count": 263,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 561,
+      "count": 624,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1360,
-  "au_count": 1325,
+  "raw_count": 1380,
+  "au_count": 1322,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-Bombardier Flexity 2 (03)",
-    "train_number": "GCR1",
-    "train_name": "GCLR-Bombardier Flexity 2 (03)",
+    "id": "TNSW-1785-3185",
+    "train_number": "122C",
+    "train_name": "TNSW-1785-3185",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "North Shore",
+    "destination": "Hornsby and Berowra via City and Strathfield",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "07:16:36",
+    "time": "07:44:35",
     "date": "06/04/2026",
-    "description": "GCR1",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T9 Northern Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "GCLR-Bombardier Flexity 2 (03)",
-    "lat": -27.968149,
-    "lon": 153.392975
+    "trKey": "TNSW-1785-3185",
+    "lat": -33.877562,
+    "lon": 151.208861
   }
 }
