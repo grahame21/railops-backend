@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 595,
+      "count": 552,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 815,
+      "count": 789,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 670,
+      "count": 625,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1748,
-  "au_count": 1643,
+  "raw_count": 1645,
+  "au_count": 1539,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN001",
-    "train_number": "BC279",
-    "train_name": "XRN001",
+    "id": "TNSW-9089-7445",
+    "train_number": "88-S",
+    "train_name": "TNSW-9089-7445",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Bulga",
-    "speed": 1,
+    "origin": "City Circle",
+    "destination": "Leppington via Granville",
+    "speed": 0,
     "heading": 0,
-    "km": "246 km",
-    "time": "19:58:00",
+    "km": "",
+    "time": "20:52:02",
     "date": "05/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "f36d57b1-7152-4c9c-968b-fdc66f6979fb",
-    "trKey": "XRN001",
-    "lat": -32.66679,
-    "lon": 151.119613
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-9089-7445",
+    "lat": -33.87387,
+    "lon": 151.20677
   }
 }
