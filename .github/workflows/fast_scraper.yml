@@ -60,7 +60,7 @@ jobs:
             echo "loco_export.csv not found"
           fi
 
-      - name: Commit and push
+      - name: Commit and push backend updates
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -86,5 +86,37 @@ jobs:
             git pull --rebase origin main
             git push origin main
           else
-            echo "No changes to commit"
+            echo "No backend changes to commit"
+          fi
+
+      - name: Push generated files to frontend repo
+        env:
+          FRONTEND_PUSH_TOKEN: ${{ secrets.FRONTEND_PUSH_TOKEN }}
+        run: |
+          git clone https://x-access-token:${FRONTEND_PUSH_TOKEN}@github.com/grahame21/railops-frontend.git frontend_repo
+
+          mkdir -p frontend_repo/downloads
+
+          cp static/downloads/loco_database.html frontend_repo/downloads/
+          cp static/downloads/recently_added.html frontend_repo/downloads/
+          cp static/downloads/loco_numbers_only.html frontend_repo/downloads/
+          cp static/downloads/loco_database.xlsx frontend_repo/downloads/
+          cp static/downloads/loco_numbers_only.xlsx frontend_repo/downloads/
+
+          cd frontend_repo
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+
+          git add downloads/loco_database.html
+          git add downloads/recently_added.html
+          git add downloads/loco_numbers_only.html
+          git add downloads/loco_database.xlsx
+          git add downloads/loco_numbers_only.xlsx
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update loco downloads $(date -u +'%Y-%m-%d %H:%M:%S')"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "No frontend download changes to commit"
           fi
