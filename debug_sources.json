@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 423,
+      "count": 316,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 76,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 623,
+      "count": 425,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 496,
+      "count": 392,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1304,
-  "au_count": 1242,
+  "raw_count": 997,
+  "au_count": 947,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGT0",
-    "train_number": "DGT0",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGT0",
+    "id": "8162",
+    "train_number": "T131",
+    "train_name": "8162",
     "loco": "",
     "operator": "",
-    "origin": "Beenleigh",
-    "destination": "Varsity Lakes",
-    "speed": 0,
+    "origin": "Port Botany / Banksmeadow",
+    "destination": "Enfield / Clyde",
+    "speed": 6,
     "heading": 0,
-    "km": "",
-    "time": "23:51:15",
-    "date": "05/04/2026",
-    "description": "BNVL",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGT0",
-    "lat": -28.09609,
-    "lon": 153.397629
+    "km": "20 km",
+    "time": "00:50:00",
+    "date": "06/04/2026",
+    "description": "PN Trip Train",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "67ac10c6-4fb7-48c2-a33d-36ce45942f5a",
+    "trKey": "8162",
+    "lat": -33.840737,
+    "lon": 151.02484
   }
 }
