@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 151,
+      "count": 192,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 83,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 91,
+      "count": 479,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 234,
+      "count": 271,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 514,
-  "au_count": 504,
+  "raw_count": 782,
+  "au_count": 749,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5043",
-    "train_number": "WG944",
-    "train_name": "5043",
+    "id": "CEY007",
+    "train_number": "1287",
+    "train_name": "CEY007",
     "loco": "",
     "operator": "",
-    "origin": "Wilpinjong",
-    "destination": "NCIG Kooragang",
-    "speed": 36,
+    "origin": "Boral, Enfield",
+    "destination": "Peppertree Quarry",
+    "speed": 1,
     "heading": 0,
-    "km": "262 km",
-    "time": "03:45:00",
+    "km": "197 km",
+    "time": "04:21:00",
     "date": "06/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "bd3b2c7e-0215-4874-a303-1045ed41715b",
-    "trKey": "5043",
-    "lat": -32.421117,
-    "lon": 151.049547
+    "description": "SSR Empty Aggregates",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "1b4d0a2f-8b45-460d-aa6e-dc4e178f550f",
+    "trKey": "CEY007",
+    "lat": -34.754107,
+    "lon": 150.02388
   }
 }
