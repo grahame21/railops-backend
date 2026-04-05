@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 211,
+      "count": 160,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 65,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 269,
+      "count": 289,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 276,
+      "count": 239,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 687,
-  "au_count": 651,
+  "raw_count": 623,
+  "au_count": 609,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CF4401",
-    "train_number": "4557",
-    "train_name": "CF4401",
+    "id": "N473",
+    "train_number": "9194",
+    "train_name": "N473",
     "loco": "",
     "operator": "",
-    "origin": "Carrington",
-    "destination": "North West NSW",
-    "speed": 52,
+    "origin": "Manangatang Line / Sea Lake Line",
+    "destination": "Tottenham Yard",
+    "speed": 36,
     "heading": 0,
-    "km": "443 km",
-    "time": "01:48:00",
+    "km": "10 km",
+    "time": "02:25:00",
     "date": "06/04/2026",
-    "description": "Aurizon Empty Grain",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "ad23f138-f5b5-4dc0-ad7e-877befd89dde",
-    "trKey": "CF4401",
-    "lat": -31.21039,
-    "lon": 150.381907
+    "description": "SSR BG Grain",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "98f22096-d043-4f16-aa82-5bacbf281006",
+    "trKey": "N473",
+    "lat": -37.78852,
+    "lon": 144.856533
   }
 }
