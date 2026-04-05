@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 480,
+      "count": 423,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 76,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 505,
+      "count": 623,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 556,
+      "count": 496,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1365,
-  "au_count": 1300,
+  "raw_count": 1304,
+  "au_count": 1242,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1S1",
-    "train_number": "D1S1",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1S1",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGT0",
+    "train_number": "DGT0",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGT0",
     "loco": "",
     "operator": "",
-    "origin": "Caboolture",
-    "destination": "Caboolture",
+    "origin": "Beenleigh",
+    "destination": "Varsity Lakes",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "23:32:47",
+    "time": "23:51:15",
     "date": "05/04/2026",
-    "description": "CACA",
+    "description": "BNVL",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D1S1",
-    "lat": -27.31543,
-    "lon": 152.992233
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGT0",
+    "lat": -28.09609,
+    "lon": 153.397629
   }
 }
