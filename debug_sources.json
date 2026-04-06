@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 192,
+      "count": 181,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 80,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 263,
+      "count": 103,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 272,
+      "count": 259,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 676,
-  "au_count": 657,
+  "raw_count": 570,
+  "au_count": 552,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "G529",
-    "train_number": "0501",
-    "train_name": "G529",
+    "id": "9322",
+    "train_number": "MR901",
+    "train_name": "9322",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 6,
+    "origin": "NCIG Kooragang",
+    "destination": "Moolarben",
+    "speed": 25,
     "heading": 0,
-    "km": "2 km",
-    "time": "02:31:00",
+    "km": "171 km",
+    "time": "03:28:00",
     "date": "07/04/2026",
-    "description": "PN Light Engine",
+    "description": "PN Coal",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "1bf13ee6-a4ad-4763-96b0-47b7c6871135",
-    "trKey": "G529",
-    "lat": -37.80628,
-    "lon": 144.93584
+    "servId": "769967e5-46c1-4565-8629-2c6ac25c2fd9",
+    "trKey": "9322",
+    "lat": -32.86903,
+    "lon": 151.70152
   }
 }

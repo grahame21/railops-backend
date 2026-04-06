@@ -595,14 +595,14 @@
   "3VL110": {
     "date_time_added": "2026-04-03 10:12:34",
     "first_seen": "2026-04-03 10:12:34",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -37.81325,
-      "lon": 144.949933
+      "lat": -37.81327,
+      "lon": 144.94976
     },
-    "last_speed": 2,
+    "last_speed": 1,
     "last_origin": "",
     "last_destination": "",
     "last_description": "Western Line Service",
@@ -612,7 +612,7 @@
     "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
     "servId": "",
     "trKey": "3VL110",
-    "total_sightings": 13
+    "total_sightings": 14
   },
   "3VL111": {
     "date_time_added": "2026-04-05 20:55:29",
@@ -2808,24 +2808,24 @@
   "44206": {
     "date_time_added": "2026-04-04 22:12:10",
     "first_seen": "2026-04-04 22:12:10",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.236103,
-      "lon": 148.244693
+      "lat": -32.186983,
+      "lon": 148.17948
     },
-    "last_speed": 11,
-    "last_origin": "Manildra",
-    "last_destination": "Western NSW",
+    "last_speed": 63,
+    "last_origin": "",
+    "last_destination": "",
     "last_description": "SSR Manildra Grain Shuttle",
     "vehicle_description": "SSR Manildra Grain Shuttle",
     "current_operator": "",
-    "last_train_number": "8871",
+    "last_train_number": "UNREG",
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "9769283a-f30c-46a8-b1b6-f88e5cc6764a",
+    "servId": "",
     "trKey": "44206",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "44208": {
     "date_time_added": "2026-04-03 20:52:37",
@@ -2896,14 +2896,14 @@
   "44220": {
     "date_time_added": "2026-04-03 19:04:14",
     "first_seen": "2026-04-03 19:04:14",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.97767,
-      "lon": 150.24412
+      "lat": -30.97799,
+      "lon": 150.244773
     },
-    "last_speed": 3,
+    "last_speed": 5,
     "last_origin": "North West NSW",
     "last_destination": "North West NSW",
     "last_description": "SSR Manildra Grain Shuttle",
@@ -2913,7 +2913,29 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "7c2cbbd4-81c2-4333-8734-5fd1daa0ce68",
     "trKey": "44220",
-    "total_sightings": 14
+    "total_sightings": 15
+  },
+  "44223": {
+    "date_time_added": "2026-04-06 17:31:15",
+    "first_seen": "2026-04-06 17:31:15",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
+    "last_location": {
+      "lat": -30.97789,
+      "lon": 150.244627
+    },
+    "last_speed": 1,
+    "last_origin": "North West NSW",
+    "last_destination": "North West NSW",
+    "last_description": "SSR Manildra Grain Shuttle",
+    "vehicle_description": "SSR Manildra Grain Shuttle",
+    "current_operator": "",
+    "last_train_number": "5571",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "7c2cbbd4-81c2-4333-8734-5fd1daa0ce68",
+    "trKey": "44223",
+    "total_sightings": 1
   },
   "4501": {
     "date_time_added": "2026-04-03 19:04:14",
@@ -2978,36 +3000,36 @@
   "4811": {
     "date_time_added": "2026-04-05 04:11:30",
     "first_seen": "2026-04-05 04:11:30",
-    "last_seen": "2026-04-06 00:04:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "00:04:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.186807,
-      "lon": 148.699107
+      "lat": -32.18788,
+      "lon": 148.180613
     },
-    "last_speed": 9,
-    "last_origin": "",
-    "last_destination": "",
+    "last_speed": 63,
+    "last_origin": "Manildra",
+    "last_destination": "Western NSW",
     "last_description": "SSR Manildra Grain Shuttle",
     "vehicle_description": "SSR Manildra Grain Shuttle",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "8871",
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "",
+    "servId": "9769283a-f30c-46a8-b1b6-f88e5cc6764a",
     "trKey": "4811",
-    "total_sightings": 14
+    "total_sightings": 15
   },
   "4815": {
     "date_time_added": "2026-04-05 13:36:32",
     "first_seen": "2026-04-05 13:36:32",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.186807,
-      "lon": 148.69632
+      "lat": -33.186757,
+      "lon": 148.69484
     },
-    "last_speed": 4,
+    "last_speed": 2,
     "last_origin": "Western NSW",
     "last_destination": "Manildra",
     "last_description": "SSR Manildra Grain Shuttle",
@@ -3017,7 +3039,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "772a5c9f-5376-4364-817b-185e20d03959",
     "trKey": "4815",
-    "total_sightings": 18
+    "total_sightings": 19
   },
   "48159": {
     "date_time_added": "2026-04-06 03:38:25",
@@ -3085,12 +3107,12 @@
   "4843": {
     "date_time_added": "2026-04-06 03:38:25",
     "first_seen": "2026-04-06 03:38:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.186773,
-      "lon": 148.696227
+      "lat": -33.186807,
+      "lon": 148.695373
     },
     "last_speed": 1,
     "last_origin": "",
@@ -3102,7 +3124,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "4843",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "4903": {
     "last_seen": "2026-04-03 09:34:58",
@@ -3203,14 +3225,14 @@
   "5005": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.874747,
-      "lon": 151.74324
+      "lat": -32.869273,
+      "lon": 151.721027
     },
-    "last_speed": 2,
+    "last_speed": 3,
     "last_origin": "Mt Arthur",
     "last_destination": "NCIG Kooragang",
     "last_description": "AZ Coal",
@@ -3220,19 +3242,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "d2d8d2fa-6c20-4c53-8784-3405e8179eef",
     "trKey": "5005",
-    "total_sightings": 50
+    "total_sightings": 51
   },
   "5007": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.871587,
-      "lon": 151.738187
+      "lat": -32.872567,
+      "lon": 151.735693
     },
-    "last_speed": 2,
+    "last_speed": 4,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -3242,7 +3264,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "5007",
-    "total_sightings": 49
+    "total_sightings": 50
   },
   "5008": {
     "date_time_added": "2026-04-04 22:12:10",
@@ -3287,14 +3309,14 @@
   "5011": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.874877,
-      "lon": 151.773067
+      "lat": -32.871077,
+      "lon": 151.76156
     },
-    "last_speed": 3,
+    "last_speed": 1,
     "last_origin": "Wambo / Jerry Plains",
     "last_destination": "PWCS Kooragang",
     "last_description": "AZ Coal",
@@ -3304,7 +3326,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "166b2bd6-2aad-4965-b61f-551ac3dff52d",
     "trKey": "5011",
-    "total_sightings": 68
+    "total_sightings": 69
   },
   "5012": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -3349,14 +3371,14 @@
   "5024": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.40528,
-      "lon": 150.657227
+      "lat": -32.29156,
+      "lon": 150.972573
     },
-    "last_speed": 27,
+    "last_speed": 25,
     "last_origin": "Wilpinjong",
     "last_destination": "Mac Generation Antiene",
     "last_description": "AZ Coal",
@@ -3366,7 +3388,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "ed4c5742-21ad-4789-9602-5f10b1f1ddff",
     "trKey": "5024",
-    "total_sightings": 60
+    "total_sightings": 61
   },
   "5025": {
     "date_time_added": "2026-04-03 11:04:25",
@@ -3434,14 +3456,14 @@
   "5029": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.52981,
-      "lon": 151.15404
+      "lat": -32.723317,
+      "lon": 151.440653
     },
-    "last_speed": 39,
+    "last_speed": 38,
     "last_origin": "Mt Arthur",
     "last_destination": "NCIG Kooragang",
     "last_description": "AZ Coal",
@@ -3451,19 +3473,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "7f3b99cb-fa40-4cbe-9cd2-440a7a8db890",
     "trKey": "5029",
-    "total_sightings": 68
+    "total_sightings": 69
   },
   "5030": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.822857,
-      "lon": 151.68048
+      "lat": -32.820427,
+      "lon": 151.679813
     },
-    "last_speed": 0,
+    "last_speed": 5,
     "last_origin": "",
     "last_destination": "",
     "last_description": "AZ Coal",
@@ -3473,7 +3495,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "5030",
-    "total_sightings": 62
+    "total_sightings": 63
   },
   "5032": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -3522,14 +3544,14 @@
   "5035": {
     "date_time_added": "2026-04-05 17:48:22",
     "first_seen": "2026-04-05 17:48:22",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.80085,
-      "lon": 151.659893
+      "lat": -32.6091,
+      "lon": 151.204747
     },
-    "last_speed": 19,
+    "last_speed": 57,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -3539,19 +3561,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "5035",
-    "total_sightings": 15
+    "total_sightings": 16
   },
   "5039": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.790757,
-      "lon": 151.648107
+      "lat": -32.601077,
+      "lon": 151.197187
     },
-    "last_speed": 20,
+    "last_speed": 48,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Mt Arthur",
     "last_description": "AZ Coal",
@@ -3561,7 +3583,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "31105078-3958-4127-9783-37c0abce32e9",
     "trKey": "5039",
-    "total_sightings": 39
+    "total_sightings": 40
   },
   "5040": {
     "last_seen": "2026-02-16 12:14:46",
@@ -3584,12 +3606,12 @@
   "5041": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.34074,
-      "lon": 150.970667
+      "lat": -32.344293,
+      "lon": 150.974173
     },
     "last_speed": 1,
     "last_origin": "Wilpinjong",
@@ -3601,7 +3623,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "9a502f90-404e-4ed6-9f88-e9aed815946a",
     "trKey": "5041",
-    "total_sightings": 81
+    "total_sightings": 82
   },
   "5042": {
     "date_time_added": "2026-04-06 09:58:08",
@@ -3628,14 +3650,14 @@
   "5043": {
     "date_time_added": "2026-04-03 17:03:11",
     "first_seen": "2026-04-03 17:03:11",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.277807,
-      "lon": 150.90656
+      "lat": -32.257103,
+      "lon": 150.828293
     },
-    "last_speed": 37,
+    "last_speed": 1,
     "last_origin": "Hexham TSF",
     "last_destination": "Mt. Pleasure",
     "last_description": "AZ Coal",
@@ -3645,19 +3667,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "23bb7f60-d526-46e9-ad03-85e4e06b8979",
     "trKey": "5043",
-    "total_sightings": 67
+    "total_sightings": 68
   },
   "5044": {
     "date_time_added": "2026-04-06 00:04:35",
     "first_seen": "2026-04-06 00:04:35",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.65841,
-      "lon": 151.286107
+      "lat": -32.279863,
+      "lon": 150.918453
     },
-    "last_speed": 64,
+    "last_speed": 66,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -3667,7 +3689,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "5044",
-    "total_sightings": 4
+    "total_sightings": 5
   },
   "6001": {
     "last_seen": "2026-02-16 12:14:46",
@@ -3690,12 +3712,12 @@
   "6007": {
     "date_time_added": "2026-04-04 22:12:10",
     "first_seen": "2026-04-04 22:12:10",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.39278,
-      "lon": 150.64608
+      "lat": -31.52614,
+      "lon": 150.68784
     },
     "last_speed": 0,
     "last_origin": "Maules Creek",
@@ -3707,17 +3729,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "2c7ab555-71df-43af-b7f6-93efb3611624",
     "trKey": "6007",
-    "total_sightings": 50
+    "total_sightings": 51
   },
   "6008": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.272367,
-      "lon": 150.859947
+      "lat": -32.48285,
+      "lon": 151.134573
     },
     "last_speed": 38,
     "last_origin": "Various Mines",
@@ -3729,7 +3751,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "a229de62-3eab-4f97-9495-8b18989f910b",
     "trKey": "6008",
-    "total_sightings": 80
+    "total_sightings": 81
   },
   "6010": {
     "date_time_added": "2026-04-04 23:21:29",
@@ -3800,14 +3822,14 @@
   "6022": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.911747,
-      "lon": 120.817507
+      "lat": -30.8407,
+      "lon": 121.259133
     },
-    "last_speed": 2,
+    "last_speed": 95,
     "last_origin": "Kwinana",
     "last_destination": "Glenlee",
     "last_description": "Aurizon Intermodal",
@@ -3817,7 +3839,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "cd358052-c62b-48c6-856f-c1ef22452415",
     "trKey": "6022",
-    "total_sightings": 77
+    "total_sightings": 78
   },
   "6023": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -3866,14 +3888,14 @@
   "6027": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.825247,
-      "lon": 150.06192
+      "lat": -30.561763,
+      "lon": 150.118333
     },
-    "last_speed": 73,
+    "last_speed": 14,
     "last_origin": "NCIG Kooragang",
     "last_destination": "Maules Creek",
     "last_description": "AZ Coal",
@@ -3883,19 +3905,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "060266d0-54b3-4bf0-890b-9f7265298ecb",
     "trKey": "6027",
-    "total_sightings": 78
+    "total_sightings": 79
   },
   "6028": {
     "date_time_added": "2026-04-06 00:04:35",
     "first_seen": "2026-04-06 00:04:35",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.658353,
-      "lon": 151.285893
+      "lat": -32.27987,
+      "lon": 150.91844
     },
-    "last_speed": 65,
+    "last_speed": 67,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Maules Creek",
     "last_description": "AZ Coal",
@@ -3905,19 +3927,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "a92d0dd4-eda9-4e95-99d7-cf0004e0a776",
     "trKey": "6028",
-    "total_sightings": 5
+    "total_sightings": 6
   },
   "6029": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -36.080197,
-      "lon": 146.772627
+      "lat": -35.482557,
+      "lon": 147.032387
     },
-    "last_speed": 108,
+    "last_speed": 104,
     "last_origin": "North Dynon",
     "last_destination": "Glenlee",
     "last_description": "Aurizon Intermodal",
@@ -3927,19 +3949,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "95c39f37-5536-4c8c-b97a-5e09f218d646",
     "trKey": "6029",
-    "total_sightings": 49
+    "total_sightings": 50
   },
   "6043": {
     "date_time_added": "2026-04-05 20:18:42",
     "first_seen": "2026-04-05 20:18:42",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.328463,
-      "lon": 150.555613
+      "lat": -31.390523,
+      "lon": 150.64544
     },
-    "last_speed": 0,
+    "last_speed": 50,
     "last_origin": "North West NSW",
     "last_destination": "Carrington",
     "last_description": "Aurizon Loaded Grain",
@@ -3949,7 +3971,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "5c1e910b-0e46-48aa-8e48-be6c682a7c7f",
     "trKey": "6043",
-    "total_sightings": 9
+    "total_sightings": 10
   },
   "8026": {
     "last_seen": "2026-02-16 12:14:46",
@@ -4038,14 +4060,14 @@
   "8103": {
     "date_time_added": "2026-04-05 10:52:42",
     "first_seen": "2026-04-05 10:52:42",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.94867,
-      "lon": 151.21248
+      "lat": -33.909637,
+      "lon": 151.133427
     },
-    "last_speed": 3,
+    "last_speed": 46,
     "last_origin": "Port Botany",
     "last_destination": "St Marys Intermodal Hub",
     "last_description": "PN Intermodal Trip Train - RSS Crewed",
@@ -4055,7 +4077,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "ce7d7013-b653-46ca-9fab-0d913c22e653",
     "trKey": "8103",
-    "total_sightings": 22
+    "total_sightings": 23
   },
   "8105": {
     "date_time_added": "2026-04-03 10:12:34",
@@ -4170,14 +4192,14 @@
   "8117": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.900333,
-      "lon": 151.75452
+      "lat": -32.886037,
+      "lon": 151.754493
     },
-    "last_speed": 4,
+    "last_speed": 5,
     "last_origin": "Morandoo",
     "last_destination": "",
     "last_description": "PN - Infrabuild Shunter",
@@ -4187,7 +4209,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "b2be4145-44cc-43cb-ab34-68c6877322dd",
     "trKey": "8117",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "8121": {
     "date_time_added": "2026-04-05 13:36:32",
@@ -4254,12 +4276,12 @@
   "8127": {
     "date_time_added": "2026-04-03 22:21:18",
     "first_seen": "2026-04-03 22:21:18",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.964097,
-      "lon": 151.215213
+      "lat": -33.964153,
+      "lon": 151.215293
     },
     "last_speed": 1,
     "last_origin": "",
@@ -4271,7 +4293,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "9ec7f45f-0a85-45e3-bd9f-c5e6fb7e30d6",
     "trKey": "8127",
-    "total_sightings": 25
+    "total_sightings": 26
   },
   "8129": {
     "date_time_added": "2026-04-05 20:55:29",
@@ -4339,24 +4361,24 @@
   "8132": {
     "date_time_added": "2026-04-03 20:52:37",
     "first_seen": "2026-04-03 20:52:37",
-    "last_seen": "2026-04-05 08:41:49",
-    "last_date": "2026-04-05",
-    "last_time": "08:41:49",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -37.28248,
-      "lon": 142.940093
+      "lat": -37.28178,
+      "lon": 142.94704
     },
-    "last_speed": 8,
-    "last_origin": "",
-    "last_destination": "",
+    "last_speed": 6,
+    "last_origin": "Yelta Line / Murrayville Line",
+    "last_destination": "Ararat",
     "last_description": "PN Grain",
     "vehicle_description": "PN Grain",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "7936V",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "",
+    "servId": "3c0999f9-d1a7-4ab8-8ef4-7705f3473f78",
     "trKey": "8132",
-    "total_sightings": 17
+    "total_sightings": 18
   },
   "8133": {
     "date_time_added": "2026-04-03 15:54:03",
@@ -4405,58 +4427,58 @@
   "8142": {
     "date_time_added": "2026-04-03 22:58:27",
     "first_seen": "2026-04-03 22:58:27",
-    "last_seen": "2026-04-06 11:51:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "11:51:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.756093,
-      "lon": 150.768187
+      "lat": -33.76153,
+      "lon": 150.771907
     },
-    "last_speed": 7,
-    "last_origin": "",
-    "last_destination": "",
+    "last_speed": 9,
+    "last_origin": "St Marys Freight Hub",
+    "last_destination": "Port Botany",
     "last_description": "PN Intermodal Trip Train - RSS Crewed",
     "vehicle_description": "PN Intermodal Trip Train - RSS Crewed",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "1150",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "",
+    "servId": "cbbe3ba7-3b7e-46e7-8a5b-5779a0946f90",
     "trKey": "8142",
-    "total_sightings": 14
+    "total_sightings": 15
   },
   "8144": {
     "date_time_added": "2026-04-06 05:52:30",
     "first_seen": "2026-04-06 05:52:30",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -37.563943,
-      "lon": 144.959893
+      "lat": -37.798723,
+      "lon": 144.8658
     },
-    "last_speed": 26,
-    "last_origin": "",
-    "last_destination": "",
+    "last_speed": 0,
+    "last_origin": "Southern NSW",
+    "last_destination": "Anakie Loop",
     "last_description": "PN Grain",
     "vehicle_description": "PN Grain",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "2CM7",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "",
+    "servId": "2d5705df-3648-4415-9b6f-8285b2029da4",
     "trKey": "8144",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "8146": {
     "date_time_added": "2026-04-06 15:53:28",
     "first_seen": "2026-04-06 15:53:28",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.642203,
-      "lon": 148.029853
+      "lat": -34.85191,
+      "lon": 147.59432
     },
-    "last_speed": 2,
+    "last_speed": 50,
     "last_origin": "Southern NSW",
     "last_destination": "Southern NSW",
     "last_description": "PN Grain Shuttle",
@@ -4466,7 +4488,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "91ce3753-8fc3-47bd-b75d-b045dcbfac9c",
     "trKey": "8146",
-    "total_sightings": 1
+    "total_sightings": 2
   },
   "8148": {
     "date_time_added": "2026-04-05 17:06:19",
@@ -4681,14 +4703,14 @@
   "8164": {
     "date_time_added": "2026-04-06 15:53:28",
     "first_seen": "2026-04-06 15:53:28",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.642153,
-      "lon": 148.029933
+      "lat": -34.85193,
+      "lon": 147.594347
     },
-    "last_speed": 2,
+    "last_speed": 50,
     "last_origin": "",
     "last_destination": "",
     "last_description": "PN Cement - RailTrain Crewed",
@@ -4698,7 +4720,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "",
     "trKey": "8164",
-    "total_sightings": 3
+    "total_sightings": 4
   },
   "8166": {
     "date_time_added": "2026-04-03 19:45:41",
@@ -4853,14 +4875,14 @@
   "8202": {
     "date_time_added": "2026-04-03 22:21:18",
     "first_seen": "2026-04-03 22:21:18",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.462503,
-      "lon": 150.87168
+      "lat": -34.467777,
+      "lon": 150.890613
     },
-    "last_speed": 16,
+    "last_speed": 1,
     "last_origin": "Dendrobium Mine",
     "last_destination": "Port Kembla",
     "last_description": "PN Coal",
@@ -4870,7 +4892,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "f15120c1-b966-4673-90a4-26150d810245",
     "trKey": "8202",
-    "total_sightings": 29
+    "total_sightings": 30
   },
   "8203": {
     "date_time_added": "2026-04-03 19:04:14",
@@ -5003,14 +5025,14 @@
   "8213": {
     "date_time_added": "2026-04-03 11:49:23",
     "first_seen": "2026-04-03 11:49:23",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.201683,
-      "lon": 150.592693
+      "lat": -34.41453,
+      "lon": 150.514467
     },
-    "last_speed": 29,
+    "last_speed": 23,
     "last_origin": "Clyde",
     "last_destination": "Crisps Creek",
     "last_description": "PN Garbage Train",
@@ -5020,7 +5042,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "84d361d8-90b7-4165-84a1-a796367ea6fb",
     "trKey": "8213",
-    "total_sightings": 40
+    "total_sightings": 41
   },
   "8214": {
     "date_time_added": "2026-04-06 05:52:30",
@@ -5066,14 +5088,14 @@
   "8218": {
     "date_time_added": "2026-04-03 12:32:25",
     "first_seen": "2026-04-03 12:32:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.893603,
-      "lon": 151.067773
+      "lat": -34.083783,
+      "lon": 150.767133
     },
-    "last_speed": 7,
+    "last_speed": 45,
     "last_origin": "",
     "last_destination": "",
     "last_description": "PN Garbage Train",
@@ -5083,7 +5105,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "",
     "trKey": "8218",
-    "total_sightings": 33
+    "total_sightings": 34
   },
   "8220": {
     "last_seen": "2026-04-03 20:07:20",
@@ -5107,14 +5129,14 @@
   "8222": {
     "date_time_added": "2026-04-05 10:52:42",
     "first_seen": "2026-04-05 10:52:42",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.8936,
-      "lon": 151.067773
+      "lat": -34.083793,
+      "lon": 150.767107
     },
-    "last_speed": 5,
+    "last_speed": 44,
     "last_origin": "Banksmeadow",
     "last_destination": "Crisps Creek",
     "last_description": "PN Garbage Train",
@@ -5124,7 +5146,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "e0e7efc5-0d1b-4a96-907c-955709ae7219",
     "trKey": "8222",
-    "total_sightings": 21
+    "total_sightings": 22
   },
   "8223": {
     "date_time_added": "2026-04-03 23:58:10",
@@ -5208,23 +5230,26 @@
     "first_seen": "2026-04-03 08:48:43"
   },
   "8233": {
-    "last_seen": "2026-04-03 20:07:20",
-    "last_date": "2026-04-03",
-    "last_time": "20:07:20",
+    "date_time_added": "2026-04-03 11:49:23",
+    "first_seen": "2026-04-03 11:49:23",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.35502,
-      "lon": 150.645373
+      "lat": -31.347387,
+      "lon": 150.644787
     },
-    "last_speed": 5,
-    "last_origin": "Carrington",
+    "last_speed": 9,
+    "last_origin": "North West NSW",
     "last_destination": "North West NSW",
-    "last_description": "PN Grain",
-    "last_train_number": "4521",
+    "last_description": "PN Grain Shuttle",
+    "vehicle_description": "PN Grain Shuttle",
+    "current_operator": "",
+    "last_train_number": "5521",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "4dfa3709-d9ff-4f4b-9ab6-f27fc8c47104",
+    "servId": "e99f9994-2323-4b8a-a324-e4ede551ed61",
     "trKey": "8233",
-    "total_sightings": 13,
-    "first_seen": "2026-04-03 11:49:23"
+    "total_sightings": 14
   },
   "8234": {
     "date_time_added": "2026-04-06 10:58:09",
@@ -5493,14 +5518,14 @@
   "9027": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 11:51:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "11:51:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.433633,
-      "lon": 151.055813
+      "lat": -32.392093,
+      "lon": 151.00292
     },
-    "last_speed": 61,
+    "last_speed": 1,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Hunter Valley",
     "last_description": "PN Coal",
@@ -5510,19 +5535,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "369b4b10-814a-4e28-88c9-d1023c24b971",
     "trKey": "9027",
-    "total_sightings": 62
+    "total_sightings": 63
   },
   "9029": {
     "date_time_added": "2026-04-03 13:46:05",
     "first_seen": "2026-04-03 13:46:05",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.425023,
-      "lon": 150.292413
+      "lat": -32.398647,
+      "lon": 150.635373
     },
-    "last_speed": 31,
+    "last_speed": 55,
     "last_origin": "Moolarben",
     "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
@@ -5532,7 +5557,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "1cbd4f81-3a2e-4695-b745-9597ea108702",
     "trKey": "9029",
-    "total_sightings": 71
+    "total_sightings": 72
   },
   "9203": {
     "date_time_added": "2026-04-05 23:37:51",
@@ -5599,24 +5624,24 @@
   "9209": {
     "date_time_added": "2026-04-05 23:37:51",
     "first_seen": "2026-04-05 23:37:51",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.620663,
-      "lon": 150.132093
+      "lat": -30.621337,
+      "lon": 150.085693
     },
-    "last_speed": 1,
-    "last_origin": "PWCS Kooragang",
-    "last_destination": "Boggabri East",
+    "last_speed": 40,
+    "last_origin": "Boggabri East",
+    "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
     "vehicle_description": "PN Coal",
     "current_operator": "",
-    "last_train_number": "BE521",
+    "last_train_number": "BE522",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "0b473386-4648-473c-8623-6c3341aeaad1",
+    "servId": "f2d01cba-6a45-4b23-8bd1-13f1b691cacf",
     "trKey": "9209",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "9214": {
     "date_time_added": "2026-04-05 09:27:05",
@@ -5643,14 +5668,14 @@
   "9301": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.720117,
-      "lon": 151.414373
+      "lat": -32.859997,
+      "lon": 151.697427
     },
-    "last_speed": 41,
+    "last_speed": 31,
     "last_origin": "Maules Creek",
     "last_destination": "NCIG Kooragang",
     "last_description": "PN Coal",
@@ -5660,7 +5685,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "8711dd7e-6fcc-4509-9735-ec0909cde0d7",
     "trKey": "9301",
-    "total_sightings": 81
+    "total_sightings": 82
   },
   "9302": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -5727,14 +5752,14 @@
   "9305": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.903563,
-      "lon": 150.120627
+      "lat": -31.024377,
+      "lon": 150.27384
     },
-    "last_speed": 48,
+    "last_speed": 31,
     "last_origin": "Boggabri East",
     "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
@@ -5744,7 +5769,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "311cce81-c932-4a90-b318-7f7b94b053f6",
     "trKey": "9305",
-    "total_sightings": 68
+    "total_sightings": 69
   },
   "9306": {
     "date_time_added": "2026-04-05 15:26:42",
@@ -5771,14 +5796,14 @@
   "9307": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.010937,
-      "lon": 150.867707
+      "lat": -32.26707,
+      "lon": 150.889387
     },
-    "last_speed": 43,
+    "last_speed": 39,
     "last_origin": "Boggabri East",
     "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
@@ -5788,19 +5813,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "284886a7-74d0-4e3e-90a6-1ecc9e950e9f",
     "trKey": "9307",
-    "total_sightings": 66
+    "total_sightings": 67
   },
   "9308": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.192993,
-      "lon": 150.89368
+      "lat": -31.82727,
+      "lon": 150.925173
     },
-    "last_speed": 66,
+    "last_speed": 54,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Boggabri East",
     "last_description": "PN Coal",
@@ -5810,7 +5835,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "fd824b42-aad5-4bfd-9a47-5d3d4a0aa6aa",
     "trKey": "9308",
-    "total_sightings": 73
+    "total_sightings": 74
   },
   "9310": {
     "last_seen": "2026-02-16 12:14:46",
@@ -5833,14 +5858,14 @@
   "9311": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.348687,
-      "lon": 150.618347
+      "lat": -31.106773,
+      "lon": 150.2674
     },
-    "last_speed": 37,
+    "last_speed": 0,
     "last_origin": "NCIG Kooragang",
     "last_destination": "Maules Creek",
     "last_description": "PN Coal",
@@ -5850,17 +5875,17 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "c69a92d4-4544-4545-86ed-35b7e1adb22b",
     "trKey": "9311",
-    "total_sightings": 67
+    "total_sightings": 68
   },
   "9312": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.515037,
-      "lon": 149.900173
+      "lat": -30.515217,
+      "lon": 149.905893
     },
     "last_speed": 1,
     "last_origin": "NCIG Kooragang",
@@ -5872,7 +5897,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "f041eef0-f3d9-4200-9d48-0417eb397593",
     "trKey": "9312",
-    "total_sightings": 75
+    "total_sightings": 76
   },
   "9313": {
     "date_time_added": "2026-04-03 10:12:34",
@@ -5936,14 +5961,14 @@
   "9320": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.347987,
-      "lon": 150.624187
+      "lat": -31.107273,
+      "lon": 150.267333
     },
-    "last_speed": 35,
+    "last_speed": 3,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -5953,29 +5978,29 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "",
     "trKey": "9320",
-    "total_sightings": 63
+    "total_sightings": 64
   },
   "9322": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.8671,
-      "lon": 151.753973
+      "lat": -32.86903,
+      "lon": 151.70152
     },
-    "last_speed": 2,
-    "last_origin": "Bengalla",
-    "last_destination": "PWCS Kooragang",
+    "last_speed": 25,
+    "last_origin": "NCIG Kooragang",
+    "last_destination": "Moolarben",
     "last_description": "PN Coal",
     "vehicle_description": "PN Coal",
     "current_operator": "",
-    "last_train_number": "BG280",
+    "last_train_number": "MR901",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "28838d2f-e3ad-44e4-917d-7abbc04c9f21",
+    "servId": "769967e5-46c1-4565-8629-2c6ac25c2fd9",
     "trKey": "9322",
-    "total_sightings": 65
+    "total_sightings": 66
   },
   "9323": {
     "last_seen": "2026-02-16 12:14:46",
@@ -6060,12 +6085,12 @@
   "9409": {
     "date_time_added": "2026-04-05 01:09:16",
     "first_seen": "2026-04-05 01:09:16",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
       "lat": -36.427813,
-      "lon": 142.015147
+      "lon": 142.015173
     },
     "last_speed": 0,
     "last_origin": "AFT (Islington)",
@@ -6077,7 +6102,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "b4870c80-7776-4f47-9cfa-60e80da267fc",
     "trKey": "9409",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "9412": {
     "date_time_added": "2026-04-03 22:21:18",
@@ -6184,11 +6209,11 @@
   "AC4301": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.772257,
+      "lat": -30.772251,
       "lon": 121.431793
     },
     "last_speed": 0,
@@ -6201,19 +6226,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "AC4301",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "AC4302": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.4851,
-      "lon": 121.747444
+      "lat": -33.804874,
+      "lon": 121.864319
     },
-    "last_speed": 48,
+    "last_speed": 43,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -6223,19 +6248,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "AC4302",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "AC4303": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.494751,
-      "lon": 121.752342
+      "lat": -33.812466,
+      "lon": 121.855972
     },
-    "last_speed": 48,
+    "last_speed": 43,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -6245,17 +6270,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "AC4303",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "AC4304": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.855213,
-      "lon": 121.881783
+      "lat": -33.873219,
+      "lon": 121.900093
     },
     "last_speed": 0,
     "last_origin": "",
@@ -6267,17 +6292,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "AC4304",
-    "total_sightings": 48
+    "total_sightings": 49
   },
   "AC4305": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.854851,
-      "lon": 121.881844
+      "lat": -33.854847,
+      "lon": 121.881836
     },
     "last_speed": 0,
     "last_origin": "",
@@ -6289,14 +6314,14 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "AC4305",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "AC4308": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
       "lat": -30.772728,
       "lon": 121.430977
@@ -6311,7 +6336,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "AC4308",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "ACB4401": {
     "date_time_added": "2026-04-03 14:30:34",
@@ -6338,24 +6363,24 @@
   "ACB4402": {
     "date_time_added": "2026-04-03 14:30:34",
     "first_seen": "2026-04-03 14:30:34",
-    "last_seen": "2026-04-04 23:52:47",
-    "last_date": "2026-04-04",
-    "last_time": "23:52:47",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.908763,
-      "lon": 151.770507
+      "lat": -31.462507,
+      "lon": 149.89972
     },
-    "last_speed": 3,
-    "last_origin": "Hermidale",
-    "last_destination": "Carrington",
-    "last_description": "Aurizon Loaded Ore (diverted 8402)",
-    "vehicle_description": "Aurizon Loaded Ore (diverted 8402)",
+    "last_speed": 1,
+    "last_origin": "Collie",
+    "last_destination": "Ewington Mine",
+    "last_description": "Cockburn Cement Empty Coal",
+    "vehicle_description": "Cockburn Cement Empty Coal",
     "current_operator": "",
-    "last_train_number": "8456",
+    "last_train_number": "4553",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "5aab439c-983a-4a04-be52-27222638cee4",
+    "servId": "bbc263b0-6e02-4067-b41c-a1e69ea689c3",
     "trKey": "ACB4402",
-    "total_sightings": 29
+    "total_sightings": 30
   },
   "ACB4403": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -6382,14 +6407,14 @@
   "ACB4404": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.56821,
-      "lon": 116.475493
+      "lat": -31.641582,
+      "lon": 116.632591
     },
-    "last_speed": 38,
+    "last_speed": 0,
     "last_origin": "",
     "last_destination": "",
     "last_description": "CBH SG Empty Grain",
@@ -6399,19 +6424,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACB4404",
-    "total_sightings": 65
+    "total_sightings": 66
   },
   "ACB4405": {
     "date_time_added": "2026-04-04 01:28:01",
     "first_seen": "2026-04-04 01:28:01",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.18018,
-      "lon": 147.9258
+      "lat": -34.51372,
+      "lon": 147.975427
     },
-    "last_speed": 86,
+    "last_speed": 69,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -6421,16 +6446,16 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACB4405",
-    "total_sightings": 58
+    "total_sightings": 59
   },
   "ACB4406": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.082512,
+      "lat": -34.082516,
       "lon": 150.757965
     },
     "last_speed": 0,
@@ -6443,17 +6468,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACB4406",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "ACC6030": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.388084,
-      "lon": 118.479134
+      "lat": -31.488422,
+      "lon": 118.243004
     },
     "last_speed": 0,
     "last_origin": "",
@@ -6465,19 +6490,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACC6030",
-    "total_sightings": 63
+    "total_sightings": 64
   },
   "ACC6031": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.87236,
-      "lon": 121.067726
+      "lat": -30.818701,
+      "lon": 120.350967
     },
-    "last_speed": 79,
+    "last_speed": 80,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -6487,19 +6512,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACC6031",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "ACC6032": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.250908,
-      "lon": 115.762207
+      "lat": -32.188766,
+      "lon": 115.797897
     },
-    "last_speed": 0,
+    "last_speed": 31,
     "last_origin": "Eastern Goldfields Railway",
     "last_destination": "Kwinana Grain Terminal",
     "last_description": "CBH SG Loaded Grain",
@@ -6509,7 +6534,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "4fdad085-20dd-47a0-94ce-6b3c93f4cfd0",
     "trKey": "ACC6032",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACD6046": {
     "date_time_added": "2026-04-05 22:24:54",
@@ -6642,14 +6667,14 @@
   "ACD6052": {
     "date_time_added": "2026-04-04 22:39:29",
     "first_seen": "2026-04-04 22:39:29",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.774643,
-      "lon": 121.42708
+      "lat": -30.781197,
+      "lon": 121.415573
     },
-    "last_speed": 18,
+    "last_speed": 2,
     "last_origin": "North Dynon",
     "last_destination": "Aurizon, Forrestfield",
     "last_description": "Aurizon Intermodal",
@@ -6659,19 +6684,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "667e2b5e-5288-425c-8d69-e105e670d109",
     "trKey": "ACD6052",
-    "total_sightings": 42
+    "total_sightings": 43
   },
   "ACD6053": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.55209,
-      "lon": 130.94132
+      "lat": -30.467887,
+      "lon": 131.889187
     },
-    "last_speed": 106,
+    "last_speed": 69,
     "last_origin": "North Dynon",
     "last_destination": "Aurizon, Forrestfield",
     "last_description": "Aurizon Intermodal",
@@ -6681,7 +6706,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "1d6bd24b-74ce-47cf-a23b-157a8f3df87c",
     "trKey": "ACD6053",
-    "total_sightings": 72
+    "total_sightings": 73
   },
   "ACD6054": {
     "date_time_added": "2026-04-04 22:12:10",
@@ -6730,14 +6755,14 @@
   "ACD6056": {
     "date_time_added": "2026-04-05 12:27:11",
     "first_seen": "2026-04-05 12:27:11",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.55161,
-      "lon": 130.945347
+      "lat": -30.46789,
+      "lon": 131.889173
     },
-    "last_speed": 106,
+    "last_speed": 69,
     "last_origin": "Aurizon, Forrestfield",
     "last_destination": "North Dynon",
     "last_description": "Aurizon Intermodal",
@@ -6747,7 +6772,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "210af4fb-3054-4d8c-a39f-a1d6851bbc20",
     "trKey": "ACD6056",
-    "total_sightings": 25
+    "total_sightings": 26
   },
   "ACD6057": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -6774,14 +6799,14 @@
   "ACD6058": {
     "date_time_added": "2026-04-03 10:12:34",
     "first_seen": "2026-04-03 10:12:34",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.536453,
-      "lon": 148.1256
+      "lat": -34.70727,
+      "lon": 148.654773
     },
-    "last_speed": 65,
+    "last_speed": 80,
     "last_origin": "SCT, Laverton",
     "last_destination": "SCT, Bromelton",
     "last_description": "SCT Intermodal",
@@ -6791,7 +6816,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "34b3ac42-5164-45c5-8834-5c1910aca444",
     "trKey": "ACD6058",
-    "total_sightings": 18
+    "total_sightings": 19
   },
   "ACD6059": {
     "date_time_added": "2026-04-03 10:12:34",
@@ -6840,12 +6865,12 @@
   "ACD6062": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.875053,
-      "lon": 121.06036
+      "lat": -30.821483,
+      "lon": 120.358053
     },
     "last_speed": 80,
     "last_origin": "Koolyanobbing East",
@@ -6857,19 +6882,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "83b0f615-650f-4a34-8242-e19330446665",
     "trKey": "ACD6062",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "ACD6063": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.87204,
-      "lon": 121.0686
+      "lat": -30.82952,
+      "lon": 120.375307
     },
-    "last_speed": 79,
+    "last_speed": 80,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -6879,7 +6904,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACD6063",
-    "total_sightings": 13
+    "total_sightings": 14
   },
   "ACD6064": {
     "date_time_added": "2026-04-05 23:37:51",
@@ -6906,14 +6931,14 @@
   "ACD6065": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.186327,
-      "lon": 147.933253
+      "lat": -34.515567,
+      "lon": 147.976133
     },
-    "last_speed": 84,
+    "last_speed": 70,
     "last_origin": "Aurizon, Forrestfield",
     "last_destination": "Glenlee",
     "last_description": "Aurizon Intermodal",
@@ -6923,7 +6948,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "cd627e76-4caf-4420-a44d-4e517554370d",
     "trKey": "ACD6065",
-    "total_sightings": 68
+    "total_sightings": 69
   },
   "ACD6066": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -6950,14 +6975,14 @@
   "ACD6067": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.875743,
-      "lon": 121.058453
+      "lat": -30.81923,
+      "lon": 120.352947
     },
-    "last_speed": 79,
+    "last_speed": 80,
     "last_origin": "Esperance",
     "last_destination": "Koolyanobbing East / Mt Walton",
     "last_description": "Yilgarn Iron Iron Ore",
@@ -6967,7 +6992,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "cdf27cad-a304-4805-8948-4005638e556b",
     "trKey": "ACD6067",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "ACD6069": {
     "date_time_added": "2026-04-03 10:12:34",
@@ -7038,24 +7063,24 @@
   "ACD6073": {
     "date_time_added": "2026-04-05 22:24:54",
     "first_seen": "2026-04-05 22:24:54",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -22.378347,
-      "lon": 133.896213
+      "lat": -23.224785,
+      "lon": 133.76572
     },
-    "last_speed": 75,
-    "last_origin": "Berrimah (Darwin)",
-    "last_destination": "Gillman Yard (Port Flat)",
+    "last_speed": 108,
+    "last_origin": "",
+    "last_destination": "",
     "last_description": "Aurizon Intermodal",
     "vehicle_description": "Aurizon Intermodal",
     "current_operator": "",
-    "last_train_number": "2DA2",
+    "last_train_number": "UNREG",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "3d1dafb3-3be8-487d-b8ab-6c689a092921",
+    "servId": "",
     "trKey": "ACD6073",
-    "total_sightings": 13
+    "total_sightings": 14
   },
   "ACD6074": {
     "date_time_added": "2026-04-03 22:58:27",
@@ -7104,14 +7129,14 @@
   "ACN4141": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.812809,
-      "lon": 114.713203
+      "lat": -28.688314,
+      "lon": 115.113289
     },
-    "last_speed": 0,
+    "last_speed": 75,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7121,19 +7146,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4141",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4142": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.620335,
-      "lon": 115.627747
+      "lat": -28.672575,
+      "lon": 115.281082
     },
-    "last_speed": 53,
+    "last_speed": 17,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7143,19 +7168,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4142",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4144": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.815319,
-      "lon": 114.722801
+      "lat": -28.687843,
+      "lon": 115.115585
     },
-    "last_speed": 0,
+    "last_speed": 78,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7165,19 +7190,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4144",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "ACN4147": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.777039,
-      "lon": 114.590256
+      "lat": -28.818697,
+      "lon": 114.697395
     },
-    "last_speed": 6,
+    "last_speed": 38,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7187,19 +7212,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4147",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4148": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -29.188478,
-      "lon": 116.753479
+      "lat": -29.185528,
+      "lon": 116.748192
     },
-    "last_speed": 15,
+    "last_speed": 2,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7209,19 +7234,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4148",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4149": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.776699,
-      "lon": 114.600876
+      "lat": -28.813076,
+      "lon": 114.687195
     },
-    "last_speed": 6,
+    "last_speed": 38,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7231,19 +7256,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4149",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4150": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -29.191946,
-      "lon": 116.745201
+      "lat": -29.191776,
+      "lon": 116.751984
     },
-    "last_speed": 15,
+    "last_speed": 2,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7253,7 +7278,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4150",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "ACN4151": {
     "last_seen": "2026-02-16 12:14:46",
@@ -7298,14 +7323,14 @@
   "ACN4168": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.612988,
-      "lon": 115.620361
+      "lat": -28.674286,
+      "lon": 115.270927
     },
-    "last_speed": 53,
+    "last_speed": 17,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7315,19 +7340,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4168",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4169": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.776661,
-      "lon": 114.601166
+      "lat": -28.810743,
+      "lon": 114.683846
     },
-    "last_speed": 6,
+    "last_speed": 38,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7337,19 +7362,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4169",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4170": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.813158,
-      "lon": 114.713272
+      "lat": -28.685755,
+      "lon": 115.125549
     },
-    "last_speed": 0,
+    "last_speed": 78,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7359,19 +7384,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4170",
-    "total_sightings": 84
+    "total_sightings": 85
   },
   "ACN4171": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.61319,
-      "lon": 115.620712
+      "lat": -28.674217,
+      "lon": 115.271324
     },
-    "last_speed": 53,
+    "last_speed": 17,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7381,7 +7406,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4171",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "ACN4172": {
     "last_seen": "2026-02-16 12:14:46",
@@ -7404,12 +7429,12 @@
   "ACN4173": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.347282,
-      "lon": 115.708603
+      "lat": -33.347301,
+      "lon": 115.708618
     },
     "last_speed": 0,
     "last_origin": "",
@@ -7421,7 +7446,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4173",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ACN4174": {
     "date_time_added": "2026-04-06 03:38:25",
@@ -7448,14 +7473,14 @@
   "ACN4175": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -29.188816,
-      "lon": 116.753532
+      "lat": -29.185436,
+      "lon": 116.748604
     },
-    "last_speed": 15,
+    "last_speed": 2,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7465,19 +7490,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ACN4175",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "ALF18": {
     "date_time_added": "2026-04-06 03:38:25",
     "first_seen": "2026-04-06 03:38:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.834197,
-      "lon": 138.51496
+      "lat": -34.833023,
+      "lon": 138.5158
     },
-    "last_speed": 8,
+    "last_speed": 5,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -7487,29 +7512,29 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "ALF18",
-    "total_sightings": 3
+    "total_sightings": 4
   },
   "ALF20": {
     "date_time_added": "2026-04-06 05:52:30",
     "first_seen": "2026-04-06 05:52:30",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.809223,
-      "lon": 138.606787
+      "lat": -34.683807,
+      "lon": 138.57864
     },
-    "last_speed": 10,
-    "last_origin": "",
-    "last_destination": "",
-    "last_description": "",
-    "vehicle_description": "",
+    "last_speed": 60,
+    "last_origin": "Dry Creek North",
+    "last_destination": "Gladstone",
+    "last_description": "Aurizon Empty Grain",
+    "vehicle_description": "Aurizon Empty Grain",
     "current_operator": "",
-    "last_train_number": "1129",
+    "last_train_number": "1513S",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "",
+    "servId": "ae5c8651-8c18-45d7-aa7e-54cca9182122",
     "trKey": "ALF20",
-    "total_sightings": 4
+    "total_sightings": 5
   },
   "ARROWMARKERSSOURCE_0": {
     "date_time_added": "2026-04-04 13:15:12",
@@ -22848,24 +22873,24 @@
   "BL32": {
     "date_time_added": "2026-04-06 16:34:45",
     "first_seen": "2026-04-06 16:34:45",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -37.806237,
-      "lon": 144.9348
+      "lat": -37.800907,
+      "lon": 144.878813
     },
-    "last_speed": 6,
+    "last_speed": 16,
     "last_origin": "",
     "last_destination": "",
-    "last_description": "",
-    "vehicle_description": "",
+    "last_description": "PN Light Engine",
+    "vehicle_description": "PN Light Engine",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "0501",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "",
+    "servId": "1bf13ee6-a4ad-4763-96b0-47b7c6871135",
     "trKey": "BL32",
-    "total_sightings": 1
+    "total_sightings": 2
   },
   "BRM001": {
     "last_seen": "2026-04-03 12:49:23",
@@ -22911,14 +22936,14 @@
   "C503": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.507927,
-      "lon": 150.332587
+      "lat": -34.50771,
+      "lon": 150.331533
     },
-    "last_speed": 1,
+    "last_speed": 2,
     "last_origin": "Berrima Cement Works",
     "last_destination": "Marulan South Quarry",
     "last_description": "SSR Limestone",
@@ -22928,7 +22953,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "64eaca57-d5e6-4a3f-baca-15a6d58bec5b",
     "trKey": "C503",
-    "total_sightings": 54
+    "total_sightings": 55
   },
   "C504": {
     "date_time_added": "2026-04-05 21:26:01",
@@ -22999,14 +23024,14 @@
   "C507": {
     "date_time_added": "2026-04-03 10:12:34",
     "first_seen": "2026-04-03 10:12:34",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.637377,
-      "lon": 148.034507
+      "lat": -34.46364,
+      "lon": 147.704693
     },
-    "last_speed": 0,
+    "last_speed": 10,
     "last_origin": "",
     "last_destination": "",
     "last_description": "SSR Grain",
@@ -23016,19 +23041,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "C507",
-    "total_sightings": 40
+    "total_sightings": 41
   },
   "C508": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.50781,
-      "lon": 150.3322
+      "lat": -34.5076,
+      "lon": 150.331147
     },
-    "last_speed": 1,
+    "last_speed": 2,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -23038,19 +23063,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "C508",
-    "total_sightings": 53
+    "total_sightings": 54
   },
   "C509": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.698803,
-      "lon": 150.15164
+      "lat": -34.52369,
+      "lon": 150.378107
     },
-    "last_speed": 40,
+    "last_speed": 7,
     "last_origin": "Peppertree Quarry",
     "last_destination": "Berrima",
     "last_description": "SSR Loaded Aggregates",
@@ -23060,7 +23085,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "271d0eea-0876-4a44-96c1-c796b72d9909",
     "trKey": "C509",
-    "total_sightings": 43
+    "total_sightings": 44
   },
   "C510": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -23129,22 +23154,26 @@
     "total_sightings": 9
   },
   "CEY004": {
-    "last_seen": "2026-02-16 12:14:46",
-    "last_date": "2026-02-16",
-    "last_time": "12:14:46",
+    "date_time_added": "2026-04-06 17:31:15",
+    "first_seen": "2026-04-06 17:31:15",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.853653,
-      "lon": 151.086573
+      "lat": -32.97914,
+      "lon": 151.579293
     },
-    "last_speed": 42,
-    "last_origin": "NCIG Kooragang / Inner Harbour",
-    "last_destination": "Clarence",
+    "last_speed": 5,
+    "last_origin": "Newstan",
+    "last_destination": "NCIG Kooragang",
     "last_description": "SSR Coal",
-    "last_train_number": "CA13",
-    "cId": "",
-    "servId": "",
-    "trKey": "",
-    "total_sightings": 2
+    "vehicle_description": "SSR Coal",
+    "current_operator": "",
+    "last_train_number": "NW452",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "b5aac648-2377-4ecc-a0fa-2e4aed670b88",
+    "trKey": "CEY004",
+    "total_sightings": 3
   },
   "CEY005": {
     "date_time_added": "2026-04-03 20:07:20",
@@ -23168,17 +23197,39 @@
     "trKey": "CEY005",
     "total_sightings": 14
   },
+  "CEY006": {
+    "date_time_added": "2026-04-06 17:31:15",
+    "first_seen": "2026-04-06 17:31:15",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
+    "last_location": {
+      "lat": -32.978513,
+      "lon": 151.579627
+    },
+    "last_speed": 5,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "",
+    "vehicle_description": "",
+    "current_operator": "",
+    "last_train_number": "UNREG",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "",
+    "trKey": "CEY006",
+    "total_sightings": 1
+  },
   "CEY007": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.742897,
-      "lon": 150.01776
+      "lat": -34.756727,
+      "lon": 150.019787
     },
-    "last_speed": 12,
+    "last_speed": 2,
     "last_origin": "",
     "last_destination": "",
     "last_description": "SSR Loaded Aggregates",
@@ -23188,19 +23239,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "CEY007",
-    "total_sightings": 55
+    "total_sightings": 56
   },
   "CF4401": {
     "date_time_added": "2026-04-05 06:58:41",
     "first_seen": "2026-04-05 06:58:41",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.32795,
-      "lon": 150.555013
+      "lat": -31.395207,
+      "lon": 150.64676
     },
-    "last_speed": 7,
+    "last_speed": 61,
     "last_origin": "",
     "last_destination": "",
     "last_description": "Aurizon Empty Grain",
@@ -23210,17 +23261,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "CF4401",
-    "total_sightings": 28
+    "total_sightings": 29
   },
   "CF4402": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.891653,
-      "lon": 151.068413
+      "lat": -33.891673,
+      "lon": 151.068387
     },
     "last_speed": 0,
     "last_origin": "Werris Creek",
@@ -23232,7 +23283,7 @@
     "cId": "ac759e23-9776-419a-8e29-3375b861db5b",
     "servId": "f26addf3-9f0b-490c-bd3b-8be9025ef1f8",
     "trKey": "CF4402",
-    "total_sightings": 26
+    "total_sightings": 27
   },
   "CF4403": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -23259,14 +23310,14 @@
   "CF4404": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.74679,
-      "lon": 150.0196
+      "lat": -34.75452,
+      "lon": 150.023773
     },
-    "last_speed": 11,
+    "last_speed": 2,
     "last_origin": "Boral, Enfield",
     "last_destination": "Peppertree Quarry",
     "last_description": "SSR Empty Aggregates",
@@ -23276,7 +23327,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "1b4d0a2f-8b45-460d-aa6e-dc4e178f550f",
     "trKey": "CF4404",
-    "total_sightings": 41
+    "total_sightings": 42
   },
   "CF4405": {
     "date_time_added": "2026-04-03 13:46:05",
@@ -23347,24 +23398,24 @@
   "CF4410": {
     "date_time_added": "2026-04-04 01:28:01",
     "first_seen": "2026-04-04 01:28:01",
-    "last_seen": "2026-04-06 14:59:20",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "14:59:20",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.75129,
-      "lon": 150.02324
+      "lat": -34.71394,
+      "lon": 150.037067
     },
     "last_speed": 2,
-    "last_origin": "Boral, Enfield",
-    "last_destination": "Peppertree Quarry",
-    "last_description": "SSR Empty Aggregates",
-    "vehicle_description": "SSR Empty Aggregates",
+    "last_origin": "Peppertree Quarry",
+    "last_destination": "Boral, Enfield",
+    "last_description": "SSR Loaded Aggregates",
+    "vehicle_description": "SSR Loaded Aggregates",
     "current_operator": "",
-    "last_train_number": "1285",
+    "last_train_number": "2186",
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "46c83b4d-76de-4ca3-bf7a-4ff955e294d4",
+    "servId": "18d7bd1c-2637-46cb-9aaf-4ff7f971a974",
     "trKey": "CF4410",
-    "total_sightings": 29
+    "total_sightings": 30
   },
   "CF4411": {
     "last_seen": "2026-02-16 12:14:46",
@@ -23471,14 +23522,14 @@
   "CF4426": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.62851,
-      "lon": 151.22728
+      "lat": -32.74109,
+      "lon": 151.568013
     },
-    "last_speed": 71,
+    "last_speed": 36,
     "last_origin": "Maules Creek",
     "last_destination": "NCIG Kooragang",
     "last_description": "AZ Coal",
@@ -23488,19 +23539,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "2b6f92ce-32b2-496d-99d1-f2496b18ccfa",
     "trKey": "CF4426",
-    "total_sightings": 77
+    "total_sightings": 78
   },
   "CF4427": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.10714,
-      "lon": 150.267347
+      "lat": -30.954847,
+      "lon": 150.205227
     },
-    "last_speed": 0,
+    "last_speed": 2,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Whitehaven",
     "last_description": "AZ Coal",
@@ -23510,19 +23561,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "67102189-7ba0-4f46-bf55-747551c83997",
     "trKey": "CF4427",
-    "total_sightings": 77
+    "total_sightings": 78
   },
   "CF4428": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.571043,
-      "lon": 133.597987
+      "lat": -30.64351,
+      "lon": 133.96764
     },
-    "last_speed": 79,
+    "last_speed": 32,
     "last_origin": "SCT, Forrestfield",
     "last_destination": "SCT, Laverton",
     "last_description": "SCT Intermodal",
@@ -23532,7 +23583,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "66a43cac-f919-4d38-81cb-afd4e05df443",
     "trKey": "CF4428",
-    "total_sightings": 73
+    "total_sightings": 74
   },
   "CF4429": {
     "date_time_added": "2026-04-04 03:56:58",
@@ -23559,14 +23610,14 @@
   "CF4431": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.87906,
-      "lon": 121.78228
+      "lat": -30.730097,
+      "lon": 121.50376
     },
-    "last_speed": 105,
+    "last_speed": 7,
     "last_origin": "",
     "last_destination": "",
     "last_description": "SCT Intermodal",
@@ -23576,19 +23627,19 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "",
     "trKey": "CF4431",
-    "total_sightings": 33
+    "total_sightings": 34
   },
   "CF4432": {
     "date_time_added": "2026-04-04 22:12:10",
     "first_seen": "2026-04-04 22:12:10",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.1408,
-      "lon": 140.709787
+      "lat": -32.013737,
+      "lon": 141.350467
     },
-    "last_speed": 100,
+    "last_speed": 73,
     "last_origin": "SCT, Forrestfield",
     "last_destination": "SCT, Parkes",
     "last_description": "SCT Intermodal",
@@ -23598,7 +23649,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "2e3f5b2f-1c8b-4d5f-abfb-eee3d5063f90",
     "trKey": "CF4432",
-    "total_sightings": 51
+    "total_sightings": 52
   },
   "CF4434": {
     "date_time_added": "2026-04-06 03:38:25",
@@ -23647,14 +23698,14 @@
   "CLF2": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.701603,
-      "lon": 150.147733
+      "lat": -34.523777,
+      "lon": 150.378293
     },
-    "last_speed": 47,
+    "last_speed": 6,
     "last_origin": "",
     "last_destination": "",
     "last_description": "SSR Limestone",
@@ -23664,7 +23715,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "CLF2",
-    "total_sightings": 47
+    "total_sightings": 48
   },
   "CLF5": {
     "date_time_added": "2026-04-03 22:58:27",
@@ -23797,14 +23848,14 @@
   "CM3305": {
     "date_time_added": "2026-04-03 15:54:03",
     "first_seen": "2026-04-03 15:54:03",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.839017,
-      "lon": 138.566547
+      "lat": -34.368157,
+      "lon": 138.384853
     },
-    "last_speed": 59,
+    "last_speed": 40,
     "last_origin": "",
     "last_destination": "",
     "last_description": "QUBE Loaded Balco & Zinc",
@@ -23814,19 +23865,19 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "",
     "trKey": "CM3305",
-    "total_sightings": 20
+    "total_sightings": 21
   },
   "CM3307": {
     "date_time_added": "2026-04-03 17:03:11",
     "first_seen": "2026-04-03 17:03:11",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.637627,
-      "lon": 148.034267
+      "lat": -34.463493,
+      "lon": 147.704507
     },
-    "last_speed": 1,
+    "last_speed": 14,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -23836,7 +23887,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "CM3307",
-    "total_sightings": 29
+    "total_sightings": 30
   },
   "CM3309": {
     "date_time_added": "2026-04-03 23:29:39",
@@ -23907,14 +23958,14 @@
   "CSR007": {
     "date_time_added": "2026-04-03 14:30:34",
     "first_seen": "2026-04-03 14:30:34",
-    "last_seen": "2026-04-05 22:58:55",
-    "last_date": "2026-04-05",
-    "last_time": "22:58:55",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.694013,
-      "lon": 138.58984
+      "lat": -34.69413,
+      "lon": 138.589987
     },
-    "last_speed": 5,
+    "last_speed": 3,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -23924,7 +23975,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "",
     "trKey": "CSR007",
-    "total_sightings": 6
+    "total_sightings": 7
   },
   "CSR009": {
     "last_seen": "2026-02-16 12:14:46",
@@ -23991,14 +24042,14 @@
   "CSR014": {
     "date_time_added": "2026-04-03 17:42:46",
     "first_seen": "2026-04-03 17:42:46",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.87942,
-      "lon": 121.783307
+      "lat": -30.72945,
+      "lon": 121.503107
     },
-    "last_speed": 104,
+    "last_speed": 0,
     "last_origin": "SCT, Parkes",
     "last_destination": "SCT, Forrestfield",
     "last_description": "SCT Intermodal",
@@ -24008,7 +24059,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "f7881c39-78a4-4382-b71b-855c84b207d2",
     "trKey": "CSR014",
-    "total_sightings": 55
+    "total_sightings": 56
   },
   "CSR015": {
     "date_time_added": "2026-04-04 22:12:10",
@@ -24101,14 +24152,14 @@
   "CSR019": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.025583,
-      "lon": 135.69408
+      "lat": -30.82279,
+      "lon": 134.847187
     },
-    "last_speed": 107,
+    "last_speed": 91,
     "last_origin": "SCT, Laverton",
     "last_destination": "SCT, Forrestfield",
     "last_description": "SCT Intermodal",
@@ -24118,7 +24169,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "bc78e6ba-083f-49d1-a351-1b493c2d4818",
     "trKey": "CSR019",
-    "total_sightings": 53
+    "total_sightings": 54
   },
   "CSR020": {
     "date_time_added": "2026-04-04 23:52:47",
@@ -24662,14 +24713,14 @@
   "G513": {
     "date_time_added": "2026-04-03 11:49:23",
     "first_seen": "2026-04-03 11:49:23",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.19865,
-      "lon": 150.659813
+      "lat": -34.356567,
+      "lon": 150.5506
     },
-    "last_speed": 69,
+    "last_speed": 57,
     "last_origin": "Clyde Yard",
     "last_destination": "Berrima Cement Works",
     "last_description": "SSR Cement",
@@ -24679,7 +24730,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "a83957b4-d6e4-4f3c-96fb-50e58d6d48e9",
     "trKey": "G513",
-    "total_sightings": 56
+    "total_sightings": 57
   },
   "G514": {
     "last_seen": "2026-02-16 12:14:46",
@@ -24780,14 +24831,14 @@
   "G524": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -37.829733,
-      "lon": 144.874707
+      "lat": -38.020893,
+      "lon": 144.4158
     },
-    "last_speed": 61,
+    "last_speed": 1,
     "last_origin": "Appleton Dock",
     "last_destination": "WestVic Siding, Warrnambool",
     "last_description": "PN Containerised Freight",
@@ -24797,7 +24848,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "0f518e87-0da3-4f88-86f9-cbda81d941a3",
     "trKey": "G524",
-    "total_sightings": 6
+    "total_sightings": 7
   },
   "G525": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -24868,12 +24919,12 @@
   "G529": {
     "date_time_added": "2026-04-06 16:34:45",
     "first_seen": "2026-04-06 16:34:45",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -37.80628,
-      "lon": 144.93584
+      "lat": -37.801347,
+      "lon": 144.88224
     },
     "last_speed": 6,
     "last_origin": "",
@@ -24885,17 +24936,17 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "1bf13ee6-a4ad-4763-96b0-47b7c6871135",
     "trKey": "G529",
-    "total_sightings": 1
+    "total_sightings": 2
   },
   "G533": {
     "date_time_added": "2026-04-03 23:29:39",
     "first_seen": "2026-04-03 23:29:39",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.822047,
-      "lon": 138.593587
+      "lat": -34.821877,
+      "lon": 138.593653
     },
     "last_speed": 1,
     "last_origin": "",
@@ -24907,7 +24958,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "G533",
-    "total_sightings": 26
+    "total_sightings": 27
   },
   "G534": {
     "date_time_added": "2026-04-03 13:46:05",
@@ -25040,14 +25091,14 @@
   "GL108": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.91373,
-      "lon": 151.153307
+      "lat": -33.88497,
+      "lon": 151.05724
     },
-    "last_speed": 20,
+    "last_speed": 3,
     "last_origin": "",
     "last_destination": "",
     "last_description": "Maintenance Train",
@@ -25057,19 +25108,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "GL108",
-    "total_sightings": 42
+    "total_sightings": 43
   },
   "GL109": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.914017,
-      "lon": 151.15676
+      "lat": -33.8849,
+      "lon": 151.05716
     },
-    "last_speed": 27,
+    "last_speed": 8,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -25079,19 +25130,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "GL109",
-    "total_sightings": 34
+    "total_sightings": 35
   },
   "GL110": {
     "date_time_added": "2026-04-06 08:50:20",
     "first_seen": "2026-04-06 08:50:20",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.83894,
-      "lon": 138.568013
+      "lat": -34.368037,
+      "lon": 138.38468
     },
-    "last_speed": 58,
+    "last_speed": 40,
     "last_origin": "Pelican Point",
     "last_destination": "Bowmans",
     "last_description": "QUBE Empty Balco",
@@ -25101,19 +25152,19 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "b69604fc-2c18-4d27-b4d8-7db57047ad34",
     "trKey": "GL110",
-    "total_sightings": 5
+    "total_sightings": 6
   },
   "GL111": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -36.08022,
-      "lon": 146.772693
+      "lat": -35.482507,
+      "lon": 147.032427
     },
-    "last_speed": 108,
+    "last_speed": 104,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -25123,7 +25174,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "GL111",
-    "total_sightings": 45
+    "total_sightings": 46
   },
   "GM10": {
     "date_time_added": "2026-04-06 07:15:48",
@@ -25341,14 +25392,14 @@
   "GWB101": {
     "date_time_added": "2026-04-03 14:30:34",
     "first_seen": "2026-04-03 14:30:34",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.610633,
-      "lon": 138.225173
+      "lat": -33.177733,
+      "lon": 138.048907
     },
-    "last_speed": 58,
+    "last_speed": 59,
     "last_origin": "Gillman Yard (Port Flat)",
     "last_destination": "Pimba",
     "last_description": "Aurizon Empty Copper",
@@ -25358,7 +25409,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "077e41d4-7a58-4a1d-abcf-182d72599c0d",
     "trKey": "GWB101",
-    "total_sightings": 37
+    "total_sightings": 38
   },
   "GWB102": {
     "date_time_added": "2026-04-05 01:09:16",
@@ -25385,36 +25436,36 @@
   "GWB103": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 05:52:30",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "05:52:30",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.48086,
-      "lon": 137.770853
+      "lat": -32.69657,
+      "lon": 137.515987
     },
-    "last_speed": 8,
-    "last_origin": "Wirrida",
-    "last_destination": "Whyalla",
-    "last_description": "Aurizon Loaded Ore",
-    "vehicle_description": "Aurizon Loaded Ore",
+    "last_speed": 73,
+    "last_origin": "Whyalla",
+    "last_destination": "Wirrida",
+    "last_description": "Aurizon Empty Ore",
+    "vehicle_description": "Aurizon Empty Ore",
     "current_operator": "",
-    "last_train_number": "9614",
+    "last_train_number": "6913",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "7de2da5d-f3a0-48ca-b85c-ebdb6d7d1ab5",
+    "servId": "3ad7cc1e-d4b7-45e9-bfa9-8cae67e7f3e1",
     "trKey": "GWB103",
-    "total_sightings": 47
+    "total_sightings": 48
   },
   "GWB105": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.75058,
-      "lon": 137.94756
+      "lat": -32.472803,
+      "lon": 137.770253
     },
-    "last_speed": 43,
+    "last_speed": 15,
     "last_origin": "Gillman Yard (Port Flat)",
     "last_destination": "Berrimah (Darwin)",
     "last_description": "Aurizon Intermodal",
@@ -25424,7 +25475,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "50de9f15-5fd5-4b9e-8759-e85ccc53aeeb",
     "trKey": "GWB105",
-    "total_sightings": 30
+    "total_sightings": 31
   },
   "GWB106": {
     "date_time_added": "2026-04-03 17:42:46",
@@ -25495,14 +25546,14 @@
   "GWU013": {
     "date_time_added": "2026-04-03 22:58:27",
     "first_seen": "2026-04-03 22:58:27",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.29863,
-      "lon": 134.53276
+      "lat": -30.710687,
+      "lon": 134.57024
     },
-    "last_speed": 54,
+    "last_speed": 27,
     "last_origin": "Wirrida",
     "last_destination": "Whyalla",
     "last_description": "Aurizon Loaded Ore",
@@ -25512,7 +25563,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "902e4d7b-28c0-4bb0-a016-c653f306162e",
     "trKey": "GWU013",
-    "total_sightings": 29
+    "total_sightings": 30
   },
   "GWU014": {
     "last_seen": "2026-04-03 22:21:18",
@@ -25621,24 +25672,24 @@
   "HM2703": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-05 17:06:19",
-    "last_date": "2026-04-05",
-    "last_time": "17:06:19",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.92765,
-      "lon": 151.72684
+      "lat": -32.727183,
+      "lon": 151.53996
     },
-    "last_speed": 2,
-    "last_origin": "",
-    "last_destination": "",
-    "last_description": "Hunter Line Service",
-    "vehicle_description": "Hunter Line Service",
+    "last_speed": 41,
+    "last_origin": "Broadmeadow Maintenance Centre",
+    "last_destination": "Maitland",
+    "last_description": "Empty Car Transfer",
+    "vehicle_description": "Empty Car Transfer",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "V403",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "",
+    "servId": "baacb568-2398-484f-9da2-5979b6699705",
     "trKey": "HM2703",
-    "total_sightings": 23
+    "total_sightings": 24
   },
   "HM2704": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -25665,24 +25716,24 @@
   "HM2705": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 11:51:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "11:51:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.927657,
-      "lon": 151.72676
+      "lat": -32.92387,
+      "lon": 151.758653
     },
     "last_speed": 6,
-    "last_origin": "",
-    "last_destination": "",
-    "last_description": "Hunter Line Service",
-    "vehicle_description": "Hunter Line Service",
+    "last_origin": "Broadmeadow Maintenance Centre",
+    "last_destination": "Newcastle Interchange",
+    "last_description": "Empty Car Transfer",
+    "vehicle_description": "Empty Car Transfer",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "V805",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "",
+    "servId": "cd77a284-23e9-4280-9b23-6565a0870bae",
     "trKey": "HM2705",
-    "total_sightings": 30
+    "total_sightings": 31
   },
   "HM2706": {
     "date_time_added": "2026-04-03 10:12:34",
@@ -25731,24 +25782,24 @@
   "HM2751": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.927493,
-      "lon": 151.72668
+      "lat": -32.882987,
+      "lon": 151.70736
     },
-    "last_speed": 2,
-    "last_origin": "",
-    "last_destination": "",
+    "last_speed": 81,
+    "last_origin": "Newcastle Interchange",
+    "last_destination": "Scone",
     "last_description": "Hunter Line Service",
     "vehicle_description": "Hunter Line Service",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "V603",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "",
+    "servId": "5221b86f-a24a-4dc1-b9df-cd30b7521c24",
     "trKey": "HM2751",
-    "total_sightings": 24
+    "total_sightings": 25
   },
   "HM2752": {
     "date_time_added": "2026-04-05 10:52:42",
@@ -26454,12 +26505,12 @@
   "JP2535-1": {
     "date_time_added": "2026-04-06 05:52:30",
     "first_seen": "2026-04-06 05:52:30",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -41.183617,
-      "lon": 146.362076
+      "lat": -41.12105,
+      "lon": 146.106217
     },
     "last_speed": 0,
     "last_origin": "boyer",
@@ -26471,7 +26522,7 @@
     "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
     "servId": "",
     "trKey": "JP2535-1",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "JP2535-5": {
     "last_seen": "2026-04-03 17:03:11",
@@ -26517,12 +26568,12 @@
   "JP2536-1": {
     "date_time_added": "2026-04-06 07:15:48",
     "first_seen": "2026-04-06 07:15:48",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -41.556434,
-      "lon": 147.222866
+      "lat": -41.538707,
+      "lon": 147.219455
     },
     "last_speed": 0,
     "last_origin": "brighton",
@@ -26534,7 +26585,7 @@
     "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
     "servId": "",
     "trKey": "JP2536-1",
-    "total_sightings": 10
+    "total_sightings": 11
   },
   "JP2536-5": {
     "last_seen": "2026-04-03 22:21:18",
@@ -26580,12 +26631,12 @@
   "JP2537-1": {
     "date_time_added": "2026-04-06 10:58:09",
     "first_seen": "2026-04-06 10:58:09",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -41.682635,
-      "lon": 147.273534
+      "lat": -41.556434,
+      "lon": 147.222866
     },
     "last_speed": 0,
     "last_origin": "brighton",
@@ -26597,7 +26648,7 @@
     "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
     "servId": "",
     "trKey": "JP2537-1",
-    "total_sightings": 9
+    "total_sightings": 10
   },
   "JP2537-5": {
     "last_seen": "2026-04-03 23:29:39",
@@ -26643,12 +26694,12 @@
   "JP2539-1": {
     "date_time_added": "2026-04-06 03:38:25",
     "first_seen": "2026-04-06 03:38:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -42.7146,
-      "lon": 147.240037
+      "lat": -42.760255,
+      "lon": 147.138533
     },
     "last_speed": 0,
     "last_origin": "burnie",
@@ -26660,7 +26711,7 @@
     "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
     "servId": "",
     "trKey": "JP2539-1",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "JP2540-5": {
     "last_seen": "2026-04-03 19:04:14",
@@ -26706,12 +26757,12 @@
   "JP2542-1": {
     "date_time_added": "2026-04-06 05:52:30",
     "first_seen": "2026-04-06 05:52:30",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -42.349934,
-      "lon": 147.404713
+      "lat": -42.502692,
+      "lon": 147.365988
     },
     "last_speed": 0,
     "last_origin": "bell-bay",
@@ -26723,7 +26774,7 @@
     "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
     "servId": "",
     "trKey": "JP2542-1",
-    "total_sightings": 13
+    "total_sightings": 14
   },
   "JP2542-5": {
     "last_seen": "2026-04-03 18:08:08",
@@ -26835,12 +26886,12 @@
   "JP2546-1": {
     "date_time_added": "2026-04-06 09:58:08",
     "first_seen": "2026-04-06 09:58:08",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -41.556581,
-      "lon": 147.224156
+      "lat": -41.677977,
+      "lon": 147.274521
     },
     "last_speed": 0,
     "last_origin": "burnie",
@@ -26852,7 +26903,7 @@
     "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
     "servId": "",
     "trKey": "JP2546-1",
-    "total_sightings": 8
+    "total_sightings": 9
   },
   "JP2546-5": {
     "last_seen": "2026-04-03 21:55:05",
@@ -26961,24 +27012,24 @@
   "LDP007": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.28631,
-      "lon": 150.836507
+      "lat": -32.35754,
+      "lon": 151.01064
     },
-    "last_speed": 2,
-    "last_origin": "PWCS Kooragang",
-    "last_destination": "Bengalla",
+    "last_speed": 54,
+    "last_origin": "Bengalla",
+    "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
     "vehicle_description": "PN Coal",
     "current_operator": "",
-    "last_train_number": "BG335",
+    "last_train_number": "BG336",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "ba18982e-660a-480f-bb6e-6b6800a79d14",
+    "servId": "433e1762-3fa8-4dbe-8775-802cb840db44",
     "trKey": "LDP007",
-    "total_sightings": 70
+    "total_sightings": 71
   },
   "LDP009": {
     "last_seen": "2026-02-16 12:14:46",
@@ -27045,24 +27096,24 @@
   "LE2853": {
     "date_time_added": "2026-04-03 17:42:46",
     "first_seen": "2026-04-03 17:42:46",
-    "last_seen": "2026-04-06 14:01:09",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "14:01:09",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.531013,
-      "lon": 150.380027
+      "lat": -34.550317,
+      "lon": 150.370347
     },
-    "last_speed": 54,
-    "last_origin": "Campbelltown",
-    "last_destination": "Moss Vale",
+    "last_speed": 13,
+    "last_origin": "Moss Vale",
+    "last_destination": "Campbelltown",
     "last_description": "Southern Highlands Service",
     "vehicle_description": "Southern Highlands Service",
     "current_operator": "",
-    "last_train_number": "SN77",
+    "last_train_number": "SN22",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "4565a88c-e6c7-4005-8ba8-a7c305ff3436",
+    "servId": "6f4ba623-bbc8-482e-a1c2-2e5e05a0c162",
     "trKey": "LE2853",
-    "total_sightings": 33
+    "total_sightings": 34
   },
   "LE2854": {
     "date_time_added": "2026-04-03 10:12:34",
@@ -27155,24 +27206,24 @@
   "LE2858": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 11:51:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "11:51:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.850797,
-      "lon": 150.611507
+      "lat": -34.748803,
+      "lon": 150.811947
     },
-    "last_speed": 34,
-    "last_origin": "",
-    "last_destination": "",
-    "last_description": "South Coast Service",
-    "vehicle_description": "South Coast Service",
+    "last_speed": 82,
+    "last_origin": "Kiama",
+    "last_destination": "Bomaderry (Nowra)",
+    "last_description": "NSW Trainlink South Coast Service",
+    "vehicle_description": "NSW Trainlink South Coast Service",
     "current_operator": "",
-    "last_train_number": "KN95",
+    "last_train_number": "KN01",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "",
+    "servId": "2a1c6826-7b86-4e4e-b0dc-8677d221ff82",
     "trKey": "LE2858",
-    "total_sightings": 27
+    "total_sightings": 28
   },
   "LE2862": {
     "date_time_added": "2026-04-03 11:49:23",
@@ -27243,14 +27294,14 @@
   "LZ3109": {
     "date_time_added": "2026-04-06 09:58:08",
     "first_seen": "2026-04-06 09:58:08",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.38775,
-      "lon": 118.480227
+      "lat": -31.488013,
+      "lon": 118.243867
     },
-    "last_speed": 14,
+    "last_speed": 13,
     "last_origin": "",
     "last_destination": "",
     "last_description": "N/A",
@@ -27260,7 +27311,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "d02977fa-31c3-44e6-8534-c2315105c414",
     "trKey": "LZ3109",
-    "total_sightings": 6
+    "total_sightings": 7
   },
   "LZ3120": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -27309,14 +27360,14 @@
   "M31": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.085447,
-      "lon": 151.01064
+      "lat": -33.883183,
+      "lon": 151.06672
     },
-    "last_speed": 57,
+    "last_speed": 6,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -27326,19 +27377,19 @@
     "cId": "12e453d7-3db1-4753-b8c8-1d1626927574",
     "servId": "",
     "trKey": "M31",
-    "total_sightings": 25
+    "total_sightings": 26
   },
   "MAN001": {
     "date_time_added": "2026-04-03 11:04:25",
     "first_seen": "2026-04-03 11:04:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.44735,
-      "lon": 150.8928
+      "lat": -34.44618,
+      "lon": 150.892533
     },
-    "last_speed": 4,
+    "last_speed": 2,
     "last_origin": "",
     "last_destination": "",
     "last_description": "SSR Loaded Manildra Grain",
@@ -27348,7 +27399,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "MAN001",
-    "total_sightings": 42
+    "total_sightings": 43
   },
   "MAN002": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -27609,14 +27660,14 @@
   "MAN014": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.44703,
-      "lon": 150.892653
+      "lat": -34.445637,
+      "lon": 150.892413
     },
-    "last_speed": 3,
+    "last_speed": 1,
     "last_origin": "Bomaderry",
     "last_destination": "Southern NSW",
     "last_description": "SSR Empty Manildra Grain",
@@ -27626,19 +27677,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "9e5c0cab-1a49-4ae9-b9b3-c47601324c37",
     "trKey": "MAN014",
-    "total_sightings": 25
+    "total_sightings": 26
   },
   "MAN015": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.442317,
-      "lon": 150.8874
+      "lat": -34.44589,
+      "lon": 150.897907
     },
-    "last_speed": 13,
+    "last_speed": 2,
     "last_origin": "Enfield",
     "last_destination": "Bomaderry",
     "last_description": "SSR Empty Manildra Flour",
@@ -27648,7 +27699,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "d977acb8-a2ed-4abd-926f-59ef2ad43d67",
     "trKey": "MAN015",
-    "total_sightings": 52
+    "total_sightings": 53
   },
   "MAN016": {
     "date_time_added": "2026-04-03 16:26:36",
@@ -40319,14 +40370,14 @@
   "MRL005": {
     "date_time_added": "2026-04-06 03:38:25",
     "first_seen": "2026-04-06 03:38:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.441617,
-      "lon": 150.886133
+      "lat": -34.449137,
+      "lon": 150.891253
     },
-    "last_speed": 10,
+    "last_speed": 4,
     "last_origin": "",
     "last_destination": "",
     "last_description": "SSR Grain",
@@ -40336,19 +40387,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "",
     "trKey": "MRL005",
-    "total_sightings": 12
+    "total_sightings": 13
   },
   "MRL006": {
     "date_time_added": "2026-04-03 14:30:34",
     "first_seen": "2026-04-03 14:30:34",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.507757,
-      "lon": 150.332013
+      "lat": -34.507543,
+      "lon": 150.331
     },
-    "last_speed": 1,
+    "last_speed": 2,
     "last_origin": "Marulan South Quarry",
     "last_destination": "Berrima Cement Works",
     "last_description": "SSR Limestone",
@@ -40358,7 +40409,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "41cb6cb8-11b9-4917-8092-c7be3c1046f7",
     "trKey": "MRL006",
-    "total_sightings": 27
+    "total_sightings": 28
   },
   "MTPV2": {
     "date_time_added": "2026-04-05 22:58:55",
@@ -40668,14 +40719,14 @@
   "NR10": {
     "date_time_added": "2026-04-05 22:24:54",
     "first_seen": "2026-04-05 22:24:54",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.982573,
-      "lon": 152.825467
+      "lat": -31.468323,
+      "lon": 152.735707
     },
-    "last_speed": 87,
+    "last_speed": 75,
     "last_origin": "Acacia Ridge",
     "last_destination": "MFT (South Dynon)",
     "last_description": "PN Intermodal",
@@ -40685,7 +40736,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "918a4775-daba-43b3-943f-e45debd3e89f",
     "trKey": "NR10",
-    "total_sightings": 9
+    "total_sightings": 10
   },
   "NR101": {
     "last_seen": "2026-04-03 23:58:10",
@@ -40769,14 +40820,14 @@
   "NR106": {
     "date_time_added": "2026-04-05 21:26:01",
     "first_seen": "2026-04-05 21:26:01",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.332317,
-      "lon": 138.264027
+      "lat": -32.97974,
+      "lon": 138.817933
     },
-    "last_speed": 83,
+    "last_speed": 70,
     "last_origin": "Adelaide Parklands Terminal",
     "last_destination": "Central Station",
     "last_description": "JBR Indian Pacifc",
@@ -40786,19 +40837,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "453dfef7-8a09-49f5-9d22-7495320888a1",
     "trKey": "NR106",
-    "total_sightings": 7
+    "total_sightings": 8
   },
   "NR107": {
     "date_time_added": "2026-04-05 21:26:01",
     "first_seen": "2026-04-05 21:26:01",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.47266,
-      "lon": 150.035773
+      "lat": -33.431053,
+      "lon": 149.58004
     },
-    "last_speed": 93,
+    "last_speed": 34,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -40808,7 +40859,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "",
     "trKey": "NR107",
-    "total_sightings": 7
+    "total_sightings": 8
   },
   "NR108": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -40835,14 +40886,14 @@
   "NR109": {
     "date_time_added": "2026-04-04 22:39:29",
     "first_seen": "2026-04-04 22:39:29",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -36.770783,
-      "lon": 142.566387
+      "lat": -36.463277,
+      "lon": 142.044533
     },
-    "last_speed": 107,
+    "last_speed": 93,
     "last_origin": "MFT (South Dynon)",
     "last_destination": "Kewdale",
     "last_description": "PN Intermodal",
@@ -40852,19 +40903,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "ecf2250b-0814-41d0-b676-5e5a85b18e21",
     "trKey": "NR109",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "NR110": {
     "date_time_added": "2026-04-03 19:04:14",
     "first_seen": "2026-04-03 19:04:14",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -35.113333,
-      "lon": 139.166373
+      "lat": -35.021177,
+      "lon": 138.7176
     },
-    "last_speed": 89,
+    "last_speed": 46,
     "last_origin": "MFT (South Dynon)",
     "last_destination": "AFT (Islington)",
     "last_description": "PN Intermodal",
@@ -40874,19 +40925,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "6edbf5a2-a50b-4271-91da-be70ae33a170",
     "trKey": "NR110",
-    "total_sightings": 24
+    "total_sightings": 25
   },
   "NR111": {
     "date_time_added": "2026-04-05 07:57:29",
     "first_seen": "2026-04-05 07:57:29",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.871013,
-      "lon": 147.58372
+      "lat": -34.643257,
+      "lon": 148.028627
     },
-    "last_speed": 0,
+    "last_speed": 34,
     "last_origin": "MFT (South Dynon)",
     "last_destination": "Acacia Ridge",
     "last_description": "PN Intermodal",
@@ -40896,7 +40947,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "ce25c409-88bd-40a3-a7a5-061827e6068c",
     "trKey": "NR111",
-    "total_sightings": 10
+    "total_sightings": 11
   },
   "NR112": {
     "date_time_added": "2026-04-03 22:21:18",
@@ -40923,14 +40974,14 @@
   "NR113": {
     "date_time_added": "2026-04-03 18:08:08",
     "first_seen": "2026-04-03 18:08:08",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.63225,
-      "lon": 117.548907
+      "lat": -31.65059,
+      "lon": 116.6852
     },
-    "last_speed": 94,
+    "last_speed": 58,
     "last_origin": "MFT (South Dynon)",
     "last_destination": "Kewdale",
     "last_description": "PN Intermodal",
@@ -40940,7 +40991,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "f3bd7236-52e2-4dcc-9d4c-df9ffcdc2099",
     "trKey": "NR113",
-    "total_sightings": 53
+    "total_sightings": 54
   },
   "NR115": {
     "date_time_added": "2026-04-04 23:52:47",
@@ -40967,14 +41018,14 @@
   "NR118": {
     "date_time_added": "2026-04-05 21:26:01",
     "first_seen": "2026-04-05 21:26:01",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.46657,
-      "lon": 150.037333
+      "lat": -33.429337,
+      "lon": 149.581053
     },
-    "last_speed": 88,
+    "last_speed": 35,
     "last_origin": "SFT (Chullora)",
     "last_destination": "Kewdale",
     "last_description": "PN Intermodal",
@@ -40984,7 +41035,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "61ea4f89-cb1e-44a8-8b36-85a60c28be2f",
     "trKey": "NR118",
-    "total_sightings": 10
+    "total_sightings": 11
   },
   "NR119": {
     "date_time_added": "2026-04-03 23:29:39",
@@ -41052,14 +41103,14 @@
   "NR121": {
     "date_time_added": "2026-04-06 12:42:01",
     "first_seen": "2026-04-06 12:42:01",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.639943,
-      "lon": 117.628933
+      "lat": -31.48114,
+      "lon": 118.25992
     },
-    "last_speed": 54,
+    "last_speed": 6,
     "last_origin": "Kewdale",
     "last_destination": "SFT (Chullora)",
     "last_description": "PN Intermodal",
@@ -41069,7 +41120,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "7e9c2879-7bf2-4f81-a5bd-cab5a71aaec0",
     "trKey": "NR121",
-    "total_sightings": 5
+    "total_sightings": 6
   },
   "NR122": {
     "date_time_added": "2026-04-04 22:39:29",
@@ -41096,14 +41147,14 @@
   "NR13": {
     "date_time_added": "2026-04-06 09:58:08",
     "first_seen": "2026-04-06 09:58:08",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.992517,
-      "lon": 152.825987
+      "lat": -31.462873,
+      "lon": 152.735533
     },
-    "last_speed": 98,
+    "last_speed": 76,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -41113,7 +41164,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "",
     "trKey": "NR13",
-    "total_sightings": 8
+    "total_sightings": 9
   },
   "NR15": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -41801,14 +41852,14 @@
   "NR58": {
     "date_time_added": "2026-04-06 07:15:48",
     "first_seen": "2026-04-06 07:15:48",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.824317,
-      "lon": 119.519373
+      "lat": -30.84204,
+      "lon": 120.206907
     },
-    "last_speed": 68,
+    "last_speed": 26,
     "last_origin": "Kewdale",
     "last_destination": "MFT (South Dynon)",
     "last_description": "PN Intermodal",
@@ -41818,7 +41869,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "9ed221bb-7981-4791-948f-c400483f98bf",
     "trKey": "NR58",
-    "total_sightings": 10
+    "total_sightings": 11
   },
   "NR59": {
     "date_time_added": "2026-04-03 11:49:23",
@@ -41883,12 +41934,12 @@
   "NR64": {
     "date_time_added": "2026-04-03 21:22:22",
     "first_seen": "2026-04-03 21:22:22",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.5689,
-      "lon": 116.41168
+      "lat": -31.873467,
+      "lon": 116.034093
     },
     "last_speed": 78,
     "last_origin": "SFT (Chullora)",
@@ -41900,7 +41951,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "989b6dae-fca7-44ac-8dc2-0a03e7897618",
     "trKey": "NR64",
-    "total_sightings": 59
+    "total_sightings": 60
   },
   "NR65": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -42070,14 +42121,14 @@
   "NR75": {
     "date_time_added": "2026-04-05 04:11:30",
     "first_seen": "2026-04-05 04:11:30",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -19.202247,
-      "lon": 133.76288
+      "lat": -18.338873,
+      "lon": 133.404947
     },
-    "last_speed": 93,
+    "last_speed": 95,
     "last_origin": "Adelaide Parklands Terminal",
     "last_destination": "Berrimah Passenger Terminal (Darwin)",
     "last_description": "JBR The Ghan",
@@ -42087,7 +42138,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "ba5d270e-581d-48f8-b3f1-528797aefd62",
     "trKey": "NR75",
-    "total_sightings": 36
+    "total_sightings": 37
   },
   "NR77": {
     "date_time_added": "2026-04-04 03:56:58",
@@ -42177,14 +42228,14 @@
   "NR82": {
     "date_time_added": "2026-04-03 13:46:05",
     "first_seen": "2026-04-03 13:46:05",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.633073,
-      "lon": 116.59552
+      "lat": -31.63759,
+      "lon": 116.82392
     },
-    "last_speed": 58,
+    "last_speed": 52,
     "last_origin": "Kewdale",
     "last_destination": "MFT (South Dynon)",
     "last_description": "PN Intermodal",
@@ -42194,7 +42245,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "fbaf687f-5f9b-41a0-9416-4c27399bb654",
     "trKey": "NR82",
-    "total_sightings": 7
+    "total_sightings": 8
   },
   "NR83": {
     "last_seen": "2026-04-03 22:58:27",
@@ -42218,14 +42269,14 @@
   "NR84": {
     "date_time_added": "2026-04-03 11:49:23",
     "first_seen": "2026-04-03 11:49:23",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.898933,
-      "lon": 151.764907
+      "lat": -32.898873,
+      "lon": 151.761853
     },
-    "last_speed": 3,
+    "last_speed": 0,
     "last_origin": "Whyalla",
     "last_destination": "Morandoo",
     "last_description": "PN Infrabuild Steel via Lithgow",
@@ -42235,7 +42286,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "6c9382b6-28ef-4f4d-a807-fc9559039189",
     "trKey": "NR84",
-    "total_sightings": 28
+    "total_sightings": 29
   },
   "NR85": {
     "date_time_added": "2026-04-03 21:55:05",
@@ -42281,14 +42332,14 @@
   "NR87": {
     "date_time_added": "2026-04-04 23:52:47",
     "first_seen": "2026-04-04 23:52:47",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.707807,
-      "lon": 134.370027
+      "lat": -30.638877,
+      "lon": 133.94392
     },
-    "last_speed": 75,
+    "last_speed": 4,
     "last_origin": "MFT (South Dynon)",
     "last_destination": "Kewdale",
     "last_description": "PN Infrabuild Steel & Intermodal",
@@ -42298,19 +42349,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "78acc007-59a7-4c19-ba03-2c179410fb19",
     "trKey": "NR87",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "NR88": {
     "date_time_added": "2026-02-27 16:54:26",
     "first_seen": "2026-02-27 16:54:26",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.02309,
-      "lon": 146.58612
+      "lat": -32.990647,
+      "lon": 145.8464
     },
-    "last_speed": 78,
+    "last_speed": 79,
     "last_origin": "Morandoo",
     "last_destination": "Whyalla",
     "last_description": "PN Infrabuild Steel",
@@ -42320,7 +42371,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "58023b2a-0654-4003-9431-43d56d004426",
     "trKey": "NR88",
-    "total_sightings": 3232
+    "total_sightings": 3233
   },
   "NR89": {
     "date_time_added": "2026-04-04 23:52:47",
@@ -42523,14 +42574,14 @@
   "NR97": {
     "date_time_added": "2026-04-05 17:48:22",
     "first_seen": "2026-04-05 17:48:22",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.726173,
-      "lon": 134.68856
+      "lat": -30.845587,
+      "lon": 134.897093
     },
-    "last_speed": 83,
+    "last_speed": 6,
     "last_origin": "Kewdale",
     "last_destination": "MFT (South Dynon)",
     "last_description": "PN Intermodal",
@@ -42540,7 +42591,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "dce10d67-2a17-4e14-9445-0d762ca4058a",
     "trKey": "NR97",
-    "total_sightings": 24
+    "total_sightings": 25
   },
   "NR98": {
     "date_time_added": "2026-04-03 12:32:25",
@@ -42652,14 +42703,14 @@
   "P2502": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.969883,
-      "lon": 115.896904
+      "lat": -32.919159,
+      "lon": 115.911087
     },
-    "last_speed": 68,
+    "last_speed": 0,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -42669,7 +42720,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2502",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "P2503": {
     "date_time_added": "2026-04-03 12:32:25",
@@ -42696,12 +42747,12 @@
   "P2504": {
     "date_time_added": "2026-04-05 16:33:13",
     "first_seen": "2026-04-05 16:33:13",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.344551,
-      "lon": 115.716034
+      "lat": -33.346333,
+      "lon": 115.710541
     },
     "last_speed": 0,
     "last_origin": "",
@@ -42713,7 +42764,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2504",
-    "total_sightings": 26
+    "total_sightings": 27
   },
   "P2505": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -42740,14 +42791,14 @@
   "P2506": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.32077,
-      "lon": 115.674919
+      "lat": -33.269566,
+      "lon": 115.834366
     },
-    "last_speed": 1,
+    "last_speed": 6,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -42757,7 +42808,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2506",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "P2507": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -42784,12 +42835,12 @@
   "P2508": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.343647,
-      "lon": 115.718971
+      "lat": -33.343655,
+      "lon": 115.718956
     },
     "last_speed": 0,
     "last_origin": "",
@@ -42801,16 +42852,16 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2508",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "P2509": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.346756,
+      "lat": -33.346737,
       "lon": 115.711494
     },
     "last_speed": 0,
@@ -42823,7 +42874,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2509",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "P2510": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -42869,12 +42920,12 @@
   "P2513": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.649735,
-      "lon": 115.941795
+      "lat": -32.649376,
+      "lon": 115.93885
     },
     "last_speed": 0,
     "last_origin": "",
@@ -42886,7 +42937,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2513",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "P2514": {
     "date_time_added": "2026-04-03 11:04:25",
@@ -42913,14 +42964,14 @@
   "P2515": {
     "date_time_added": "2026-04-03 18:08:08",
     "first_seen": "2026-04-03 18:08:08",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.831873,
-      "lon": 114.705536
+      "lat": -29.225477,
+      "lon": 114.931946
     },
-    "last_speed": 40,
+    "last_speed": 37,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -42930,17 +42981,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2515",
-    "total_sightings": 56
+    "total_sightings": 57
   },
   "P2516": {
     "date_time_added": "2026-04-03 11:04:25",
     "first_seen": "2026-04-03 11:04:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.251106,
-      "lon": 115.761917
+      "lat": -32.251026,
+      "lon": 115.762123
     },
     "last_speed": 0,
     "last_origin": "",
@@ -42952,29 +43003,29 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "P2516",
-    "total_sightings": 63
+    "total_sightings": 64
   },
   "PB1": {
     "date_time_added": "2026-04-05 01:09:16",
     "first_seen": "2026-04-05 01:09:16",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.455993,
-      "lon": 150.876093
+      "lat": -34.456357,
+      "lon": 150.876773
     },
-    "last_speed": 1,
+    "last_speed": 9,
     "last_origin": "",
     "last_destination": "",
     "last_description": "Watco Trip Train",
     "vehicle_description": "Watco Trip Train",
     "current_operator": "",
-    "last_train_number": "T921",
+    "last_train_number": "UNREG",
     "cId": "67f6b4b5-6947-440d-b4be-bc23484eb3e0",
-    "servId": "8b4b53f5-57f3-40ef-a80f-2c6198f2ddb1",
+    "servId": "",
     "trKey": "PB1",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "PB2": {
     "date_time_added": "2026-04-04 22:12:10",
@@ -43020,14 +43071,14 @@
   "PHC001": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.433067,
-      "lon": 151.333573
+      "lat": -33.01297,
+      "lon": 151.542093
     },
-    "last_speed": 62,
+    "last_speed": 71,
     "last_origin": "Port Botany",
     "last_destination": "Crawfords Sandgate",
     "last_description": "SRS-Crawfords Container Train",
@@ -43037,7 +43088,7 @@
     "cId": "ac759e23-9776-419a-8e29-3375b861db5b",
     "servId": "30bdfa67-4c02-4326-b909-83ec3ddcf229",
     "trKey": "PHC001",
-    "total_sightings": 38
+    "total_sightings": 39
   },
   "PHC002": {
     "date_time_added": "2026-04-03 23:29:39",
@@ -43064,14 +43115,14 @@
   "Q4001": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -29.533842,
-      "lon": 121.227341
+      "lat": -29.198595,
+      "lon": 121.472786
     },
-    "last_speed": 58,
+    "last_speed": 45,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43081,19 +43132,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4001",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "Q4003": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.940815,
-      "lon": 121.516769
+      "lat": -28.94175,
+      "lon": 121.516823
     },
-    "last_speed": 0,
+    "last_speed": 4,
     "last_origin": "Malcolm",
     "last_destination": "West Kalgoorlie",
     "last_description": "Gold Valley Iron Ore",
@@ -43103,19 +43154,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "f005f2e0-33d1-443e-9fd3-70d088b87a55",
     "trKey": "Q4003",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4004": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.494495,
-      "lon": 121.75222
+      "lat": -33.812237,
+      "lon": 121.856125
     },
-    "last_speed": 48,
+    "last_speed": 43,
     "last_origin": "West Kalgoorlie",
     "last_destination": "Malcolm",
     "last_description": "Gold Valley Iron Ore",
@@ -43125,14 +43176,14 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "f589f2d8-7668-4361-8c44-d70323b16c8a",
     "trKey": "Q4004",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4005": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
       "lat": -30.775026,
       "lon": 121.426727
@@ -43147,7 +43198,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4005",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4006": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -43174,9 +43225,9 @@
   "Q4007": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
       "lat": -30.77524,
       "lon": 121.426369
@@ -43191,19 +43242,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4007",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4009": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.394621,
-      "lon": 118.461082
+      "lat": -31.323757,
+      "lon": 119.032898
     },
-    "last_speed": 34,
+    "last_speed": 71,
     "last_origin": "Malcolm",
     "last_destination": "Kwinana BIS",
     "last_description": "Aurizon Empty Sulphur Containers",
@@ -43213,19 +43264,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "899192db-3467-4c0a-bab3-32c630273776",
     "trKey": "Q4009",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4011": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.484913,
-      "lon": 121.747337
+      "lat": -33.804691,
+      "lon": 121.864418
     },
-    "last_speed": 48,
+    "last_speed": 43,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43235,19 +43286,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4011",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4012": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.485229,
-      "lon": 118.249657
+      "lat": -31.405146,
+      "lon": 118.695259
     },
-    "last_speed": 0,
+    "last_speed": 94,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43257,7 +43308,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4012",
-    "total_sightings": 54
+    "total_sightings": 55
   },
   "Q4013": {
     "last_seen": "2026-04-03 23:58:10",
@@ -43281,14 +43332,14 @@
   "Q4014": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.940468,
-      "lon": 121.516754
+      "lat": -28.941402,
+      "lon": 121.516785
     },
-    "last_speed": 0,
+    "last_speed": 4,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43298,19 +43349,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4014",
-    "total_sightings": 85
+    "total_sightings": 86
   },
   "Q4015": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.830786,
-      "lon": 121.311676
+      "lat": -30.874866,
+      "lon": 121.060822
     },
-    "last_speed": 95,
+    "last_speed": 99,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43320,7 +43371,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4015",
-    "total_sightings": 75
+    "total_sightings": 76
   },
   "Q4016": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -43347,9 +43398,9 @@
   "Q4017": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
       "lat": -30.772512,
       "lon": 121.431328
@@ -43364,19 +43415,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4017",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "Q4019": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -30.776863,
-      "lon": 121.423798
+      "lat": -30.773712,
+      "lon": 121.429497
     },
-    "last_speed": 4,
+    "last_speed": 0,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43386,7 +43437,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "Q4019",
-    "total_sightings": 48
+    "total_sightings": 49
   },
   "QBX003": {
     "date_time_added": "2026-04-03 22:58:27",
@@ -43473,14 +43524,14 @@
   "QE001": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.478057,
-      "lon": 150.416693
+      "lat": -34.67374,
+      "lon": 150.261947
     },
-    "last_speed": 85,
+    "last_speed": 96,
     "last_origin": "Moorebank IMEX Terminal",
     "last_destination": "RIFL (Bomen)",
     "last_description": "QUBE Container Train",
@@ -43490,7 +43541,7 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "cc48ba3d-25df-4dae-92f3-9f07998b38cc",
     "trKey": "QE001",
-    "total_sightings": 23
+    "total_sightings": 24
   },
   "QE002": {
     "last_seen": "2026-02-16 12:14:46",
@@ -43579,14 +43630,14 @@
   "QL001": {
     "date_time_added": "2026-04-06 05:52:30",
     "first_seen": "2026-04-06 05:52:30",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.14395,
-      "lon": 148.15496
+      "lat": -33.136113,
+      "lon": 147.919373
     },
-    "last_speed": 11,
+    "last_speed": 38,
     "last_origin": "",
     "last_destination": "",
     "last_description": "QUBE Container / Grain Shuttle",
@@ -43596,7 +43647,7 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "",
     "trKey": "QL001",
-    "total_sightings": 13
+    "total_sightings": 14
   },
   "QL002": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -43623,14 +43674,14 @@
   "QL003": {
     "date_time_added": "2026-04-06 15:53:28",
     "first_seen": "2026-04-06 15:53:28",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -27.548182,
-      "lon": 153.02044
+      "lat": -27.547123,
+      "lon": 153.024307
     },
-    "last_speed": 5,
+    "last_speed": 1,
     "last_origin": "Orrcon Steel (Rocklea)",
     "last_destination": "Acacia Ridge",
     "last_description": "QUBE BlueScope Steel Shunt",
@@ -43640,19 +43691,19 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "1600d7ca-454e-462e-be7e-6c370ffef3dc",
     "trKey": "QL003",
-    "total_sightings": 1
+    "total_sightings": 2
   },
   "QL004": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.477973,
-      "lon": 150.416813
+      "lat": -34.67384,
+      "lon": 150.261493
     },
-    "last_speed": 86,
+    "last_speed": 96,
     "last_origin": "",
     "last_destination": "",
     "last_description": "QUBE Container Train",
@@ -43662,7 +43713,7 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "",
     "trKey": "QL004",
-    "total_sightings": 28
+    "total_sightings": 29
   },
   "QL007": {
     "date_time_added": "2026-04-03 20:52:37",
@@ -43689,24 +43740,24 @@
   "QL008": {
     "date_time_added": "2026-04-06 12:42:01",
     "first_seen": "2026-04-06 12:42:01",
-    "last_seen": "2026-04-06 12:42:01",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "12:42:01",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.46123,
-      "lon": 150.869747
+      "lat": -34.46219,
+      "lon": 150.871213
     },
-    "last_speed": 10,
-    "last_origin": "",
-    "last_destination": "",
+    "last_speed": 11,
+    "last_origin": "Port Kembla",
+    "last_destination": "North Dynon",
     "last_description": "QUBE BlueScope Steel",
     "vehicle_description": "QUBE BlueScope Steel",
     "current_operator": "",
-    "last_train_number": "UNREG",
+    "last_train_number": "2WM7",
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "",
+    "servId": "9947bd34-1975-412c-8a49-1949fafdfd18",
     "trKey": "QL008",
-    "total_sightings": 3
+    "total_sightings": 4
   },
   "QL010": {
     "last_seen": "2026-02-16 12:14:46",
@@ -43747,14 +43798,14 @@
   "QL012": {
     "date_time_added": "2026-04-06 07:15:48",
     "first_seen": "2026-04-06 07:15:48",
-    "last_seen": "2026-04-06 15:53:28",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "15:53:28",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -27.547513,
-      "lon": 153.017787
+      "lat": -27.547203,
+      "lon": 153.023373
     },
-    "last_speed": 17,
+    "last_speed": 4,
     "last_origin": "Acacia Ridge",
     "last_destination": "Orrcon Steel (Rocklea)",
     "last_description": "QUBE BlueScope Steel Shunt",
@@ -43764,7 +43815,7 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "6de3aafb-afb5-4d11-a79f-0d4314c200b4",
     "trKey": "QL012",
-    "total_sightings": 9
+    "total_sightings": 10
   },
   "QL014": {
     "date_time_added": "2026-04-03 21:55:05",
@@ -43791,14 +43842,14 @@
   "QL017": {
     "date_time_added": "2026-04-05 22:24:54",
     "first_seen": "2026-04-05 22:24:54",
-    "last_seen": "2026-04-06 12:42:01",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "12:42:01",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.461043,
-      "lon": 150.869267
+      "lat": -34.462807,
+      "lon": 150.87212
     },
-    "last_speed": 2,
+    "last_speed": 14,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -43808,19 +43859,19 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "",
     "trKey": "QL017",
-    "total_sightings": 4
+    "total_sightings": 5
   },
   "QL018": {
     "date_time_added": "2026-04-06 16:34:45",
     "first_seen": "2026-04-06 16:34:45",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.143443,
-      "lon": 148.154413
+      "lat": -33.136107,
+      "lon": 147.919387
     },
-    "last_speed": 14,
+    "last_speed": 38,
     "last_origin": "Western NSW",
     "last_destination": "Western NSW",
     "last_description": "QUBE Container / Grain Shuttle",
@@ -43830,7 +43881,7 @@
     "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
     "servId": "c7ce70fd-cef5-4e11-aefe-e778f5d167a0",
     "trKey": "QL018",
-    "total_sightings": 3
+    "total_sightings": 4
   },
   "QR1744": {
     "date_time_added": "2026-04-03 22:58:27",
@@ -43942,24 +43993,49 @@
     "trKey": "R766",
     "total_sightings": 36
   },
-  "RB2353": {
-    "last_seen": "2026-04-03 23:58:10",
-    "last_date": "2026-04-03",
-    "last_time": "23:58:10",
+  "RA2303": {
+    "date_time_added": "2026-04-06 17:31:15",
+    "first_seen": "2026-04-06 17:31:15",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.247573,
-      "lon": 148.618573
+      "lat": -32.550113,
+      "lon": 148.945307
     },
-    "last_speed": 4,
+    "last_speed": 60,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
+    "vehicle_description": "",
+    "current_operator": "",
+    "last_train_number": "WY64",
+    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
+    "servId": "",
+    "trKey": "RA2303",
+    "total_sightings": 1
+  },
+  "RB2353": {
+    "date_time_added": "2026-04-03 23:58:10",
+    "first_seen": "2026-04-03 23:58:10",
+    "last_seen": "2026-04-06 17:31:15",
+    "last_date": "2026-04-06",
+    "last_time": "17:31:15",
+    "last_location": {
+      "lat": -32.548917,
+      "lon": 148.944853
+    },
+    "last_speed": 60,
+    "last_origin": "",
+    "last_destination": "",
+    "last_description": "",
+    "vehicle_description": "",
+    "current_operator": "",
     "last_train_number": "UNREG",
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "",
     "trKey": "RB2353",
-    "total_sightings": 1,
-    "first_seen": "2026-04-03 23:58:10"
+    "total_sightings": 2
   },
   "RCTST4": {
     "date_time_added": "2026-04-03 12:32:25",
@@ -44242,14 +44318,14 @@
   "S3304": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.232471,
-      "lon": 116.065254
+      "lat": -33.33342,
+      "lon": 116.065048
     },
-    "last_speed": 0,
+    "last_speed": 50,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -44259,7 +44335,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "S3304",
-    "total_sightings": 45
+    "total_sightings": 46
   },
   "S3305": {
     "date_time_added": "2026-04-04 22:12:10",
@@ -44286,14 +44362,14 @@
   "S3306": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.797581,
-      "lon": 115.897354
+      "lat": -32.348198,
+      "lon": 115.976723
     },
-    "last_speed": 72,
+    "last_speed": 69,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -44303,17 +44379,17 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "S3306",
-    "total_sightings": 81
+    "total_sightings": 82
   },
   "S3307": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.346329,
-      "lon": 115.710487
+      "lat": -33.320183,
+      "lon": 115.671188
     },
     "last_speed": 0,
     "last_origin": "",
@@ -44325,19 +44401,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "S3307",
-    "total_sightings": 83
+    "total_sightings": 84
   },
   "S3309": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.270912,
-      "lon": 115.897408
+      "lat": -32.652164,
+      "lon": 115.93676
     },
-    "last_speed": 79,
+    "last_speed": 19,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -44347,19 +44423,19 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "S3309",
-    "total_sightings": 84
+    "total_sightings": 85
   },
   "S3310": {
     "date_time_added": "2026-04-05 05:55:25",
     "first_seen": "2026-04-05 05:55:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.193695,
-      "lon": 115.780762
+      "lat": -32.189747,
+      "lon": 115.780556
     },
-    "last_speed": 8,
+    "last_speed": 0,
     "last_origin": "",
     "last_destination": "",
     "last_description": "",
@@ -44369,7 +44445,7 @@
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
     "servId": "",
     "trKey": "S3310",
-    "total_sightings": 43
+    "total_sightings": 44
   },
   "S7001": {
     "date_time_added": "2026-04-03 22:21:18",
@@ -44836,14 +44912,14 @@
   "SCT011": {
     "date_time_added": "2026-04-03 10:12:34",
     "first_seen": "2026-04-03 10:12:34",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -36.325087,
-      "lon": 141.561787
+      "lat": -36.23471,
+      "lon": 140.639653
     },
-    "last_speed": 97,
+    "last_speed": 108,
     "last_origin": "SCT, Laverton",
     "last_destination": "SCT, Forrestfield",
     "last_description": "SCT Intermodal",
@@ -44853,7 +44929,7 @@
     "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
     "servId": "bc30505f-bd1d-4955-89ac-517b3ea3f0ae",
     "trKey": "SCT011",
-    "total_sightings": 11
+    "total_sightings": 12
   },
   "SCT013": {
     "last_seen": "2026-02-16 12:14:46",
@@ -44938,12 +45014,12 @@
   "SO3": {
     "date_time_added": "2026-04-05 22:24:54",
     "first_seen": "2026-04-05 22:24:54",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -23.835161,
-      "lon": 151.06168
+      "lat": -24.05449,
+      "lon": 151.374702
     },
     "last_speed": 0,
     "last_origin": "longreach",
@@ -44955,7 +45031,7 @@
     "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
     "servId": "",
     "trKey": "SO3",
-    "total_sightings": 16
+    "total_sightings": 17
   },
   "SSR101": {
     "date_time_added": "2026-04-03 17:42:46",
@@ -44982,14 +45058,14 @@
   "SSR102": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.297757,
-      "lon": 150.586187
+      "lat": -34.537223,
+      "lon": 150.377013
     },
-    "last_speed": 58,
+    "last_speed": 38,
     "last_origin": "Maldon Cement Works",
     "last_destination": "Peppertree Quarry",
     "last_description": "SSR Empty Aggregates",
@@ -44999,19 +45075,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "ec9dbca6-757d-45f6-bce0-574b6627c0bc",
     "trKey": "SSR102",
-    "total_sightings": 51
+    "total_sightings": 52
   },
   "SSR103": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.413933,
-      "lon": 150.50724
+      "lat": -34.54807,
+      "lon": 150.372107
     },
-    "last_speed": 16,
+    "last_speed": 0,
     "last_origin": "Boral, Cooks River",
     "last_destination": "Peppertree Quarry",
     "last_description": "SSR Empty Aggregates",
@@ -45021,19 +45097,19 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "caabbe17-ed15-466c-981f-ac59691ecd3b",
     "trKey": "SSR103",
-    "total_sightings": 32
+    "total_sightings": 33
   },
   "SSR104": {
     "date_time_added": "2026-04-06 03:38:25",
     "first_seen": "2026-04-06 03:38:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.441423,
-      "lon": 150.885827
+      "lat": -34.44898,
+      "lon": 150.891253
     },
-    "last_speed": 10,
+    "last_speed": 4,
     "last_origin": "Southern NSW",
     "last_destination": "Inner Harbour / Bomaderry",
     "last_description": "SSR Grain",
@@ -45043,7 +45119,7 @@
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
     "servId": "c797fc3c-2ac7-4890-8fd9-a35b14126c5b",
     "trKey": "SSR104",
-    "total_sightings": 14
+    "total_sightings": 15
   },
   "T363": {
     "date_time_added": "2026-04-03 20:07:20",
@@ -45176,24 +45252,24 @@
   "TE2803": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 11:51:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "11:51:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.188627,
-      "lon": 150.6234
+      "lat": -34.550097,
+      "lon": 150.370453
     },
-    "last_speed": 80,
+    "last_speed": 20,
     "last_origin": "Moss Vale",
     "last_destination": "Campbelltown",
     "last_description": "Southern Highlands Service",
     "vehicle_description": "Southern Highlands Service",
     "current_operator": "",
-    "last_train_number": "SN76",
+    "last_train_number": "SN22",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "082a3796-5932-4484-8d6e-142613ffee61",
+    "servId": "6f4ba623-bbc8-482e-a1c2-2e5e05a0c162",
     "trKey": "TE2803",
-    "total_sightings": 33
+    "total_sightings": 34
   },
   "TE2804": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -45220,24 +45296,24 @@
   "TE2805": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 11:51:35",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "11:51:35",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -33.425797,
-      "lon": 149.583173
+      "lat": -33.480623,
+      "lon": 150.157227
     },
-    "last_speed": 8,
-    "last_origin": "Central",
+    "last_speed": 4,
+    "last_origin": "Lithgow",
     "last_destination": "Bathurst",
-    "last_description": "Bathurst Bullet",
-    "vehicle_description": "Bathurst Bullet",
+    "last_description": "Bathurst Bullet - Transfer",
+    "vehicle_description": "Bathurst Bullet - Transfer",
     "current_operator": "",
-    "last_train_number": "WN17",
+    "last_train_number": "WN27",
     "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "a70a86d3-c0f9-4848-b4c2-eafd8bc3200a",
+    "servId": "c5ade103-69c3-4085-9e69-1c599088c547",
     "trKey": "TE2805",
-    "total_sightings": 34
+    "total_sightings": 35
   },
   "TE2806": {
     "last_seen": "2026-04-03 23:58:10",
@@ -45456,14 +45532,14 @@
   "TT03": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.82184,
-      "lon": 151.680827
+      "lat": -32.660303,
+      "lon": 151.290733
     },
-    "last_speed": 19,
+    "last_speed": 69,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Mt Thorley",
     "last_description": "PN Coal",
@@ -45473,7 +45549,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "ebc2e477-1bc8-49d0-935f-c0fbc96cf749",
     "trKey": "TT03",
-    "total_sightings": 75
+    "total_sightings": 76
   },
   "TT04": {
     "last_seen": "2026-02-16 14:00:06",
@@ -45562,14 +45638,14 @@
   "TT103": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.872187,
-      "lon": 151.7658
+      "lat": -32.86708,
+      "lon": 151.754307
     },
-    "last_speed": 1,
+    "last_speed": 2,
     "last_origin": "Newdell",
     "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
@@ -45579,7 +45655,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "0ca2200c-a1b7-43b9-82a9-8192c1042ab8",
     "trKey": "TT103",
-    "total_sightings": 74
+    "total_sightings": 75
   },
   "TT105": {
     "date_time_added": "2026-04-06 15:53:28",
@@ -45628,14 +45704,14 @@
   "TT107": {
     "date_time_added": "2026-04-04 22:12:10",
     "first_seen": "2026-04-04 22:12:10",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.871503,
-      "lon": 151.74548
+      "lat": -32.872577,
+      "lon": 151.73272
     },
-    "last_speed": 2,
+    "last_speed": 8,
     "last_origin": "Moolarben",
     "last_destination": "NCIG Kooragang",
     "last_description": "PN Coal",
@@ -45645,7 +45721,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "cd40c8e9-81f2-4a99-b813-45d17e853ecc",
     "trKey": "TT107",
-    "total_sightings": 45
+    "total_sightings": 46
   },
   "TT108": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -45672,14 +45748,14 @@
   "TT110": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.281813,
-      "lon": 150.84312
+      "lat": -32.286957,
+      "lon": 150.823573
     },
-    "last_speed": 0,
+    "last_speed": 1,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Bengalla",
     "last_description": "PN Coal",
@@ -45689,7 +45765,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "cddfca58-48d1-40b9-a75c-7d161ecb20b3",
     "trKey": "TT110",
-    "total_sightings": 76
+    "total_sightings": 77
   },
   "TT113": {
     "date_time_added": "2026-04-05 05:55:25",
@@ -45738,14 +45814,14 @@
   "TT115": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.323117,
-      "lon": 149.89944
+      "lat": -32.2649,
+      "lon": 149.787213
     },
-    "last_speed": 30,
+    "last_speed": 2,
     "last_origin": "NCIG Kooragang",
     "last_destination": "Moolarben",
     "last_description": "PN Coal",
@@ -45755,7 +45831,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "7a2cfc14-b651-47fe-b1a9-9134039f3b21",
     "trKey": "TT115",
-    "total_sightings": 78
+    "total_sightings": 79
   },
   "TT116": {
     "last_seen": "2026-02-16 12:14:46",
@@ -45778,34 +45854,34 @@
   "TT117": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.264773,
-      "lon": 149.795053
+      "lat": -32.26897,
+      "lon": 149.802453
     },
     "last_speed": 1,
-    "last_origin": "NCIG Kooragang",
-    "last_destination": "Moolarben",
+    "last_origin": "Moolarben",
+    "last_destination": "NCIG Kooragang",
     "last_description": "PN Coal",
     "vehicle_description": "PN Coal",
     "current_operator": "",
-    "last_train_number": "MR951",
+    "last_train_number": "MR952",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "66184e4e-9910-4a94-ada7-497d317139e4",
+    "servId": "fe394174-8eef-4db2-99b7-d9669cae14b9",
     "trKey": "TT117",
-    "total_sightings": 71
+    "total_sightings": 72
   },
   "TT122": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.87479,
-      "lon": 151.7714
+      "lat": -32.869857,
+      "lon": 151.760453
     },
     "last_speed": 1,
     "last_origin": "Warkworth",
@@ -45817,7 +45893,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "95e0dde3-5516-4526-afcb-85eaa40334d5",
     "trKey": "TT122",
-    "total_sightings": 65
+    "total_sightings": 66
   },
   "TT127": {
     "last_seen": "2026-02-16 12:14:46",
@@ -45880,14 +45956,14 @@
   "TT131": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.667203,
-      "lon": 151.36212
+      "lat": -32.368687,
+      "lon": 151.01996
     },
-    "last_speed": 18,
+    "last_speed": 62,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Moolarben",
     "last_description": "PN Coal",
@@ -45897,19 +45973,19 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "04a24bb6-abe5-4aa6-8007-069ad914a4fb",
     "trKey": "TT131",
-    "total_sightings": 76
+    "total_sightings": 77
   },
   "TT202": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.50758,
-      "lon": 151.15148
+      "lat": -32.662297,
+      "lon": 151.34584
     },
-    "last_speed": 22,
+    "last_speed": 0,
     "last_origin": "Moolarben",
     "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
@@ -45919,7 +45995,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "5c45230c-4673-4f81-aa08-f818093ad763",
     "trKey": "TT202",
-    "total_sightings": 78
+    "total_sightings": 79
   },
   "TT206": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -52322,14 +52398,14 @@
   "WH001": {
     "date_time_added": "2026-04-03 11:04:25",
     "first_seen": "2026-04-03 11:04:25",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.04533,
-      "lon": 150.276333
+      "lat": -31.258733,
+      "lon": 150.472213
     },
-    "last_speed": 32,
+    "last_speed": 35,
     "last_origin": "Whitehaven",
     "last_destination": "PWCS Kooragang",
     "last_description": "PN Coal",
@@ -52339,7 +52415,7 @@
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
     "servId": "a3881cea-7791-4966-8103-89827e1a3448",
     "trKey": "WH001",
-    "total_sightings": 75
+    "total_sightings": 76
   },
   "WH003": {
     "date_time_added": "2026-04-03 11:04:25",
@@ -52422,14 +52498,14 @@
   "XP2000": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.81186,
-      "lon": 147.747733
+      "lat": -35.23747,
+      "lon": 147.1786
     },
-    "last_speed": 47,
+    "last_speed": 152,
     "last_origin": "Central",
     "last_destination": "Southern Cross Station",
     "last_description": "NSW Trainlink XPT",
@@ -52439,19 +52515,19 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "7c957be8-7bf3-467e-a400-d7731038c121",
     "trKey": "XP2000",
-    "total_sightings": 77
+    "total_sightings": 78
   },
   "XP2001": {
     "date_time_added": "2026-04-06 09:58:08",
     "first_seen": "2026-04-06 09:58:08",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.811173,
-      "lon": 147.74916
+      "lat": -35.236593,
+      "lon": 147.17988
     },
-    "last_speed": 47,
+    "last_speed": 152,
     "last_origin": "",
     "last_destination": "",
     "last_description": "NSW Trainlink Empty Car Transfer (Forms ST21)",
@@ -52461,7 +52537,7 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "",
     "trKey": "XP2001",
-    "total_sightings": 8
+    "total_sightings": 9
   },
   "XP2003": {
     "date_time_added": "2026-04-03 09:34:58",
@@ -52510,14 +52586,14 @@
   "XP2005": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.628583,
-      "lon": 148.599333
+      "lat": -34.784143,
+      "lon": 149.19824
     },
-    "last_speed": 91,
+    "last_speed": 84,
     "last_origin": "",
     "last_destination": "",
     "last_description": "NSW Trainlink XPT",
@@ -52527,7 +52603,7 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "",
     "trKey": "XP2005",
-    "total_sightings": 58
+    "total_sightings": 59
   },
   "XP2007": {
     "last_seen": "2026-02-16 12:14:46",
@@ -52572,14 +52648,14 @@
   "XP2010": {
     "date_time_added": "2026-04-03 09:34:58",
     "first_seen": "2026-04-03 09:34:58",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -31.92056,
-      "lon": 152.0238
+      "lat": -32.37071,
+      "lon": 151.804587
     },
-    "last_speed": 79,
+    "last_speed": 72,
     "last_origin": "Casino",
     "last_destination": "Central",
     "last_description": "NSW Trainlink XPT",
@@ -52589,19 +52665,19 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "0f767254-c09e-4f03-b385-ce7976ee8230",
     "trKey": "XP2010",
-    "total_sightings": 63
+    "total_sightings": 64
   },
   "XP2011": {
     "date_time_added": "2026-04-03 19:04:14",
     "first_seen": "2026-04-03 19:04:14",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.799047,
-      "lon": 153.012467
+      "lat": -28.32067,
+      "lon": 152.921093
     },
-    "last_speed": 100,
+    "last_speed": 69,
     "last_origin": "",
     "last_destination": "",
     "last_description": "NSW Trainlink XPT",
@@ -52611,7 +52687,7 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "",
     "trKey": "XP2011",
-    "total_sightings": 49
+    "total_sightings": 50
   },
   "XP2012": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -52660,14 +52736,14 @@
   "XP2014": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -28.79946,
-      "lon": 153.012533
+      "lat": -28.320777,
+      "lon": 152.921227
     },
-    "last_speed": 102,
+    "last_speed": 66,
     "last_origin": "Central Station (Sydney)",
     "last_destination": "Roma St (Brisbane)",
     "last_description": "NSW Trainlink XPT",
@@ -52677,7 +52753,7 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "4e1d3f6e-eb3f-4e4b-8006-50ccc84d7710",
     "trKey": "XP2014",
-    "total_sightings": 46
+    "total_sightings": 47
   },
   "XP2015": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -52704,14 +52780,14 @@
   "XP2016": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -34.629683,
-      "lon": 148.60072
+      "lat": -34.78402,
+      "lon": 149.199627
     },
-    "last_speed": 91,
+    "last_speed": 85,
     "last_origin": "Melbourne Southern Cross",
     "last_destination": "Central",
     "last_description": "NSW Trainlink XPT",
@@ -52721,7 +52797,7 @@
     "cId": "88542efb-4c25-4192-b520-526e696dc90c",
     "servId": "17cea08a-e54a-44b5-bd2e-2d9b797c12f1",
     "trKey": "XP2016",
-    "total_sightings": 61
+    "total_sightings": 62
   },
   "XP2017": {
     "date_time_added": "2026-04-03 09:34:58",
@@ -52833,14 +52909,14 @@
   "XRN001": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.43582,
-      "lon": 151.056253
+      "lat": -32.663683,
+      "lon": 151.295867
     },
-    "last_speed": 40,
+    "last_speed": 32,
     "last_origin": "Mangoola",
     "last_destination": "PWCS Kooragang",
     "last_description": "ORA Coal",
@@ -52850,19 +52926,19 @@
     "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
     "servId": "1a4cb9b6-3723-4573-b2cb-39ceaae6c974",
     "trKey": "XRN001",
-    "total_sightings": 73
+    "total_sightings": 74
   },
   "XRN004": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.406097,
-      "lon": 151.018893
+      "lat": -32.40232,
+      "lon": 151.013107
     },
-    "last_speed": 11,
+    "last_speed": 1,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Ravensworth",
     "last_description": "ORA Coal",
@@ -52872,19 +52948,19 @@
     "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
     "servId": "08fd55df-c1ad-4992-9f8a-af635ea9d7f9",
     "trKey": "XRN004",
-    "total_sightings": 45
+    "total_sightings": 46
   },
   "XRN005": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.73984,
-      "lon": 151.571973
+      "lat": -32.457483,
+      "lon": 151.092253
     },
-    "last_speed": 57,
+    "last_speed": 71,
     "last_origin": "PWCS Kooragang",
     "last_destination": "Mangoola",
     "last_description": "ORA Coal",
@@ -52894,7 +52970,7 @@
     "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
     "servId": "8aa0f2a7-a4b2-4112-9f43-18b382d0d727",
     "trKey": "XRN005",
-    "total_sightings": 66
+    "total_sightings": 67
   },
   "XRN006": {
     "last_seen": "2026-02-16 12:14:46",
@@ -52917,12 +52993,12 @@
   "XRN007": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.899343,
-      "lon": 151.766893
+      "lat": -32.900697,
+      "lon": 151.767933
     },
     "last_speed": 1,
     "last_origin": "Wambo / United",
@@ -52934,7 +53010,7 @@
     "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
     "servId": "2b5cdeae-59c3-49c0-92d5-b13904ae2f0d",
     "trKey": "XRN007",
-    "total_sightings": 61
+    "total_sightings": 62
   },
   "XRN009": {
     "date_time_added": "2026-04-03 08:48:43",
@@ -53041,14 +53117,14 @@
   "XRN020": {
     "date_time_added": "2026-04-03 08:48:43",
     "first_seen": "2026-04-03 08:48:43",
-    "last_seen": "2026-04-06 16:34:45",
+    "last_seen": "2026-04-06 17:31:15",
     "last_date": "2026-04-06",
-    "last_time": "16:34:45",
+    "last_time": "17:31:15",
     "last_location": {
-      "lat": -32.913603,
-      "lon": 151.74324
+      "lat": -33.0425,
+      "lon": 151.528253
     },
-    "last_speed": 22,
+    "last_speed": 12,
     "last_origin": "Various Mines",
     "last_destination": "Eraring",
     "last_description": "ORA Coal",
@@ -53058,7 +53134,7 @@
     "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
     "servId": "7583df22-9cdd-472f-b8f4-e7b2ce229c9e",
     "trKey": "XRN020",
-    "total_sightings": 76
+    "total_sightings": 77
   },
   "XRN021": {
     "date_time_added": "2026-04-03 08:48:43",
