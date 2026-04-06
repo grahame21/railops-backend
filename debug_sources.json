@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 914,
+      "count": 843,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 108,
+      "count": 116,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 347,
+      "count": 795,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1022,
+      "count": 959,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2218,
-  "au_count": 2135,
+  "raw_count": 2316,
+  "au_count": 2148,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-8019-4164",
-    "train_number": "C336",
-    "train_name": "TNSW-8019-4164",
+    "id": "TNSW-5819-9784",
+    "train_number": "81-E",
+    "train_name": "TNSW-5819-9784",
     "loco": "",
     "operator": "",
-    "origin": "Port Kembla",
-    "destination": "Central and Bondi Junction",
+    "origin": "City Circle",
+    "destination": "Leppington via Granville",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "09:00:32",
+    "time": "09:27:31",
     "date": "07/04/2026",
-    "description": "South Coast Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "TNSW-8019-4164",
-    "lat": -34.46718,
-    "lon": 150.87836
+    "trKey": "TNSW-5819-9784",
+    "lat": -33.954975,
+    "lon": 150.816906
   }
 }
