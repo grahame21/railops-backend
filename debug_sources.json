@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 641,
+      "count": 637,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 89,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 617,
+      "count": 899,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 734,
+      "count": 726,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1777,
-  "au_count": 1711,
+  "raw_count": 1902,
+  "au_count": 1811,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-1462-5030",
-    "train_number": "137M",
-    "train_name": "TNSW-1462-5030",
+    "id": "TNSW-2972-5036",
+    "train_number": "S8CM",
+    "train_name": "TNSW-2972-5036",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Hornsby and Berowra via Gordon",
+    "origin": "Central",
+    "destination": "Olympic Park",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "15:39:18",
+    "time": "17:04:27",
     "date": "06/04/2026",
-    "description": "T1 North Shore Line",
+    "description": "T7 Olympic Park Line",
     "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "TNSW-1462-5030",
-    "lat": -33.777195,
-    "lon": 151.169796
+    "trKey": "TNSW-2972-5036",
+    "lat": -33.846582,
+    "lon": 151.068391
   }
 }
