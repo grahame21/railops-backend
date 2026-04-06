@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 201,
+      "count": 192,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 87,
+      "count": 80,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 301,
+      "count": 263,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 288,
+      "count": 272,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 727,
-  "au_count": 696,
+  "raw_count": 676,
+  "au_count": 657,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-9904M",
-    "train_number": "SUY",
-    "train_name": "MM-9904M",
+    "id": "G529",
+    "train_number": "0501",
+    "train_name": "G529",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 0,
+    "speed": 6,
     "heading": 0,
-    "km": "",
-    "time": "01:35:44",
+    "km": "2 km",
+    "time": "02:31:00",
     "date": "07/04/2026",
-    "description": "Sunbury Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "2abc9b32-f437-4c3a-a976-2b4a50522399",
-    "trKey": "MM-9904M",
-    "lat": -37.700619,
-    "lon": 144.773727
+    "description": "PN Light Engine",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "1bf13ee6-a4ad-4763-96b0-47b7c6871135",
+    "trKey": "G529",
+    "lat": -37.80628,
+    "lon": 144.93584
   }
 }
