@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 648,
+      "count": 618,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 981,
+      "count": 821,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 725,
+      "count": 695,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1941,
-  "au_count": 1860,
+  "raw_count": 1801,
+  "au_count": 1695,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9313",
-    "train_number": "BE548",
-    "train_name": "9313",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TTF7",
+    "train_number": "TTF7",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TTF7",
     "loco": "",
     "operator": "",
-    "origin": "Boggabri East",
-    "destination": "PWCS Kooragang",
-    "speed": 50,
+    "origin": "Ipswich",
+    "destination": "Brisbane City",
+    "speed": 0,
     "heading": 0,
-    "km": "300 km",
-    "time": "18:48:00",
+    "km": "",
+    "time": "19:39:30",
     "date": "06/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "ec4bebeb-fabd-444b-b862-51600037963d",
-    "trKey": "9313",
-    "lat": -32.16917,
-    "lon": 150.892653
+    "description": "IPBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TTF7",
+    "lat": -27.45076,
+    "lon": 153.037399
   }
 }
