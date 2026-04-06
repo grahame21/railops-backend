@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 181,
+      "count": 304,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 78,
+      "count": 74,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 103,
+      "count": 19,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 259,
+      "count": 378,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 570,
-  "au_count": 552,
+  "raw_count": 766,
+  "au_count": 703,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9322",
-    "train_number": "MR901",
-    "train_name": "9322",
+    "id": "JP2535-1",
+    "train_number": "32",
+    "train_name": "JP2535-1",
     "loco": "",
     "operator": "",
-    "origin": "NCIG Kooragang",
-    "destination": "Moolarben",
-    "speed": 25,
+    "origin": "boyer",
+    "destination": "burnie",
+    "speed": 0,
     "heading": 0,
-    "km": "171 km",
-    "time": "03:28:00",
+    "km": "",
+    "time": "04:13:29",
     "date": "07/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "769967e5-46c1-4565-8629-2c6ac25c2fd9",
-    "trKey": "9322",
-    "lat": -32.86903,
-    "lon": 151.70152
+    "description": "Paper",
+    "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
+    "servId": "",
+    "trKey": "JP2535-1",
+    "lat": -41.053938,
+    "lon": 145.908089
   }
 }
