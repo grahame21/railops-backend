@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 541,
+      "count": 657,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 85,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 877,
+      "count": 163,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 626,
+      "count": 748,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1691,
-  "au_count": 1633,
+  "raw_count": 1578,
+  "au_count": 1533,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2938-8631",
-    "train_number": "87-C",
-    "train_name": "TNSW-2938-8631",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA3",
+    "train_number": "JBA3",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA3",
     "loco": "",
     "operator": "",
-    "origin": "Leppington",
-    "destination": "City Circle via Sydenham",
+    "origin": "Caboolture",
+    "destination": "Doomben",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "05:36:58",
+    "time": "06:18:56",
     "date": "07/04/2026",
-    "description": "T8 Airport & South Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "CADB",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-2938-8631",
-    "lat": -33.9144,
-    "lon": 151.16672
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA3",
+    "lat": -27.42713,
+    "lon": 153.062943
   }
 }
