@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 594,
+      "count": 613,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 104,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 769,
+      "count": 297,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 698,
+      "count": 715,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1781,
-  "au_count": 1662,
+  "raw_count": 1579,
+  "au_count": 1486,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-3320-6617",
-    "train_number": "N432",
-    "train_name": "TNSW-3320-6617",
+    "id": "VL359",
+    "train_number": "4190",
+    "train_name": "VL359",
     "loco": "",
     "operator": "",
-    "origin": "Newcastle Interchange",
-    "destination": "Central via Strathfield",
-    "speed": 0,
+    "origin": "Crawfords Sandgate",
+    "destination": "Port Botany",
+    "speed": 3,
     "heading": 0,
-    "km": "",
-    "time": "09:36:00",
+    "km": "171 km",
+    "time": "09:58:00",
     "date": "06/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-3320-6617",
-    "lat": -33.10904,
-    "lon": 151.48808
+    "description": "SRS-Crawfords Container Train",
+    "cId": "ac759e23-9776-419a-8e29-3375b861db5b",
+    "servId": "8acae23f-24bd-4310-9d93-2ee4ad87d3c4",
+    "trKey": "VL359",
+    "lat": -32.868993,
+    "lon": 151.701613
   }
 }
