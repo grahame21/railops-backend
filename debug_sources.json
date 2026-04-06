@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 522,
+      "count": 504,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 739,
+      "count": 321,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 615,
+      "count": 595,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1600,
-  "au_count": 1503,
+  "raw_count": 1351,
+  "au_count": 1263,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "7272",
-    "train_number": "L1",
-    "train_name": "7272",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1M73",
+    "train_number": "1M73",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1M73",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 29,
+    "origin": "Cleveland",
+    "destination": "Brisbane City",
+    "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "21:51:11",
+    "time": "22:40:37",
     "date": "06/04/2026",
-    "description": "Dulwich Hill Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "description": "CLBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "7272",
-    "lat": -33.882019,
-    "lon": 151.207901
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1M73",
+    "lat": -27.45347,
+    "lon": 153.114166
   }
 }
