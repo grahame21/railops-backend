@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 289,
+      "count": 201,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 87,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 455,
+      "count": 301,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 366,
+      "count": 288,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 960,
-  "au_count": 908,
+  "raw_count": 727,
+  "au_count": 696,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-4874-1685",
-    "train_number": "N488",
-    "train_name": "TNSW-4874-1685",
+    "id": "MM-9904M",
+    "train_number": "SUY",
+    "train_name": "MM-9904M",
     "loco": "",
     "operator": "",
-    "origin": "Newcastle Interchange",
-    "destination": "Central via Gordon",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "00:57:03",
+    "time": "01:35:44",
     "date": "07/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-4874-1685",
-    "lat": -33.35967,
-    "lon": 151.37002
+    "description": "Sunbury Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "2abc9b32-f437-4c3a-a976-2b4a50522399",
+    "trKey": "MM-9904M",
+    "lat": -37.700619,
+    "lon": 144.773727
   }
 }
