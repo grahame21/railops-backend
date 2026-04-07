@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 208,
+      "count": 328,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 96,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 105,
+      "count": 551,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 304,
+      "count": 421,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 661,
-  "au_count": 648,
+  "raw_count": 1118,
+  "au_count": 1095,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "6008",
-    "train_number": "ER422",
-    "train_name": "6008",
+    "id": "CSR019",
+    "train_number": "1MP9",
+    "train_name": "CSR019",
     "loco": "",
     "operator": "",
-    "origin": "Bengalla / Mt Arthur",
-    "destination": "Eraring",
-    "speed": 1,
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Forrestfield",
+    "speed": 81,
     "heading": 0,
-    "km": "132 km",
-    "time": "03:36:00",
+    "km": "436 km",
+    "time": "04:32:00",
     "date": "08/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "f856f0ba-2c85-470e-9f85-bff2bc1ddc2d",
-    "trKey": "6008",
-    "lat": -33.043517,
-    "lon": 151.524013
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "bc78e6ba-083f-49d1-a351-1b493c2d4818",
+    "trKey": "CSR019",
+    "lat": -30.939203,
+    "lon": 119.374587
   }
 }
