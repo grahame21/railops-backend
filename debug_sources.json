@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 988,
+      "count": 929,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 110,
+      "count": 123,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 41,
+      "count": 1017,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1098,
+      "count": 1052,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2217,
-  "au_count": 2110,
+  "raw_count": 2613,
+  "au_count": 2505,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1HQ6",
-    "train_number": "1HQ6",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1HQ6",
+    "id": "XP2017",
+    "train_number": "HT23",
+    "train_name": "XP2017",
     "loco": "",
     "operator": "",
-    "origin": "Ferny Grove",
-    "destination": "Cleveland",
-    "speed": 0,
+    "origin": "Central",
+    "destination": "Sydenham XPT Maintenance Centre",
+    "speed": 15,
     "heading": 0,
-    "km": "",
-    "time": "08:19:40",
+    "km": "5 km",
+    "time": "08:44:00",
     "date": "08/04/2026",
-    "description": "FGCL",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1HQ6",
-    "lat": -27.40148,
-    "lon": 152.935379
+    "description": "NSW Trainlink Empty Car Transfer (ex ST22)",
+    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
+    "servId": "d55ea117-20c7-467e-b6c7-149ecd415c84",
+    "trKey": "XP2017",
+    "lat": -33.91677,
+    "lon": 151.160493
   }
 }
