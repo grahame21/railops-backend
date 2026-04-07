@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 843,
+      "count": 716,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 116,
+      "count": 117,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 795,
+      "count": 1031,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 959,
+      "count": 833,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2316,
-  "au_count": 2148,
+  "raw_count": 2182,
+  "au_count": 2093,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-5819-9784",
-    "train_number": "81-E",
-    "train_name": "TNSW-5819-9784",
+    "id": "TNSW-5382-2636",
+    "train_number": "337F",
+    "train_name": "TNSW-5382-2636",
     "loco": "",
     "operator": "",
-    "origin": "City Circle",
-    "destination": "Leppington via Granville",
+    "origin": "Bondi Junction and Central",
+    "destination": "Bomaderry ",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "09:27:31",
+    "time": "11:02:42",
     "date": "07/04/2026",
-    "description": "T2 Leppington & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "South Coast Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "TNSW-5819-9784",
-    "lat": -33.954975,
-    "lon": 150.816906
+    "trKey": "TNSW-5382-2636",
+    "lat": -34.162399,
+    "lon": 151.00058
   }
 }
