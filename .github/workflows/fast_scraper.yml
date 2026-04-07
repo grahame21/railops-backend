@@ -1,122 +1,64 @@
-name: Fast Train Scraper
+name: Fast Scraper
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  contents: write
 
 jobs:
-  scrape:
+  fast-scraper:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.11"
 
-      - name: Install Chrome and Xvfb
+      - name: Install Google Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Install system packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget gnupg xvfb
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-linux.gpg
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y xvfb
 
       - name: Install Python packages
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install selenium requests
 
-      - name: Run scraper and update loco files
+      - name: Start virtual display
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Run fast scraper
         env:
+          DISPLAY: :99
           TF_USERNAME: ${{ secrets.TF_USERNAME }}
           TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
         run: |
-          Xvfb :99 -screen 0 1920x1080x24 &
-          export DISPLAY=:99
-
           echo "=== RUNNING fast_scraper.py ==="
           python fast_scraper.py
 
-          echo "=== RUNNING update_locos.py ==="
-          python update_locos.py
-
-          echo "=== RUNNING export_locos_to_excel.py ==="
-          python export_locos_to_excel.py
-
-          echo "=== FILE CHECK ==="
-          ls -lah
-          echo "----- loco_export.csv preview -----"
-          if [ -f loco_export.csv ]; then
-            head -20 loco_export.csv
-          else
-            echo "loco_export.csv not found"
-          fi
-
-      - name: Commit and push backend updates
+      - name: Commit updated files
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add trains.json
-          git add cookie.txt
-          git add trainfinder_cookies.pkl
-          git add locos.json
-          git add loco_history.json
-          git add loco_export.csv
-          git add loco_summary.txt
-          git add debug_sources.json
-          git add blocked_locos.txt
-          git add blocked_descriptions.txt
-          git add static/downloads/loco_database.xlsx
-          git add static/downloads/loco_numbers_only.xlsx
-          git add static/downloads/loco_database.html
-          git add static/downloads/recently_added.html
-          git add static/downloads/loco_numbers_only.html
+          git add trains.json cookie.txt trainfinder_cookies.pkl 2>/dev/null || true
 
-          if ! git diff --cached --quiet; then
-            git commit -m "Update trains and loco export $(date -u +'%Y-%m-%d %H:%M:%S')"
-            git pull --rebase origin main
-            git push origin main
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
           else
-            echo "No backend changes to commit"
-          fi
-
-      - name: Push generated files to frontend repo
-        env:
-          FRONTEND_PUSH_TOKEN: ${{ secrets.FRONTEND_PUSH_TOKEN }}
-        run: |
-          git clone https://x-access-token:${FRONTEND_PUSH_TOKEN}@github.com/grahame21/railops-frontend.git frontend_repo
-
-          mkdir -p frontend_repo/downloads
-
-          cp static/downloads/loco_database.html frontend_repo/downloads/
-          cp static/downloads/recently_added.html frontend_repo/downloads/
-          cp static/downloads/loco_numbers_only.html frontend_repo/downloads/
-          cp static/downloads/loco_database.xlsx frontend_repo/downloads/
-          cp static/downloads/loco_numbers_only.xlsx frontend_repo/downloads/
-
-          cd frontend_repo
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-
-          git add downloads/loco_database.html
-          git add downloads/recently_added.html
-          git add downloads/loco_numbers_only.html
-          git add downloads/loco_database.xlsx
-          git add downloads/loco_numbers_only.xlsx
-
-          if ! git diff --cached --quiet; then
-            git commit -m "Update loco downloads $(date -u +'%Y-%m-%d %H:%M:%S')"
-            git pull --rebase origin main
-            git push origin main
-          else
-            echo "No frontend download changes to commit"
+            git commit -m "Update trains data"
+            git push
           fi
