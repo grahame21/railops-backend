@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 925,
+      "count": 988,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 116,
+      "count": 110,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1487,
+      "count": 41,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1041,
+      "count": 1098,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2826,
-  "au_count": 2750,
+  "raw_count": 2217,
+  "au_count": 2110,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-1436-2348",
-    "train_number": "C134",
-    "train_name": "TNSW-1436-2348",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1HQ6",
+    "train_number": "1HQ6",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1HQ6",
     "loco": "",
     "operator": "",
-    "origin": "Kiama",
-    "destination": "Central and Bondi Junction",
+    "origin": "Ferny Grove",
+    "destination": "Cleveland",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "07:52:13",
+    "time": "08:19:40",
     "date": "08/04/2026",
-    "description": "South Coast Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "description": "FGCL",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-1436-2348",
-    "lat": -34.672501,
-    "lon": 150.854782
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1HQ6",
+    "lat": -27.40148,
+    "lon": 152.935379
   }
 }
