@@ -11,7 +11,7 @@ permissions:
 jobs:
   fast-scraper:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout repo
@@ -49,16 +49,40 @@ jobs:
           echo "=== RUNNING fast_scraper.py ==="
           python fast_scraper.py
 
+      - name: Update loco database
+        run: |
+          echo "=== RUNNING update_locos.py ==="
+          python update_locos.py
+
+      - name: Export loco download files
+        run: |
+          echo "=== RUNNING export_locos_to_excel.py ==="
+          python export_locos_to_excel.py
+
       - name: Commit updated files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add trains.json debug_sources.json cookie.txt trainfinder_cookies.pkl 2>/dev/null || true
+          git add \
+            trains.json \
+            debug_sources.json \
+            cookie.txt \
+            trainfinder_cookies.pkl \
+            locos.json \
+            loco_history.json \
+            loco_export.csv \
+            loco_summary.txt \
+            static/downloads/loco_database.xlsx \
+            static/downloads/loco_numbers_only.xlsx \
+            static/downloads/loco_database.html \
+            static/downloads/recently_added.html \
+            static/downloads/loco_numbers_only.html \
+            2>/dev/null || true
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Update trains data"
+            git commit -m "Update trains and loco database files"
             git push
           fi
