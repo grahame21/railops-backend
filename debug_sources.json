@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 400,
+      "count": 357,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 235,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 505,
+      "count": 462,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1128,
-  "au_count": 1088,
+  "raw_count": 925,
+  "au_count": 892,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QE003",
-    "train_number": "9461",
-    "train_name": "QE003",
+    "id": "MM-9905M",
+    "train_number": "CBE",
+    "train_name": "MM-9905M",
     "loco": "",
     "operator": "",
-    "origin": "Port Kembla",
-    "destination": "Morandoo",
-    "speed": 15,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "165 km",
-    "time": "00:30:00",
+    "km": "",
+    "time": "01:01:16",
     "date": "08/04/2026",
-    "description": "QUBE BlueScope Steel Transfer",
-    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "3beaabf6-810b-454e-8db9-503981a42aa4",
-    "trKey": "QE003",
-    "lat": -32.89887,
-    "lon": 151.763773
+    "description": "Cranbourne Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "20cc1e8d-3c1c-4efd-9cdd-1346c485fec9",
+    "trKey": "MM-9905M",
+    "lat": -38.097942,
+    "lon": 145.278091
   }
 }
