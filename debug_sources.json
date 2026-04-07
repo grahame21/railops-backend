@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 929,
+      "count": 836,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 123,
+      "count": 111,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1017,
+      "count": 409,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1052,
+      "count": 947,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2613,
-  "au_count": 2505,
+  "raw_count": 2099,
+  "au_count": 1977,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XP2017",
-    "train_number": "HT23",
-    "train_name": "XP2017",
+    "id": "MRL005",
+    "train_number": "3948",
+    "train_name": "MRL005",
     "loco": "",
     "operator": "",
-    "origin": "Central",
-    "destination": "Sydenham XPT Maintenance Centre",
-    "speed": 15,
+    "origin": "Southern NSW",
+    "destination": "Inner Harbour / Bomaderry",
+    "speed": 4,
     "heading": 0,
-    "km": "5 km",
-    "time": "08:44:00",
+    "km": "556 km",
+    "time": "09:50:00",
     "date": "08/04/2026",
-    "description": "NSW Trainlink Empty Car Transfer (ex ST22)",
-    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
-    "servId": "d55ea117-20c7-467e-b6c7-149ecd415c84",
-    "trKey": "XP2017",
-    "lat": -33.91677,
-    "lon": 151.160493
+    "description": "SSR Grain",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "c797fc3c-2ac7-4890-8fd9-a35b14126c5b",
+    "trKey": "MRL005",
+    "lat": -34.356717,
+    "lon": 146.894707
   }
 }
