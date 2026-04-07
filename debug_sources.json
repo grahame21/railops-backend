@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 922,
+      "count": 794,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 101,
+      "count": 98,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 985,
+      "count": 1223,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1023,
+      "count": 892,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2539,
-  "au_count": 2440,
+  "raw_count": 2396,
+  "au_count": 2282,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XP2001",
-    "train_number": "ST24",
-    "train_name": "XP2001",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1M49",
+    "train_number": "1M49",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1M49",
     "loco": "",
     "operator": "",
-    "origin": "Southern Cross Station",
-    "destination": "Central",
-    "speed": 86,
+    "origin": "Cleveland",
+    "destination": "Brisbane City",
+    "speed": 0,
     "heading": 0,
-    "km": "135 km",
-    "time": "18:18:00",
+    "km": "",
+    "time": "19:21:38",
     "date": "07/04/2026",
-    "description": "NSW TrainLink XPT",
-    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
-    "servId": "6117e855-b2e3-4cfa-a52f-559744859018",
-    "trKey": "XP2001",
-    "lat": -34.4696,
-    "lon": 150.42
+    "description": "CLBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1M49",
+    "lat": -27.450899,
+    "lon": 153.037445
   }
 }
