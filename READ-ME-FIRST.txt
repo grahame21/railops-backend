@@ -1,0 +1,13 @@
+IMPORTANT
+=========
+
+This folder is already arranged like a Flask website project.
+
+Put these into your WEBSITE project root:
+- app.py
+- requirements.txt
+- templates/
+- static/
+
+If your website already has templates/dashboard.html and that is your real live map,
+KEEP your existing dashboard.html and do not overwrite it with the starter one in this folder.
