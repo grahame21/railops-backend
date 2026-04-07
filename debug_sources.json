@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 698,
+      "count": 400,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 122,
+      "count": 105,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1161,
+      "count": 235,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 820,
+      "count": 505,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2221,
-  "au_count": 2126,
+  "raw_count": 1128,
+  "au_count": 1088,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2759-7043",
-    "train_number": "91-N",
-    "train_name": "TNSW-2759-7043",
+    "id": "QE003",
+    "train_number": "9461",
+    "train_name": "QE003",
     "loco": "",
     "operator": "",
-    "origin": "Liverpool",
-    "destination": "City Circle via Regents Park",
-    "speed": 0,
+    "origin": "Port Kembla",
+    "destination": "Morandoo",
+    "speed": 15,
     "heading": 0,
-    "km": "",
-    "time": "14:04:00",
-    "date": "07/04/2026",
-    "description": "T3 Liverpool & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-2759-7043",
-    "lat": -33.88147,
-    "lon": 150.9851
+    "km": "165 km",
+    "time": "00:30:00",
+    "date": "08/04/2026",
+    "description": "QUBE BlueScope Steel Transfer",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "3beaabf6-810b-454e-8db9-503981a42aa4",
+    "trKey": "QE003",
+    "lat": -32.89887,
+    "lon": 151.763773
   }
 }
