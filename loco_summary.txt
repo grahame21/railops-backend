@@ -1,8 +1,8 @@
 ================================================================================
-LOCO DATABASE SUMMARY - 2026-04-07 18:35:50
+LOCO DATABASE SUMMARY - 2026-04-07 19:41:20
 ================================================================================
 
-Total Locomotives Tracked: 4299
+Total Locomotives Tracked: 4308
 
 
 ========================================
@@ -10,23 +10,35 @@ LOCO: 1101
 ========================================
   Date/Time Added: 2026-04-07 15:05:09
   First Seen:      2026-04-07 15:05:09
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     QUBE Containerised Freight
-  Sightings:       7
-  Location:        (-33.11107, 151.485027)
-  Speed:           56 km/h
+  Sightings:       8
+  Location:        (-33.548603, 151.217053)
+  Speed:           43 km/h
   Route:           TIFF (West Tamworth) → Cooks River / IMEX Terminal Moorebank
+
+========================================
+LOCO: 1103
+========================================
+  Date/Time Added: 2026-04-06 21:50:29
+  First Seen:      2026-04-06 21:50:29
+  Last Seen:       2026-04-07 19:41:19
+  Description:     QUBE Containerised Freight
+  Sightings:       5
+  Location:        (-33.925677, 151.178013)
+  Speed:           12 km/h
+  Route:           Carrington → Cooks River / IMEX Terminal Moorebank
 
 ========================================
 LOCO: 1106
 ========================================
   Date/Time Added: 2026-04-07 04:06:02
   First Seen:      2026-04-07 04:06:02
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     QUBE Containerised Freight
-  Sightings:       6
-  Location:        (-33.832353, 151.086813)
-  Speed:           49 km/h
+  Sightings:       7
+  Location:        (-33.925737, 151.17788)
+  Speed:           18 km/h
   Route:           Carrington → Cooks River / IMEX Terminal Moorebank
 
 ========================================
@@ -34,33 +46,22 @@ LOCO: 1108
 ========================================
   Date/Time Added: 2026-04-07 17:39:17
   First Seen:      2026-04-07 17:39:17
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     QUBE Containerised Freight
-  Sightings:       4
-  Location:        (-33.13618, 151.479)
-  Speed:           72 km/h
+  Sightings:       5
+  Location:        (-33.55635, 151.197507)
+  Speed:           35 km/h
   Route:           TIFF (West Tamworth) → Cooks River / IMEX Terminal Moorebank
-
-========================================
-LOCO: 1427
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
-  Description:     QUBE Trip Train
-  Sightings:       35
-  Location:        (-33.95346, 150.923827)
-  Speed:           3 km/h
 
 ========================================
 LOCO: 1435
 ========================================
   Date/Time Added: 2026-04-03 09:34:58
   First Seen:      2026-04-03 09:34:58
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     QUBE Trip Train
-  Sightings:       65
-  Location:        (-33.955597, 151.21864)
+  Sightings:       66
+  Location:        (-33.955623, 151.218653)
   Speed:           0 km/h
   Route:           IMEX Rail Terminal Moorebank → Port Botany
 
@@ -69,88 +70,287 @@ LOCO: 3VL09
 ========================================
   Date/Time Added: 2026-04-06 11:51:35
   First Seen:      2026-04-06 11:51:35
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     Western Line Service
-  Sightings:       8
-  Location:        (-37.813403, 144.9492)
+  Sightings:       9
+  Location:        (-37.8134, 144.949187)
   Speed:           1 km/h
+
+========================================
+LOCO: 3VL107
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  First Seen:      2026-04-03 08:48:43
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       16
+  Location:        (-37.928283, 144.587013)
+  Speed:           152 km/h
+  Route:           Geelong → Southern Cross
+
+========================================
+LOCO: 3VL117
+========================================
+  Date/Time Added: 2026-04-03 09:34:58
+  First Seen:      2026-04-03 09:34:58
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Empty Car Provisioning
+  Sightings:       5
+  Location:        (-37.8047, 144.93828)
+  Speed:           9 km/h
+  Route:           VLP Arrival Yard → Melton
+
+========================================
+LOCO: 3VL118
+========================================
+  Date/Time Added: 2026-04-03 19:04:14
+  First Seen:      2026-04-03 19:04:14
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       20
+  Location:        (-37.80038, 144.929933)
+  Speed:           71 km/h
+  Route:           Southern Cross → South Geelong
+
+========================================
+LOCO: 3VL13
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  First Seen:      2026-04-03 08:48:43
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Western Line Service
+  Sightings:       23
+  Location:        (-37.786523, 144.830987)
+  Speed:           31 km/h
+  Route:           Southern Cross → Wendouree
+
+========================================
+LOCO: 3VL132
+========================================
+  Date/Time Added: 2026-04-06 21:02:55
+  First Seen:      2026-04-06 21:02:55
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Western Line Service
+  Sightings:       3
+  Location:        (-37.801713, 144.901907)
+  Speed:           44 km/h
+  Route:           Ballarat (M-F) → Southern Cross
+
+========================================
+LOCO: 3VL20
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  First Seen:      2026-04-03 08:48:43
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       19
+  Location:        (-38.07507, 144.378373)
+  Speed:           64 km/h
+  Route:           Southern Cross → Waurn Ponds
+
+========================================
+LOCO: 3VL21
+========================================
+  Date/Time Added: 2026-04-03 09:34:58
+  First Seen:      2026-04-03 09:34:58
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Western Line Service
+  Sightings:       4
+  Location:        (-37.81311, 144.948627)
+  Speed:           15 km/h
+  Route:           Southern Cross → Wendouree (M-F)
+
+========================================
+LOCO: 3VL22
+========================================
+  Date/Time Added: 2026-04-06 15:53:28
+  First Seen:      2026-04-06 15:53:28
+  Last Seen:       2026-04-07 19:41:19
+  Sightings:       3
+  Location:        (-37.812127, 144.946693)
+  Speed:           17 km/h
+
+========================================
+LOCO: 3VL27
+========================================
+  Date/Time Added: 2026-04-05 22:24:54
+  First Seen:      2026-04-05 22:24:54
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       7
+  Location:        (-38.04729, 144.395013)
+  Speed:           147 km/h
+  Route:           Marshall → Southern Cross
+
+========================================
+LOCO: 3VL33
+========================================
+  Date/Time Added: 2026-04-03 20:52:37
+  First Seen:      2026-04-03 20:52:37
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       16
+  Location:        (-37.814157, 144.949427)
+  Speed:           15 km/h
+
+========================================
+LOCO: 3VL36
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  First Seen:      2026-04-03 08:48:43
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Empty Car Provisioning
+  Sightings:       9
+  Location:        (-37.81049, 144.944107)
+  Speed:           15 km/h
+  Route:           VLP Arrival Yard (Su) → Southern Cross
+
+========================================
+LOCO: 3VL40
+========================================
+  Date/Time Added: 2026-04-04 01:28:01
+  First Seen:      2026-04-04 01:28:01
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Northern Line Service
+  Sightings:       12
+  Location:        (-37.813943, 144.9492)
+  Speed:           7 km/h
+
+========================================
+LOCO: 3VL54
+========================================
+  Date/Time Added: 2026-04-03 08:48:43
+  First Seen:      2026-04-03 08:48:43
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       16
+  Location:        (-37.812073, 144.948173)
+  Speed:           6 km/h
+
+========================================
+LOCO: 3VL56
+========================================
+  Date/Time Added: 2026-04-06 22:23:12
+  First Seen:      2026-04-06 22:23:12
+  Last Seen:       2026-04-07 19:41:19
+  Description:     South Western Line Service
+  Sightings:       2
+  Location:        (-37.80135, 144.879507)
+  Speed:           79 km/h
+  Route:           Waurn Ponds → Southern Cross
+
+========================================
+LOCO: 3VL66
+========================================
+  Date/Time Added: 2026-04-06 23:02:27
+  First Seen:      2026-04-06 23:02:27
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Northern Line Service
+  Sightings:       3
+  Location:        (-37.812357, 144.948213)
+  Speed:           10 km/h
+
+========================================
+LOCO: 3VL71
+========================================
+  Date/Time Added: 2026-04-04 01:28:01
+  First Seen:      2026-04-04 01:28:01
+  Last Seen:       2026-04-07 19:41:19
+  Description:     Northern Line Service
+  Sightings:       9
+  Location:        (-37.813593, 144.94892)
+  Speed:           11 km/h
 
 ========================================
 LOCO: 3VL74
 ========================================
   Date/Time Added: 2026-04-05 08:41:49
   First Seen:      2026-04-05 08:41:49
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     Gippsland Line Service
-  Sightings:       17
-  Location:        (-37.80564, 144.965773)
-  Speed:           29 km/h
+  Sightings:       18
+  Location:        (-37.814123, 144.94968)
+  Speed:           2 km/h
 
 ========================================
-LOCO: 3VL89
+LOCO: 3VS94
+========================================
+  Date/Time Added: 2026-04-03 21:22:22
+  First Seen:      2026-04-03 21:22:22
+  Last Seen:       2026-04-07 19:41:19
+  Description:     North East Line SG Service
+  Sightings:       27
+  Location:        (-36.087117, 146.923893)
+  Speed:           0 km/h
+  Route:           Albury Station → Southern Cross Station
+
+========================================
+LOCO: 44206
 ========================================
   Date/Time Added: 2026-04-04 22:12:10
   First Seen:      2026-04-04 22:12:10
-  Last Seen:       2026-04-07 18:35:50
-  Sightings:       4
-  Location:        (-37.811813, 144.9478)
+  Last Seen:       2026-04-07 19:41:19
+  Description:     SSR Manildra Grain Shuttle
+  Sightings:       20
+  Location:        (-33.186787, 148.69516)
   Speed:           1 km/h
-
-========================================
-LOCO: 44204
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
-  Description:     SSR Cement Clinker
-  Sightings:       28
-  Location:        (-34.509313, 150.340773)
-  Speed:           5 km/h
-  Route:           Berrima Cement Works → Maldon Cement Works
+  Route:           Western NSW → Manildra
 
 ========================================
 LOCO: 4811
 ========================================
   Date/Time Added: 2026-04-05 04:11:30
   First Seen:      2026-04-05 04:11:30
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     SSR Manildra Grain Shuttle
-  Sightings:       19
-  Location:        (-33.186833, 148.696293)
+  Sightings:       20
+  Location:        (-33.186777, 148.694467)
   Speed:           1 km/h
-  Route:           Western NSW → Manildra
+
+========================================
+LOCO: 4843
+========================================
+  Date/Time Added: 2026-04-06 03:38:25
+  First Seen:      2026-04-06 03:38:25
+  Last Seen:       2026-04-07 19:41:19
+  Description:     SSR Manildra Grain Shuttle
+  Sightings:       28
+  Location:        (-33.142433, 148.175013)
+  Speed:           3 km/h
 
 ========================================
 LOCO: 4908
 ========================================
   Date/Time Added: 2026-04-03 21:55:05
   First Seen:      2026-04-03 21:55:05
-  Last Seen:       2026-04-07 18:35:50
-  Sightings:       18
-  Location:        (-33.84307, 151.026573)
-  Speed:           1 km/h
+  Last Seen:       2026-04-07 19:41:19
+  Description:     SSR Cement
+  Sightings:       19
+  Location:        (-33.881033, 150.975907)
+  Speed:           53 km/h
+  Route:           Clyde Yard → Berrima Cement Works
 
 ========================================
 LOCO: 4911
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     SSR Cement Trip Train
-  Sightings:       12
-  Location:        (-33.84272, 151.0262)
-  Speed:           8 km/h
+  Sightings:       13
+  Location:        (-33.842257, 151.025813)
+  Speed:           3 km/h
 
 ========================================
 LOCO: 4917
 ========================================
   Date/Time Added: 2026-04-07 15:05:09
   First Seen:      2026-04-07 15:05:09
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     SSR Cement Trip Train
-  Sightings:       7
-  Location:        (-33.842537, 151.026053)
-  Speed:           9 km/h
+  Sightings:       8
+  Location:        (-33.842077, 151.02564)
+  Speed:           3 km/h
   Route:           Boral, Cooks River → Clyde Yard
 
 ========================================
@@ -158,21 +358,21 @@ LOCO: 5001
 ========================================
   Date/Time Added: 2026-04-06 18:34:17
   First Seen:      2026-04-06 18:34:17
-  Last Seen:       2026-04-07 18:35:50
-  Sightings:       6
-  Location:        (-32.34121, 149.87996)
-  Speed:           1 km/h
+  Last Seen:       2026-04-07 19:41:19
+  Sightings:       7
+  Location:        (-32.32921, 149.875173)
+  Speed:           17 km/h
 
 ========================================
 LOCO: 5024
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       70
-  Location:        (-32.36229, 150.6202)
-  Speed:           52 km/h
+  Sightings:       71
+  Location:        (-32.305877, 150.98524)
+  Speed:           18 km/h
   Route:           Wilpinjong → NCIG Kooragang
 
 ========================================
@@ -180,11 +380,11 @@ LOCO: 5029
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       82
-  Location:        (-32.432733, 150.14076)
-  Speed:           51 km/h
+  Sightings:       83
+  Location:        (-32.343347, 149.876933)
+  Speed:           1 km/h
   Route:           Mac Generation Antiene → Wilpinjong
 
 ========================================
@@ -192,45 +392,45 @@ LOCO: 5030
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       69
-  Location:        (-32.336063, 149.876907)
-  Speed:           1 km/h
-  Route:           Mac Generation Antiene → Wilpinjong
+  Sightings:       70
+  Location:        (-32.32545, 149.889947)
+  Speed:           17 km/h
+  Route:           Wilpinjong → Mac Generation Antiene
 
 ========================================
-LOCO: 5041
+LOCO: 5035
+========================================
+  Date/Time Added: 2026-04-05 17:48:22
+  First Seen:      2026-04-05 17:48:22
+  Last Seen:       2026-04-07 19:41:19
+  Sightings:       28
+  Location:        (-32.711493, 151.40816)
+  Speed:           79 km/h
+
+========================================
+LOCO: 5039
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       95
-  Location:        (-32.874333, 151.742307)
-  Speed:           2 km/h
-  Route:           Wilpinjong → NCIG Kooragang
-
-========================================
-LOCO: 6002
-========================================
-  Date/Time Added: 2026-04-07 15:05:09
-  First Seen:      2026-04-07 15:05:09
-  Last Seen:       2026-04-07 18:35:50
-  Sightings:       4
-  Location:        (-34.470357, 150.884933)
-  Speed:           1 km/h
+  Sightings:       54
+  Location:        (-32.70241, 151.399907)
+  Speed:           78 km/h
+  Route:           PWCS Kooragang → Mount Pleasant
 
 ========================================
 LOCO: 6007
 ========================================
   Date/Time Added: 2026-04-04 22:12:10
   First Seen:      2026-04-04 22:12:10
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       66
-  Location:        (-30.663403, 150.02244)
-  Speed:           26 km/h
+  Sightings:       67
+  Location:        (-30.885863, 150.107147)
+  Speed:           0 km/h
   Route:           Maules Creek → NCIG Kooragang
 
 ========================================
@@ -238,34 +438,23 @@ LOCO: 6008
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       96
-  Location:        (-32.936547, 151.66016)
-  Speed:           63 km/h
+  Sightings:       97
+  Location:        (-32.822847, 151.680587)
+  Speed:           0 km/h
   Route:           Vales Point / Eraring → Hexham TSF
-
-========================================
-LOCO: 6009
-========================================
-  Date/Time Added: 2026-04-07 01:06:21
-  First Seen:      2026-04-07 01:06:21
-  Last Seen:       2026-04-07 18:35:50
-  Description:     AZ Coal
-  Sightings:       5
-  Location:        (-34.467013, 150.891787)
-  Speed:           1 km/h
 
 ========================================
 LOCO: 6010
 ========================================
   Date/Time Added: 2026-04-04 23:21:29
   First Seen:      2026-04-04 23:21:29
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     Aurizon Loaded Ore (diverted 8402)
-  Sightings:       24
-  Location:        (-34.083603, 150.75964)
-  Speed:           8 km/h
+  Sightings:       25
+  Location:        (-34.082747, 150.758347)
+  Speed:           0 km/h
   Route:           Hermidale → Carrington
 
 ========================================
@@ -273,11 +462,11 @@ LOCO: 6022
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     Aurizon Intermodal
-  Sightings:       92
-  Location:        (-32.924797, 139.134387)
-  Speed:           109 km/h
+  Sightings:       93
+  Location:        (-32.512607, 139.723)
+  Speed:           92 km/h
   Route:           Kwinana → Glenlee
 
 ========================================
@@ -285,11 +474,11 @@ LOCO: 6027
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     AZ Coal
-  Sightings:       94
-  Location:        (-30.976883, 150.2432)
-  Speed:           26 km/h
+  Sightings:       95
+  Location:        (-30.776183, 150.044347)
+  Speed:           76 km/h
   Route:           NCIG Kooragang → Narrabri
 
 ========================================
@@ -297,11 +486,11 @@ LOCO: 6029
 ========================================
   Date/Time Added: 2026-04-03 08:48:43
   First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     Aurizon Intermodal
-  Sightings:       65
-  Location:        (-34.553803, 148.371587)
-  Speed:           58 km/h
+  Sightings:       66
+  Location:        (-34.773157, 147.83028)
+  Speed:           98 km/h
   Route:           Glenlee → North Dynon
 
 ========================================
@@ -309,35 +498,23 @@ LOCO: 8103
 ========================================
   Date/Time Added: 2026-04-05 10:52:42
   First Seen:      2026-04-05 10:52:42
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Intermodal Trip Train - RSS Crewed
-  Sightings:       27
-  Location:        (-33.892863, 151.067507)
-  Speed:           40 km/h
+  Sightings:       28
+  Location:        (-33.96369, 151.21332)
+  Speed:           13 km/h
   Route:           St Marys Freight Hub → Port Botany
-
-========================================
-LOCO: 8114
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Melbourne Freight Terminal Shunter
-  Sightings:       31
-  Location:        (-37.804247, 144.923653)
-  Speed:           16 km/h
-  Route:           MFT (South Dynon) → 
 
 ========================================
 LOCO: 8125
 ========================================
   Date/Time Added: 2026-04-06 05:52:30
   First Seen:      2026-04-06 05:52:30
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Grain
-  Sightings:       10
-  Location:        (-37.989283, 143.508947)
-  Speed:           71 km/h
+  Sightings:       11
+  Location:        (-38.08825, 144.326413)
+  Speed:           0 km/h
   Route:           Western Victoria → Geelong Grain Loop
 
 ========================================
@@ -345,10 +522,10 @@ LOCO: 8129
 ========================================
   Date/Time Added: 2026-04-05 20:55:29
   First Seen:      2026-04-05 20:55:29
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Trip Train
-  Sightings:       16
-  Location:        (-33.960543, 151.218587)
+  Sightings:       17
+  Location:        (-33.962187, 151.2194)
   Speed:           5 km/h
 
 ========================================
@@ -356,11 +533,11 @@ LOCO: 8142
 ========================================
   Date/Time Added: 2026-04-03 22:58:27
   First Seen:      2026-04-03 22:58:27
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Intermodal Trip Train - RSS Crewed
-  Sightings:       24
-  Location:        (-33.866363, 151.05892)
-  Speed:           22 km/h
+  Sightings:       25
+  Location:        (-33.756957, 150.76856)
+  Speed:           10 km/h
   Route:           Port Botany → St Marys Intermodal Hub
 
 ========================================
@@ -368,11 +545,11 @@ LOCO: 8153
 ========================================
   Date/Time Added: 2026-04-05 18:24:21
   First Seen:      2026-04-05 18:24:21
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Limestone
-  Sightings:       16
-  Location:        (-34.46834, 150.87996)
-  Speed:           8 km/h
+  Sightings:       17
+  Location:        (-34.47742, 150.897373)
+  Speed:           5 km/h
   Route:           Cringilla Yard → Marulan South Quarry
 
 ========================================
@@ -380,33 +557,22 @@ LOCO: 8154
 ========================================
   Date/Time Added: 2026-04-05 23:37:51
   First Seen:      2026-04-05 23:37:51
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Light Engine
-  Sightings:       9
-  Location:        (-34.46802, 150.879693)
+  Sightings:       10
+  Location:        (-34.477467, 150.897627)
   Speed:           5 km/h
-
-========================================
-LOCO: 8210
-========================================
-  Date/Time Added: 2026-04-06 03:38:25
-  First Seen:      2026-04-06 03:38:25
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Grain
-  Sightings:       13
-  Location:        (-34.642427, 148.029773)
-  Speed:           10 km/h
 
 ========================================
 LOCO: 8213
 ========================================
   Date/Time Added: 2026-04-03 11:49:23
   First Seen:      2026-04-03 11:49:23
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Garbage Train
-  Sightings:       50
-  Location:        (-34.21894, 150.591827)
-  Speed:           41 km/h
+  Sightings:       51
+  Location:        (-34.459687, 150.421)
+  Speed:           34 km/h
   Route:           Banksmeadow → Crisps Creek
 
 ========================================
@@ -414,170 +580,8 @@ LOCO: 8214
 ========================================
   Date/Time Added: 2026-04-06 05:52:30
   First Seen:      2026-04-06 05:52:30
-  Last Seen:       2026-04-07 18:35:50
+  Last Seen:       2026-04-07 19:41:19
   Description:     PN Light Engine
-  Sightings:       12
-  Location:        (-34.55587, 148.100093)
-  Speed:           25 km/h
-
-========================================
-LOCO: 8215
-========================================
-  Date/Time Added: 2026-04-07 15:05:09
-  First Seen:      2026-04-07 15:05:09
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Grain
-  Sightings:       5
-  Location:        (-34.557487, 148.098907)
-  Speed:           25 km/h
-
-========================================
-LOCO: 8217
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Loaded Ore / Grain
-  Sightings:       33
-  Location:        (-32.926103, 151.72988)
-  Speed:           0 km/h
-  Route:           Goonumbla / Western NSW → Carrington
-
-========================================
-LOCO: 8218
-========================================
-  Date/Time Added: 2026-04-03 12:32:25
-  First Seen:      2026-04-03 12:32:25
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Garbage Train
-  Sightings:       45
-  Location:        (-34.62058, 150.317747)
-  Speed:           53 km/h
-
-========================================
-LOCO: 8222
-========================================
-  Date/Time Added: 2026-04-05 10:52:42
-  First Seen:      2026-04-05 10:52:42
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Garbage Train
-  Sightings:       36
-  Location:        (-34.620487, 150.31764)
-  Speed:           52 km/h
-  Route:           Clyde → Crisps Creek
-
-========================================
-LOCO: 8234
-========================================
-  Date/Time Added: 2026-04-06 10:58:09
-  First Seen:      2026-04-06 10:58:09
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Grain
-  Sightings:       7
-  Location:        (-31.685437, 150.765733)
-  Speed:           43 km/h
-  Route:           North West NSW → Carrington
-
-========================================
-LOCO: 8236
-========================================
-  Date/Time Added: 2026-04-06 22:23:12
-  First Seen:      2026-04-06 22:23:12
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Grain
-  Sightings:       8
-  Location:        (-34.11186, 147.361867)
-  Speed:           28 km/h
-  Route:           Port Waratah / Cargill Kooragang → Southern NSW
-
-========================================
-LOCO: 8238
-========================================
-  Date/Time Added: 2026-04-07 04:06:02
-  First Seen:      2026-04-07 04:06:02
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Grain
-  Sightings:       6
-  Location:        (-31.64815, 150.724547)
-  Speed:           12 km/h
-  Route:           North West NSW → Carrington
-
-========================================
-LOCO: 8249
-========================================
-  Date/Time Added: 2026-04-07 15:46:16
-  First Seen:      2026-04-07 15:46:16
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Grain
-  Sightings:       5
-  Location:        (-34.111517, 147.36148)
-  Speed:           28 km/h
-
-========================================
-LOCO: 872
-========================================
-  Date/Time Added: 2026-04-07 04:06:02
-  First Seen:      2026-04-07 04:06:02
-  Last Seen:       2026-04-07 18:35:50
-  Sightings:       3
-  Location:        (-35.077583, 147.41172)
-  Speed:           51 km/h
-
-========================================
-LOCO: 9025
-========================================
-  Date/Time Added: 2026-04-03 12:32:25
-  First Seen:      2026-04-03 12:32:25
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Coal
-  Sightings:       46
-  Location:        (-32.87591, 151.70448)
-  Speed:           32 km/h
-  Route:           Warkworth → PWCS Kooragang
-
-========================================
-LOCO: 9209
-========================================
-  Date/Time Added: 2026-04-05 23:37:51
-  First Seen:      2026-04-05 23:37:51
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Coal
-  Sightings:       28
-  Location:        (-31.29344, 150.513333)
-  Speed:           80 km/h
-  Route:           NCIG Kooragang → Boggabri East
-
-========================================
-LOCO: 9301
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Coal
-  Sightings:       92
-  Location:        (-32.005767, 150.86776)
-  Speed:           51 km/h
-  Route:           Whitehaven → PWCS Kooragang
-
-========================================
-LOCO: 9302
-========================================
-  Date/Time Added: 2026-04-03 08:48:43
-  First Seen:      2026-04-03 08:48:43
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Coal
-  Sightings:       92
-  Location:        (-32.281697, 150.93988)
-  Speed:           19 km/h
-  Route:           Narrabri → NCIG Kooragang
-
-========================================
-LOCO: 9304
-========================================
-  Date/Time Added: 2026-04-04 22:39:29
-  First Seen:      2026-04-04 22:39:29
-  Last Seen:       2026-04-07 18:35:50
-  Description:     PN Light Engine Movement
-  Sightings:       19
-  Location:        (-32.867283, 151.753333)
-  Speed:           2 km/h
+  Sightings:       13
+  Location:        (-34.583667, 148.515507)
+  Speed:           30 km/h

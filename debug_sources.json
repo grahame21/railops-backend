@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 328,
+      "count": 551,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 97,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 551,
+      "count": 329,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 421,
+      "count": 648,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1118,
-  "au_count": 1095,
+  "raw_count": 1461,
+  "au_count": 1434,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CSR019",
-    "train_number": "1MP9",
-    "train_name": "CSR019",
+    "id": "TNSW-5192-4474",
+    "train_number": "173A",
+    "train_name": "TNSW-5192-4474",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Laverton",
-    "destination": "SCT, Forrestfield",
-    "speed": 81,
+    "origin": "Richmond",
+    "destination": "Berowra via City ",
+    "speed": 0,
     "heading": 0,
-    "km": "436 km",
-    "time": "04:32:00",
+    "km": "",
+    "time": "05:38:26",
     "date": "08/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "bc78e6ba-083f-49d1-a351-1b493c2d4818",
-    "trKey": "CSR019",
-    "lat": -30.939203,
-    "lon": 119.374587
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5192-4474",
+    "lat": -33.891684,
+    "lon": 151.198178
   }
 }
