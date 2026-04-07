@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 698,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 122,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 1161,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 820,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 2221,
+  "au_count": 2126,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-2759-7043",
+    "train_number": "91-N",
+    "train_name": "TNSW-2759-7043",
+    "loco": "",
+    "operator": "",
+    "origin": "Liverpool",
+    "destination": "City Circle via Regents Park",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "14:04:00",
+    "date": "07/04/2026",
+    "description": "T3 Liverpool & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-2759-7043",
+    "lat": -33.88147,
+    "lon": 150.9851
+  }
 }
