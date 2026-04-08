@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 824,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 115,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 805,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 939,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 2281,
+  "au_count": 2214,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-4839-8774",
+    "train_number": "17-P",
+    "train_name": "TNSW-4839-8774",
+    "loco": "",
+    "operator": "",
+    "origin": "Leppington",
+    "destination": "City Circle via Sydenham",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "15:54:03",
+    "date": "08/04/2026",
+    "description": "T8 Airport & South Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-4839-8774",
+    "lat": -33.885477,
+    "lon": 151.205399
+  }
 }
