@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 582,
+      "count": 479,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 98,
+      "count": 113,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 199,
+      "count": 701,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 680,
+      "count": 592,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1460,
-  "au_count": 1379,
+  "raw_count": 1535,
+  "au_count": 1474,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2224-9195",
-    "train_number": "N777",
-    "train_name": "TNSW-2224-9195",
+    "id": "NR27",
+    "train_number": "4SA8",
+    "train_name": "NR27",
     "loco": "",
     "operator": "",
-    "origin": "Central",
-    "destination": "Newcastle Interchange via Strathfield",
-    "speed": 0,
+    "origin": "Central Station",
+    "destination": "Adelaide Parklands Terminal",
+    "speed": 24,
     "heading": 0,
-    "km": "",
-    "time": "22:37:56",
-    "date": "08/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-2224-9195",
-    "lat": -33.42366,
-    "lon": 151.34165
+    "km": "448 km",
+    "time": "00:12:00",
+    "date": "09/04/2026",
+    "description": "JBR Indian Pacifc",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "cb3f73a8-1564-4030-b8c6-3a0e036c41c2",
+    "trKey": "NR27",
+    "lat": -33.14032,
+    "lon": 148.14616
   }
 }
