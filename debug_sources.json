@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 635,
+      "count": 582,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 108,
+      "count": 98,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 945,
+      "count": 199,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 743,
+      "count": 680,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1959,
-  "au_count": 1859,
+  "raw_count": 1460,
+  "au_count": 1379,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPX8",
-    "train_number": "DPX8",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPX8",
+    "id": "TNSW-2224-9195",
+    "train_number": "N777",
+    "train_name": "TNSW-2224-9195",
     "loco": "",
     "operator": "",
-    "origin": "Shorncliffe",
-    "destination": "Caboolture",
+    "origin": "Central",
+    "destination": "Newcastle Interchange via Strathfield",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "21:33:57",
+    "time": "22:37:56",
     "date": "08/04/2026",
-    "description": "SHCA",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "Central Coast & Newcastle Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPX8",
-    "lat": -27.39279,
-    "lon": 153.069122
+    "trKey": "TNSW-2224-9195",
+    "lat": -33.42366,
+    "lon": 151.34165
   }
 }
