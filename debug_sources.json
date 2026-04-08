@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 713,
+      "count": 635,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 102,
+      "count": 108,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 899,
+      "count": 945,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 815,
+      "count": 743,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2080,
-  "au_count": 1969,
+  "raw_count": 1959,
+  "au_count": 1859,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR15",
-    "train_number": "4445",
-    "train_name": "NR15",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPX8",
+    "train_number": "DPX8",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPX8",
     "loco": "",
     "operator": "",
-    "origin": "West Kalgoorlie",
-    "destination": "Esperance",
-    "speed": 35,
+    "origin": "Shorncliffe",
+    "destination": "Caboolture",
+    "speed": 0,
     "heading": 0,
-    "km": "647 km",
-    "time": "20:17:00",
+    "km": "",
+    "time": "21:33:57",
     "date": "08/04/2026",
-    "description": "PN Empty Fuel",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "00afca6e-7756-4648-a83e-a3afba51d882",
-    "trKey": "NR15",
-    "lat": -30.800703,
-    "lon": 121.400427
+    "description": "SHCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPX8",
+    "lat": -27.39279,
+    "lon": 153.069122
   }
 }
