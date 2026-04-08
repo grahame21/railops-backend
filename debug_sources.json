@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 248,
+      "count": 216,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 429,
+      "count": 11,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 347,
+      "count": 309,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 909,
-  "au_count": 875,
+  "raw_count": 624,
+  "au_count": 615,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9027",
-    "train_number": "WK290",
-    "train_name": "9027",
+    "id": "NR108",
+    "train_number": "4PM4",
+    "train_name": "NR108",
     "loco": "",
     "operator": "",
-    "origin": "Warkworth",
-    "destination": "PWCS Kooragang",
-    "speed": 3,
+    "origin": "Kewdale",
+    "destination": "MFT (South Dynon)",
+    "speed": 79,
     "heading": 0,
-    "km": "176 km",
-    "time": "01:45:00",
+    "km": "148 km",
+    "time": "02:44:00",
     "date": "09/04/2026",
-    "description": "PN Coal",
+    "description": "PN Intermodal",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "36a5cc38-794d-4143-9693-9dc01b44e8a0",
-    "trKey": "9027",
-    "lat": -32.874863,
-    "lon": 151.7718
+    "servId": "dfdd3fcc-4b66-43b4-b78f-d61d2a2a3991",
+    "trKey": "NR108",
+    "lat": -31.6411,
+    "lon": 116.936253
   }
 }
