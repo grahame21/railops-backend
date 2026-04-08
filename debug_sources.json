@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 412,
+      "count": 624,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 91,
+      "count": 100,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 373,
+      "count": 981,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 503,
+      "count": 724,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1193,
-  "au_count": 1117,
+  "raw_count": 1939,
+  "au_count": 1873,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D502",
-    "train_number": "D502",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D502",
+    "id": "TNSW-7800-6965",
+    "train_number": "89-D",
+    "train_name": "TNSW-7800-6965",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Ipswich",
+    "origin": "City Circle",
+    "destination": "Leppington via Granville",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "04:51:49",
+    "time": "05:53:41",
     "date": "09/04/2026",
-    "description": "BRIP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D502",
-    "lat": -27.445829,
-    "lon": 153.037552
+    "trKey": "TNSW-7800-6965",
+    "lat": -33.88428,
+    "lon": 151.20718
   }
 }
