@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 824,
+      "count": 912,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 115,
+      "count": 108,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 805,
+      "count": 1109,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 939,
+      "count": 1020,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2281,
-  "au_count": 2214,
+  "raw_count": 2595,
+  "au_count": 2506,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-4839-8774",
-    "train_number": "17-P",
-    "train_name": "TNSW-4839-8774",
+    "id": "NR121",
+    "train_number": "2PS7",
+    "train_name": "NR121",
     "loco": "",
     "operator": "",
-    "origin": "Leppington",
-    "destination": "City Circle via Sydenham",
-    "speed": 0,
+    "origin": "Kewdale",
+    "destination": "SFT (Chullora)",
+    "speed": 12,
     "heading": 0,
-    "km": "",
-    "time": "15:54:03",
+    "km": "319 km",
+    "time": "17:03:00",
     "date": "08/04/2026",
-    "description": "T8 Airport & South Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-4839-8774",
-    "lat": -33.885477,
-    "lon": 151.205399
+    "description": "PN Intermodal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "7e9c2879-7bf2-4f81-a5bd-cab5a71aaec0",
+    "trKey": "NR121",
+    "lat": -32.13311,
+    "lon": 140.72848
   }
 }
