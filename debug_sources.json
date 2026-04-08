@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 822,
+      "count": 713,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 118,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 739,
+      "count": 899,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 940,
+      "count": 815,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2250,
-  "au_count": 2159,
+  "raw_count": 2080,
+  "au_count": 1969,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ1",
-    "train_number": "1EZ1",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ1",
+    "id": "NR15",
+    "train_number": "4445",
+    "train_name": "NR15",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Ferny Grove",
-    "speed": 0,
+    "origin": "West Kalgoorlie",
+    "destination": "Esperance",
+    "speed": 35,
     "heading": 0,
-    "km": "",
-    "time": "19:35:29",
+    "km": "647 km",
+    "time": "20:17:00",
     "date": "08/04/2026",
-    "description": "CLFG",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ1",
-    "lat": -27.465361,
-    "lon": 153.088486
+    "description": "PN Empty Fuel",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "00afca6e-7756-4648-a83e-a3afba51d882",
+    "trKey": "NR15",
+    "lat": -30.800703,
+    "lon": 121.400427
   }
 }
