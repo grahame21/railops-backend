@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 946,
+      "count": 822,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 102,
+      "count": 118,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1107,
+      "count": 739,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1048,
+      "count": 940,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2650,
-  "au_count": 2562,
+  "raw_count": 2250,
+  "au_count": 2159,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-84M",
-    "train_number": "MDD",
-    "train_name": "MM-84M",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ1",
+    "train_number": "1EZ1",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ1",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "Cleveland",
+    "destination": "Ferny Grove",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "18:19:33",
+    "time": "19:35:29",
     "date": "08/04/2026",
-    "description": "Mernda Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "7ef147fb-ba13-4660-9105-e8c2eda15eed",
-    "trKey": "MM-84M",
-    "lat": -37.621792,
-    "lon": 145.097412
+    "description": "CLFG",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ1",
+    "lat": -27.465361,
+    "lon": 153.088486
   }
 }
