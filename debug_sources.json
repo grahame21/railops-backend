@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 216,
+      "count": 207,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 95,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 11,
+      "count": 423,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 309,
+      "count": 302,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 624,
-  "au_count": 615,
+  "raw_count": 816,
+  "au_count": 813,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR108",
-    "train_number": "4PM4",
-    "train_name": "NR108",
+    "id": "XRN027",
+    "train_number": "RV123",
+    "train_name": "XRN027",
     "loco": "",
     "operator": "",
-    "origin": "Kewdale",
-    "destination": "MFT (South Dynon)",
-    "speed": 79,
+    "origin": "PWCS Kooragang",
+    "destination": "Ravensworth",
+    "speed": 1,
     "heading": 0,
-    "km": "148 km",
-    "time": "02:44:00",
+    "km": "262 km",
+    "time": "03:45:00",
     "date": "09/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "dfdd3fcc-4b66-43b4-b78f-d61d2a2a3991",
-    "trKey": "NR108",
-    "lat": -31.6411,
-    "lon": 116.936253
+    "description": "ORA Coal",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "bdee54f1-313a-4d16-adf4-69ac51f0f568",
+    "trKey": "XRN027",
+    "lat": -32.40607,
+    "lon": 151.014373
   }
 }
