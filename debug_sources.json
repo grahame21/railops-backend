@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 746,
+      "count": 884,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 159,
+      "count": 401,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 852,
+      "count": 990,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1784,
-  "au_count": 1720,
+  "raw_count": 2181,
+  "au_count": 2143,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWA001",
-    "train_number": "3AD1",
-    "train_name": "GWA001",
+    "id": "TNSW-8262-1227",
+    "train_number": "44-D",
+    "train_name": "TNSW-8262-1227",
     "loco": "",
     "operator": "",
-    "origin": "Gillman Yard (Port Flat)",
-    "destination": "Berrimah (Darwin)",
-    "speed": 104,
+    "origin": "City Circle",
+    "destination": "Leppington via Granville",
+    "speed": 0,
     "heading": 0,
-    "km": "1861 km",
-    "time": "06:27:00",
+    "km": "",
+    "time": "07:12:34",
     "date": "09/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "24fd3281-7aa1-42c0-9913-8af0a1938761",
-    "trKey": "GWA001",
-    "lat": -19.289355,
-    "lon": 133.82064
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-8262-1227",
+    "lat": -33.955178,
+    "lon": 150.816924
   }
 }
