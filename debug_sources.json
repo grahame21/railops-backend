@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 479,
+      "count": 248,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 113,
+      "count": 99,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 701,
+      "count": 429,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 592,
+      "count": 347,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1535,
-  "au_count": 1474,
+  "raw_count": 909,
+  "au_count": 875,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR27",
-    "train_number": "4SA8",
-    "train_name": "NR27",
+    "id": "9027",
+    "train_number": "WK290",
+    "train_name": "9027",
     "loco": "",
     "operator": "",
-    "origin": "Central Station",
-    "destination": "Adelaide Parklands Terminal",
-    "speed": 24,
+    "origin": "Warkworth",
+    "destination": "PWCS Kooragang",
+    "speed": 3,
     "heading": 0,
-    "km": "448 km",
-    "time": "00:12:00",
+    "km": "176 km",
+    "time": "01:45:00",
     "date": "09/04/2026",
-    "description": "JBR Indian Pacifc",
+    "description": "PN Coal",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "cb3f73a8-1564-4030-b8c6-3a0e036c41c2",
-    "trKey": "NR27",
-    "lat": -33.14032,
-    "lon": 148.14616
+    "servId": "36a5cc38-794d-4143-9693-9dc01b44e8a0",
+    "trKey": "9027",
+    "lat": -32.874863,
+    "lon": 151.7718
   }
 }
