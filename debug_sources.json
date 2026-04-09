@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 522,
+      "count": 233,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 90,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 387,
+      "count": 341,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 621,
+      "count": 323,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1436,
-  "au_count": 1310,
+  "raw_count": 817,
+  "au_count": 768,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5024",
-    "train_number": "WG909",
-    "train_name": "5024",
+    "id": "6002",
+    "train_number": "MC58",
+    "train_name": "6002",
     "loco": "",
     "operator": "",
-    "origin": "NCIG Kooragang",
-    "destination": "Wilpinjong",
-    "speed": 0,
+    "origin": "Metropolitan Colliery",
+    "destination": "Bluescope Coal Bridge",
+    "speed": 8,
     "heading": 0,
-    "km": "317 km",
-    "time": "00:05:00",
+    "km": "49 km",
+    "time": "01:36:00",
     "date": "10/04/2026",
     "description": "AZ Coal",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "914feba9-7876-4019-baf3-f6b250e4c495",
-    "trKey": "5024",
-    "lat": -32.40508,
-    "lon": 150.657547
+    "servId": "3e5b52a1-11ae-4f28-ab82-47472a7d75c0",
+    "trKey": "6002",
+    "lat": -34.187557,
+    "lon": 150.991693
   }
 }
