@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 924,
+      "count": 855,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 114,
+      "count": 112,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1001,
+      "count": 573,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1038,
+      "count": 967,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2577,
-  "au_count": 2460,
+  "raw_count": 2221,
+  "au_count": 2096,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBB5",
-    "train_number": "JBB5",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBB5",
+    "id": "NR27",
+    "train_number": "4SA8",
+    "train_name": "NR27",
     "loco": "",
     "operator": "",
-    "origin": "Caboolture",
-    "destination": "Doomben",
+    "origin": "Central Station",
+    "destination": "Adelaide Parklands Terminal",
     "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "09:20:09",
+    "km": "1125 km",
+    "time": "09:57:00",
     "date": "09/04/2026",
-    "description": "CADB",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBB5",
-    "lat": -27.42713,
-    "lon": 153.062943
+    "description": "JBR Indian Pacifc",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "cb3f73a8-1564-4030-b8c6-3a0e036c41c2",
+    "trKey": "NR27",
+    "lat": -31.962653,
+    "lon": 141.462
   }
 }
