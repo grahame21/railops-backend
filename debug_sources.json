@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 221,
+      "count": 227,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 417,
+      "count": 427,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 320,
+      "count": 315,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 849,
-  "au_count": 816,
+  "raw_count": 844,
+  "au_count": 823,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN007",
-    "train_number": "BG345",
-    "train_name": "XRN007",
+    "id": "8222",
+    "train_number": "1221",
+    "train_name": "8222",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Bengalla",
-    "speed": 1,
+    "origin": "Clyde",
+    "destination": "Crisps Creek",
+    "speed": 47,
     "heading": 0,
-    "km": "295 km",
-    "time": "02:52:00",
+    "km": "136 km",
+    "time": "03:52:00",
     "date": "10/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "ed8832be-ffb2-474d-a1a1-771b20a5613e",
-    "trKey": "XRN007",
-    "lat": -32.287157,
-    "lon": 150.82704
+    "description": "PN Garbage Train",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "84d361d8-90b7-4165-84a1-a796367ea6fb",
+    "trKey": "8222",
+    "lat": -34.47803,
+    "lon": 150.41676
   }
 }
