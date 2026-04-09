@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 667,
+      "count": 622,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 100,
+      "count": 94,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 939,
+      "count": 905,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 767,
+      "count": 716,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2004,
-  "au_count": 1906,
+  "raw_count": 1885,
+  "au_count": 1790,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-5242-3734",
-    "train_number": "W778",
-    "train_name": "TNSW-5242-3734",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T892",
+    "train_number": "T892",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T892",
     "loco": "",
     "operator": "",
-    "origin": "Lithgow",
-    "destination": "Central",
+    "origin": "Brisbane City",
+    "destination": "Cleveland",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "21:14:13",
+    "time": "21:54:14",
     "date": "09/04/2026",
-    "description": "Blue Mountains Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "description": "BRCL",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-5242-3734",
-    "lat": -33.76902,
-    "lon": 150.62093
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T892",
+    "lat": -27.524059,
+    "lon": 153.26329
   }
 }
