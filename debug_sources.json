@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 577,
+      "count": 522,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 95,
+      "count": 99,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 757,
+      "count": 387,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 672,
+      "count": 621,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1723,
-  "au_count": 1654,
+  "raw_count": 1436,
+  "au_count": 1310,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CAF Urbos 3 Light Rail Vehicle",
-    "train_number": "L1",
-    "train_name": "CAF Urbos 3 Light Rail Vehicle",
+    "id": "5024",
+    "train_number": "WG909",
+    "train_name": "5024",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 8,
+    "origin": "NCIG Kooragang",
+    "destination": "Wilpinjong",
+    "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "23:05:37",
-    "date": "09/04/2026",
-    "description": "Dulwich Hill Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "CAF Urbos 3 Light Rail Vehicle",
-    "lat": -33.882568,
-    "lon": 151.207077
+    "km": "317 km",
+    "time": "00:05:00",
+    "date": "10/04/2026",
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "914feba9-7876-4019-baf3-f6b250e4c495",
+    "trKey": "5024",
+    "lat": -32.40508,
+    "lon": 150.657547
   }
 }
