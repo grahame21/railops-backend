@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 855,
+      "count": 737,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 112,
+      "count": 119,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 573,
+      "count": 389,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 967,
+      "count": 856,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2221,
-  "au_count": 2096,
+  "raw_count": 1907,
+  "au_count": 1811,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR27",
-    "train_number": "4SA8",
-    "train_name": "NR27",
+    "id": "GWB105",
+    "train_number": "5DA2",
+    "train_name": "GWB105",
     "loco": "",
     "operator": "",
-    "origin": "Central Station",
-    "destination": "Adelaide Parklands Terminal",
-    "speed": 0,
+    "origin": "Berrimah (Darwin)",
+    "destination": "Gillman Yard (Port Flat)",
+    "speed": 79,
     "heading": 0,
-    "km": "1125 km",
-    "time": "09:57:00",
+    "km": "2607 km",
+    "time": "11:58:00",
     "date": "09/04/2026",
-    "description": "JBR Indian Pacifc",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "cb3f73a8-1564-4030-b8c6-3a0e036c41c2",
-    "trKey": "NR27",
-    "lat": -31.962653,
-    "lon": 141.462
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "28acfbee-6b87-43c0-bd5e-403312cfe366",
+    "trKey": "GWB105",
+    "lat": -13.461373,
+    "lon": 131.408253
   }
 }
