@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 910,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 104,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 883,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1014,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2470,
-  "au_count": 2386,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "TT117",
-    "train_number": "MR905",
-    "train_name": "TT117",
-    "loco": "",
-    "operator": "",
-    "origin": "NCIG Kooragang",
-    "destination": "Moolarben",
-    "speed": 0,
-    "heading": 0,
-    "km": "422 km",
-    "time": "18:48:00",
-    "date": "09/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "3a2c7b9b-a685-4f65-8b48-1ddb9fbca7ec",
-    "trKey": "TT117",
-    "lat": -32.327647,
-    "lon": 149.882867
-  }
+  "hasOl": true
 }
