@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 622,
+      "count": 577,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 95,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 905,
+      "count": 757,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 716,
+      "count": 672,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1885,
-  "au_count": 1790,
+  "raw_count": 1723,
+  "au_count": 1654,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T892",
-    "train_number": "T892",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T892",
+    "id": "CAF Urbos 3 Light Rail Vehicle",
+    "train_number": "L1",
+    "train_name": "CAF Urbos 3 Light Rail Vehicle",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Cleveland",
-    "speed": 0,
+    "origin": "",
+    "destination": "",
+    "speed": 8,
     "heading": 0,
     "km": "",
-    "time": "21:54:14",
+    "time": "23:05:37",
     "date": "09/04/2026",
-    "description": "BRCL",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "Dulwich Hill Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T892",
-    "lat": -27.524059,
-    "lon": 153.26329
+    "trKey": "CAF Urbos 3 Light Rail Vehicle",
+    "lat": -33.882568,
+    "lon": 151.207077
   }
 }
