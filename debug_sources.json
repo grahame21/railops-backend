@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 667,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 100,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 939,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 767,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 2004,
+  "au_count": 1906,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-5242-3734",
+    "train_number": "W778",
+    "train_name": "TNSW-5242-3734",
+    "loco": "",
+    "operator": "",
+    "origin": "Lithgow",
+    "destination": "Central",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "21:14:13",
+    "date": "09/04/2026",
+    "description": "Blue Mountains Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "servId": "",
+    "trKey": "TNSW-5242-3734",
+    "lat": -33.76902,
+    "lon": 150.62093
+  }
 }
