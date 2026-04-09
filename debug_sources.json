@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 899,
+      "count": 964,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 103,
+      "count": 109,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1307,
+      "count": 1259,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1002,
+      "count": 1073,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2658,
-  "au_count": 2618,
+  "raw_count": 2776,
+  "au_count": 2692,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN017",
-    "train_number": "JU334",
-    "train_name": "XRN017",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EP9",
+    "train_number": "1EP9",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EP9",
     "loco": "",
     "operator": "",
-    "origin": "Wambo / United",
-    "destination": "PWCS Kooragang",
-    "speed": 1,
+    "origin": "Cleveland",
+    "destination": "Ferny Grove",
+    "speed": 0,
     "heading": 0,
-    "km": "177 km",
-    "time": "07:27:00",
+    "km": "",
+    "time": "08:04:22",
     "date": "10/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "94ebf31b-f0b9-4e7a-b7a5-a2e75bc91cfe",
-    "trKey": "XRN017",
-    "lat": -32.872617,
-    "lon": 151.76524
+    "description": "CLFG",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EP9",
+    "lat": -27.456129,
+    "lon": 153.033875
   }
 }
