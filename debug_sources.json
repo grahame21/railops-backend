@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 431,
+      "count": 489,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 87,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 435,
+      "count": 493,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 506,
+      "count": 576,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1230,
-  "au_count": 1124,
+  "raw_count": 1399,
+  "au_count": 1283,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-4918-6433",
-    "train_number": "141B",
-    "train_name": "TNSW-4918-6433",
+    "id": "TT103",
+    "train_number": "MR244",
+    "train_name": "TT103",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Hornsby and Berowra via Gordon",
+    "origin": "Moolarben",
+    "destination": "PWCS Kooragang",
     "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "05:29:28",
+    "km": "174 km",
+    "time": "06:05:00",
     "date": "11/04/2026",
-    "description": "T1 North Shore Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-4918-6433",
-    "lat": -33.817689,
-    "lon": 151.193303
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "5c45230c-4673-4f81-aa08-f818093ad763",
+    "trKey": "TT103",
+    "lat": -32.836493,
+    "lon": 151.68708
   }
 }
