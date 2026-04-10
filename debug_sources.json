@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 925,
+      "count": 693,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 101,
+      "count": 99,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 987,
+      "count": 989,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1026,
+      "count": 792,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2546,
-  "au_count": 2469,
+  "raw_count": 2079,
+  "au_count": 1965,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "X26-X46",
-    "train_number": "L3",
-    "train_name": "X26-X46",
+    "id": "XRN002",
+    "train_number": "UL186",
+    "train_name": "XRN002",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 7,
+    "origin": "Ulan",
+    "destination": "PWCS Kooragang",
+    "speed": 18,
     "heading": 0,
-    "km": "",
-    "time": "18:45:18",
+    "km": "377 km",
+    "time": "20:34:00",
     "date": "10/04/2026",
-    "description": "Kingsford Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "X26-X46",
-    "lat": -33.861481,
-    "lon": 151.209549
+    "description": "ORA Coal",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "1551d2ba-7a89-4d58-8eb8-5b95b4cfebba",
+    "trKey": "XRN002",
+    "lat": -32.439383,
+    "lon": 150.19232
   }
 }
