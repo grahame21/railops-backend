@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 549,
+      "count": 599,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 98,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 819,
+      "count": 101,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 647,
+      "count": 692,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1704,
-  "au_count": 1643,
+  "raw_count": 1435,
+  "au_count": 1326,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK12",
-    "train_number": "DK12",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK12",
+    "id": "TNSW-5837-5187",
+    "train_number": "850D",
+    "train_name": "TNSW-5837-5187",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Springfield",
+    "origin": "Richmond",
+    "destination": "Berowra via City ",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "08:04:40",
+    "time": "08:53:57",
     "date": "11/04/2026",
-    "description": "BRSP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK12",
-    "lat": -27.456409,
-    "lon": 153.033371
+    "trKey": "TNSW-5837-5187",
+    "lat": -33.70466,
+    "lon": 150.87394
   }
 }
