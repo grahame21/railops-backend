@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 942,
+      "count": 925,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 105,
+      "count": 101,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1377,
+      "count": 987,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1047,
+      "count": 1026,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2783,
-  "au_count": 2684,
+  "raw_count": 2546,
+  "au_count": 2469,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CLP13",
-    "train_number": "2242",
-    "train_name": "CLP13",
+    "id": "X26-X46",
+    "train_number": "L3",
+    "train_name": "X26-X46",
     "loco": "",
     "operator": "",
-    "origin": "Berrima Cement Works",
-    "destination": "Maldon Cement Works",
-    "speed": 2,
+    "origin": "",
+    "destination": "",
+    "speed": 7,
     "heading": 0,
-    "km": "144 km",
-    "time": "18:27:00",
+    "km": "",
+    "time": "18:45:18",
     "date": "10/04/2026",
-    "description": "SSR Cement Clinker",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "39756b51-0285-44c4-8342-68dfb7023e44",
-    "trKey": "CLP13",
-    "lat": -34.52342,
-    "lon": 150.376693
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "servId": "",
+    "trKey": "X26-X46",
+    "lat": -33.861481,
+    "lon": 151.209549
   }
 }
