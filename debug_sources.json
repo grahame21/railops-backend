@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 766,
+      "count": 710,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 132,
+      "count": 124,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1211,
+      "count": 1063,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 898,
+      "count": 834,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2402,
-  "au_count": 2259,
+  "raw_count": 2200,
+  "au_count": 2113,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "ACD6062",
-    "train_number": "4043",
-    "train_name": "ACD6062",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPT1",
+    "train_number": "DPT1",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPT1",
     "loco": "",
     "operator": "",
-    "origin": "Koolyanobbing East",
-    "destination": "Esperance",
-    "speed": 79,
+    "origin": "Caboolture",
+    "destination": "Airport",
+    "speed": 0,
     "heading": 0,
-    "km": "576 km",
-    "time": "10:49:00",
+    "km": "",
+    "time": "13:14:50",
     "date": "10/04/2026",
-    "description": "Yilgarn Iron Iron Ore",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "f3fa41f4-f6bb-4d80-a30f-c9ae5baed936",
-    "trKey": "ACD6062",
-    "lat": -30.855037,
-    "lon": 120.709627
+    "description": "CABD",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPT1",
+    "lat": -27.39106,
+    "lon": 153.115006
   }
 }
