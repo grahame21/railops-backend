@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 693,
+      "count": 626,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 989,
+      "count": 941,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 792,
+      "count": 728,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2079,
-  "au_count": 1965,
+  "raw_count": 1927,
+  "au_count": 1821,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN002",
-    "train_number": "UL186",
-    "train_name": "XRN002",
+    "id": "CF4433",
+    "train_number": "4GP1",
+    "train_name": "CF4433",
     "loco": "",
     "operator": "",
-    "origin": "Ulan",
-    "destination": "PWCS Kooragang",
-    "speed": 18,
+    "origin": "SCT, Parkes",
+    "destination": "SCT, Forrestfield",
+    "speed": 83,
     "heading": 0,
-    "km": "377 km",
-    "time": "20:34:00",
+    "km": "1614 km",
+    "time": "21:53:00",
     "date": "10/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "1551d2ba-7a89-4d58-8eb8-5b95b4cfebba",
-    "trKey": "XRN002",
-    "lat": -32.439383,
-    "lon": 150.19232
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "a87c5335-e2ad-494b-ab77-ffbd71724292",
+    "trKey": "CF4433",
+    "lat": -31.021177,
+    "lon": 123.11972
   }
 }
