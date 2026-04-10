@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 936,
+      "count": 942,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 109,
+      "count": 105,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1409,
+      "count": 1377,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1045,
+      "count": 1047,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2795,
-  "au_count": 2703,
+  "raw_count": 2783,
+  "au_count": 2684,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-248M",
-    "train_number": "HBE",
-    "train_name": "MM-248M",
+    "id": "CLP13",
+    "train_number": "2242",
+    "train_name": "CLP13",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "Berrima Cement Works",
+    "destination": "Maldon Cement Works",
+    "speed": 2,
     "heading": 0,
-    "km": "",
-    "time": "17:10:33",
+    "km": "144 km",
+    "time": "18:27:00",
     "date": "10/04/2026",
-    "description": "Hurstbridge Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "c2419555-1aeb-4be5-af36-18bffa093a97",
-    "trKey": "MM-248M",
-    "lat": -37.699898,
-    "lon": 145.094208
+    "description": "SSR Cement Clinker",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "39756b51-0285-44c4-8342-68dfb7023e44",
+    "trKey": "CLP13",
+    "lat": -34.52342,
+    "lon": 150.376693
   }
 }
