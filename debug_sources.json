@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 833,
+      "count": 766,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 133,
+      "count": 132,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 343,
+      "count": 1211,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 966,
+      "count": 898,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2104,
-  "au_count": 1991,
+  "raw_count": 2402,
+  "au_count": 2259,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9034-4401",
-    "train_number": "614F",
-    "train_name": "TNSW-9034-4401",
+    "id": "ACD6062",
+    "train_number": "4043",
+    "train_name": "ACD6062",
     "loco": "",
     "operator": "",
-    "origin": "Cronulla",
-    "destination": "Bondi Junction via City",
-    "speed": 0,
+    "origin": "Koolyanobbing East",
+    "destination": "Esperance",
+    "speed": 79,
     "heading": 0,
-    "km": "",
-    "time": "10:00:54",
+    "km": "576 km",
+    "time": "10:49:00",
     "date": "10/04/2026",
-    "description": "T4 Eastern Suburbs & Illawarra Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-9034-4401",
-    "lat": -33.968193,
-    "lon": 151.083563
+    "description": "Yilgarn Iron Iron Ore",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "f3fa41f4-f6bb-4d80-a30f-c9ae5baed936",
+    "trKey": "ACD6062",
+    "lat": -30.855037,
+    "lon": 120.709627
   }
 }
