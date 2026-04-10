@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 792,
+      "count": 807,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 122,
+      "count": 118,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1101,
+      "count": 853,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 914,
+      "count": 925,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2379,
-  "au_count": 2308,
+  "raw_count": 2277,
+  "au_count": 2216,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPU6",
-    "train_number": "DPU6",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPU6",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EV7",
+    "train_number": "1EV7",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EV7",
     "loco": "",
     "operator": "",
-    "origin": "Shorncliffe",
-    "destination": "Caboolture",
+    "origin": "Cleveland",
+    "destination": "Ferny Grove",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "15:26:11",
+    "time": "15:37:25",
     "date": "10/04/2026",
-    "description": "SHCA",
+    "description": "CLFG",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPU6",
-    "lat": -27.360189,
-    "lon": 153.07811
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EV7",
+    "lat": -27.419189,
+    "lon": 152.987686
   }
 }
