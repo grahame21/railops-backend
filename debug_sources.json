@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 340,
+      "count": 421,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 70,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 557,
+      "count": 671,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 410,
+      "count": 492,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1099,
-  "au_count": 1084,
+  "raw_count": 1320,
+  "au_count": 1236,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CF4424",
-    "train_number": "4553",
-    "train_name": "CF4424",
+    "id": "8233",
+    "train_number": "4523",
+    "train_name": "8233",
     "loco": "",
     "operator": "",
-    "origin": "Collie",
-    "destination": "Ewington Mine",
+    "origin": "Carrington",
+    "destination": "North West NSW",
     "speed": 0,
     "heading": 0,
-    "km": "665 km",
-    "time": "05:20:00",
+    "km": "213 km",
+    "time": "05:57:00",
     "date": "12/04/2026",
-    "description": "Cockburn Cement Empty Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "bbc263b0-6e02-4067-b41c-a1e69ea689c3",
-    "trKey": "CF4424",
-    "lat": -29.47301,
-    "lon": 149.84828
+    "description": "PN Grain",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "f1010163-7ece-400a-bfed-c975d5d96735",
+    "trKey": "8233",
+    "lat": -32.67139,
+    "lon": 151.37064
   }
 }
