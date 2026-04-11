@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 276,
+      "count": 205,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 407,
+      "count": 43,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 353,
+      "count": 278,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 910,
-  "au_count": 877,
+  "raw_count": 578,
+  "au_count": 524,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-424M",
-    "train_number": "UFD",
-    "train_name": "MM-424M",
+    "id": "QL012",
+    "train_number": "1WB7",
+    "train_name": "QL012",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "Port Kembla",
+    "destination": "Acacia Ridge",
+    "speed": 44,
     "heading": 0,
-    "km": "",
-    "time": "01:36:23",
+    "km": "54 km",
+    "time": "03:06:00",
     "date": "12/04/2026",
-    "description": "Upfield Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "e27a27a2-0857-4ea4-8db9-70fcae6cb9c4",
-    "trKey": "MM-424M",
-    "lat": -37.774498,
-    "lon": 144.958801
+    "description": "QUBE BlueScope Steel",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "b1f9d7fb-2b07-4ee0-87d9-8774e86fec39",
+    "trKey": "QL012",
+    "lat": -34.21663,
+    "lon": 150.995867
   }
 }
