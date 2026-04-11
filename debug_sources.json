@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 562,
+      "count": 514,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 79,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 717,
+      "count": 17,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 641,
+      "count": 592,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1641,
-  "au_count": 1558,
+  "raw_count": 1193,
+  "au_count": 1139,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "X19-X28",
-    "train_number": "L3",
-    "train_name": "X19-X28",
+    "id": "1427",
+    "train_number": "T252",
+    "train_name": "1427",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 36,
+    "origin": "Moorebank IMEX Terminal",
+    "destination": "Port Botany",
+    "speed": 6,
     "heading": 0,
-    "km": "",
-    "time": "21:39:16",
+    "km": "15 km",
+    "time": "22:53:00",
     "date": "11/04/2026",
-    "description": "Kingsford Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "X19-X28",
-    "lat": -33.90168,
-    "lon": 151.222733
+    "description": "QUBE Trip Train",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "f55f0f80-75b5-4475-bd73-0405e911b0c9",
+    "trKey": "1427",
+    "lat": -33.965277,
+    "lon": 151.209973
   }
 }
