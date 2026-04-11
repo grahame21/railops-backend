@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 584,
+      "count": 562,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 86,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 841,
+      "count": 717,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 670,
+      "count": 641,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1761,
-  "au_count": 1651,
+  "raw_count": 1641,
+  "au_count": 1558,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7780-5030",
-    "train_number": "148S",
-    "train_name": "TNSW-7780-5030",
+    "id": "X19-X28",
+    "train_number": "L3",
+    "train_name": "X19-X28",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Emu Plains",
-    "speed": 0,
+    "origin": "",
+    "destination": "",
+    "speed": 36,
     "heading": 0,
     "km": "",
-    "time": "20:43:34",
+    "time": "21:39:16",
     "date": "11/04/2026",
-    "description": "T1 Western Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
     "servId": "",
-    "trKey": "TNSW-7780-5030",
-    "lat": -33.76227,
-    "lon": 150.77541
+    "trKey": "X19-X28",
+    "lat": -33.90168,
+    "lon": 151.222733
   }
 }
