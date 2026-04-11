@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 383,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 595,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 456,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1210,
+  "au_count": 1161,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "6029",
+    "train_number": "7MS1",
+    "train_name": "6029",
+    "loco": "",
+    "operator": "",
+    "origin": "North Dynon",
+    "destination": "Glenlee",
+    "speed": 58,
+    "heading": 0,
+    "km": "149 km",
+    "time": "01:06:00",
+    "date": "12/04/2026",
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "af9081cb-aaeb-483d-bb21-fd968cc3ed91",
+    "trKey": "6029",
+    "lat": -34.571343,
+    "lon": 150.350347
+  }
 }
