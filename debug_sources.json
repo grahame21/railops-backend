@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 205,
+      "count": 206,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 69,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 43,
+      "count": 123,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 278,
+      "count": 275,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 578,
-  "au_count": 524,
+  "raw_count": 612,
+  "au_count": 603,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QL012",
-    "train_number": "1WB7",
-    "train_name": "QL012",
+    "id": "SO2",
+    "train_number": "W57T",
+    "train_name": "SO2",
     "loco": "",
     "operator": "",
-    "origin": "Port Kembla",
-    "destination": "Acacia Ridge",
-    "speed": 44,
+    "origin": "brisbane-roma-st",
+    "destination": "longreach",
+    "speed": 0,
     "heading": 0,
-    "km": "54 km",
-    "time": "03:06:00",
+    "km": "",
+    "time": "03:58:02",
     "date": "12/04/2026",
-    "description": "QUBE BlueScope Steel",
-    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "b1f9d7fb-2b07-4ee0-87d9-8774e86fec39",
-    "trKey": "QL012",
-    "lat": -34.21663,
-    "lon": 150.995867
+    "description": "Spirit of the Outback",
+    "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
+    "servId": "",
+    "trKey": "SO2",
+    "lat": -23.390042,
+    "lon": 150.512308
   }
 }
