@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 606,
+      "count": 604,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 81,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 891,
+      "count": 617,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 687,
+      "count": 686,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1820,
-  "au_count": 1717,
+  "raw_count": 1681,
+  "au_count": 1584,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DMC0",
-    "train_number": "DMC0",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DMC0",
+    "id": "GCLR-21",
+    "train_number": "GCR1",
+    "train_name": "GCLR-21",
     "loco": "",
     "operator": "",
-    "origin": "Doomben",
-    "destination": "Caboolture",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "18:35:42",
+    "time": "19:27:09",
     "date": "11/04/2026",
-    "description": "DBCA",
+    "description": "GCR1",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DMC0",
-    "lat": -27.416071,
-    "lon": 153.053497
+    "trKey": "GCLR-21",
+    "lat": -28.03289,
+    "lon": 153.430588
   }
 }
