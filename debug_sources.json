@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 206,
+      "count": 340,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 70,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 123,
+      "count": 557,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 275,
+      "count": 410,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 612,
-  "au_count": 603,
+  "raw_count": 1099,
+  "au_count": 1084,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "SO2",
-    "train_number": "W57T",
-    "train_name": "SO2",
+    "id": "CF4424",
+    "train_number": "4553",
+    "train_name": "CF4424",
     "loco": "",
     "operator": "",
-    "origin": "brisbane-roma-st",
-    "destination": "longreach",
+    "origin": "Collie",
+    "destination": "Ewington Mine",
     "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "03:58:02",
+    "km": "665 km",
+    "time": "05:20:00",
     "date": "12/04/2026",
-    "description": "Spirit of the Outback",
-    "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
-    "servId": "",
-    "trKey": "SO2",
-    "lat": -23.390042,
-    "lon": 150.512308
+    "description": "Cockburn Cement Empty Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "bbc263b0-6e02-4067-b41c-a1e69ea689c3",
+    "trKey": "CF4424",
+    "lat": -29.47301,
+    "lon": 149.84828
   }
 }
