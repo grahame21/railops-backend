@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 606,
+      "count": 615,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 87,
+      "count": 98,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 941,
+      "count": 841,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 693,
+      "count": 713,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1857,
-  "au_count": 1789,
+  "raw_count": 1847,
+  "au_count": 1773,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CF4429",
-    "train_number": "5PM9",
-    "train_name": "CF4429",
+    "id": "TNSW-7840-1860",
+    "train_number": "608H",
+    "train_name": "TNSW-7840-1860",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Forrestfield",
-    "destination": "SCT, Laverton",
-    "speed": 93,
+    "origin": "Waterfall",
+    "destination": "Bondi Junction via City",
+    "speed": 0,
     "heading": 0,
-    "km": "436 km",
-    "time": "15:14:00",
+    "km": "",
+    "time": "16:17:50",
     "date": "11/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "3bb248fa-8323-4428-8d45-85d922b2f762",
-    "trKey": "CF4429",
-    "lat": -30.89672,
-    "lon": 135.21532
+    "description": "T4 Eastern Suburbs & Illawarra Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-7840-1860",
+    "lat": -33.93657,
+    "lon": 151.14735
   }
 }
