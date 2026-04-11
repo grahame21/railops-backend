@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 383,
+      "count": 276,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 77,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 595,
+      "count": 407,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 456,
+      "count": 353,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1210,
-  "au_count": 1161,
+  "raw_count": 910,
+  "au_count": 877,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "6029",
-    "train_number": "7MS1",
-    "train_name": "6029",
+    "id": "MM-424M",
+    "train_number": "UFD",
+    "train_name": "MM-424M",
     "loco": "",
     "operator": "",
-    "origin": "North Dynon",
-    "destination": "Glenlee",
-    "speed": 58,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "149 km",
-    "time": "01:06:00",
+    "km": "",
+    "time": "01:36:23",
     "date": "12/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "af9081cb-aaeb-483d-bb21-fd968cc3ed91",
-    "trKey": "6029",
-    "lat": -34.571343,
-    "lon": 150.350347
+    "description": "Upfield Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "e27a27a2-0857-4ea4-8db9-70fcae6cb9c4",
+    "trKey": "MM-424M",
+    "lat": -37.774498,
+    "lon": 144.958801
   }
 }
