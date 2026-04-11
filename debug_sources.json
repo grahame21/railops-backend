@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 604,
+      "count": 584,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 617,
+      "count": 841,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 686,
+      "count": 670,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1681,
-  "au_count": 1584,
+  "raw_count": 1761,
+  "au_count": 1651,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-21",
-    "train_number": "GCR1",
-    "train_name": "GCLR-21",
+    "id": "TNSW-7780-5030",
+    "train_number": "148S",
+    "train_name": "TNSW-7780-5030",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "City",
+    "destination": "Emu Plains",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "19:27:09",
+    "time": "20:43:34",
     "date": "11/04/2026",
-    "description": "GCR1",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "GCLR-21",
-    "lat": -28.03289,
-    "lon": 153.430588
+    "trKey": "TNSW-7780-5030",
+    "lat": -33.76227,
+    "lon": 150.77541
   }
 }
