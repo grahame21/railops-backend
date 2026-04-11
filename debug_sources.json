@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 619,
+      "count": 606,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 637,
+      "count": 941,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 706,
+      "count": 693,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1731,
-  "au_count": 1639,
+  "raw_count": 1857,
+  "au_count": 1789,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "WH001",
-    "train_number": "MB546",
-    "train_name": "WH001",
+    "id": "CF4429",
+    "train_number": "5PM9",
+    "train_name": "CF4429",
     "loco": "",
     "operator": "",
-    "origin": "Maules Creek",
-    "destination": "PWCS Kooragang",
-    "speed": 40,
+    "origin": "SCT, Forrestfield",
+    "destination": "SCT, Laverton",
+    "speed": 93,
     "heading": 0,
-    "km": "409 km",
-    "time": "13:26:00",
+    "km": "436 km",
+    "time": "15:14:00",
     "date": "11/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "53005a3e-855a-455c-ac3a-dd3c9eedb81e",
-    "trKey": "WH001",
-    "lat": -31.366353,
-    "lon": 150.644333
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "3bb248fa-8323-4428-8d45-85d922b2f762",
+    "trKey": "CF4429",
+    "lat": -30.89672,
+    "lon": 135.21532
   }
 }
