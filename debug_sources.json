@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 618,
+      "count": 606,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 83,
+      "count": 81,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 869,
+      "count": 891,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 701,
+      "count": 687,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1837,
-  "au_count": 1747,
+  "raw_count": 1820,
+  "au_count": 1717,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7211-7947",
-    "train_number": "737L",
-    "train_name": "TNSW-7211-7947",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DMC0",
+    "train_number": "DMC0",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DMC0",
     "loco": "",
     "operator": "",
-    "origin": "Campbelltown",
-    "destination": "City Circle via Granville",
+    "origin": "Doomben",
+    "destination": "Caboolture",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "17:56:04",
+    "time": "18:35:42",
     "date": "11/04/2026",
-    "description": "T2 Leppington & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "DBCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-7211-7947",
-    "lat": -33.864387,
-    "lon": 151.047309
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DMC0",
+    "lat": -27.416071,
+    "lon": 153.053497
   }
 }
