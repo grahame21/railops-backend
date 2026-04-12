@@ -2,12 +2,12 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 610,
+      "count": 611,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 71,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
@@ -17,7 +17,7 @@
       "name": "markerSource"
     },
     {
-      "count": 681,
+      "count": 689,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1785,
-  "au_count": 1703,
+  "raw_count": 1801,
+  "au_count": 1713,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9345-5138",
-    "train_number": "191M",
-    "train_name": "TNSW-9345-5138",
+    "id": "TNSW-4248-8432",
+    "train_number": "W679",
+    "train_name": "TNSW-4248-8432",
     "loco": "",
     "operator": "",
-    "origin": "North Shore",
-    "destination": "Hornsby and Berowra via City and Strathfield",
+    "origin": "Central",
+    "destination": "Lithgow",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "17:22:05",
+    "time": "18:28:27",
     "date": "12/04/2026",
-    "description": "T9 Northern Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "Blue Mountains Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "TNSW-9345-5138",
-    "lat": -33.703602,
-    "lon": 151.098098
+    "trKey": "TNSW-4248-8432",
+    "lat": -33.8977,
+    "lon": 151.181891
   }
 }
