@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 606,
+      "count": 598,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 89,
+      "count": 80,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 863,
+      "count": 571,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 695,
+      "count": 678,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1822,
-  "au_count": 1738,
+  "raw_count": 1642,
+  "au_count": 1578,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9406",
-    "train_number": "6MP4",
-    "train_name": "9406",
+    "id": "TNSW-7996-5169",
+    "train_number": "S3AN",
+    "train_name": "TNSW-7996-5169",
     "loco": "",
     "operator": "",
-    "origin": "MFT (South Dynon)",
-    "destination": "Kewdale",
-    "speed": 62,
+    "origin": "Central",
+    "destination": "Olympic Park",
+    "speed": 0,
     "heading": 0,
-    "km": "623 km",
-    "time": "15:00:00",
+    "km": "",
+    "time": "15:31:29",
     "date": "12/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "e37a44c3-7f0c-437d-b7d2-0c72875e9946",
-    "trKey": "9406",
-    "lat": -30.841517,
-    "lon": 121.16196
+    "description": "T7 Olympic Park Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-7996-5169",
+    "lat": -33.84732,
+    "lon": 151.067985
   }
 }
