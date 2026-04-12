@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 170,
+      "count": 178,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 70,
+      "count": 67,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 469,
+      "count": 285,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 240,
+      "count": 245,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 715,
-  "au_count": 701,
+  "raw_count": 633,
+  "au_count": 606,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CSR010",
-    "train_number": "1BM9",
-    "train_name": "CSR010",
+    "id": "HM2701",
+    "train_number": "V603",
+    "train_name": "HM2701",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Bromelton",
-    "destination": "SCT, Laverton",
-    "speed": 99,
+    "origin": "Newcastle Interchange",
+    "destination": "Scone",
+    "speed": 71,
     "heading": 0,
-    "km": "457 km",
-    "time": "02:51:00",
+    "km": "182 km",
+    "time": "03:43:00",
     "date": "13/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "ae9e4a18-a50c-4a7b-9445-4871e3018384",
-    "trKey": "CSR010",
-    "lat": -31.437903,
-    "lon": 152.740173
+    "description": "Hunter Line Service",
+    "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
+    "servId": "5221b86f-a24a-4dc1-b9df-cd30b7521c24",
+    "trKey": "HM2701",
+    "lat": -32.78574,
+    "lon": 151.642347
   }
 }
