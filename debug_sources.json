@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 178,
+      "count": 378,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 67,
+      "count": 74,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 285,
+      "count": 77,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 245,
+      "count": 452,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 633,
-  "au_count": 606,
+  "raw_count": 943,
+  "au_count": 901,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "HM2701",
-    "train_number": "V603",
-    "train_name": "HM2701",
+    "id": "JP2537-0",
+    "train_number": "36",
+    "train_name": "JP2537-0",
     "loco": "",
     "operator": "",
-    "origin": "Newcastle Interchange",
-    "destination": "Scone",
-    "speed": 71,
+    "origin": "brighton",
+    "destination": "burnie",
+    "speed": 0,
     "heading": 0,
-    "km": "182 km",
-    "time": "03:43:00",
+    "km": "",
+    "time": "04:55:38",
     "date": "13/04/2026",
-    "description": "Hunter Line Service",
-    "cId": "5a73b58a-0a38-4653-bc0f-33b2a099837a",
-    "servId": "5221b86f-a24a-4dc1-b9df-cd30b7521c24",
-    "trKey": "HM2701",
-    "lat": -32.78574,
-    "lon": 151.642347
+    "description": "Tasrail Intermodal",
+    "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
+    "servId": "",
+    "trKey": "JP2537-0",
+    "lat": -41.536288,
+    "lon": 146.905143
   }
 }
