@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 209,
+      "count": 170,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 71,
+      "count": 70,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 203,
+      "count": 469,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 280,
+      "count": 240,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 662,
-  "au_count": 627,
+  "raw_count": 715,
+  "au_count": 701,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9768-4648",
-    "train_number": "163Y",
-    "train_name": "TNSW-9768-4648",
+    "id": "CSR010",
+    "train_number": "1BM9",
+    "train_name": "CSR010",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Emu Plains",
-    "speed": 0,
+    "origin": "SCT, Bromelton",
+    "destination": "SCT, Laverton",
+    "speed": 99,
     "heading": 0,
-    "km": "",
-    "time": "01:24:46",
+    "km": "457 km",
+    "time": "02:51:00",
     "date": "13/04/2026",
-    "description": "T1 Western Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-9768-4648",
-    "lat": -33.749333,
-    "lon": 150.692549
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "ae9e4a18-a50c-4a7b-9445-4871e3018384",
+    "trKey": "CSR010",
+    "lat": -31.437903,
+    "lon": 152.740173
   }
 }
