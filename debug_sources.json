@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 312,
+      "count": 209,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 245,
+      "count": 203,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 387,
+      "count": 280,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 897,
-  "au_count": 849,
+  "raw_count": 662,
+  "au_count": 627,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2125-9888",
-    "train_number": "129W",
-    "train_name": "TNSW-2125-9888",
+    "id": "TNSW-9768-4648",
+    "train_number": "163Y",
+    "train_name": "TNSW-9768-4648",
     "loco": "",
     "operator": "",
     "origin": "City",
-    "destination": "Hornsby and Berowra via Gordon",
+    "destination": "Emu Plains",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "00:26:23",
+    "time": "01:24:46",
     "date": "13/04/2026",
-    "description": "T1 North Shore Line",
+    "description": "T1 Western Line",
     "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "TNSW-2125-9888",
-    "lat": -33.699837,
-    "lon": 151.09972
+    "trKey": "TNSW-9768-4648",
+    "lat": -33.749333,
+    "lon": 150.692549
   }
 }
