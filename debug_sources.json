@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 565,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 477,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 647,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1533,
-  "au_count": 1423,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DT57",
-    "train_number": "DT57",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DT57",
-    "loco": "",
-    "operator": "",
-    "origin": "Springfield",
-    "destination": "Brisbane City",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "20:19:56",
-    "date": "12/04/2026",
-    "description": "SPBR",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DT57",
-    "lat": -27.46633,
-    "lon": 153.024612
-  }
+  "hasOl": true
 }
