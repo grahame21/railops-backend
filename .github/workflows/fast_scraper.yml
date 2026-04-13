@@ -1,0 +1,174 @@
+name: Fast Scraper
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fast-scraper-main
+  cancel-in-progress: false
+
+jobs:
+  fast-scraper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Google Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start virtual display
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Show starting file timestamps
+        run: |
+          echo "=== BEFORE RUN ==="
+          ls -lah trains.json || true
+          ls -lah locos.json || true
+          ls -lah static/downloads || true
+
+      - name: Run fast scraper
+        env:
+          DISPLAY: :99
+          TF_USERNAME: ${{ secrets.TF_USERNAME }}
+          TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
+        run: |
+          echo "=== RUNNING fast_scraper.py ==="
+          python fast_scraper.py
+
+      - name: Validate trains.json exists
+        run: |
+          test -f trains.json || (echo "ERROR: trains.json missing" && exit 1)
+
+      - name: Validate trains.json freshness and content
+        run: |
+          python - <<'PY'
+          import json, sys, datetime as dt
+
+          with open("trains.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          trains = data.get("trains", [])
+          last_updated = data.get("lastUpdated")
+          note = data.get("note", "")
+
+          if not isinstance(trains, list):
+              print("ERROR: trains.json has invalid trains field")
+              sys.exit(1)
+
+          if len(trains) == 0:
+              print("ERROR: trains.json contains 0 trains")
+              sys.exit(1)
+
+          if not last_updated:
+              print("ERROR: trains.json missing lastUpdated")
+              sys.exit(1)
+
+          try:
+              ts = dt.datetime.fromisoformat(last_updated.replace("Z", "+00:00"))
+          except Exception:
+              print(f"ERROR: invalid lastUpdated format: {last_updated}")
+              sys.exit(1)
+
+          now = dt.datetime.now(dt.timezone.utc)
+          age_mins = (now - ts).total_seconds() / 60.0
+
+          print(f"Train count: {len(trains)}")
+          print(f"lastUpdated: {last_updated}")
+          print(f"Age minutes: {age_mins:.2f}")
+          print(f"Note: {note}")
+
+          if age_mins > 20:
+              print("ERROR: trains.json is too old after scraper run")
+              sys.exit(1)
+
+          print("trains.json freshness check passed")
+          PY
+
+      - name: Update loco database
+        run: |
+          echo "=== RUNNING update_locos.py ==="
+          python update_locos.py
+
+      - name: Export loco download files
+        run: |
+          echo "=== RUNNING export_locos_to_excel.py ==="
+          python export_locos_to_excel.py
+
+      - name: Show ending file timestamps
+        run: |
+          echo "=== AFTER RUN ==="
+          ls -lah trains.json || true
+          ls -lah locos.json || true
+          ls -lah static/downloads || true
+
+      - name: Commit updated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            trains.json \
+            debug_sources.json \
+            cookie.txt \
+            trainfinder_cookies.pkl \
+            locos.json \
+            loco_history.json \
+            loco_export.csv \
+            loco_summary.txt \
+            static/downloads/loco_database.xlsx \
+            static/downloads/loco_numbers_only.xlsx \
+            static/downloads/loco_database.html \
+            static/downloads/recently_added.html \
+            static/downloads/loco_numbers_only.html \
+            2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update trains and loco database files"
+            git push
+          fi
+
+      - name: Upload debug artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraper-debug
+          path: |
+            trains.json
+            debug_sources.json
+            cookie.txt
+            trainfinder_cookies.pkl
+            locos.json
+            loco_history.json
+            loco_export.csv
+            loco_summary.txt
+            static/downloads
+          if-no-files-found: ignore
