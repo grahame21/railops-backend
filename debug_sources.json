@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 676,
+      "count": 835,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 101,
+      "count": 98,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1043,
+      "count": 899,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 777,
+      "count": 933,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2076,
-  "au_count": 1980,
+  "raw_count": 2316,
+  "au_count": 2242,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1T51",
-    "train_number": "1T51",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1T51",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK56",
+    "train_number": "DK56",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK56",
     "loco": "",
     "operator": "",
-    "origin": "Ipswich",
-    "destination": "Brisbane City",
+    "origin": "Brisbane City",
+    "destination": "Springfield",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "13:40:06",
+    "time": "16:32:58",
     "date": "13/04/2026",
-    "description": "IPBR",
+    "description": "BRSP",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1T51",
-    "lat": -27.453079,
-    "lon": 153.036316
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK56",
+    "lat": -27.464911,
+    "lon": 153.018555
   }
 }
