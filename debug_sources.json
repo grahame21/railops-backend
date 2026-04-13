@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 332,
+      "count": 211,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 91,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 249,
+      "count": 69,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 423,
+      "count": 290,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 971,
-  "au_count": 927,
+  "raw_count": 615,
+  "au_count": 583,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2297-8858",
-    "train_number": "K492",
-    "train_name": "TNSW-2297-8858",
+    "id": "TNSW-5296-2382",
+    "train_number": "W710",
+    "train_name": "TNSW-5296-2382",
     "loco": "",
     "operator": "",
-    "origin": "Kiama",
-    "destination": "Central and Bondi Junction",
+    "origin": "Lithgow",
+    "destination": "Central",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "00:36:24",
+    "time": "01:49:50",
     "date": "14/04/2026",
-    "description": "South Coast Line",
+    "description": "Blue Mountains Line",
     "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "TNSW-2297-8858",
-    "lat": -34.435192,
-    "lon": 150.886432
+    "trKey": "TNSW-5296-2382",
+    "lat": -33.585011,
+    "lon": 150.257843
   }
 }
