@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 238,
+      "count": 509,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 74,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 263,
+      "count": 795,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 312,
+      "count": 588,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 756,
-  "au_count": 745,
+  "raw_count": 1574,
+  "au_count": 1553,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TT202",
-    "train_number": "MR902",
-    "train_name": "TT202",
+    "id": "TNSW-9438-3457",
+    "train_number": "137C",
+    "train_name": "TNSW-9438-3457",
     "loco": "",
     "operator": "",
-    "origin": "Moolarben",
-    "destination": "NCIG Kooragang",
-    "speed": 19,
+    "origin": "Berowra and Hornsby",
+    "destination": "North Shore via Strathfield and City",
+    "speed": 0,
     "heading": 0,
-    "km": "377 km",
-    "time": "04:14:00",
+    "km": "",
+    "time": "05:34:11",
     "date": "14/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "9407128d-51d6-45e3-88fe-aeb78ae3c471",
-    "trKey": "TT202",
-    "lat": -32.439313,
-    "lon": 150.1924
+    "description": "T9 Northern Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-9438-3457",
+    "lat": -33.69815,
+    "lon": 151.099641
   }
 }
