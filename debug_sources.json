@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 332,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 249,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 423,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 971,
+  "au_count": 927,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-2297-8858",
+    "train_number": "K492",
+    "train_name": "TNSW-2297-8858",
+    "loco": "",
+    "operator": "",
+    "origin": "Kiama",
+    "destination": "Central and Bondi Junction",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "00:36:24",
+    "date": "14/04/2026",
+    "description": "South Coast Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "servId": "",
+    "trKey": "TNSW-2297-8858",
+    "lat": -34.435192,
+    "lon": 150.886432
+  }
 }
