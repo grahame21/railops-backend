@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 916,
+      "count": 830,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 98,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1315,
+      "count": 907,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1010,
+      "count": 928,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2678,
-  "au_count": 2555,
+  "raw_count": 2310,
+  "au_count": 2193,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1T27",
-    "train_number": "1T27",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1T27",
+    "id": "NR58",
+    "train_number": "2PM6",
+    "train_name": "NR58",
     "loco": "",
     "operator": "",
-    "origin": "Ipswich",
-    "destination": "Brisbane City",
-    "speed": 0,
+    "origin": "Kewdale",
+    "destination": "MFT (South Dynon)",
+    "speed": 8,
     "heading": 0,
-    "km": "",
-    "time": "08:46:21",
+    "km": "526 km",
+    "time": "09:26:00",
     "date": "14/04/2026",
-    "description": "IPBR",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1T27",
-    "lat": -27.456169,
-    "lon": 153.033417
+    "description": "PN Intermodal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "fbaf687f-5f9b-41a0-9416-4c27399bb654",
+    "trKey": "NR58",
+    "lat": -30.841017,
+    "lon": 120.215653
   }
 }
