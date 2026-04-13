@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 835,
+      "count": 917,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 98,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 899,
+      "count": 1311,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 933,
+      "count": 1008,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2316,
-  "au_count": 2242,
+  "raw_count": 2672,
+  "au_count": 2578,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK56",
-    "train_number": "DK56",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK56",
+    "id": "MM-938M",
+    "train_number": "LIL",
+    "train_name": "MM-938M",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Springfield",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "16:32:58",
+    "time": "17:31:59",
     "date": "13/04/2026",
-    "description": "BRSP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DK56",
-    "lat": -27.464911,
-    "lon": 153.018555
+    "description": "Lilydale Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "d0734149-e192-4adb-a9d4-69611ec9097b",
+    "trKey": "MM-938M",
+    "lat": -37.820435,
+    "lon": 145.141281
   }
 }
