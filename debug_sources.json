@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 774,
+      "count": 634,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 85,
+      "count": 96,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1099,
+      "count": 565,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 859,
+      "count": 730,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2268,
-  "au_count": 2156,
+  "raw_count": 1743,
+  "au_count": 1623,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TLD1",
-    "train_number": "TLD1",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TLD1",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DAW1",
+    "train_number": "DAW1",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DAW1",
     "loco": "",
     "operator": "",
     "origin": "Caboolture",
-    "destination": "Nambour",
+    "destination": "Shorncliffe",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "19:16:24",
+    "time": "20:45:56",
     "date": "13/04/2026",
-    "description": "CANA",
+    "description": "CASH",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TLD1",
-    "lat": -27.08268,
-    "lon": 152.953583
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DAW1",
+    "lat": -27.322599,
+    "lon": 153.066452
   }
 }
