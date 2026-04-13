@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 211,
+      "count": 159,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 79,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 69,
+      "count": 559,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 290,
+      "count": 247,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 615,
-  "au_count": 583,
+  "raw_count": 774,
+  "au_count": 765,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-5296-2382",
-    "train_number": "W710",
-    "train_name": "TNSW-5296-2382",
+    "id": "TT206",
+    "train_number": "MR913",
+    "train_name": "TT206",
     "loco": "",
     "operator": "",
-    "origin": "Lithgow",
-    "destination": "Central",
-    "speed": 0,
+    "origin": "NCIG Kooragang",
+    "destination": "Moolarben",
+    "speed": 77,
     "heading": 0,
-    "km": "",
-    "time": "01:49:50",
+    "km": "266 km",
+    "time": "03:18:00",
     "date": "14/04/2026",
-    "description": "Blue Mountains Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-5296-2382",
-    "lat": -33.585011,
-    "lon": 150.257843
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "cb92e111-2b17-4110-aa32-2829e5d347e4",
+    "trKey": "TT206",
+    "lat": -32.390203,
+    "lon": 151.03044
   }
 }
