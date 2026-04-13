@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 558,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 565,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 651,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1585,
-  "au_count": 1480,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "9313",
-    "train_number": "BE512",
-    "train_name": "9313",
-    "loco": "",
-    "operator": "",
-    "origin": "Boggabri East",
-    "destination": "PWCS Kooragang",
-    "speed": 27,
-    "heading": 0,
-    "km": "417 km",
-    "time": "22:00:00",
-    "date": "13/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "284886a7-74d0-4e3e-90a6-1ecc9e950e9f",
-    "trKey": "9313",
-    "lat": -31.35052,
-    "lon": 150.5822
-  }
+  "hasOl": true
 }
