@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 830,
+      "count": 711,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 98,
+      "count": 105,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 907,
+      "count": 201,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 928,
+      "count": 816,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2310,
-  "au_count": 2193,
+  "raw_count": 1733,
+  "au_count": 1624,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR58",
-    "train_number": "2PM6",
-    "train_name": "NR58",
+    "id": "TNSW-6267-6257",
+    "train_number": "52AD",
+    "train_name": "TNSW-6267-6257",
     "loco": "",
     "operator": "",
-    "origin": "Kewdale",
-    "destination": "MFT (South Dynon)",
-    "speed": 8,
+    "origin": "Leppington",
+    "destination": "Richmond",
+    "speed": 0,
     "heading": 0,
-    "km": "526 km",
-    "time": "09:26:00",
+    "km": "",
+    "time": "11:09:38",
     "date": "14/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "fbaf687f-5f9b-41a0-9416-4c27399bb654",
-    "trKey": "NR58",
-    "lat": -30.841017,
-    "lon": 120.215653
+    "description": "T5 Cumberland Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-6267-6257",
+    "lat": -33.866219,
+    "lon": 150.968108
   }
 }
