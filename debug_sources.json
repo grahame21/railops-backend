@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 721,
+      "count": 872,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 96,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1183,
+      "count": 1397,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 815,
+      "count": 968,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,15 +32,15 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2222,
-  "au_count": 2198,
+  "raw_count": 2635,
+  "au_count": 2582,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA5",
-    "train_number": "JBA5",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA5",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA7",
+    "train_number": "JBA7",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA7",
     "loco": "",
     "operator": "",
     "origin": "Caboolture",
@@ -48,13 +48,13 @@
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:46:12",
+    "time": "07:19:27",
     "date": "15/04/2026",
     "description": "CADB",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA5",
-    "lat": -27.42713,
-    "lon": 153.062943
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA7",
+    "lat": -27.43099,
+    "lon": 153.069778
   }
 }
