@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 428,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 179,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 497,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1084,
-  "au_count": 1036,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "XRN007",
-    "train_number": "RV296",
-    "train_name": "XRN007",
-    "loco": "",
-    "operator": "",
-    "origin": "Ravensworth",
-    "destination": "PWCS Kooragang",
-    "speed": 2,
-    "heading": 0,
-    "km": "176 km",
-    "time": "00:12:00",
-    "date": "15/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "9377c34e-d077-4edb-b245-b7cab8a09457",
-    "trKey": "XRN007",
-    "lat": -32.87438,
-    "lon": 151.770733
-  }
+  "hasOl": true
 }
