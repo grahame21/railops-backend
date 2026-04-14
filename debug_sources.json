@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 894,
+      "count": 796,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 105,
+      "count": 94,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 351,
+      "count": 1163,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 999,
+      "count": 890,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2174,
-  "au_count": 2097,
+  "raw_count": 2362,
+  "au_count": 2236,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QR5400",
-    "train_number": "C73T",
-    "train_name": "QR5400",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
+    "train_number": "D522",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
     "loco": "",
     "operator": "",
-    "origin": "brisbane-roma-st",
-    "destination": "cairns",
+    "origin": "Brisbane City",
+    "destination": "Ipswich",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "09:12:26",
+    "time": "09:56:15",
     "date": "15/04/2026",
-    "description": "Spirit of Queensland",
-    "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
+    "description": "BRIP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QR5400",
-    "lat": -18.935445,
-    "lon": 146.270802
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
+    "lat": -27.464531,
+    "lon": 153.027298
   }
 }
