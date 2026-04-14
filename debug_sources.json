@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 232,
+      "count": 182,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 72,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 237,
+      "count": 269,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 309,
+      "count": 254,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 737,
-  "au_count": 700,
+  "raw_count": 643,
+  "au_count": 636,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR48",
-    "train_number": "3BM4",
-    "train_name": "NR48",
+    "id": "TNSW-6877-7831",
+    "train_number": "24-A",
+    "train_name": "TNSW-6877-7831",
     "loco": "",
     "operator": "",
-    "origin": "Acacia Ridge",
-    "destination": "MFT (South Dynon)",
-    "speed": 68,
+    "origin": "Leppington",
+    "destination": "City Circle via Granville",
+    "speed": 0,
     "heading": 0,
-    "km": "622 km",
-    "time": "01:48:00",
+    "km": "",
+    "time": "02:27:58",
     "date": "15/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "d0368e47-a2be-4a09-80e1-979e1e0dcc06",
-    "trKey": "NR48",
-    "lat": -30.2604,
-    "lon": 153.047773
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-6877-7831",
+    "lat": -33.951561,
+    "lon": 150.785294
   }
 }
