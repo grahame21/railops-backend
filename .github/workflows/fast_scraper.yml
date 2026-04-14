@@ -21,7 +21,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -160,7 +160,8 @@ jobs:
         env:
           FRONTEND_PUSH_TOKEN: ${{ secrets.FRONTEND_PUSH_TOKEN }}
         run: |
-          git clone https://x-access-token:${FRONTEND_PUSH_TOKEN}@github.com/grahame21/railops-frontend.git frontend_repo
+          rm -rf frontend_repo
+          git clone --depth 1 https://x-access-token:${FRONTEND_PUSH_TOKEN}@github.com/grahame21/railops-frontend.git frontend_repo
 
           mkdir -p frontend_repo/downloads
 
