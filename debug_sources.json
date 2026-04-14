@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 594,
+      "count": 511,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 78,
+      "count": 72,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 543,
+      "count": 387,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 672,
+      "count": 583,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1616,
-  "au_count": 1506,
+  "raw_count": 1360,
+  "au_count": 1284,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ5",
-    "train_number": "1EZ5",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ5",
+    "id": "CSR014",
+    "train_number": "2MB9",
+    "train_name": "CSR014",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Ferny Grove",
-    "speed": 0,
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Bromelton",
+    "speed": 69,
     "heading": 0,
-    "km": "",
-    "time": "21:35:55",
+    "km": "199 km",
+    "time": "22:49:00",
     "date": "14/04/2026",
-    "description": "CLFG",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EZ5",
-    "lat": -27.407829,
-    "lon": 152.94371
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "34b3ac42-5164-45c5-8834-5c1910aca444",
+    "trKey": "CSR014",
+    "lat": -32.695667,
+    "lon": 151.562147
   }
 }
