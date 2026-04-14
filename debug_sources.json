@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 774,
+      "count": 635,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 83,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 999,
+      "count": 913,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 849,
+      "count": 718,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2198,
-  "au_count": 2101,
+  "raw_count": 1893,
+  "au_count": 1783,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "ACD6066",
-    "train_number": "1PM1",
-    "train_name": "ACD6066",
+    "id": "TNSW-7763-9240",
+    "train_number": "150M",
+    "train_name": "TNSW-7763-9240",
     "loco": "",
     "operator": "",
-    "origin": "Aurizon, Forrestfield",
-    "destination": "North Dynon",
+    "origin": "Berowra and Hornsby",
+    "destination": "City via Gordon",
     "speed": 0,
     "heading": 0,
-    "km": "93 km",
-    "time": "19:20:00",
+    "km": "",
+    "time": "20:45:37",
     "date": "14/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "210af4fb-3054-4d8c-a39f-a1d6851bbc20",
-    "trKey": "ACD6066",
-    "lat": -32.483043,
-    "lon": 137.770667
+    "description": "T1 North Shore Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-7763-9240",
+    "lat": -33.840683,
+    "lon": 151.205215
   }
 }
