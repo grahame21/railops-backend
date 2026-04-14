@@ -8,18 +8,19 @@ import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 from trainfinder_backend import ensure_session, scrape_trains_from_page
 
 
-TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 OUT_FILE = "trains.json"
-COOKIE_FILE = "trainfinder_cookies.pkl"
-
 TF_USERNAME = os.environ.get("TF_USERNAME", "").strip()
 TF_PASSWORD = os.environ.get("TF_PASSWORD", "").strip()
+
+PUSH_URL = os.environ.get("PUSH_URL", "https://railops-backend.fly.dev/push").strip()
+PUSH_TOKEN = os.environ.get("PUSH_TOKEN", "").strip()
 
 BASE_MIN_SECONDS = 30
 BASE_MAX_SECONDS = 60
@@ -60,6 +61,31 @@ def load_existing_payload(path: str) -> Dict[str, Any]:
     return {"lastUpdated": None, "note": "no existing file", "trains": []}
 
 
+def push_payload(payload: Dict[str, Any]) -> bool:
+    if not PUSH_URL or not PUSH_TOKEN:
+        print("⚠️ PUSH_URL or PUSH_TOKEN missing, skipping remote push")
+        return False
+
+    try:
+        res = requests.post(
+            PUSH_URL,
+            headers={
+                "Content-Type": "application/json",
+                "X-Auth-Token": PUSH_TOKEN,
+            },
+            json=payload,
+            timeout=30,
+        )
+        print(f"📤 Push: HTTP {res.status_code}")
+        if res.ok:
+            return True
+        print(res.text[:500])
+        return False
+    except Exception as e:
+        print(f"❌ Push failed: {e}")
+        return False
+
+
 def write_output(
     trains: List[Dict[str, Any]],
     note: str,
@@ -83,7 +109,8 @@ def write_output(
             "trains": existing_trains,
         }
         atomic_write_json(OUT_FILE, payload)
-        print(f"🛟 Keeping last good data: {existing_count} trains | reason: {note}")
+        pushed = push_payload(payload)
+        print(f"🛟 Keeping last good data: {existing_count} trains | pushed={pushed} | reason: {note}")
         return payload
 
     payload = {
@@ -92,7 +119,8 @@ def write_output(
         "trains": trains or [],
     }
     atomic_write_json(OUT_FILE, payload)
-    print(f"📝 Wrote {len(trains)} trains | {note}")
+    pushed = push_payload(payload)
+    print(f"📝 Wrote {len(trains)} trains | pushed={pushed} | {note}")
     return payload
 
 
