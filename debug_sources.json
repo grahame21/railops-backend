@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 682,
+      "count": 665,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 106,
+      "count": 104,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1027,
+      "count": 899,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 788,
+      "count": 769,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2090,
-  "au_count": 1974,
+  "raw_count": 1988,
+  "au_count": 1917,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-2041-7652",
-    "train_number": "91-M",
-    "train_name": "TNSW-2041-7652",
+    "id": "TNSW-1328-6591",
+    "train_number": "C151",
+    "train_name": "TNSW-1328-6591",
     "loco": "",
     "operator": "",
-    "origin": "City Circle",
-    "destination": "Liverpool via Regents Park",
+    "origin": "Bondi Junction and Central",
+    "destination": "Bomaderry ",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "13:12:07",
+    "time": "14:14:45",
     "date": "14/04/2026",
-    "description": "T3 Liverpool & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "South Coast Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "TNSW-2041-7652",
-    "lat": -33.920047,
-    "lon": 150.933099
+    "trKey": "TNSW-1328-6591",
+    "lat": -34.162399,
+    "lon": 151.00058
   }
 }
