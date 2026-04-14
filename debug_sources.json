@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 665,
+      "count": 583,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 104,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 899,
+      "count": 251,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 769,
+      "count": 654,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1988,
-  "au_count": 1917,
+  "raw_count": 1434,
+  "au_count": 1413,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-1328-6591",
-    "train_number": "C151",
-    "train_name": "TNSW-1328-6591",
+    "id": "GWA008",
+    "train_number": "3DA2",
+    "train_name": "GWA008",
     "loco": "",
     "operator": "",
-    "origin": "Bondi Junction and Central",
-    "destination": "Bomaderry ",
-    "speed": 0,
+    "origin": "Berrimah (Darwin)",
+    "destination": "Gillman Yard (Port Flat)",
+    "speed": 108,
     "heading": 0,
-    "km": "",
-    "time": "14:14:45",
+    "km": "2152 km",
+    "time": "15:41:00",
     "date": "14/04/2026",
-    "description": "South Coast Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-1328-6591",
-    "lat": -34.162399,
-    "lon": 151.00058
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "bcae2ec7-7777-45aa-926e-fb64b347c481",
+    "trKey": "GWA008",
+    "lat": -16.84474,
+    "lon": 132.87012
   }
 }
