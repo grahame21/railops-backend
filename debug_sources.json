@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 519,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 793,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 603,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1603,
-  "au_count": 1502,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "X37-X38",
-    "train_number": "L2",
-    "train_name": "X37-X38",
-    "loco": "",
-    "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "22:36:50",
-    "date": "15/04/2026",
-    "description": "Randwick Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "X37-X38",
-    "lat": -33.881641,
-    "lon": 151.205704
-  }
+  "hasOl": true
 }
