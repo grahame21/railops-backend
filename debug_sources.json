@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 615,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 539,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 709,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1688,
-  "au_count": 1583,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "TNSW-1849-1750",
-    "train_number": "W783",
-    "train_name": "TNSW-1849-1750",
-    "loco": "",
-    "operator": "",
-    "origin": "Central",
-    "destination": "Lithgow",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "20:47:31",
-    "date": "15/04/2026",
-    "description": "Blue Mountains Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-1849-1750",
-    "lat": -33.719406,
-    "lon": 150.445555
-  }
+  "hasOl": true
 }
