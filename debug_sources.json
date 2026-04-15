@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 705,
+      "count": 859,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 101,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1111,
+      "count": 1183,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 806,
+      "count": 952,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2168,
-  "au_count": 2083,
+  "raw_count": 2496,
+  "au_count": 2413,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EU7",
-    "train_number": "1EU7",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EU7",
+    "id": "ACD6073",
+    "train_number": "3DA6",
+    "train_name": "ACD6073",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Ferny Grove",
-    "speed": 0,
+    "origin": "Berrimah (Darwin)",
+    "destination": "Gillman Yard (Port Flat)",
+    "speed": 104,
     "heading": 0,
-    "km": "",
-    "time": "14:31:18",
+    "km": "1186 km",
+    "time": "16:06:00",
     "date": "15/04/2026",
-    "description": "CLFG",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EU7",
-    "lat": -27.407829,
-    "lon": 152.94371
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "a407fa74-b24b-4372-87c9-de10744eafdc",
+    "trKey": "ACD6073",
+    "lat": -24.983718,
+    "lon": 133.634787
   }
 }
