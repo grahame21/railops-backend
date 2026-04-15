@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 355,
+      "count": 601,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 66,
+      "count": 69,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 11,
+      "count": 941,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 421,
+      "count": 670,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 848,
-  "au_count": 840,
+  "raw_count": 1811,
+  "au_count": 1793,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9304",
-    "train_number": "GR499",
-    "train_name": "9304",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY01",
+    "train_number": "DY01",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY01",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 65,
+    "origin": "Brisbane City",
+    "destination": "Redcliffe Peninsula",
+    "speed": 0,
     "heading": 0,
-    "km": "206 km",
-    "time": "04:49:00",
+    "km": "",
+    "time": "05:45:27",
     "date": "16/04/2026",
-    "description": "",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "description": "BRRP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "9304",
-    "lat": -32.715343,
-    "lon": 151.410373
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY01",
+    "lat": -27.226419,
+    "lon": 153.077194
   }
 }
