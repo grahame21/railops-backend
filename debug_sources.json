@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 692,
+      "count": 705,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 111,
+      "count": 101,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1075,
+      "count": 1111,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 803,
+      "count": 806,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2144,
-  "au_count": 2048,
+  "raw_count": 2168,
+  "au_count": 2083,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN002",
-    "train_number": "BC209",
-    "train_name": "XRN002",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EU7",
+    "train_number": "1EU7",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EU7",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Bulga",
-    "speed": 1,
+    "origin": "Cleveland",
+    "destination": "Ferny Grove",
+    "speed": 0,
     "heading": 0,
-    "km": "246 km",
-    "time": "13:48:00",
+    "km": "",
+    "time": "14:31:18",
     "date": "15/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "7c46618d-40df-48ff-990b-cb7b362d4203",
-    "trKey": "XRN002",
-    "lat": -32.664907,
-    "lon": 151.117933
+    "description": "CLFG",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EU7",
+    "lat": -27.407829,
+    "lon": 152.94371
   }
 }
