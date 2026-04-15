@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 601,
+      "count": 725,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 941,
+      "count": 17,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 670,
+      "count": 804,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1811,
-  "au_count": 1793,
+  "raw_count": 1617,
+  "au_count": 1600,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY01",
-    "train_number": "DY01",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY01",
+    "id": "TNSW-9103-9146",
+    "train_number": "W714",
+    "train_name": "TNSW-9103-9146",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Redcliffe Peninsula",
+    "origin": "Lithgow",
+    "destination": "Central",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "05:45:27",
+    "time": "06:42:38",
     "date": "16/04/2026",
-    "description": "BRRP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "Blue Mountains Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY01",
-    "lat": -27.226419,
-    "lon": 153.077194
+    "trKey": "TNSW-9103-9146",
+    "lat": -33.77161,
+    "lon": 150.91481
   }
 }
