@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 487,
+      "count": 417,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 89,
+      "count": 77,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 281,
+      "count": 523,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 576,
+      "count": 494,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1293,
-  "au_count": 1237,
+  "raw_count": 1250,
+  "au_count": 1198,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8242",
-    "train_number": "5430",
-    "train_name": "8242",
+    "id": "8157",
+    "train_number": "1151",
+    "train_name": "8157",
     "loco": "",
     "operator": "",
-    "origin": "North West NSW",
-    "destination": "Carrington / Cargill Kooragang",
-    "speed": 69,
+    "origin": "Port Botany",
+    "destination": "St Marys Intermodal Hub",
+    "speed": 2,
     "heading": 0,
-    "km": "504 km",
-    "time": "23:02:00",
-    "date": "15/04/2026",
-    "description": "PN Grain",
+    "km": "15 km",
+    "time": "00:13:00",
+    "date": "16/04/2026",
+    "description": "PN Intermodal Trip Train - RSS Crewed",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "36e923d9-e679-4c76-9c1b-3aa14f6ab8b5",
-    "trKey": "8242",
-    "lat": -30.795843,
-    "lon": 150.051267
+    "servId": "ce7d7013-b653-46ca-9fab-0d913c22e653",
+    "trKey": "8157",
+    "lat": -33.963863,
+    "lon": 151.216907
   }
 }
