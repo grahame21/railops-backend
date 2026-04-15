@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 861,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 817,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 946,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 2301,
+  "au_count": 2230,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "XRN020",
+    "train_number": "ER404",
+    "train_name": "XRN020",
+    "loco": "",
+    "operator": "",
+    "origin": "Various Mines",
+    "destination": "Eraring",
+    "speed": 1,
+    "heading": 0,
+    "km": "132 km",
+    "time": "16:47:00",
+    "date": "15/04/2026",
+    "description": "ORA Coal",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "7583df22-9cdd-472f-b8f4-e7b2ce229c9e",
+    "trKey": "XRN020",
+    "lat": -33.04366,
+    "lon": 151.524027
+  }
 }
