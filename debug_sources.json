@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 796,
+      "count": 661,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 108,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1163,
+      "count": 709,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 890,
+      "count": 769,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2362,
-  "au_count": 2236,
+  "raw_count": 1893,
+  "au_count": 1799,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
-    "train_number": "D522",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
+    "id": "1106",
+    "train_number": "5116",
+    "train_name": "1106",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Ipswich",
-    "speed": 0,
+    "origin": "TIFF (West Tamworth)",
+    "destination": "Cooks River / IMEX Terminal Moorebank",
+    "speed": 42,
     "heading": 0,
-    "km": "",
-    "time": "09:56:15",
+    "km": "23 km",
+    "time": "11:45:00",
     "date": "15/04/2026",
-    "description": "BRIP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
-    "lat": -27.464531,
-    "lon": 153.027298
+    "description": "QUBE Containerised Freight",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "a3c19d66-222f-4dc6-810f-9435fd5f446b",
+    "trKey": "1106",
+    "lat": -33.88719,
+    "lon": 151.019613
   }
 }
