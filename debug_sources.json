@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 487,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 89,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 281,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 576,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1293,
+  "au_count": 1237,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "8242",
+    "train_number": "5430",
+    "train_name": "8242",
+    "loco": "",
+    "operator": "",
+    "origin": "North West NSW",
+    "destination": "Carrington / Cargill Kooragang",
+    "speed": 69,
+    "heading": 0,
+    "km": "504 km",
+    "time": "23:02:00",
+    "date": "15/04/2026",
+    "description": "PN Grain",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "36e923d9-e679-4c76-9c1b-3aa14f6ab8b5",
+    "trKey": "8242",
+    "lat": -30.795843,
+    "lon": 150.051267
+  }
 }
