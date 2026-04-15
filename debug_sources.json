@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 877,
+      "count": 688,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 96,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1343,
+      "count": 1059,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 973,
+      "count": 774,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2618,
-  "au_count": 2522,
+  "raw_count": 2078,
+  "au_count": 1975,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EY5",
-    "train_number": "1EY5",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EY5",
+    "id": "X18-X49",
+    "train_number": "L2",
+    "train_name": "X18-X49",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Ferny Grove",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "18:11:57",
+    "time": "19:50:52",
     "date": "15/04/2026",
-    "description": "CLFG",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "Randwick Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1EY5",
-    "lat": -27.442419,
-    "lon": 153.143875
+    "trKey": "X18-X49",
+    "lat": -33.878269,
+    "lon": 151.205582
   }
 }
