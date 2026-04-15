@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 254,
+      "count": 181,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 67,
+      "count": 69,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 23,
+      "count": 263,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 321,
+      "count": 250,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 654,
-  "au_count": 611,
+  "raw_count": 632,
+  "au_count": 626,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "VLINE-8163",
-    "train_number": "8163",
-    "train_name": "VLINE-8163",
+    "id": "8252",
+    "train_number": "5526",
+    "train_name": "8252",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "North West NSW",
+    "destination": "North West NSW",
+    "speed": 3,
     "heading": 0,
-    "km": "",
-    "time": "01:24:23",
+    "km": "410 km",
+    "time": "02:39:00",
     "date": "16/04/2026",
-    "description": "Ballarat - Melbourne Via Melton",
-    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
-    "servId": "",
-    "trKey": "VLINE-8163",
-    "lat": -37.53973,
-    "lon": 143.819702
+    "description": "PN Grain Shuttle",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "a7ea415f-e8f1-4233-bbd6-fc258f8c4dd3",
+    "trKey": "8252",
+    "lat": -31.3561,
+    "lon": 150.645693
   }
 }
