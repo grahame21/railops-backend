@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 201,
+      "count": 355,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 65,
+      "count": 66,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 13,
+      "count": 11,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 266,
+      "count": 421,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 539,
-  "au_count": 536,
+  "raw_count": 848,
+  "au_count": 840,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CEY007",
-    "train_number": "2188",
-    "train_name": "CEY007",
+    "id": "9304",
+    "train_number": "GR499",
+    "train_name": "9304",
     "loco": "",
     "operator": "",
-    "origin": "Peppertree Quarry",
-    "destination": "Boral, Cooks River",
-    "speed": 0,
+    "origin": "",
+    "destination": "",
+    "speed": 65,
     "heading": 0,
-    "km": "9 km",
-    "time": "03:44:00",
+    "km": "206 km",
+    "time": "04:49:00",
     "date": "16/04/2026",
-    "description": "SSR Loaded Aggregates",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "0f6b4899-c735-45e3-9462-f6faa24f6140",
-    "trKey": "CEY007",
-    "lat": -33.92327,
-    "lon": 151.172227
+    "description": "",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "",
+    "trKey": "9304",
+    "lat": -32.715343,
+    "lon": 151.410373
   }
 }
