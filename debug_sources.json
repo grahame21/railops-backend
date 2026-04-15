@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 919,
+      "count": 936,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 106,
+      "count": 88,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 361,
+      "count": 1315,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1025,
+      "count": 1024,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2231,
-  "au_count": 2172,
+  "raw_count": 2706,
+  "au_count": 2601,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-6201-1448",
-    "train_number": "162A",
-    "train_name": "TNSW-6201-1448",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TL03",
+    "train_number": "TL03",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TL03",
     "loco": "",
     "operator": "",
-    "origin": "Emu Plains",
-    "destination": "Berowra via City ",
+    "origin": "Springfield",
+    "destination": "Nambour",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "08:24:29",
+    "time": "09:08:59",
     "date": "16/04/2026",
-    "description": "T1 Western Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "SPNA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-6201-1448",
-    "lat": -33.840019,
-    "lon": 151.023117
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TL03",
+    "lat": -27.26862,
+    "lon": 152.981628
   }
 }
