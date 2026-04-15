@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 725,
+      "count": 906,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 79,
+      "count": 87,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 17,
+      "count": 1449,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 804,
+      "count": 993,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1617,
-  "au_count": 1600,
+  "raw_count": 2711,
+  "au_count": 2668,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9103-9146",
-    "train_number": "W714",
-    "train_name": "TNSW-9103-9146",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1D30",
+    "train_number": "1D30",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1D30",
     "loco": "",
     "operator": "",
-    "origin": "Lithgow",
-    "destination": "Central",
+    "origin": "Caboolture",
+    "destination": "Ipswich",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:42:38",
+    "time": "07:36:45",
     "date": "16/04/2026",
-    "description": "Blue Mountains Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "description": "CAIP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-9103-9146",
-    "lat": -33.77161,
-    "lon": 150.91481
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1D30",
+    "lat": -27.307461,
+    "lon": 152.988419
   }
 }
