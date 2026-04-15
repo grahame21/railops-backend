@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 661,
+      "count": 683,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 108,
+      "count": 112,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 709,
+      "count": 1001,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 769,
+      "count": 795,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1893,
-  "au_count": 1799,
+  "raw_count": 2091,
+  "au_count": 2004,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "1106",
-    "train_number": "5116",
-    "train_name": "1106",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPS8",
+    "train_number": "DPS8",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPS8",
     "loco": "",
     "operator": "",
-    "origin": "TIFF (West Tamworth)",
-    "destination": "Cooks River / IMEX Terminal Moorebank",
-    "speed": 42,
+    "origin": "Shorncliffe",
+    "destination": "Caboolture",
+    "speed": 0,
     "heading": 0,
-    "km": "23 km",
-    "time": "11:45:00",
+    "km": "",
+    "time": "11:59:05",
     "date": "15/04/2026",
-    "description": "QUBE Containerised Freight",
-    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "a3c19d66-222f-4dc6-810f-9435fd5f446b",
-    "trKey": "1106",
-    "lat": -33.88719,
-    "lon": 151.019613
+    "description": "SHCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DPS8",
+    "lat": -27.322229,
+    "lon": 153.069031
   }
 }
