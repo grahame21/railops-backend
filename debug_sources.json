@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 417,
+      "count": 254,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 67,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 523,
+      "count": 23,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 494,
+      "count": 321,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1250,
-  "au_count": 1198,
+  "raw_count": 654,
+  "au_count": 611,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8157",
-    "train_number": "1151",
-    "train_name": "8157",
+    "id": "VLINE-8163",
+    "train_number": "8163",
+    "train_name": "VLINE-8163",
     "loco": "",
     "operator": "",
-    "origin": "Port Botany",
-    "destination": "St Marys Intermodal Hub",
-    "speed": 2,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "15 km",
-    "time": "00:13:00",
+    "km": "",
+    "time": "01:24:23",
     "date": "16/04/2026",
-    "description": "PN Intermodal Trip Train - RSS Crewed",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "ce7d7013-b653-46ca-9fab-0d913c22e653",
-    "trKey": "8157",
-    "lat": -33.963863,
-    "lon": 151.216907
+    "description": "Ballarat - Melbourne Via Melton",
+    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
+    "servId": "",
+    "trKey": "VLINE-8163",
+    "lat": -37.53973,
+    "lon": 143.819702
   }
 }
