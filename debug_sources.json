@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 859,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1183,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 952,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2496,
-  "au_count": 2413,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "ACD6073",
-    "train_number": "3DA6",
-    "train_name": "ACD6073",
-    "loco": "",
-    "operator": "",
-    "origin": "Berrimah (Darwin)",
-    "destination": "Gillman Yard (Port Flat)",
-    "speed": 104,
-    "heading": 0,
-    "km": "1186 km",
-    "time": "16:06:00",
-    "date": "15/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "a407fa74-b24b-4372-87c9-de10744eafdc",
-    "trKey": "ACD6073",
-    "lat": -24.983718,
-    "lon": 133.634787
-  }
+  "hasOl": true
 }
