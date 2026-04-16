@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 704,
+      "count": 751,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 109,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1049,
+      "count": 1101,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 798,
+      "count": 860,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2121,
-  "au_count": 2047,
+  "raw_count": 2271,
+  "au_count": 2205,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-4492-9712",
-    "train_number": "N846",
-    "train_name": "TNSW-4492-9712",
+    "id": "CSR006",
+    "train_number": "4MB9",
+    "train_name": "CSR006",
     "loco": "",
     "operator": "",
-    "origin": "Newcastle Interchange",
-    "destination": "Central via Strathfield",
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Bromelton",
     "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "14:47:29",
+    "km": "23 km",
+    "time": "15:11:00",
     "date": "16/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-4492-9712",
-    "lat": -33.01302,
-    "lon": 151.54206
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "a42cf88d-52de-41f1-b34e-76fdaa7cdca8",
+    "trKey": "CSR006",
+    "lat": -33.881783,
+    "lon": 150.985333
   }
 }
