@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 751,
+      "count": 844,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 109,
+      "count": 98,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1101,
+      "count": 1145,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 860,
+      "count": 942,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2271,
-  "au_count": 2205,
+  "raw_count": 2457,
+  "au_count": 2384,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CSR006",
-    "train_number": "4MB9",
-    "train_name": "CSR006",
+    "id": "TNSW-6309-3791",
+    "train_number": "94-K",
+    "train_name": "TNSW-6309-3791",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Laverton",
-    "destination": "SCT, Bromelton",
+    "origin": "City Circle",
+    "destination": "Leppington via Granville",
     "speed": 0,
     "heading": 0,
-    "km": "23 km",
-    "time": "15:11:00",
+    "km": "",
+    "time": "16:23:03",
     "date": "16/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "a42cf88d-52de-41f1-b34e-76fdaa7cdca8",
-    "trKey": "CSR006",
-    "lat": -33.881783,
-    "lon": 150.985333
+    "description": "T2 Leppington & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-6309-3791",
+    "lat": -33.8842,
+    "lon": 151.20702
   }
 }
