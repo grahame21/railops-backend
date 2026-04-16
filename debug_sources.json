@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 550,
+      "count": 695,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 731,
+      "count": 1033,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 625,
+      "count": 779,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1616,
-  "au_count": 1586,
+  "raw_count": 2075,
+  "au_count": 2052,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QL016",
-    "train_number": "1511",
-    "train_name": "QL016",
+    "id": "TSRS019",
+    "train_number": "M1-1",
+    "train_name": "TSRS019",
     "loco": "",
     "operator": "",
-    "origin": "Cooks River",
-    "destination": "Narrabri West / TIFF (West Tamworth)",
-    "speed": 42,
+    "origin": "",
+    "destination": "",
+    "speed": 50,
     "heading": 0,
-    "km": "383 km",
-    "time": "05:36:00",
+    "km": "",
+    "time": "06:27:08",
     "date": "17/04/2026",
-    "description": "QUBE Containerised Cotton",
-    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "5f21afb1-b44f-4200-945f-c8713a64e4e1",
-    "trKey": "QL016",
-    "lat": -31.582253,
-    "lon": 150.701853
+    "description": "Metro North West & Bankstown Line",
+    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
+    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
+    "trKey": "TSRS019",
+    "lat": -33.729591,
+    "lon": 150.943634
   }
 }
