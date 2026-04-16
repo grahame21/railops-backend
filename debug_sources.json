@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 896,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1247,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 989,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2602,
-  "au_count": 2531,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "SCT009",
-    "train_number": "D471S",
-    "train_name": "SCT009",
-    "loco": "",
-    "operator": "",
-    "origin": "SCT Penfield",
-    "destination": "Port Germein",
-    "speed": 6,
-    "heading": 0,
-    "km": "92 km",
-    "time": "16:56:00",
-    "date": "16/04/2026",
-    "description": "SCT Light Engine",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "4ee588b6-33d6-4d28-8edb-3f52b9d17be8",
-    "trKey": "SCT009",
-    "lat": -32.49595,
-    "lon": 137.7616
-  }
+  "hasOl": true
 }
