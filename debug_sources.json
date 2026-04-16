@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 695,
+      "count": 824,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 79,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1033,
+      "count": 301,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 779,
+      "count": 903,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2075,
-  "au_count": 2052,
+  "raw_count": 1957,
+  "au_count": 1926,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TSRS019",
-    "train_number": "M1-1",
-    "train_name": "TSRS019",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA5",
+    "train_number": "JBA5",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA5",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 50,
+    "origin": "Caboolture",
+    "destination": "Doomben",
+    "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:27:08",
+    "time": "06:47:25",
     "date": "17/04/2026",
-    "description": "Metro North West & Bankstown Line",
-    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
-    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
-    "trKey": "TSRS019",
-    "lat": -33.729591,
-    "lon": 150.943634
+    "description": "CADB",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBA5",
+    "lat": -27.43099,
+    "lon": 153.069778
   }
 }
