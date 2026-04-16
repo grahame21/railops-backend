@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 638,
+      "count": 575,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 91,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 883,
+      "count": 889,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 729,
+      "count": 661,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1900,
-  "au_count": 1791,
+  "raw_count": 1767,
+  "au_count": 1681,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR13",
-    "train_number": "4PM4",
-    "train_name": "NR13",
+    "id": "CSR015",
+    "train_number": "3MP9",
+    "train_name": "CSR015",
     "loco": "",
     "operator": "",
-    "origin": "Kewdale",
-    "destination": "MFT (South Dynon)",
-    "speed": 80,
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Forrestfield",
+    "speed": 112,
     "heading": 0,
-    "km": "1423 km",
-    "time": "21:14:00",
+    "km": "1117 km",
+    "time": "22:10:00",
     "date": "16/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "dfdd3fcc-4b66-43b4-b78f-d61d2a2a3991",
-    "trKey": "NR13",
-    "lat": -31.00619,
-    "lon": 125.127267
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "cb188b95-c8e8-4742-be87-da742133e590",
+    "trKey": "CSR015",
+    "lat": -30.830653,
+    "lon": 128.317853
   }
 }
