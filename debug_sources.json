@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 307,
+      "count": 222,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 81,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 331,
+      "count": 365,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 382,
+      "count": 303,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 930,
-  "au_count": 900,
+  "raw_count": 789,
+  "au_count": 755,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5041",
-    "train_number": "MP351",
-    "train_name": "5041",
+    "id": "CM3304",
+    "train_number": "3242",
+    "train_name": "CM3304",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Mount Pleasant",
-    "speed": 1,
+    "origin": "",
+    "destination": "",
+    "speed": 24,
     "heading": 0,
-    "km": "292 km",
-    "time": "01:05:00",
+    "km": "335 km",
+    "time": "01:53:00",
     "date": "17/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "fa089a62-379c-434c-b518-0873c4f2f201",
-    "trKey": "5041",
-    "lat": -32.258713,
-    "lon": 150.835907
+    "description": "",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "",
+    "trKey": "CM3304",
+    "lat": -34.744713,
+    "lon": 148.760227
   }
 }
