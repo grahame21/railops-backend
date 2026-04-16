@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 873,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 92,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 1129,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 965,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 2495,
+  "au_count": 2420,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1139",
+    "train_number": "1139",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1139",
+    "loco": "",
+    "operator": "",
+    "origin": "Brisbane City",
+    "destination": "Caboolture",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "18:49:01",
+    "date": "16/04/2026",
+    "description": "BRCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1139",
+    "lat": -27.0832,
+    "lon": 152.953827
+  }
 }
