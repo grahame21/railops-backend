@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 700,
+      "count": 817,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 105,
+      "count": 109,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 37,
+      "count": 1105,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 805,
+      "count": 926,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1629,
-  "au_count": 1570,
+  "raw_count": 2405,
+  "au_count": 2304,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TSRS036",
-    "train_number": "M1-1",
-    "train_name": "TSRS036",
+    "id": "VLINE-8440",
+    "train_number": "8440",
+    "train_name": "VLINE-8440",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 43,
+    "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "14:54:01",
+    "time": "15:51:19",
     "date": "17/04/2026",
-    "description": "Metro North West & Bankstown Line",
-    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
-    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
-    "trKey": "TSRS036",
-    "lat": -33.691479,
-    "lon": 150.92392
+    "description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
+    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
+    "servId": "",
+    "trKey": "VLINE-8440",
+    "lat": -38.198879,
+    "lon": 146.538086
   }
 }
