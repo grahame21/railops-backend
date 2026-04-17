@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 432,
+      "count": 318,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 88,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 699,
+      "count": 461,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 520,
+      "count": 400,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1390,
-  "au_count": 1322,
+  "raw_count": 1031,
+  "au_count": 980,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8211",
-    "train_number": "5132",
-    "train_name": "8211",
+    "id": "LDP001",
+    "train_number": "GR461",
+    "train_name": "LDP001",
     "loco": "",
     "operator": "",
-    "origin": "Wee Waa / Narrabri West",
-    "destination": "Enfield Yard",
-    "speed": 49,
+    "origin": "Vales Point / Eraring",
+    "destination": "Greta TSF",
+    "speed": 31,
     "heading": 0,
-    "km": "21 km",
-    "time": "00:44:00",
+    "km": "181 km",
+    "time": "01:44:00",
     "date": "18/04/2026",
-    "description": "PN Containerised Cotton",
+    "description": "PN Coal",
     "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "6155a109-b3cd-4c35-a493-6325df9db5c4",
-    "trKey": "8211",
-    "lat": -33.78783,
-    "lon": 151.082693
+    "servId": "7de9ded7-1ec8-4dd8-8081-a78ca2ebcb0e",
+    "trKey": "LDP001",
+    "lat": -32.791447,
+    "lon": 151.648907
   }
 }
