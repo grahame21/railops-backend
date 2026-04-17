@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 750,
+      "count": 687,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 87,
+      "count": 100,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 949,
+      "count": 947,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 837,
+      "count": 787,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2149,
-  "au_count": 2055,
+  "raw_count": 2048,
+  "au_count": 1957,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9437-1123",
-    "train_number": "96-M",
-    "train_name": "TNSW-9437-1123",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D157",
+    "train_number": "D157",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D157",
     "loco": "",
     "operator": "",
-    "origin": "City Circle",
-    "destination": "Leppington via Granville",
+    "origin": "Ipswich",
+    "destination": "Caboolture",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "19:46:34",
+    "time": "20:11:06",
     "date": "17/04/2026",
-    "description": "T2 Leppington & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "IPCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-9437-1123",
-    "lat": -33.9576,
-    "lon": 150.909523
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D157",
+    "lat": -27.23151,
+    "lon": 152.976105
   }
 }
