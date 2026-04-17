@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 582,
+      "count": 498,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 88,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 885,
+      "count": 323,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 670,
+      "count": 600,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1783,
-  "au_count": 1679,
+  "raw_count": 1362,
+  "au_count": 1285,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1AA9",
-    "train_number": "1AA9",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1AA9",
+    "id": "GWU005",
+    "train_number": "ER410",
+    "train_name": "GWU005",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Shorncliffe",
-    "speed": 0,
+    "origin": "Various Mines",
+    "destination": "Eraring",
+    "speed": 28,
     "heading": 0,
-    "km": "",
-    "time": "22:01:57",
+    "km": "193 km",
+    "time": "23:43:00",
     "date": "17/04/2026",
-    "description": "CLSH",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1AA9",
-    "lat": -27.440371,
-    "lon": 153.166565
+    "description": "ORA Coal",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "38da60ce-aea0-4853-9839-aff42509509e",
+    "trKey": "GWU005",
+    "lat": -32.73503,
+    "lon": 151.544147
   }
 }
