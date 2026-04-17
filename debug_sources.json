@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 410,
+      "count": 457,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 75,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 379,
+      "count": 29,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 492,
+      "count": 532,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1174,
-  "au_count": 1144,
+  "raw_count": 1079,
+  "au_count": 1047,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-3633-8873",
-    "train_number": "123B",
-    "train_name": "TNSW-3633-8873",
+    "id": "GCLR-Bombardier Flexity 2 (11)",
+    "train_number": "GCR1",
+    "train_name": "GCLR-Bombardier Flexity 2 (11)",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Hornsby and Berowra via Gordon",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:06:35",
+    "time": "07:00:37",
     "date": "18/04/2026",
-    "description": "T1 North Shore Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "GCR1",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-3633-8873",
-    "lat": -33.747635,
-    "lon": 151.145915
+    "trKey": "GCLR-Bombardier Flexity 2 (11)",
+    "lat": -27.9701,
+    "lon": 153.394226
   }
 }
