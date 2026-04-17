@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 376,
+      "count": 410,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 78,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 553,
+      "count": 379,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 454,
+      "count": 492,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1185,
-  "au_count": 1114,
+  "raw_count": 1174,
+  "au_count": 1144,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D806",
-    "train_number": "D806",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D806",
+    "id": "TNSW-3633-8873",
+    "train_number": "123B",
+    "train_name": "TNSW-3633-8873",
     "loco": "",
     "operator": "",
-    "origin": "Shorncliffe",
-    "destination": "Cleveland",
+    "origin": "City",
+    "destination": "Hornsby and Berowra via Gordon",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "05:21:36",
+    "time": "06:06:35",
     "date": "18/04/2026",
-    "description": "SHCL",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T1 North Shore Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D806",
-    "lat": -27.36935,
-    "lon": 153.080978
+    "trKey": "TNSW-3633-8873",
+    "lat": -33.747635,
+    "lon": 151.145915
   }
 }
