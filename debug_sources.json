@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 235,
+      "count": 376,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 79,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 273,
+      "count": 553,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 314,
+      "count": 454,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 765,
-  "au_count": 680,
+  "raw_count": 1185,
+  "au_count": 1114,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "C503",
-    "train_number": "1243",
-    "train_name": "C503",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D806",
+    "train_number": "D806",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D806",
     "loco": "",
     "operator": "",
-    "origin": "Clyde Yard",
-    "destination": "Berrima Cement Works",
-    "speed": 44,
+    "origin": "Shorncliffe",
+    "destination": "Cleveland",
+    "speed": 0,
     "heading": 0,
-    "km": "108 km",
-    "time": "04:11:00",
+    "km": "",
+    "time": "05:21:36",
     "date": "18/04/2026",
-    "description": "SSR Cement",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "1ab2f955-dc31-46a6-a1d0-fefd5ffe3500",
-    "trKey": "C503",
-    "lat": -34.325033,
-    "lon": 150.57556
+    "description": "SHCL",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D806",
+    "lat": -27.36935,
+    "lon": 153.080978
   }
 }
