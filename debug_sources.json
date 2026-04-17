@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 529,
+      "count": 545,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 90,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 781,
+      "count": 579,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 622,
+      "count": 635,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1635,
-  "au_count": 1561,
+  "raw_count": 1560,
+  "au_count": 1464,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TT115",
-    "train_number": "BG336",
-    "train_name": "TT115",
+    "id": "TSRS038",
+    "train_number": "M1-1",
+    "train_name": "TSRS038",
     "loco": "",
     "operator": "",
-    "origin": "Bengalla",
-    "destination": "PWCS Kooragang",
-    "speed": 38,
+    "origin": "",
+    "destination": "",
+    "speed": 22,
     "heading": 0,
-    "km": "178 km",
-    "time": "09:03:00",
+    "km": "",
+    "time": "09:55:00",
     "date": "18/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "433e1762-3fa8-4dbe-8775-802cb840db44",
-    "trKey": "TT115",
-    "lat": -32.811023,
-    "lon": 151.671853
+    "description": "Metro North West & Bankstown Line",
+    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
+    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
+    "trKey": "TSRS038",
+    "lat": -33.713829,
+    "lon": 150.935486
   }
 }
