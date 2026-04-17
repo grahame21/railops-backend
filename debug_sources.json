@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 890,
+      "count": 815,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 117,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1005,
+      "count": 1105,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 989,
+      "count": 932,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2481,
-  "au_count": 2389,
+  "raw_count": 2417,
+  "au_count": 2299,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DP31",
-    "train_number": "DP31",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DP31",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1Y17",
+    "train_number": "1Y17",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1Y17",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Airport",
+    "origin": "Rosewood",
+    "destination": "Redcliffe Peninsula",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "09:24:39",
+    "time": "09:47:50",
     "date": "17/04/2026",
-    "description": "CLBD",
+    "description": "RWRP",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DP31",
-    "lat": -27.465651,
-    "lon": 153.014572
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1Y17",
+    "lat": -27.226151,
+    "lon": 153.078735
   }
 }
