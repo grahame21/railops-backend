@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 238,
+      "count": 194,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 70,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 373,
+      "count": 335,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 311,
+      "count": 264,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 809,
-  "au_count": 736,
+  "raw_count": 696,
+  "au_count": 680,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MRL006",
-    "train_number": "1445",
-    "train_name": "MRL006",
+    "id": "NR20",
+    "train_number": "5MB4",
+    "train_name": "NR20",
     "loco": "",
     "operator": "",
-    "origin": "Leightonfield (ex Berrima Cement Works on train #2144)",
-    "destination": "Boral, Kooragang Island",
-    "speed": 49,
+    "origin": "MFT (South Dynon)",
+    "destination": "Acacia Ridge",
+    "speed": 13,
     "heading": 0,
-    "km": "38 km",
-    "time": "02:36:00",
+    "km": "974 km",
+    "time": "03:30:00",
     "date": "18/04/2026",
-    "description": "SSR Cement",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "75db00a3-87f1-4b93-9b0e-f847d980d68e",
-    "trKey": "MRL006",
-    "lat": -33.669073,
-    "lon": 151.11828
+    "description": "PN Intermodal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "edc90ea1-4c99-4d6e-97ba-66e5cc0e34c1",
+    "trKey": "NR20",
+    "lat": -27.571598,
+    "lon": 153.029213
   }
 }
