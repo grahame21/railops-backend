@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 318,
+      "count": 238,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 461,
+      "count": 373,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 400,
+      "count": 311,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1031,
-  "au_count": 980,
+  "raw_count": 809,
+  "au_count": 736,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "LDP001",
-    "train_number": "GR461",
-    "train_name": "LDP001",
+    "id": "MRL006",
+    "train_number": "1445",
+    "train_name": "MRL006",
     "loco": "",
     "operator": "",
-    "origin": "Vales Point / Eraring",
-    "destination": "Greta TSF",
-    "speed": 31,
+    "origin": "Leightonfield (ex Berrima Cement Works on train #2144)",
+    "destination": "Boral, Kooragang Island",
+    "speed": 49,
     "heading": 0,
-    "km": "181 km",
-    "time": "01:44:00",
+    "km": "38 km",
+    "time": "02:36:00",
     "date": "18/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "7de9ded7-1ec8-4dd8-8081-a78ca2ebcb0e",
-    "trKey": "LDP001",
-    "lat": -32.791447,
-    "lon": 151.648907
+    "description": "SSR Cement",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "75db00a3-87f1-4b93-9b0e-f847d980d68e",
+    "trKey": "MRL006",
+    "lat": -33.669073,
+    "lon": 151.11828
   }
 }
