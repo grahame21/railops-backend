@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 700,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 105,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 37,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 805,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1629,
+  "au_count": 1570,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TSRS036",
+    "train_number": "M1-1",
+    "train_name": "TSRS036",
+    "loco": "",
+    "operator": "",
+    "origin": "",
+    "destination": "",
+    "speed": 43,
+    "heading": 0,
+    "km": "",
+    "time": "14:54:01",
+    "date": "17/04/2026",
+    "description": "Metro North West & Bankstown Line",
+    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
+    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
+    "trKey": "TSRS036",
+    "lat": -33.691479,
+    "lon": 150.92392
+  }
 }
