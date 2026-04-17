@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 908,
+      "count": 877,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 97,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1611,
+      "count": 807,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1005,
+      "count": 963,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2816,
-  "au_count": 2742,
+  "raw_count": 2330,
+  "au_count": 2257,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "VLINE-8131",
-    "train_number": "8131",
-    "train_name": "VLINE-8131",
+    "id": "CSR021",
+    "train_number": "5PM9",
+    "train_name": "CSR021",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 5,
+    "origin": "SCT, Forrestfield",
+    "destination": "SCT, Laverton",
+    "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "16:51:31",
+    "km": "1331 km",
+    "time": "18:56:00",
     "date": "17/04/2026",
-    "description": "Ballarat - Melbourne Via Melton",
-    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
-    "servId": "",
-    "trKey": "VLINE-8131",
-    "lat": -37.53965,
-    "lon": 143.819153
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "3bb248fa-8323-4428-8d45-85d922b2f762",
+    "trKey": "CSR021",
+    "lat": -31.004923,
+    "lon": 126.091947
   }
 }
