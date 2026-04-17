@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 817,
+      "count": 908,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 109,
+      "count": 97,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1105,
+      "count": 1611,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 926,
+      "count": 1005,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2405,
-  "au_count": 2304,
+  "raw_count": 2816,
+  "au_count": 2742,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "VLINE-8440",
-    "train_number": "8440",
-    "train_name": "VLINE-8440",
+    "id": "VLINE-8131",
+    "train_number": "8131",
+    "train_name": "VLINE-8131",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 0,
+    "speed": 5,
     "heading": 0,
     "km": "",
-    "time": "15:51:19",
+    "time": "16:51:31",
     "date": "17/04/2026",
-    "description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
+    "description": "Ballarat - Melbourne Via Melton",
     "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
     "servId": "",
-    "trKey": "VLINE-8440",
-    "lat": -38.198879,
-    "lon": 146.538086
+    "trKey": "VLINE-8131",
+    "lat": -37.53965,
+    "lon": 143.819153
   }
 }
