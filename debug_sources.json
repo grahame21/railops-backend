@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 499,
+      "count": 483,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 547,
+      "count": 461,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 581,
+      "count": 567,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1436,
-  "au_count": 1334,
+  "raw_count": 1365,
+  "au_count": 1267,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-16",
-    "train_number": "GCR1",
-    "train_name": "GCLR-16",
+    "id": "XP2012",
+    "train_number": "SAKE",
+    "train_name": "XP2012",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 0,
+    "speed": 35,
     "heading": 0,
-    "km": "",
-    "time": "20:59:36",
+    "km": "1 km",
+    "time": "21:25:00",
     "date": "18/04/2026",
-    "description": "GCR1",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "GCLR-16",
-    "lat": -27.9266,
-    "lon": 153.339127
+    "description": "N/A",
+    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
+    "servId": "3891f00a-5329-450d-8483-0da5bf90f60c",
+    "trKey": "XP2012",
+    "lat": -33.893833,
+    "lon": 151.195107
   }
 }
