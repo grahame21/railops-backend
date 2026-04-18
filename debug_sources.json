@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 170,
+      "count": 185,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 71,
+      "count": 76,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 357,
+      "count": 163,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 241,
+      "count": 261,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 661,
-  "au_count": 633,
+  "raw_count": 604,
+  "au_count": 575,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-978M",
-    "train_number": "LIL",
-    "train_name": "MM-978M",
+    "id": "ACB4406",
+    "train_number": "7SP1",
+    "train_name": "ACB4406",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "Glenlee",
+    "destination": "Kwinana",
+    "speed": 79,
     "heading": 0,
     "km": "",
-    "time": "04:54:57",
+    "time": "05:50:33",
     "date": "19/04/2026",
-    "description": "Lilydale Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "d0734149-e192-4adb-a9d4-69611ec9097b",
-    "trKey": "MM-978M",
-    "lat": -37.821831,
-    "lon": 145.039337
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "0787707e-ef5c-466d-80e1-d12495de4f8b",
+    "trKey": "ACB4406",
+    "lat": -33.340103,
+    "lon": 138.193924
   }
 }
