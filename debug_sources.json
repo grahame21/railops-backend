@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 314,
+      "count": 369,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 233,
+      "count": 239,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 388,
+      "count": 443,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 893,
-  "au_count": 864,
+  "raw_count": 1006,
+  "au_count": 955,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "SCT014",
-    "train_number": "6MP9",
-    "train_name": "SCT014",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D908",
+    "train_number": "D908",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D908",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Laverton",
-    "destination": "SCT, Forrestfield",
+    "origin": "Redcliffe Peninsula",
+    "destination": "Brisbane City",
     "speed": 0,
     "heading": 0,
-    "km": "1611 km",
-    "time": "06:17:00",
+    "km": "",
+    "time": "06:55:38",
     "date": "19/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "b7cb3666-26a5-46e4-b221-bbd10ebc88b7",
-    "trKey": "SCT014",
-    "lat": -31.022167,
-    "lon": 123.158067
+    "description": "RPBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D908",
+    "lat": -27.392389,
+    "lon": 153.069199
   }
 }
