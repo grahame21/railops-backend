@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 338,
+      "count": 279,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 74,
+      "count": 69,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 659,
+      "count": 433,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 412,
+      "count": 348,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1154,
-  "au_count": 1108,
+  "raw_count": 913,
+  "au_count": 869,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9308",
-    "train_number": "BE537",
-    "train_name": "9308",
+    "id": "CF4403",
+    "train_number": "2184",
+    "train_name": "CF4403",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Boggabri East",
-    "speed": 19,
+    "origin": "Peppertree Quarry",
+    "destination": "Boral, Cooks River",
+    "speed": 52,
     "heading": 0,
-    "km": "415 km",
-    "time": "00:56:00",
+    "km": "181 km",
+    "time": "01:37:00",
     "date": "19/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "c2ee364c-3a63-418e-92fa-ddcf394e4133",
-    "trKey": "9308",
-    "lat": -31.355437,
-    "lon": 150.60088
+    "description": "SSR Loaded Aggregates",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "2088ba51-da10-4c3f-92e2-5950d7c748f8",
+    "trKey": "CF4403",
+    "lat": -34.70092,
+    "lon": 150.124427
   }
 }
