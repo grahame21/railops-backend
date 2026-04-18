@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 171,
+      "count": 170,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 317,
+      "count": 357,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 240,
+      "count": 241,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 639,
-  "au_count": 629,
+  "raw_count": 661,
+  "au_count": 633,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWU008",
-    "train_number": "BW415",
-    "train_name": "GWU008",
+    "id": "MM-978M",
+    "train_number": "LIL",
+    "train_name": "MM-978M",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 1,
+    "speed": 0,
     "heading": 0,
-    "km": "277 km",
-    "time": "04:04:00",
+    "km": "",
+    "time": "04:54:57",
     "date": "19/04/2026",
-    "description": "",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "",
-    "trKey": "GWU008",
-    "lat": -32.33493,
-    "lon": 150.90292
+    "description": "Lilydale Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "d0734149-e192-4adb-a9d4-69611ec9097b",
+    "trKey": "MM-978M",
+    "lat": -37.821831,
+    "lon": 145.039337
   }
 }
