@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 537,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 623,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 628,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1568,
+  "au_count": 1470,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "TNSW-3188-2469",
+    "train_number": "657P",
+    "train_name": "TNSW-3188-2469",
+    "loco": "",
+    "operator": "",
+    "origin": "City Circle",
+    "destination": "Cronulla",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "18:54:47",
+    "date": "18/04/2026",
+    "description": "T4 Eastern Suburbs & Illawarra Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-3188-2469",
+    "lat": -33.86126,
+    "lon": 151.21031
+  }
 }
