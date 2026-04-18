@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 376,
+      "count": 505,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 102,
+      "count": 90,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 325,
+      "count": 655,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 478,
+      "count": 595,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1119,
-  "au_count": 1034,
+  "raw_count": 1518,
+  "au_count": 1435,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-80M",
-    "train_number": "HBE",
-    "train_name": "MM-80M",
+    "id": "8127",
+    "train_number": "T106",
+    "train_name": "8127",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 0,
+    "speed": 2,
     "heading": 0,
-    "km": "",
-    "time": "14:30:39",
+    "km": "15 km",
+    "time": "15:06:00",
     "date": "18/04/2026",
-    "description": "Hurstbridge Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "c2419555-1aeb-4be5-af36-18bffa093a97",
-    "trKey": "MM-80M",
-    "lat": -37.649368,
-    "lon": 145.189178
+    "description": "PN Trip Train",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "9ec7f45f-0a85-45e3-bd9f-c5e6fb7e30d6",
+    "trKey": "8127",
+    "lat": -33.96527,
+    "lon": 151.209973
   }
 }
