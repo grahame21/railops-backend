@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 547,
+      "count": 514,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 86,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 563,
+      "count": 755,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 633,
+      "count": 599,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1548,
-  "au_count": 1452,
+  "raw_count": 1576,
+  "au_count": 1459,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY53",
-    "train_number": "DY53",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY53",
+    "id": "9305",
+    "train_number": "BE502",
+    "train_name": "9305",
     "loco": "",
     "operator": "",
-    "origin": "Springfield",
-    "destination": "Redcliffe Peninsula",
-    "speed": 0,
+    "origin": "Boggabri East",
+    "destination": "PWCS Kooragang",
+    "speed": 76,
     "heading": 0,
-    "km": "",
-    "time": "19:19:06",
+    "km": "230 km",
+    "time": "20:26:00",
     "date": "18/04/2026",
-    "description": "SPRP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY53",
-    "lat": -27.226151,
-    "lon": 153.078735
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "cf937165-5fb8-4f64-81fe-f98d13238084",
+    "trKey": "9305",
+    "lat": -32.627567,
+    "lon": 151.227067
   }
 }
