@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 537,
+      "count": 547,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 91,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 623,
+      "count": 563,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 628,
+      "count": 633,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1568,
-  "au_count": 1470,
+  "raw_count": 1548,
+  "au_count": 1452,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-3188-2469",
-    "train_number": "657P",
-    "train_name": "TNSW-3188-2469",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY53",
+    "train_number": "DY53",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY53",
     "loco": "",
     "operator": "",
-    "origin": "City Circle",
-    "destination": "Cronulla",
+    "origin": "Springfield",
+    "destination": "Redcliffe Peninsula",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "18:54:47",
+    "time": "19:19:06",
     "date": "18/04/2026",
-    "description": "T4 Eastern Suburbs & Illawarra Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "SPRP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-3188-2469",
-    "lat": -33.86126,
-    "lon": 151.21031
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY53",
+    "lat": -27.226151,
+    "lon": 153.078735
   }
 }
