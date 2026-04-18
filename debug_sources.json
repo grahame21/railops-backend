@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 505,
+      "count": 537,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 90,
+      "count": 87,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 655,
+      "count": 587,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 595,
+      "count": 624,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1518,
-  "au_count": 1435,
+  "raw_count": 1542,
+  "au_count": 1481,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8127",
-    "train_number": "T106",
-    "train_name": "8127",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
+    "train_number": "DY39",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 2,
+    "origin": "Springfield",
+    "destination": "Redcliffe Peninsula",
+    "speed": 0,
     "heading": 0,
-    "km": "15 km",
-    "time": "15:06:00",
+    "km": "",
+    "time": "15:44:03",
     "date": "18/04/2026",
-    "description": "PN Trip Train",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "9ec7f45f-0a85-45e3-bd9f-c5e6fb7e30d6",
-    "trKey": "8127",
-    "lat": -33.96527,
-    "lon": 151.209973
+    "description": "SPRP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
+    "lat": -27.225809,
+    "lon": 153.080154
   }
 }
