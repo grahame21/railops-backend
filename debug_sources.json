@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 527,
+      "count": 543,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 683,
+      "count": 399,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 612,
+      "count": 628,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1566,
-  "au_count": 1483,
+  "raw_count": 1456,
+  "au_count": 1381,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T401",
-    "train_number": "T401",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T401",
+    "id": "GWA010",
+    "train_number": "7DA2",
+    "train_name": "GWA010",
     "loco": "",
     "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Gympie North",
-    "speed": 0,
+    "origin": "Berrimah (Darwin)",
+    "destination": "Gillman Yard (Port Flat)",
+    "speed": 89,
     "heading": 0,
-    "km": "",
-    "time": "17:01:59",
+    "km": "2423 km",
+    "time": "17:23:00",
     "date": "18/04/2026",
-    "description": "BRGY",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T401",
-    "lat": -27.46633,
-    "lon": 153.024612
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "975742c2-26fe-41b9-9d72-c2e11f220791",
+    "trKey": "GWA010",
+    "lat": -14.651805,
+    "lon": 132.406973
   }
 }
