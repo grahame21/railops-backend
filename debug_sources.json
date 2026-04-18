@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 369,
+      "count": 403,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 74,
+      "count": 76,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 239,
+      "count": 259,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 443,
+      "count": 479,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1006,
-  "au_count": 955,
+  "raw_count": 1088,
+  "au_count": 1051,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D908",
-    "train_number": "D908",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D908",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TA07",
+    "train_number": "TA07",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TA07",
     "loco": "",
     "operator": "",
-    "origin": "Redcliffe Peninsula",
-    "destination": "Brisbane City",
+    "origin": "Brisbane City",
+    "destination": "Shorncliffe",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:55:38",
+    "time": "07:14:56",
     "date": "19/04/2026",
-    "description": "RPBR",
+    "description": "BRSH",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D908",
-    "lat": -27.392389,
-    "lon": 153.069199
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TA07",
+    "lat": -27.32732,
+    "lon": 153.063492
   }
 }
