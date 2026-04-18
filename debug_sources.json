@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 185,
+      "count": 314,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 76,
+      "count": 74,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 163,
+      "count": 233,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 261,
+      "count": 388,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 604,
-  "au_count": 575,
+  "raw_count": 893,
+  "au_count": 864,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "ACB4406",
-    "train_number": "7SP1",
-    "train_name": "ACB4406",
+    "id": "SCT014",
+    "train_number": "6MP9",
+    "train_name": "SCT014",
     "loco": "",
     "operator": "",
-    "origin": "Glenlee",
-    "destination": "Kwinana",
-    "speed": 79,
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Forrestfield",
+    "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "05:50:33",
+    "km": "1611 km",
+    "time": "06:17:00",
     "date": "19/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "0787707e-ef5c-466d-80e1-d12495de4f8b",
-    "trKey": "ACB4406",
-    "lat": -33.340103,
-    "lon": 138.193924
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "b7cb3666-26a5-46e4-b221-bbd10ebc88b7",
+    "trKey": "SCT014",
+    "lat": -31.022167,
+    "lon": 123.158067
   }
 }
