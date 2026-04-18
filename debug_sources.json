@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 537,
+      "count": 527,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 87,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 587,
+      "count": 683,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 624,
+      "count": 612,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1542,
-  "au_count": 1481,
+  "raw_count": 1566,
+  "au_count": 1483,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
-    "train_number": "DY39",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T401",
+    "train_number": "T401",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T401",
     "loco": "",
     "operator": "",
-    "origin": "Springfield",
-    "destination": "Redcliffe Peninsula",
+    "origin": "Brisbane City",
+    "destination": "Gympie North",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "15:44:03",
+    "time": "17:01:59",
     "date": "18/04/2026",
-    "description": "SPRP",
+    "description": "BRGY",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
-    "lat": -27.225809,
-    "lon": 153.080154
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T401",
+    "lat": -27.46633,
+    "lon": 153.024612
   }
 }
