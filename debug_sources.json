@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 514,
+      "count": 499,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 85,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 755,
+      "count": 547,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 599,
+      "count": 581,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1576,
-  "au_count": 1459,
+  "raw_count": 1436,
+  "au_count": 1334,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9305",
-    "train_number": "BE502",
-    "train_name": "9305",
+    "id": "GCLR-16",
+    "train_number": "GCR1",
+    "train_name": "GCLR-16",
     "loco": "",
     "operator": "",
-    "origin": "Boggabri East",
-    "destination": "PWCS Kooragang",
-    "speed": 76,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "230 km",
-    "time": "20:26:00",
+    "km": "",
+    "time": "20:59:36",
     "date": "18/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "cf937165-5fb8-4f64-81fe-f98d13238084",
-    "trKey": "9305",
-    "lat": -32.627567,
-    "lon": 151.227067
+    "description": "GCR1",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "GCLR-16",
+    "lat": -27.9266,
+    "lon": 153.339127
   }
 }
