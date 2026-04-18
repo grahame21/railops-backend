@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 168,
+      "count": 143,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 72,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 259,
+      "count": 263,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 243,
+      "count": 215,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 616,
-  "au_count": 590,
+  "raw_count": 562,
+  "au_count": 551,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "T363",
-    "train_number": "8875",
-    "train_name": "T363",
+    "id": "BRM001",
+    "train_number": "8876",
+    "train_name": "BRM001",
     "loco": "",
     "operator": "",
-    "origin": "Manildra",
-    "destination": "Western NSW",
-    "speed": 19,
+    "origin": "Western NSW",
+    "destination": "Manildra",
+    "speed": 52,
     "heading": 0,
-    "km": "470 km",
-    "time": "02:56:00",
+    "km": "488 km",
+    "time": "03:33:00",
     "date": "19/04/2026",
     "description": "SSR Manildra Grain Shuttle",
     "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "6e9d86d0-99af-4e9f-9d66-ec67ca18ae1e",
-    "trKey": "T363",
-    "lat": -32.18068,
-    "lon": 148.63008
+    "servId": "772a5c9f-5376-4364-817b-185e20d03959",
+    "trKey": "BRM001",
+    "lat": -32.028513,
+    "lon": 148.652493
   }
 }
