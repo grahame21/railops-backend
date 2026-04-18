@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 279,
+      "count": 254,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 433,
+      "count": 311,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 348,
+      "count": 327,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 913,
-  "au_count": 869,
+  "raw_count": 810,
+  "au_count": 766,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CF4403",
-    "train_number": "2184",
-    "train_name": "CF4403",
+    "id": "TNSW-8237-5797",
+    "train_number": "819G",
+    "train_name": "TNSW-8237-5797",
     "loco": "",
     "operator": "",
-    "origin": "Peppertree Quarry",
-    "destination": "Boral, Cooks River",
-    "speed": 52,
+    "origin": "Liverpool",
+    "destination": "City Circle via Regents Park",
+    "speed": 0,
     "heading": 0,
-    "km": "181 km",
-    "time": "01:37:00",
+    "km": "",
+    "time": "02:07:08",
     "date": "19/04/2026",
-    "description": "SSR Loaded Aggregates",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "2088ba51-da10-4c3f-92e2-5950d7c748f8",
-    "trKey": "CF4403",
-    "lat": -34.70092,
-    "lon": 150.124427
+    "description": "T3 Liverpool & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-8237-5797",
+    "lat": -33.86374,
+    "lon": 151.04495
   }
 }
