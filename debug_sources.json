@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 442,
+      "count": 462,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 89,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 547,
+      "count": 723,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 526,
+      "count": 551,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1326,
-  "au_count": 1272,
+  "raw_count": 1464,
+  "au_count": 1390,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-Bombardier Flexity 2 (22)",
-    "train_number": "GCR1",
-    "train_name": "GCLR-Bombardier Flexity 2 (22)",
+    "id": "X35-X56",
+    "train_number": "L3",
+    "train_name": "X35-X56",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 0,
+    "speed": 32,
     "heading": 0,
     "km": "",
-    "time": "08:00:03",
+    "time": "08:27:40",
     "date": "19/04/2026",
-    "description": "GCR1",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
     "servId": "",
-    "trKey": "GCLR-Bombardier Flexity 2 (22)",
-    "lat": -28.00499,
-    "lon": 153.428864
+    "trKey": "X35-X56",
+    "lat": -33.919079,
+    "lon": 151.226395
   }
 }
