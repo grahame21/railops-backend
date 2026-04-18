@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 538,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 83,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 665,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 621,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1575,
-  "au_count": 1502,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "QL002",
-    "train_number": "6BW7",
-    "train_name": "QL002",
-    "loco": "",
-    "operator": "",
-    "origin": "Acacia Ridge",
-    "destination": "Port Kembla",
-    "speed": 23,
-    "heading": 0,
-    "km": "84 km",
-    "time": "17:55:00",
-    "date": "18/04/2026",
-    "description": "QUBE BlueScope Steel",
-    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
-    "servId": "8f8baeb6-313f-41c2-8954-640659521f39",
-    "trKey": "QL002",
-    "lat": -34.472793,
-    "lon": 150.88788
-  }
+  "hasOl": true
 }
