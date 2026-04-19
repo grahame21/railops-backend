@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 488,
+      "count": 468,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 691,
+      "count": 499,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 561,
+      "count": 541,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1468,
-  "au_count": 1357,
+  "raw_count": 1332,
+  "au_count": 1251,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-1183-7567",
-    "train_number": "N470",
-    "train_name": "TNSW-1183-7567",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T566",
+    "train_number": "T566",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T566",
     "loco": "",
     "operator": "",
-    "origin": "Newcastle Interchange",
-    "destination": "Central via Strathfield",
+    "origin": "Caboolture",
+    "destination": "Ipswich",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "20:58:16",
+    "time": "21:20:48",
     "date": "19/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
+    "description": "CAIP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-1183-7567",
-    "lat": -33.894101,
-    "lon": 151.193466
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T566",
+    "lat": -27.08268,
+    "lon": 152.953583
   }
 }
