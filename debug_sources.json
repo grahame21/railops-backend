@@ -2,17 +2,17 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 529,
+      "count": 527,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 877,
+      "count": 783,
       "exists": true,
       "name": "markerSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1661,
-  "au_count": 1576,
+  "raw_count": 1614,
+  "au_count": 1537,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7466-4370",
-    "train_number": "834L",
-    "train_name": "TNSW-7466-4370",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D834",
+    "train_number": "D834",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D834",
     "loco": "",
     "operator": "",
-    "origin": "North Shore",
-    "destination": "Hornsby and Berowra via City and Strathfield",
+    "origin": "Shorncliffe",
+    "destination": "Cleveland",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "14:07:05",
+    "time": "14:23:06",
     "date": "19/04/2026",
-    "description": "T9 Northern Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "SHCL",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-7466-4370",
-    "lat": -33.848256,
-    "lon": 151.212546
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D834",
+    "lat": -27.442301,
+    "lon": 153.144135
   }
 }
