@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 582,
+      "count": 695,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 23,
+      "count": 807,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 655,
+      "count": 773,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1322,
-  "au_count": 1304,
+  "raw_count": 1950,
+  "au_count": 1929,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN022",
-    "train_number": "RV110",
-    "train_name": "XRN022",
+    "id": "TNSW-4888-4659",
+    "train_number": "105D",
+    "train_name": "TNSW-4888-4659",
     "loco": "",
     "operator": "",
-    "origin": "Ravensworth",
-    "destination": "PWCS Kooragang",
-    "speed": 7,
+    "origin": "City",
+    "destination": "Emu Plains",
+    "speed": 0,
     "heading": 0,
-    "km": "260 km",
-    "time": "05:42:00",
+    "km": "",
+    "time": "06:31:28",
     "date": "20/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "2d88fc19-0b93-47d9-a230-a00f28c5528e",
-    "trKey": "XRN022",
-    "lat": -32.43258,
-    "lon": 151.05552
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-4888-4659",
+    "lat": -33.87157,
+    "lon": 151.09391
   }
 }
