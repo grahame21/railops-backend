@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 582,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 23,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 655,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 1322,
+  "au_count": 1304,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "XRN022",
+    "train_number": "RV110",
+    "train_name": "XRN022",
+    "loco": "",
+    "operator": "",
+    "origin": "Ravensworth",
+    "destination": "PWCS Kooragang",
+    "speed": 7,
+    "heading": 0,
+    "km": "260 km",
+    "time": "05:42:00",
+    "date": "20/04/2026",
+    "description": "ORA Coal",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "2d88fc19-0b93-47d9-a230-a00f28c5528e",
+    "trKey": "XRN022",
+    "lat": -32.43258,
+    "lon": 151.05552
+  }
 }
