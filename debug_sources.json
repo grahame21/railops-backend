@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 510,
+      "count": 533,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 247,
+      "count": 807,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 604,
+      "count": 611,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1332,
-  "au_count": 1249,
+  "raw_count": 1626,
+  "au_count": 1520,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-8808-5201",
-    "train_number": "N637",
-    "train_name": "TNSW-8808-5201",
+    "id": "9311",
+    "train_number": "MB540",
+    "train_name": "9311",
     "loco": "",
     "operator": "",
-    "origin": "Central",
-    "destination": "Newcastle Interchange via Strathfield",
-    "speed": 0,
+    "origin": "Maules Creek",
+    "destination": "PWCS Kooragang",
+    "speed": 57,
     "heading": 0,
-    "km": "",
-    "time": "11:11:41",
+    "km": "348 km",
+    "time": "12:43:00",
     "date": "19/04/2026",
-    "description": "Central Coast & Newcastle Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-8808-5201",
-    "lat": -33.431278,
-    "lon": 151.334396
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "36cea6a0-c69b-4bae-af9f-e605f319144d",
+    "trKey": "9311",
+    "lat": -31.783033,
+    "lon": 150.88324
   }
 }
