@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 224,
+      "count": 172,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 64,
+      "count": 62,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 103,
+      "count": 193,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 288,
+      "count": 234,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 628,
-  "au_count": 589,
+  "raw_count": 565,
+  "au_count": 531,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "6021",
-    "train_number": "MB942",
-    "train_name": "6021",
+    "id": "8164",
+    "train_number": "3331",
+    "train_name": "8164",
     "loco": "",
     "operator": "",
-    "origin": "Maules Creek",
-    "destination": "NCIG Kooragang",
-    "speed": 61,
+    "origin": "Southern NSW",
+    "destination": "Southern NSW",
+    "speed": 4,
     "heading": 0,
-    "km": "460 km",
-    "time": "01:21:00",
+    "km": "430 km",
+    "time": "01:34:00",
     "date": "20/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "e955ca8a-8a19-4b0d-aa0b-12a187565567",
-    "trKey": "6021",
-    "lat": -31.10059,
-    "lon": 150.268747
+    "description": "PN Grain Shuttle",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "91ce3753-8fc3-47bd-b75d-b045dcbfac9c",
+    "trKey": "8164",
+    "lat": -34.6431,
+    "lon": 148.028813
   }
 }
