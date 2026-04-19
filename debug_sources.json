@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 541,
+      "count": 549,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 74,
+      "count": 76,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 535,
+      "count": 765,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 615,
+      "count": 625,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1498,
-  "au_count": 1434,
+  "raw_count": 1633,
+  "au_count": 1566,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GCLR-8",
-    "train_number": "GCR1",
-    "train_name": "GCLR-8",
+    "id": "Q4003",
+    "train_number": "7462",
+    "train_name": "Q4003",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "Malcolm",
+    "destination": "West Kalgoorlie",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "16:04:18",
+    "time": "17:21:24",
     "date": "19/04/2026",
-    "description": "GCR1",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "GCLR-8",
-    "lat": -27.92642,
-    "lon": 153.339127
+    "description": "Gold Valley Iron Ore",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "c3b6f295-48fd-4058-90a2-4a0b957ae14c",
+    "trKey": "Q4003",
+    "lat": -30.774563,
+    "lon": 121.427727
   }
 }
