@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 533,
+      "count": 506,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 78,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 807,
+      "count": 567,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 611,
+      "count": 590,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1626,
-  "au_count": 1520,
+  "raw_count": 1464,
+  "au_count": 1395,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9311",
-    "train_number": "MB540",
-    "train_name": "9311",
+    "id": "TNSW-3495-9177",
+    "train_number": "754M",
+    "train_name": "TNSW-3495-9177",
     "loco": "",
     "operator": "",
-    "origin": "Maules Creek",
-    "destination": "PWCS Kooragang",
-    "speed": 57,
+    "origin": "City Circle",
+    "destination": "Macarthur via Airport",
+    "speed": 0,
     "heading": 0,
-    "km": "348 km",
-    "time": "12:43:00",
+    "km": "",
+    "time": "13:25:02",
     "date": "19/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "36cea6a0-c69b-4bae-af9f-e605f319144d",
-    "trKey": "9311",
-    "lat": -31.783033,
-    "lon": 150.88324
+    "description": "T8 Airport & South Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-3495-9177",
+    "lat": -33.909851,
+    "lon": 151.195877
   }
 }
