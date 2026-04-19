@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 285,
+      "count": 224,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 64,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 331,
+      "count": 103,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 354,
+      "count": 288,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 874,
-  "au_count": 833,
+  "raw_count": 628,
+  "au_count": 589,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "JP2532-0",
-    "train_number": "78",
-    "train_name": "JP2532-0",
+    "id": "6021",
+    "train_number": "MB942",
+    "train_name": "6021",
     "loco": "",
     "operator": "",
-    "origin": "primrose",
-    "destination": "burnie",
-    "speed": 0,
+    "origin": "Maules Creek",
+    "destination": "NCIG Kooragang",
+    "speed": 61,
     "heading": 0,
-    "km": "",
-    "time": "00:16:12",
+    "km": "460 km",
+    "time": "01:21:00",
     "date": "20/04/2026",
-    "description": "Melba Line",
-    "cId": "d8d850c0-6d1b-47da-b085-773087298c60",
-    "servId": "",
-    "trKey": "JP2532-0",
-    "lat": -41.053889,
-    "lon": 145.908084
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "e955ca8a-8a19-4b0d-aa0b-12a187565567",
+    "trKey": "6021",
+    "lat": -31.10059,
+    "lon": 150.268747
   }
 }
