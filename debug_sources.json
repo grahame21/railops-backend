@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 156,
+      "count": 138,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 64,
+      "count": 62,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 251,
+      "count": 257,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 220,
+      "count": 200,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 566,
-  "au_count": 554,
+  "raw_count": 529,
+  "au_count": 524,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5021",
-    "train_number": "AT728",
-    "train_name": "5021",
+    "id": "GWU008",
+    "train_number": "BG419",
+    "train_name": "GWU008",
     "loco": "",
     "operator": "",
-    "origin": "Wilpinjong",
-    "destination": "Mac Generation Antiene",
-    "speed": 1,
+    "origin": "",
+    "destination": "",
+    "speed": 17,
     "heading": 0,
-    "km": "269 km",
-    "time": "02:33:00",
+    "km": "183 km",
+    "time": "03:11:00",
     "date": "20/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "73cf0c88-526a-4082-8d1c-5e53e9966a45",
-    "trKey": "5021",
-    "lat": -32.345297,
-    "lon": 150.975147
+    "description": "",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "",
+    "trKey": "GWU008",
+    "lat": -32.776507,
+    "lon": 151.631387
   }
 }
