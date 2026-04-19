@@ -2,17 +2,17 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 542,
+      "count": 549,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 70,
+      "count": 63,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 309,
+      "count": 831,
       "exists": true,
       "name": "markerSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1379,
-  "au_count": 1302,
+  "raw_count": 1640,
+  "au_count": 1554,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TL15",
-    "train_number": "TL15",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TL15",
+    "id": "TNSW-8820-1005",
+    "train_number": "L1DK",
+    "train_name": "TNSW-8820-1005",
     "loco": "",
     "operator": "",
-    "origin": "Ipswich",
-    "destination": "Nambour",
+    "origin": "Olympic Park",
+    "destination": "Blacktown",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "18:15:06",
+    "time": "18:23:34",
     "date": "19/04/2026",
-    "description": "IPNA",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T7 Olympic Park Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_TL15",
-    "lat": -27.200411,
-    "lon": 152.958252
+    "trKey": "TNSW-8820-1005",
+    "lat": -33.86009,
+    "lon": 151.061099
   }
 }
