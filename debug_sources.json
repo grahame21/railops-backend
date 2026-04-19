@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 172,
+      "count": 156,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 62,
+      "count": 64,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 193,
+      "count": 251,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 234,
+      "count": 220,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 565,
-  "au_count": 531,
+  "raw_count": 566,
+  "au_count": 554,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8164",
-    "train_number": "3331",
-    "train_name": "8164",
+    "id": "5021",
+    "train_number": "AT728",
+    "train_name": "5021",
     "loco": "",
     "operator": "",
-    "origin": "Southern NSW",
-    "destination": "Southern NSW",
-    "speed": 4,
+    "origin": "Wilpinjong",
+    "destination": "Mac Generation Antiene",
+    "speed": 1,
     "heading": 0,
-    "km": "430 km",
-    "time": "01:34:00",
+    "km": "269 km",
+    "time": "02:33:00",
     "date": "20/04/2026",
-    "description": "PN Grain Shuttle",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "91ce3753-8fc3-47bd-b75d-b045dcbfac9c",
-    "trKey": "8164",
-    "lat": -34.6431,
-    "lon": 148.028813
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "73cf0c88-526a-4082-8d1c-5e53e9966a45",
+    "trKey": "5021",
+    "lat": -32.345297,
+    "lon": 150.975147
   }
 }
