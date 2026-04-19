@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 930,
+      "count": 899,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1311,
+      "count": 827,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1012,
+      "count": 1001,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2680,
-  "au_count": 2601,
+  "raw_count": 2416,
+  "au_count": 2337,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "6001",
-    "train_number": "MC55",
-    "train_name": "6001",
+    "id": "9311",
+    "train_number": "MB983",
+    "train_name": "9311",
     "loco": "",
     "operator": "",
-    "origin": "Bluescope Coal Bridge",
-    "destination": "Metropolitan Colliery",
-    "speed": 18,
+    "origin": "NCIG Kooragang",
+    "destination": "Maules Creek",
+    "speed": 0,
     "heading": 0,
-    "km": "48 km",
-    "time": "08:17:00",
+    "km": "435 km",
+    "time": "08:56:00",
     "date": "20/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "fc1b09c8-0270-42d6-8bda-ef1390dcc346",
-    "trKey": "6001",
-    "lat": -34.179387,
-    "lon": 151.008107
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "57583dba-1bb7-4d53-9ae4-1ea24542dfce",
+    "trKey": "9311",
+    "lat": -31.24425,
+    "lon": 150.44956
   }
 }
