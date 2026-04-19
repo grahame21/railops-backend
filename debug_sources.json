@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 428,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 21,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 497,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1005,
-  "au_count": 990,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DHJ0",
-    "train_number": "DHJ0",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DHJ0",
-    "loco": "",
-    "operator": "",
-    "origin": "Airport",
-    "destination": "Cleveland",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "05:09:55",
-    "date": "20/04/2026",
-    "description": "BDCL",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DHJ0",
-    "lat": -27.40851,
-    "lon": 153.075546
-  }
+  "hasOl": true
 }
