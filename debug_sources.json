@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 899,
+      "count": 880,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 102,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 827,
+      "count": 1001,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1001,
+      "count": 964,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2416,
-  "au_count": 2337,
+  "raw_count": 2429,
+  "au_count": 2309,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9311",
-    "train_number": "MB983",
-    "train_name": "9311",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1R56",
+    "train_number": "1R56",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1R56",
     "loco": "",
     "operator": "",
-    "origin": "NCIG Kooragang",
-    "destination": "Maules Creek",
+    "origin": "Shorncliffe",
+    "destination": "Brisbane City",
     "speed": 0,
     "heading": 0,
-    "km": "435 km",
-    "time": "08:56:00",
+    "km": "",
+    "time": "09:30:41",
     "date": "20/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "57583dba-1bb7-4d53-9ae4-1ea24542dfce",
-    "trKey": "9311",
-    "lat": -31.24425,
-    "lon": 150.44956
+    "description": "SHBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1R56",
+    "lat": -27.407301,
+    "lon": 153.059296
   }
 }
