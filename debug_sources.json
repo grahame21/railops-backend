@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 790,
+      "count": 912,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 76,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1263,
+      "count": 279,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 867,
+      "count": 988,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2366,
-  "au_count": 2330,
+  "raw_count": 2116,
+  "au_count": 2029,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "1022",
-    "train_number": "L1",
-    "train_name": "1022",
+    "id": "GWU014",
+    "train_number": "7AD1",
+    "train_name": "GWU014",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 7,
+    "origin": "Gillman Yard (Port Flat)",
+    "destination": "Berrimah (Darwin)",
+    "speed": 105,
     "heading": 0,
-    "km": "",
-    "time": "06:57:02",
+    "km": "2363 km",
+    "time": "07:44:00",
     "date": "20/04/2026",
-    "description": "Dulwich Hill Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "1022",
-    "lat": -33.910229,
-    "lon": 151.14003
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "609974ae-3277-4e6e-90f4-887ba631b5ed",
+    "trKey": "GWU014",
+    "lat": -15.003195,
+    "lon": 132.760613
   }
 }
