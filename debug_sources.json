@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 506,
+      "count": 529,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 567,
+      "count": 343,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 590,
+      "count": 614,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1464,
-  "au_count": 1395,
+  "raw_count": 1400,
+  "au_count": 1305,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-3495-9177",
-    "train_number": "754M",
-    "train_name": "TNSW-3495-9177",
+    "id": "GWU014",
+    "train_number": "7AD1",
+    "train_name": "GWU014",
     "loco": "",
     "operator": "",
-    "origin": "City Circle",
-    "destination": "Macarthur via Airport",
-    "speed": 0,
+    "origin": "Gillman Yard (Port Flat)",
+    "destination": "Berrimah (Darwin)",
+    "speed": 91,
     "heading": 0,
-    "km": "",
-    "time": "13:25:02",
+    "km": "772 km",
+    "time": "13:47:00",
     "date": "19/04/2026",
-    "description": "T8 Airport & South Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-3495-9177",
-    "lat": -33.909851,
-    "lon": 151.195877
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "609974ae-3277-4e6e-90f4-887ba631b5ed",
+    "trKey": "GWU014",
+    "lat": -28.420073,
+    "lon": 134.179187
   }
 }
