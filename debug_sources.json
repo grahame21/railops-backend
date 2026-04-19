@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 468,
+      "count": 463,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 67,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 499,
+      "count": 455,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 541,
+      "count": 530,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1332,
-  "au_count": 1251,
+  "raw_count": 1288,
+  "au_count": 1203,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T566",
-    "train_number": "T566",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T566",
+    "id": "SCT014",
+    "train_number": "6MP9",
+    "train_name": "SCT014",
     "loco": "",
     "operator": "",
-    "origin": "Caboolture",
-    "destination": "Ipswich",
-    "speed": 0,
+    "origin": "SCT, Laverton",
+    "destination": "SCT, Forrestfield",
+    "speed": 55,
     "heading": 0,
-    "km": "",
-    "time": "21:20:48",
+    "km": "331 km",
+    "time": "21:28:00",
     "date": "19/04/2026",
-    "description": "CAIP",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_T566",
-    "lat": -27.08268,
-    "lon": 152.953583
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "b7cb3666-26a5-46e4-b221-bbd10ebc88b7",
+    "trKey": "SCT014",
+    "lat": -31.39171,
+    "lon": 118.67056
   }
 }
