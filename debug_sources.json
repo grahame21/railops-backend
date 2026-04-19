@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 912,
+      "count": 930,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 76,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 279,
+      "count": 1311,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 988,
+      "count": 1012,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2116,
-  "au_count": 2029,
+  "raw_count": 2680,
+  "au_count": 2601,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWU014",
-    "train_number": "7AD1",
-    "train_name": "GWU014",
+    "id": "6001",
+    "train_number": "MC55",
+    "train_name": "6001",
     "loco": "",
     "operator": "",
-    "origin": "Gillman Yard (Port Flat)",
-    "destination": "Berrimah (Darwin)",
-    "speed": 105,
+    "origin": "Bluescope Coal Bridge",
+    "destination": "Metropolitan Colliery",
+    "speed": 18,
     "heading": 0,
-    "km": "2363 km",
-    "time": "07:44:00",
+    "km": "48 km",
+    "time": "08:17:00",
     "date": "20/04/2026",
-    "description": "Aurizon Intermodal",
+    "description": "AZ Coal",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "609974ae-3277-4e6e-90f4-887ba631b5ed",
-    "trKey": "GWU014",
-    "lat": -15.003195,
-    "lon": 132.760613
+    "servId": "fc1b09c8-0270-42d6-8bda-ef1390dcc346",
+    "trKey": "6001",
+    "lat": -34.179387,
+    "lon": 151.008107
   }
 }
