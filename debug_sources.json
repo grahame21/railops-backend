@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 499,
+      "count": 470,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 72,
+      "count": 77,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 683,
+      "count": 721,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 571,
+      "count": 547,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1484,
-  "au_count": 1396,
+  "raw_count": 1455,
+  "au_count": 1369,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "5043",
-    "train_number": "BW383",
-    "train_name": "5043",
+    "id": "X10-X24",
+    "train_number": "L3",
+    "train_name": "X10-X24",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Mount Arthur",
-    "speed": 68,
+    "origin": "",
+    "destination": "",
+    "speed": 0,
     "heading": 0,
-    "km": "197 km",
-    "time": "22:49:00",
+    "km": "",
+    "time": "23:20:28",
     "date": "20/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "a543fdf5-11b5-4910-bfe0-c73a2020f0e1",
-    "trKey": "5043",
-    "lat": -32.724613,
-    "lon": 151.503107
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "servId": "",
+    "trKey": "X10-X24",
+    "lat": -33.861408,
+    "lon": 151.208237
   }
 }
