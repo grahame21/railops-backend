@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 470,
+      "count": 394,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 70,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 721,
+      "count": 541,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 547,
+      "count": 464,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1455,
-  "au_count": 1369,
+  "raw_count": 1199,
+  "au_count": 1120,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "X10-X24",
-    "train_number": "L3",
-    "train_name": "X10-X24",
+    "id": "9029",
+    "train_number": "RC182",
+    "train_name": "9029",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "Rixs Creek",
+    "destination": "PWCS Kooragang",
+    "speed": 16,
     "heading": 0,
-    "km": "",
-    "time": "23:20:28",
-    "date": "20/04/2026",
-    "description": "Kingsford Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
-    "servId": "",
-    "trKey": "X10-X24",
-    "lat": -33.861408,
-    "lon": 151.208237
+    "km": "167 km",
+    "time": "00:24:00",
+    "date": "21/04/2026",
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "d3eccdeb-f0fa-41a7-b227-f57a019a3b91",
+    "trKey": "9029",
+    "lat": -32.875733,
+    "lon": 151.714427
   }
 }
