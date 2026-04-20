@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 168,
+      "count": 185,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 64,
+      "count": 66,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 325,
+      "count": 343,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 232,
+      "count": 251,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 627,
-  "au_count": 618,
+  "raw_count": 674,
+  "au_count": 657,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CF4427",
-    "train_number": "MB993",
-    "train_name": "CF4427",
+    "id": "ACB4406",
+    "train_number": "7SP1",
+    "train_name": "ACB4406",
     "loco": "",
     "operator": "",
-    "origin": "NCIG Kooragang",
-    "destination": "Maules Creek",
-    "speed": 1,
+    "origin": "Glenlee",
+    "destination": "Kwinana",
+    "speed": 0,
     "heading": 0,
-    "km": "536 km",
-    "time": "03:26:00",
+    "km": "",
+    "time": "03:35:34",
     "date": "21/04/2026",
-    "description": "AZ Coal",
+    "description": "Aurizon Intermodal",
     "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "dd02aa23-7e5d-4a0e-9d9f-e71aea8111f4",
-    "trKey": "CF4427",
-    "lat": -30.565277,
-    "lon": 150.117347
+    "servId": "0787707e-ef5c-466d-80e1-d12495de4f8b",
+    "trKey": "ACB4406",
+    "lat": -31.957331,
+    "lon": 115.991249
   }
 }
