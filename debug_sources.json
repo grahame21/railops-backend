@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 185,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 38,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 231,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 223,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 562,
-  "au_count": 541,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1E01",
-    "train_number": "1E01",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1E01",
-    "loco": "",
-    "operator": "",
-    "origin": "Brisbane City",
-    "destination": "Ferny Grove",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "04:40:48",
-    "date": "21/04/2026",
-    "description": "BRFG",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1E01",
-    "lat": -27.40239,
-    "lon": 152.936554
-  }
+  "hasOl": true
 }
