@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 652,
+      "count": 810,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 38,
+      "count": 40,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1039,
+      "count": 1303,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 690,
+      "count": 850,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1900,
-  "au_count": 1860,
+  "raw_count": 2352,
+  "au_count": 2201,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "JP2306-1",
-    "train_number": "C71T",
-    "train_name": "JP2306-1",
+    "id": "TNSW-8737-6849",
+    "train_number": "564F",
+    "train_name": "TNSW-8737-6849",
     "loco": "",
     "operator": "",
-    "origin": "brisbane-roma-st",
-    "destination": "cairns",
+    "origin": "Leppington",
+    "destination": "Emu Plains",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "07:09:14",
+    "time": "07:58:46",
     "date": "21/04/2026",
-    "description": "Spirit of Queensland",
-    "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
+    "description": "T5 Cumberland Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "JP2306-1",
-    "lat": -20.021807,
-    "lon": 148.20571
+    "trKey": "TNSW-8737-6849",
+    "lat": -33.95453,
+    "lon": 150.80838
   }
 }
