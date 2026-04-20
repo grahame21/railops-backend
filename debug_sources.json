@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 816,
+      "count": 721,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 101,
+      "count": 81,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 265,
+      "count": 101,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 917,
+      "count": 802,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1967,
-  "au_count": 1854,
+  "raw_count": 1655,
+  "au_count": 1550,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR95",
-    "train_number": "1446",
-    "train_name": "NR95",
+    "id": "TNSW-7358-2179",
+    "train_number": "194G",
+    "train_name": "TNSW-7358-2179",
     "loco": "",
     "operator": "",
-    "origin": "Esperance",
-    "destination": "West Kalgoorlie",
-    "speed": 2,
+    "origin": "City",
+    "destination": "Hornsby and Berowra via Gordon",
+    "speed": 0,
     "heading": 0,
-    "km": "650 km",
-    "time": "09:54:00",
+    "km": "",
+    "time": "10:43:26",
     "date": "20/04/2026",
-    "description": "PN Fuel Train",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "7e20511a-a7a3-4db1-8806-0e9ef7e27f87",
-    "trKey": "NR95",
-    "lat": -30.777053,
-    "lon": 121.42944
+    "description": "T1 North Shore Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-7358-2179",
+    "lat": -33.87386,
+    "lon": 151.20668
   }
 }
