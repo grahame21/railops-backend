@@ -2,7 +2,7 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 579,
+      "count": 652,
       "exists": true,
       "name": "regTrainsSource"
     },
@@ -12,12 +12,12 @@
       "name": "unregTrainsSource"
     },
     {
-      "count": 853,
+      "count": 1039,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 617,
+      "count": 690,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1661,
-  "au_count": 1621,
+  "raw_count": 1900,
+  "au_count": 1860,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-6115-2886",
-    "train_number": "101B",
-    "train_name": "TNSW-6115-2886",
+    "id": "JP2306-1",
+    "train_number": "C71T",
+    "train_name": "JP2306-1",
     "loco": "",
     "operator": "",
-    "origin": "North Shore",
-    "destination": "Hornsby and Berowra via City and Strathfield",
+    "origin": "brisbane-roma-st",
+    "destination": "cairns",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "06:28:39",
+    "time": "07:09:14",
     "date": "21/04/2026",
-    "description": "T9 Northern Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "Spirit of Queensland",
+    "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
     "servId": "",
-    "trKey": "TNSW-6115-2886",
-    "lat": -33.703426,
-    "lon": 151.098569
+    "trKey": "JP2306-1",
+    "lat": -20.021807,
+    "lon": 148.20571
   }
 }
