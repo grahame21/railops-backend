@@ -7,17 +7,17 @@
       "name": "regTrainsSource"
     },
     {
-      "count": 66,
+      "count": 38,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 343,
+      "count": 231,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 251,
+      "count": 223,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 674,
-  "au_count": 657,
+  "raw_count": 562,
+  "au_count": 541,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "ACB4406",
-    "train_number": "7SP1",
-    "train_name": "ACB4406",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1E01",
+    "train_number": "1E01",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1E01",
     "loco": "",
     "operator": "",
-    "origin": "Glenlee",
-    "destination": "Kwinana",
+    "origin": "Brisbane City",
+    "destination": "Ferny Grove",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "03:35:34",
+    "time": "04:40:48",
     "date": "21/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "0787707e-ef5c-466d-80e1-d12495de4f8b",
-    "trKey": "ACB4406",
-    "lat": -31.957331,
-    "lon": 115.991249
+    "description": "BRFG",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1E01",
+    "lat": -27.40239,
+    "lon": 152.936554
   }
 }
