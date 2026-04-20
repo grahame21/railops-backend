@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 880,
+      "count": 816,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 101,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1001,
+      "count": 265,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 964,
+      "count": 917,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2429,
-  "au_count": 2309,
+  "raw_count": 1967,
+  "au_count": 1854,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1R56",
-    "train_number": "1R56",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1R56",
+    "id": "NR95",
+    "train_number": "1446",
+    "train_name": "NR95",
     "loco": "",
     "operator": "",
-    "origin": "Shorncliffe",
-    "destination": "Brisbane City",
-    "speed": 0,
+    "origin": "Esperance",
+    "destination": "West Kalgoorlie",
+    "speed": 2,
     "heading": 0,
-    "km": "",
-    "time": "09:30:41",
+    "km": "650 km",
+    "time": "09:54:00",
     "date": "20/04/2026",
-    "description": "SHBR",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1R56",
-    "lat": -27.407301,
-    "lon": 153.059296
+    "description": "PN Fuel Train",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "7e20511a-a7a3-4db1-8806-0e9ef7e27f87",
+    "trKey": "NR95",
+    "lat": -30.777053,
+    "lon": 121.42944
   }
 }
