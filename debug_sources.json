@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 672,
+      "count": 814,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 90,
+      "count": 91,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 909,
+      "count": 1117,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 762,
+      "count": 905,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1979,
-  "au_count": 1894,
+  "raw_count": 2369,
+  "au_count": 2293,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DM21",
-    "train_number": "DM21",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DM21",
+    "id": "LRV2",
+    "train_number": "R1",
+    "train_name": "LRV2",
     "loco": "",
     "operator": "",
-    "origin": "Cleveland",
-    "destination": "Brisbane City",
-    "speed": 0,
+    "origin": "",
+    "destination": "",
+    "speed": 30,
     "heading": 0,
     "km": "",
-    "time": "13:39:48",
+    "time": "16:00:04",
     "date": "20/04/2026",
-    "description": "CLBR",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DM21",
-    "lat": -27.46521,
-    "lon": 153.019653
+    "description": "Gungahlin Place - Alinga Street",
+    "cId": "65a0185d-c9bd-4802-8819-e0495ab0e732",
+    "servId": "5f71dbe7-6200-4462-b76f-a3d3c225f360",
+    "trKey": "LRV2",
+    "lat": -35.277401,
+    "lon": 149.12944
   }
 }
