@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 209,
+      "count": 168,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 64,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 323,
+      "count": 325,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 282,
+      "count": 232,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 726,
-  "au_count": 641,
+  "raw_count": 627,
+  "au_count": 618,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TJ108",
-    "train_number": "M778",
-    "train_name": "TJ108",
+    "id": "CF4427",
+    "train_number": "MB993",
+    "train_name": "CF4427",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 34,
+    "origin": "NCIG Kooragang",
+    "destination": "Maules Creek",
+    "speed": 1,
     "heading": 0,
-    "km": "14 km",
-    "time": "02:48:00",
+    "km": "536 km",
+    "time": "03:26:00",
     "date": "21/04/2026",
-    "description": "Maintenance Train",
-    "cId": "d9429334-661c-47b5-8021-e9a32307a0b9",
-    "servId": "132f140e-4752-4c0d-9b05-9d5825c2f387",
-    "trKey": "TJ108",
-    "lat": -33.86409,
-    "lon": 151.06556
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "dd02aa23-7e5d-4a0e-9d9f-e71aea8111f4",
+    "trKey": "CF4427",
+    "lat": -30.565277,
+    "lon": 150.117347
   }
 }
