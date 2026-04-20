@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 768,
+      "count": 734,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 39,
+      "count": 41,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 65,
+      "count": 1017,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 807,
+      "count": 775,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1647,
-  "au_count": 1576,
+  "raw_count": 2059,
+  "au_count": 1940,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TSRS039",
-    "train_number": "M1-1",
-    "train_name": "TSRS039",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
+    "train_number": "D522",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 50,
+    "origin": "Caboolture",
+    "destination": "Ipswich",
+    "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "08:43:04",
+    "time": "09:25:08",
     "date": "21/04/2026",
-    "description": "Metro North West & Bankstown Line",
-    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
-    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
-    "trKey": "TSRS039",
-    "lat": -33.733261,
-    "lon": 150.964996
+    "description": "CAIP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D522",
+    "lat": -27.08268,
+    "lon": 152.953583
   }
 }
