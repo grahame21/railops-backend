@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 210,
+      "count": 209,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 76,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 291,
+      "count": 323,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 286,
+      "count": 282,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 718,
-  "au_count": 675,
+  "raw_count": 726,
+  "au_count": 641,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "SSR103",
-    "train_number": "1287",
-    "train_name": "SSR103",
+    "id": "TJ108",
+    "train_number": "M778",
+    "train_name": "TJ108",
     "loco": "",
     "operator": "",
-    "origin": "Boral, Enfield",
-    "destination": "Peppertree Quarry",
-    "speed": 71,
+    "origin": "",
+    "destination": "",
+    "speed": 34,
     "heading": 0,
-    "km": "114 km",
-    "time": "01:50:00",
+    "km": "14 km",
+    "time": "02:48:00",
     "date": "21/04/2026",
-    "description": "SSR Empty Aggregates",
-    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
-    "servId": "1b4d0a2f-8b45-460d-aa6e-dc4e178f550f",
-    "trKey": "SSR103",
-    "lat": -34.358423,
-    "lon": 150.549333
+    "description": "Maintenance Train",
+    "cId": "d9429334-661c-47b5-8021-e9a32307a0b9",
+    "servId": "132f140e-4752-4c0d-9b05-9d5825c2f387",
+    "trKey": "TJ108",
+    "lat": -33.86409,
+    "lon": 151.06556
   }
 }
