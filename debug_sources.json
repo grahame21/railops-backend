@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 394,
+      "count": 210,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 70,
+      "count": 76,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 541,
+      "count": 291,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 464,
+      "count": 286,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1199,
-  "au_count": 1120,
+  "raw_count": 718,
+  "au_count": 675,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9029",
-    "train_number": "RC182",
-    "train_name": "9029",
+    "id": "SSR103",
+    "train_number": "1287",
+    "train_name": "SSR103",
     "loco": "",
     "operator": "",
-    "origin": "Rixs Creek",
-    "destination": "PWCS Kooragang",
-    "speed": 16,
+    "origin": "Boral, Enfield",
+    "destination": "Peppertree Quarry",
+    "speed": 71,
     "heading": 0,
-    "km": "167 km",
-    "time": "00:24:00",
+    "km": "114 km",
+    "time": "01:50:00",
     "date": "21/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "d3eccdeb-f0fa-41a7-b227-f57a019a3b91",
-    "trKey": "9029",
-    "lat": -32.875733,
-    "lon": 151.714427
+    "description": "SSR Empty Aggregates",
+    "cId": "edbed39e-f4b9-4fd9-bc6a-a7e7d04a9e4b",
+    "servId": "1b4d0a2f-8b45-460d-aa6e-dc4e178f550f",
+    "trKey": "SSR103",
+    "lat": -34.358423,
+    "lon": 150.549333
   }
 }
