@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 674,
+      "count": 688,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 85,
+      "count": 82,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1005,
+      "count": 1007,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 759,
+      "count": 770,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2021,
-  "au_count": 1935,
+  "raw_count": 2044,
+  "au_count": 1957,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "VLINE-8417",
-    "train_number": "8417",
-    "train_name": "VLINE-8417",
+    "id": "X10-X24",
+    "train_number": "L3",
+    "train_name": "X10-X24",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 63,
+    "speed": 7,
     "heading": 0,
     "km": "",
-    "time": "12:50:28",
+    "time": "13:43:00",
     "date": "21/04/2026",
-    "description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
+    "description": "Kingsford Line",
+    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
     "servId": "",
-    "trKey": "VLINE-8417",
-    "lat": -38.202461,
-    "lon": 146.523407
+    "trKey": "X10-X24",
+    "lat": -33.861469,
+    "lon": 151.209396
   }
 }
