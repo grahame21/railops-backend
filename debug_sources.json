@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 466,
+      "count": 376,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 90,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 345,
+      "count": 497,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 556,
+      "count": 469,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1285,
-  "au_count": 1228,
+  "raw_count": 1187,
+  "au_count": 1142,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D576",
-    "train_number": "D576",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D576",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1RF8",
+    "train_number": "1RF8",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1RF8",
     "loco": "",
     "operator": "",
-    "origin": "Caboolture",
-    "destination": "Ipswich",
+    "origin": "Shorncliffe",
+    "destination": "Caboolture",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "23:32:49",
-    "date": "21/04/2026",
-    "description": "CAIP",
+    "time": "00:10:06",
+    "date": "22/04/2026",
+    "description": "SHCA",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D576",
-    "lat": -27.33054,
-    "lon": 153.017639
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1RF8",
+    "lat": -27.427003,
+    "lon": 153.042042
   }
 }
