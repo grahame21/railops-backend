@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 393,
+      "count": 634,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 71,
+      "count": 78,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 123,
+      "count": 781,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 464,
+      "count": 712,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 990,
-  "au_count": 966,
+  "raw_count": 1815,
+  "au_count": 1738,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWA002",
-    "train_number": "3DA6",
-    "train_name": "GWA002",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D103",
+    "train_number": "D103",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D103",
     "loco": "",
     "operator": "",
-    "origin": "Berrimah (Darwin)",
-    "destination": "Gillman Yard (Port Flat)",
-    "speed": 5,
+    "origin": "Brisbane City",
+    "destination": "Caboolture",
+    "speed": 0,
     "heading": 0,
-    "km": "2170 km",
-    "time": "04:55:00",
+    "km": "",
+    "time": "05:55:10",
     "date": "22/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "a407fa74-b24b-4372-87c9-de10744eafdc",
-    "trKey": "GWA002",
-    "lat": -16.710183,
-    "lon": 132.791613
+    "description": "BRCA",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D103",
+    "lat": -27.089041,
+    "lon": 152.955688
   }
 }
