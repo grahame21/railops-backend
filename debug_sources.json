@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 911,
+      "count": 941,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 90,
+      "count": 84,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1303,
+      "count": 1313,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1001,
+      "count": 1025,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2654,
-  "au_count": 2568,
+  "raw_count": 2707,
+  "au_count": 2629,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "LRV11",
-    "train_number": "R1",
-    "train_name": "LRV11",
+    "id": "3VS96",
+    "train_number": "8603",
+    "train_name": "3VS96",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 55,
+    "speed": 112,
     "heading": 0,
-    "km": "",
-    "time": "16:57:02",
+    "km": "55 km",
+    "time": "17:16:00",
     "date": "21/04/2026",
-    "description": "Gungahlin Place - Alinga Street",
-    "cId": "65a0185d-c9bd-4802-8819-e0495ab0e732",
-    "servId": "5f71dbe7-6200-4462-b76f-a3d3c225f360",
-    "trKey": "LRV11",
-    "lat": -35.217258,
-    "lon": 149.145279
+    "description": "NorthEast Special Movement",
+    "cId": "6834737e-5a85-4b2a-a70b-eccbbc11c3a1",
+    "servId": "36f71eab-fb2f-48ec-9582-ce60eb43ebbd",
+    "trKey": "3VS96",
+    "lat": -37.35573,
+    "lon": 145.026973
   }
 }
