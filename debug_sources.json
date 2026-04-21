@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 326,
+      "count": 393,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 70,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 299,
+      "count": 123,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 396,
+      "count": 464,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 942,
-  "au_count": 915,
+  "raw_count": 990,
+  "au_count": 966,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-3382-9964",
-    "train_number": "70AD",
-    "train_name": "TNSW-3382-9964",
+    "id": "GWA002",
+    "train_number": "3DA6",
+    "train_name": "GWA002",
     "loco": "",
     "operator": "",
-    "origin": "Bankstown",
-    "destination": "Lidcombe",
-    "speed": 0,
+    "origin": "Berrimah (Darwin)",
+    "destination": "Gillman Yard (Port Flat)",
+    "speed": 5,
     "heading": 0,
-    "km": "",
-    "time": "04:22:36",
+    "km": "2170 km",
+    "time": "04:55:00",
     "date": "22/04/2026",
-    "description": "T6 Lidcombe & Bankstown Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-3382-9964",
-    "lat": -33.863181,
-    "lon": 151.040225
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "a407fa74-b24b-4372-87c9-de10744eafdc",
+    "trKey": "GWA002",
+    "lat": -16.710183,
+    "lon": 132.791613
   }
 }
