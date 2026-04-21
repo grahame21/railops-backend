@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 376,
+      "count": 230,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 497,
+      "count": 349,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 469,
+      "count": 303,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1187,
-  "au_count": 1142,
+  "raw_count": 781,
+  "au_count": 723,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1RF8",
-    "train_number": "1RF8",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1RF8",
+    "id": "TNSW-7110-6985",
+    "train_number": "K494",
+    "train_name": "TNSW-7110-6985",
     "loco": "",
     "operator": "",
-    "origin": "Shorncliffe",
-    "destination": "Caboolture",
+    "origin": "Kiama",
+    "destination": "Central and Bondi Junction",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "00:10:06",
+    "time": "01:37:02",
     "date": "22/04/2026",
-    "description": "SHCA",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "South Coast Line",
+    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_1RF8",
-    "lat": -27.427003,
-    "lon": 153.042042
+    "trKey": "TNSW-7110-6985",
+    "lat": -34.42707,
+    "lon": 150.88814
   }
 }
