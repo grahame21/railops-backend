@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 208,
+      "count": 193,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 75,
+      "count": 69,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 315,
+      "count": 527,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 283,
+      "count": 262,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 724,
-  "au_count": 645,
+  "raw_count": 788,
+  "au_count": 775,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWU006",
-    "train_number": "MN369",
-    "train_name": "GWU006",
+    "id": "ACD6072",
+    "train_number": "2041",
+    "train_name": "ACD6072",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Mangoola",
-    "speed": 0,
+    "origin": "Koolyanobbing East",
+    "destination": "Esperance",
+    "speed": 5,
     "heading": 0,
-    "km": "166 km",
-    "time": "02:42:00",
+    "km": "458 km",
+    "time": "03:24:00",
     "date": "22/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "de3568da-36d2-4bd3-b6c5-0a8dabac65f3",
-    "trKey": "GWU006",
-    "lat": -32.902427,
-    "lon": 151.731507
+    "description": "MRL Loaded Iron Ore",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "e28cb100-4e96-4f7e-bdeb-ab91c99c9f2a",
+    "trKey": "ACD6072",
+    "lat": -30.819877,
+    "lon": 119.54084
   }
 }
