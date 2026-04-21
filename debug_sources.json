@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 732,
+      "count": 878,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 71,
+      "count": 74,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 809,
+      "count": 1375,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 803,
+      "count": 952,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2011,
-  "au_count": 1983,
+  "raw_count": 2592,
+  "au_count": 2498,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9317",
-    "train_number": "BE516",
-    "train_name": "9317",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DP09",
+    "train_number": "DP09",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DP09",
     "loco": "",
     "operator": "",
-    "origin": "Boggabri East",
-    "destination": "PWCS Kooragang",
+    "origin": "Cleveland",
+    "destination": "Airport",
     "speed": 0,
     "heading": 0,
-    "km": "306 km",
-    "time": "06:35:00",
+    "km": "",
+    "time": "06:54:24",
     "date": "22/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "7dc69b58-8bad-4c85-9603-791ddfbe110a",
-    "trKey": "9317",
-    "lat": -32.12195,
-    "lon": 150.871667
+    "description": "CLBD",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DP09",
+    "lat": -27.39253,
+    "lon": 153.114166
   }
 }
