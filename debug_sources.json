@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 193,
+      "count": 326,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 70,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 527,
+      "count": 299,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 262,
+      "count": 396,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 788,
-  "au_count": 775,
+  "raw_count": 942,
+  "au_count": 915,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "ACD6072",
-    "train_number": "2041",
-    "train_name": "ACD6072",
+    "id": "TNSW-3382-9964",
+    "train_number": "70AD",
+    "train_name": "TNSW-3382-9964",
     "loco": "",
     "operator": "",
-    "origin": "Koolyanobbing East",
-    "destination": "Esperance",
-    "speed": 5,
+    "origin": "Bankstown",
+    "destination": "Lidcombe",
+    "speed": 0,
     "heading": 0,
-    "km": "458 km",
-    "time": "03:24:00",
+    "km": "",
+    "time": "04:22:36",
     "date": "22/04/2026",
-    "description": "MRL Loaded Iron Ore",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "e28cb100-4e96-4f7e-bdeb-ab91c99c9f2a",
-    "trKey": "ACD6072",
-    "lat": -30.819877,
-    "lon": 119.54084
+    "description": "T6 Lidcombe & Bankstown Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-3382-9964",
+    "lat": -33.863181,
+    "lon": 151.040225
   }
 }
