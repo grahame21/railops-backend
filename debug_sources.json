@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 653,
+      "count": 674,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 43,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 57,
+      "count": 1005,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 696,
+      "count": 759,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1421,
-  "au_count": 1314,
+  "raw_count": 2021,
+  "au_count": 1935,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "1084",
-    "train_number": "L1",
-    "train_name": "1084",
+    "id": "VLINE-8417",
+    "train_number": "8417",
+    "train_name": "VLINE-8417",
     "loco": "",
     "operator": "",
     "origin": "",
     "destination": "",
-    "speed": 39,
+    "speed": 63,
     "heading": 0,
     "km": "",
-    "time": "10:01:14",
+    "time": "12:50:28",
     "date": "21/04/2026",
-    "description": "Dulwich Hill Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
+    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
     "servId": "",
-    "trKey": "1084",
-    "lat": -33.882481,
-    "lon": 151.207535
+    "trKey": "VLINE-8417",
+    "lat": -38.202461,
+    "lon": 146.523407
   }
 }
