@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 673,
+      "count": 732,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 71,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 983,
+      "count": 809,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 755,
+      "count": 803,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2002,
-  "au_count": 1972,
+  "raw_count": 2011,
+  "au_count": 1983,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "GWA002",
-    "train_number": "3DA6",
-    "train_name": "GWA002",
+    "id": "9317",
+    "train_number": "BE516",
+    "train_name": "9317",
     "loco": "",
     "operator": "",
-    "origin": "Berrimah (Darwin)",
-    "destination": "Gillman Yard (Port Flat)",
-    "speed": 106,
+    "origin": "Boggabri East",
+    "destination": "PWCS Kooragang",
+    "speed": 0,
     "heading": 0,
-    "km": "2048 km",
-    "time": "06:13:00",
+    "km": "306 km",
+    "time": "06:35:00",
     "date": "22/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "a407fa74-b24b-4372-87c9-de10744eafdc",
-    "trKey": "GWA002",
-    "lat": -17.733157,
-    "lon": 133.181267
+    "description": "PN Coal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "7dc69b58-8bad-4c85-9603-791ddfbe110a",
+    "trKey": "9317",
+    "lat": -32.12195,
+    "lon": 150.871667
   }
 }
