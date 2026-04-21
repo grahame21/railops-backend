@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 803,
+      "count": 911,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 90,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 915,
+      "count": 1303,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 887,
+      "count": 1001,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2232,
-  "au_count": 2172,
+  "raw_count": 2654,
+  "au_count": 2568,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-4921-1038",
-    "train_number": "1--N",
-    "train_name": "TNSW-4921-1038",
+    "id": "LRV11",
+    "train_number": "R1",
+    "train_name": "LRV11",
     "loco": "",
     "operator": "",
-    "origin": "City Circle",
-    "destination": "Parramatta",
-    "speed": 0,
+    "origin": "",
+    "destination": "",
+    "speed": 55,
     "heading": 0,
     "km": "",
-    "time": "15:50:39",
+    "time": "16:57:02",
     "date": "21/04/2026",
-    "description": "T2 Leppington & Inner West Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-4921-1038",
-    "lat": -33.87065,
-    "lon": 151.21174
+    "description": "Gungahlin Place - Alinga Street",
+    "cId": "65a0185d-c9bd-4802-8819-e0495ab0e732",
+    "servId": "5f71dbe7-6200-4462-b76f-a3d3c225f360",
+    "trKey": "LRV11",
+    "lat": -35.217258,
+    "lon": 149.145279
   }
 }
