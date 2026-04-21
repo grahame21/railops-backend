@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 688,
+      "count": 762,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 80,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1007,
+      "count": 1099,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 770,
+      "count": 842,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2044,
-  "au_count": 1957,
+  "raw_count": 2234,
+  "au_count": 2174,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "X10-X24",
-    "train_number": "L3",
-    "train_name": "X10-X24",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
+    "train_number": "DY39",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 7,
+    "origin": "Springfield",
+    "destination": "Redcliffe Peninsula",
+    "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "13:43:00",
+    "time": "15:15:11",
     "date": "21/04/2026",
-    "description": "Kingsford Line",
-    "cId": "7da01a3a-8b84-424b-8900-3e64dae458d0",
+    "description": "SPRP",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "X10-X24",
-    "lat": -33.861469,
-    "lon": 151.209396
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY39",
+    "lat": -27.226151,
+    "lon": 153.078735
   }
 }
