@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 972,
+      "count": 935,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1333,
+      "count": 1159,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1056,
+      "count": 1020,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2779,
-  "au_count": 2712,
+  "raw_count": 2620,
+  "au_count": 2542,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "9301",
-    "train_number": "MB536",
-    "train_name": "9301",
+    "id": "MM-918M",
+    "train_number": "BEG",
+    "train_name": "MM-918M",
     "loco": "",
     "operator": "",
-    "origin": "Maules Creek",
-    "destination": "PWCS Kooragang",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
-    "km": "493 km",
-    "time": "07:57:00",
+    "km": "",
+    "time": "08:52:21",
     "date": "22/04/2026",
-    "description": "PN Coal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "35ef9274-915b-423c-a716-b28624337704",
-    "trKey": "9301",
-    "lat": -30.88591,
-    "lon": 150.107093
+    "description": "Belgrave Line",
+    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
+    "servId": "384b58e5-f994-45f3-a84b-a332d43b5c62",
+    "trKey": "MM-918M",
+    "lat": -37.908585,
+    "lon": 145.355576
   }
 }
