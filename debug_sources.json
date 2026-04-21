@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 935,
+      "count": 877,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 85,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1159,
+      "count": 49,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1020,
+      "count": 970,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2620,
-  "au_count": 2542,
+  "raw_count": 1965,
+  "au_count": 1880,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-918M",
-    "train_number": "BEG",
-    "train_name": "MM-918M",
+    "id": "TNSW-5329-9137",
+    "train_number": "194E",
+    "train_name": "TNSW-5329-9137",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "City",
+    "destination": "Emu Plains",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "08:52:21",
+    "time": "09:24:42",
     "date": "22/04/2026",
-    "description": "Belgrave Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "384b58e5-f994-45f3-a84b-a332d43b5c62",
-    "trKey": "MM-918M",
-    "lat": -37.908585,
-    "lon": 145.355576
+    "description": "T1 Western Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5329-9137",
+    "lat": -33.750503,
+    "lon": 150.698361
   }
 }
