@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 230,
+      "count": 208,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 73,
+      "count": 75,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 349,
+      "count": 315,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 303,
+      "count": 283,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 781,
-  "au_count": 723,
+  "raw_count": 724,
+  "au_count": 645,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7110-6985",
-    "train_number": "K494",
-    "train_name": "TNSW-7110-6985",
+    "id": "GWU006",
+    "train_number": "MN369",
+    "train_name": "GWU006",
     "loco": "",
     "operator": "",
-    "origin": "Kiama",
-    "destination": "Central and Bondi Junction",
+    "origin": "PWCS Kooragang",
+    "destination": "Mangoola",
     "speed": 0,
     "heading": 0,
-    "km": "",
-    "time": "01:37:02",
+    "km": "166 km",
+    "time": "02:42:00",
     "date": "22/04/2026",
-    "description": "South Coast Line",
-    "cId": "d1901d02-ede8-4a60-b899-94aaa9f141a9",
-    "servId": "",
-    "trKey": "TNSW-7110-6985",
-    "lat": -34.42707,
-    "lon": 150.88814
+    "description": "ORA Coal",
+    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
+    "servId": "de3568da-36d2-4bd3-b6c5-0a8dabac65f3",
+    "trKey": "GWU006",
+    "lat": -32.902427,
+    "lon": 151.731507
   }
 }
