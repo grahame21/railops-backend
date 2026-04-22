@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 610,
+      "count": 550,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 82,
+      "count": 85,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 855,
+      "count": 521,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 692,
+      "count": 635,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1812,
-  "au_count": 1684,
+  "raw_count": 1531,
+  "au_count": 1443,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGV0",
-    "train_number": "DGV0",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGV0",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY97",
+    "train_number": "DY97",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY97",
     "loco": "",
     "operator": "",
-    "origin": "Beenleigh",
-    "destination": "Varsity Lakes",
+    "origin": "Springfield",
+    "destination": "Brisbane City",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "21:45:46",
+    "time": "22:22:05",
     "date": "22/04/2026",
-    "description": "BNVL",
+    "description": "SPBR",
     "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DGV0",
-    "lat": -27.717461,
-    "lon": 153.20462
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY97",
+    "lat": -27.565941,
+    "lon": 152.952866
   }
 }
