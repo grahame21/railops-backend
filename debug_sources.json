@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 830,
+      "count": 705,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 86,
+      "count": 87,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1189,
+      "count": 1061,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 916,
+      "count": 792,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2427,
-  "au_count": 2305,
+  "raw_count": 2115,
+  "au_count": 2035,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "EC2524",
-    "train_number": "NP44",
-    "train_name": "EC2524",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DA49",
+    "train_number": "DA49",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DA49",
     "loco": "",
     "operator": "",
-    "origin": "Moree",
-    "destination": "Werris  Creek",
-    "speed": 111,
+    "origin": "Brisbane City",
+    "destination": "Shorncliffe",
+    "speed": 0,
     "heading": 0,
-    "km": "486 km",
-    "time": "10:05:00",
+    "km": "",
+    "time": "13:17:06",
     "date": "22/04/2026",
-    "description": "NSW Trainlink Xplorer to Sydney (connects with NP24)",
-    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
-    "servId": "97fa0a0c-b21c-4f01-a754-fff8487a2907",
-    "trKey": "EC2524",
-    "lat": -30.932543,
-    "lon": 150.1586
+    "description": "BRSH",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "servId": "",
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DA49",
+    "lat": -27.32732,
+    "lon": 153.063492
   }
 }
