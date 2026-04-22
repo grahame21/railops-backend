@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RailOps - Flight Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .user-info {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .logout-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #764ba2;
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .placeholder {
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+        }
+
+        .placeholder p {
+            margin: 10px 0;
+        }
+
+        .nav-links {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            background: #667eea;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>RailOps - Flight Tracker</h1>
+    </header>
+
+    <div class="container">
+        <div class="user-info">
+            <span>Welcome, <strong>{{ session.display_name }}</strong> ({{ session.role }})</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+
+        <div class="content">
+            <h2>Flight Tracker</h2>
+            <div class="placeholder">
+                <p><strong>Flight Tracker Page</strong></p>
+                <p>This page is for flight-only and admin users.</p>
+                <p>Integrate your ADS-B, flight radar, or flight tracking data here.</p>
+            </div>
+
+            <div class="nav-links">
+                {% if session.role == 'admin' %}
+                <a href="{{ url_for('dashboard_page') }}">Dashboard</a>
+                <a href="{{ url_for('admin_page') }}">Admin Panel</a>
+                {% endif %}
+                <a href="/flight-tracker">More Info</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
