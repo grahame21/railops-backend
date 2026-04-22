@@ -1,0 +1,29 @@
+{
+  "admins": [
+    {
+      "username": "admin",
+      "password": "change-me-now",
+      "display_name": "RailOps Admin"
+    }
+  ],
+  "guests": [
+    {
+      "username": "guest",
+      "password": "guest123",
+      "display_name": "Guest User",
+      "disabled": false,
+      "expires_at": null,
+      "device_lock": false,
+      "device_id": null
+    }
+  ],
+  "flight_only_users": [
+    {
+      "username": "flightguest",
+      "password": "flight123",
+      "display_name": "Flight Guest",
+      "disabled": false,
+      "expires_at": null
+    }
+  ]
+}
