@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 970,
+      "count": 876,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 86,
+      "count": 89,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1207,
+      "count": 1165,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1056,
+      "count": 965,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2716,
-  "au_count": 2625,
+  "raw_count": 2513,
+  "au_count": 2401,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "6008",
-    "train_number": "MP429",
-    "train_name": "6008",
+    "id": "CSR021",
+    "train_number": "3PG1",
+    "train_name": "CSR021",
     "loco": "",
     "operator": "",
-    "origin": "Vales Point / Eraring",
-    "destination": "Mount Pleasant",
-    "speed": 1,
+    "origin": "SCT, Forrestfield",
+    "destination": "SCT, Parkes",
+    "speed": 35,
     "heading": 0,
-    "km": "302 km",
-    "time": "17:48:00",
+    "km": "1404 km",
+    "time": "19:04:00",
     "date": "22/04/2026",
-    "description": "AZ Coal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "c83728d1-7b3e-4d1a-956b-15ce8c88dcbb",
-    "trKey": "6008",
-    "lat": -32.25421,
-    "lon": 150.828547
+    "description": "SCT Intermodal",
+    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
+    "servId": "d9208d57-cdc7-4d6b-bbb6-bdc647e48ced",
+    "trKey": "CSR021",
+    "lat": -31.008403,
+    "lon": 125.319413
   }
 }
