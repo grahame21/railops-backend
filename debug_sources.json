@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 737,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 74,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 309,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 811,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1777,
-  "au_count": 1744,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "Q4016",
-    "train_number": "3461",
-    "train_name": "Q4016",
-    "loco": "",
-    "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "06:30:15",
-    "date": "23/04/2026",
-    "description": "",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "",
-    "trKey": "Q4016",
-    "lat": -30.773869,
-    "lon": 121.429352
-  }
+  "hasOl": true
 }
