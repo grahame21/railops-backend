@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 876,
+      "count": 686,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 89,
+      "count": 96,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1165,
+      "count": 913,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 965,
+      "count": 782,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2513,
-  "au_count": 2401,
+  "raw_count": 2021,
+  "au_count": 1919,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "CSR021",
-    "train_number": "3PG1",
-    "train_name": "CSR021",
+    "id": "NR113",
+    "train_number": "4DA8E",
+    "train_name": "NR113",
     "loco": "",
     "operator": "",
-    "origin": "SCT, Forrestfield",
-    "destination": "SCT, Parkes",
-    "speed": 35,
+    "origin": "Berrimah Passenger Terminal (Darwin)",
+    "destination": "Adelaide Parklands Terminal",
+    "speed": 97,
     "heading": 0,
-    "km": "1404 km",
-    "time": "19:04:00",
+    "km": "2351 km",
+    "time": "20:20:00",
     "date": "22/04/2026",
-    "description": "SCT Intermodal",
-    "cId": "406c2fa7-3c3e-4e2a-bce9-c1c383486237",
-    "servId": "d9208d57-cdc7-4d6b-bbb6-bdc647e48ced",
-    "trKey": "CSR021",
-    "lat": -31.008403,
-    "lon": 125.319413
+    "description": "JBR The Ghan Expedition",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "4c2793f0-9616-4995-9fc9-b3bc452c0f2b",
+    "trKey": "NR113",
+    "lat": -15.115428,
+    "lon": 132.767853
   }
 }
