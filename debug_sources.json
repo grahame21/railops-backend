@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 255,
+      "count": 564,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 69,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 443,
+      "count": 845,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 324,
+      "count": 637,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 870,
-  "au_count": 852,
+  "raw_count": 1697,
+  "au_count": 1663,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "XRN022",
-    "train_number": "AH151",
-    "train_name": "XRN022",
+    "id": "TNSW-5993-7725",
+    "train_number": "170B",
+    "train_name": "TNSW-5993-7725",
     "loco": "",
     "operator": "",
-    "origin": "PWCS Kooragang",
-    "destination": "Ashton",
-    "speed": 10,
+    "origin": "City",
+    "destination": "Hornsby and Berowra via Gordon",
+    "speed": 0,
     "heading": 0,
-    "km": "164 km",
-    "time": "04:09:00",
+    "km": "",
+    "time": "05:23:44",
     "date": "23/04/2026",
-    "description": "ORA Coal",
-    "cId": "7ed31d92-44e1-4493-a843-0084ce8a7521",
-    "servId": "ef690947-b9dd-460a-b7ba-651c10686850",
-    "trKey": "XRN022",
-    "lat": -32.905493,
-    "lon": 151.748587
+    "description": "T1 North Shore Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-5993-7725",
+    "lat": -33.84147,
+    "lon": 151.208373
   }
 }
