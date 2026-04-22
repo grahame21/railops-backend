@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 904,
+      "count": 970,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 77,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1309,
+      "count": 1207,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 981,
+      "count": 1056,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2617,
-  "au_count": 2554,
+  "raw_count": 2716,
+  "au_count": 2625,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-896M",
-    "train_number": "HBE",
-    "train_name": "MM-896M",
+    "id": "6008",
+    "train_number": "MP429",
+    "train_name": "6008",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
+    "origin": "Vales Point / Eraring",
+    "destination": "Mount Pleasant",
+    "speed": 1,
     "heading": 0,
-    "km": "",
-    "time": "16:50:40",
+    "km": "302 km",
+    "time": "17:48:00",
     "date": "22/04/2026",
-    "description": "Hurstbridge Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "c2419555-1aeb-4be5-af36-18bffa093a97",
-    "trKey": "MM-896M",
-    "lat": -37.704937,
-    "lon": 145.089813
+    "description": "AZ Coal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "c83728d1-7b3e-4d1a-956b-15ce8c88dcbb",
+    "trKey": "6008",
+    "lat": -32.25421,
+    "lon": 150.828547
   }
 }
