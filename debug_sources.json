@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 877,
+      "count": 830,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 49,
+      "count": 1189,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 970,
+      "count": 916,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1965,
-  "au_count": 1880,
+  "raw_count": 2427,
+  "au_count": 2305,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-5329-9137",
-    "train_number": "194E",
-    "train_name": "TNSW-5329-9137",
+    "id": "EC2524",
+    "train_number": "NP44",
+    "train_name": "EC2524",
     "loco": "",
     "operator": "",
-    "origin": "City",
-    "destination": "Emu Plains",
-    "speed": 0,
+    "origin": "Moree",
+    "destination": "Werris  Creek",
+    "speed": 111,
     "heading": 0,
-    "km": "",
-    "time": "09:24:42",
+    "km": "486 km",
+    "time": "10:05:00",
     "date": "22/04/2026",
-    "description": "T1 Western Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-5329-9137",
-    "lat": -33.750503,
-    "lon": 150.698361
+    "description": "NSW Trainlink Xplorer to Sydney (connects with NP24)",
+    "cId": "88542efb-4c25-4192-b520-526e696dc90c",
+    "servId": "97fa0a0c-b21c-4f01-a754-fff8487a2907",
+    "trKey": "EC2524",
+    "lat": -30.932543,
+    "lon": 150.1586
   }
 }
