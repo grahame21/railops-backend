@@ -164,26 +164,19 @@ def verify_password(stored_password: str | None, provided_password: str) -> bool
     if not stored_password or not provided_password:
         return False
 
-    # Check if stored password looks like a hash (robust detection)
     if _is_password_hash(stored_password):
         try:
-            # If werkzeug available and password is hashed, verify it
             if HAS_WERKZEUG:
                 return check_password_hash(stored_password, provided_password)
         except Exception:
-            # If verification fails, fall through to plain text check
             pass
 
-    # Default: plain text comparison (works for current system and as fallback)
     return stored_password == provided_password
 
 
 def _is_password_hash(value: str) -> bool:
-    """Helper: detect if a string looks like a password hash (not plain text)."""
     if not isinstance(value, str):
         return False
-
-    # Check for common hash algorithm prefixes
     hash_patterns = ['pbkdf2:', 'scrypt$', 'bcrypt$', 'argon2']
     return any(value.startswith(pattern) for pattern in hash_patterns)
 
@@ -211,12 +204,11 @@ def admin_required(fn):
 @app.get('/')
 def home():
     if session.get('logged_in'):
-        # [AUTH ENHANCEMENT] Route by role
         if session.get('role') == 'admin':
             return redirect(url_for('admin_page'))
         elif session.get('role') == 'flight_only':
             return redirect(url_for('flight_page'))
-        else:  # guest
+        else:
             return redirect(url_for('dashboard_page'))
     return redirect(url_for('login_page'))
 
@@ -224,12 +216,11 @@ def home():
 @app.get('/login')
 def login_page():
     if session.get('logged_in'):
-        # [AUTH ENHANCEMENT] Route by role
         if session.get('role') == 'admin':
             return redirect(url_for('admin_page'))
         elif session.get('role') == 'flight_only':
             return redirect(url_for('flight_page'))
-        else:  # guest
+        else:
             return redirect(url_for('dashboard_page'))
     return render_template('login.html')
 
@@ -241,7 +232,6 @@ def login_submit():
     device_id = request.form.get('device_id', '').strip() or None
 
     role, user = find_user(username)
-    # [AUTH ENHANCEMENT] Use robust password verification (supports both plain and hashed)
     if not user or not verify_password(user.get('password'), password):
         flash('Invalid username or password.', 'error')
         return redirect(url_for('login_page'))
@@ -265,7 +255,6 @@ def login_submit():
                     save_json(USERS_FILE, users)
                     break
 
-    # [AUTH ENHANCEMENT] Validate flight_only accounts
     if role == 'flight_only':
         if user.get('disabled'):
             flash('This flight-only account is blocked.', 'error')
@@ -282,12 +271,11 @@ def login_submit():
     session['device_id'] = device_id
     log_event('login', {'target': username})
 
-    # [AUTH ENHANCEMENT] Route based on role (admin → /admin, flight_only → /flight, guest → /dashboard)
     if role == 'admin':
         return redirect(url_for('admin_page'))
     elif role == 'flight_only':
         return redirect(url_for('flight_page'))
-    else:  # guest
+    else:
         return redirect(url_for('dashboard_page'))
 
 
@@ -304,10 +292,8 @@ def dashboard_page():
     return render_template('dashboard.html')
 
 
-# [AUTH ENHANCEMENT] Flight tracker page - for flight_only and admin users
 @app.get('/flight')
 def flight_page():
-    """Flight tracker page - accessible to flight_only and admin users."""
     if not session.get('logged_in'):
         return redirect(url_for('login_page'))
     if session.get('role') not in ['flight_only', 'admin']:
@@ -331,7 +317,6 @@ def admin_page():
     return render_template(
         'admin.html',
         guest_accounts=users.get('guests', []),
-        # [AUTH ENHANCEMENT] Include flight_only users (optional, for future admin management)
         flight_only_accounts=users.get('flight_only_users', []),
         tokens=tokens.get('tokens', []),
         logs=logs.get('events', [])[:20],
