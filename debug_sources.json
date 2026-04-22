@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 968,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 89,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1061,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1057,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2645,
-  "au_count": 2580,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "MM-9965M",
-    "train_number": "PKM",
-    "train_name": "MM-9965M",
-    "loco": "",
-    "operator": "",
-    "origin": "",
-    "destination": "",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "08:25:09",
-    "date": "23/04/2026",
-    "description": "Pakenham Line",
-    "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "5237871a-f61c-4348-9360-5907b419af5c",
-    "trKey": "MM-9965M",
-    "lat": -37.893657,
-    "lon": 145.074654
-  }
+  "hasOl": true
 }
