@@ -8,6 +8,13 @@ from pathlib import Path
 import requests
 from flask import Flask, abort, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
 
+# [AUTH ENHANCEMENT] Optional werkzeug for password hashing support
+try:
+    from werkzeug.security import check_password_hash
+    HAS_WERKZEUG = True
+except ImportError:
+    HAS_WERKZEUG = False
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / 'data'
 STATIC_DATA_DIR = BASE_DIR / 'static' / 'data'
@@ -67,7 +74,9 @@ def ensure_seed_files() -> None:
                         'device_lock': False,
                         'device_id': None,
                     }
-                ]
+                ],
+                # [AUTH ENHANCEMENT] New flight_only users category (optional)
+                'flight_only_users': []
             },
         )
 
@@ -119,7 +128,7 @@ def log_event(action: str, details: dict | None = None) -> None:
 
 
 def get_users():
-    return load_json(USERS_FILE, {'admins': [], 'guests': []})
+    return load_json(USERS_FILE, {'admins': [], 'guests': [], 'flight_only_users': []})
 
 
 def find_user(username: str):
@@ -130,6 +139,10 @@ def find_user(username: str):
     for guest in users.get('guests', []):
         if guest['username'] == username:
             return 'guest', guest
+    # [AUTH ENHANCEMENT] Support flight_only users in JSON
+    for flight_user in users.get('flight_only_users', []):
+        if flight_user['username'] == username:
+            return 'flight_only', flight_user
     return None, None
 
 
@@ -140,6 +153,39 @@ def is_expired(expires_at: str | None) -> bool:
         return datetime.fromisoformat(expires_at) < utc_now()
     except Exception:
         return False
+
+
+# [AUTH ENHANCEMENT] Robust password validation supporting both plain text and hashed
+def verify_password(stored_password: str | None, provided_password: str) -> bool:
+    """
+    Verify password against stored value.
+    Supports both plain-text (current system) and hashed passwords (optional future use).
+    """
+    if not stored_password or not provided_password:
+        return False
+
+    # Check if stored password looks like a hash (robust detection)
+    if _is_password_hash(stored_password):
+        try:
+            # If werkzeug available and password is hashed, verify it
+            if HAS_WERKZEUG:
+                return check_password_hash(stored_password, provided_password)
+        except Exception:
+            # If verification fails, fall through to plain text check
+            pass
+
+    # Default: plain text comparison (works for current system and as fallback)
+    return stored_password == provided_password
+
+
+def _is_password_hash(value: str) -> bool:
+    """Helper: detect if a string looks like a password hash (not plain text)."""
+    if not isinstance(value, str):
+        return False
+
+    # Check for common hash algorithm prefixes
+    hash_patterns = ['pbkdf2:', 'scrypt$', 'bcrypt$', 'argon2']
+    return any(value.startswith(pattern) for pattern in hash_patterns)
 
 
 def login_required(fn):
@@ -165,14 +211,26 @@ def admin_required(fn):
 @app.get('/')
 def home():
     if session.get('logged_in'):
-        return redirect(url_for('admin_page' if session.get('role') == 'admin' else 'dashboard_page'))
+        # [AUTH ENHANCEMENT] Route by role
+        if session.get('role') == 'admin':
+            return redirect(url_for('admin_page'))
+        elif session.get('role') == 'flight_only':
+            return redirect(url_for('flight_page'))
+        else:  # guest
+            return redirect(url_for('dashboard_page'))
     return redirect(url_for('login_page'))
 
 
 @app.get('/login')
 def login_page():
     if session.get('logged_in'):
-        return redirect(url_for('admin_page' if session.get('role') == 'admin' else 'dashboard_page'))
+        # [AUTH ENHANCEMENT] Route by role
+        if session.get('role') == 'admin':
+            return redirect(url_for('admin_page'))
+        elif session.get('role') == 'flight_only':
+            return redirect(url_for('flight_page'))
+        else:  # guest
+            return redirect(url_for('dashboard_page'))
     return render_template('login.html')
 
 
@@ -183,7 +241,8 @@ def login_submit():
     device_id = request.form.get('device_id', '').strip() or None
 
     role, user = find_user(username)
-    if not user or user.get('password') != password:
+    # [AUTH ENHANCEMENT] Use robust password verification (supports both plain and hashed)
+    if not user or not verify_password(user.get('password'), password):
         flash('Invalid username or password.', 'error')
         return redirect(url_for('login_page'))
 
@@ -206,6 +265,15 @@ def login_submit():
                     save_json(USERS_FILE, users)
                     break
 
+    # [AUTH ENHANCEMENT] Validate flight_only accounts
+    if role == 'flight_only':
+        if user.get('disabled'):
+            flash('This flight-only account is blocked.', 'error')
+            return redirect(url_for('login_page'))
+        if is_expired(user.get('expires_at')):
+            flash('This flight-only account has expired.', 'error')
+            return redirect(url_for('login_page'))
+
     session.permanent = True
     session['logged_in'] = True
     session['username'] = username
@@ -213,7 +281,14 @@ def login_submit():
     session['role'] = role
     session['device_id'] = device_id
     log_event('login', {'target': username})
-    return redirect(url_for('admin_page' if role == 'admin' else 'dashboard_page'))
+
+    # [AUTH ENHANCEMENT] Route based on role (admin → /admin, flight_only → /flight, guest → /dashboard)
+    if role == 'admin':
+        return redirect(url_for('admin_page'))
+    elif role == 'flight_only':
+        return redirect(url_for('flight_page'))
+    else:  # guest
+        return redirect(url_for('dashboard_page'))
 
 
 @app.get('/logout')
@@ -227,6 +302,17 @@ def logout():
 @login_required
 def dashboard_page():
     return render_template('dashboard.html')
+
+
+# [AUTH ENHANCEMENT] Flight tracker page - for flight_only and admin users
+@app.get('/flight')
+def flight_page():
+    """Flight tracker page - accessible to flight_only and admin users."""
+    if not session.get('logged_in'):
+        return redirect(url_for('login_page'))
+    if session.get('role') not in ['flight_only', 'admin']:
+        abort(403)
+    return render_template('flight.html')
 
 
 @app.get('/admin')
@@ -245,6 +331,8 @@ def admin_page():
     return render_template(
         'admin.html',
         guest_accounts=users.get('guests', []),
+        # [AUTH ENHANCEMENT] Include flight_only users (optional, for future admin management)
+        flight_only_accounts=users.get('flight_only_users', []),
         tokens=tokens.get('tokens', []),
         logs=logs.get('events', [])[:20],
         file_links=file_links,
