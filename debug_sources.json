@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 212,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 73,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1,
+      "count": 349,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 285,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 745,
+  "au_count": 718,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "QL017",
+    "train_number": "4962",
+    "train_name": "QL017",
+    "loco": "",
+    "operator": "",
+    "origin": "Morandoo",
+    "destination": "Port Kembla",
+    "speed": 4,
+    "heading": 0,
+    "km": "84 km",
+    "time": "01:58:00",
+    "date": "23/04/2026",
+    "description": "QUBE BlueScope Steel Transfer",
+    "cId": "60bd42ee-208f-4bdb-a4c6-7c2e763002a6",
+    "servId": "c4435c7b-cd0c-4743-9604-c56eab7c59f7",
+    "trKey": "QL017",
+    "lat": -34.46691,
+    "lon": 150.878853
+  }
 }
