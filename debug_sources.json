@@ -2,12 +2,12 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 0,
+      "count": 176,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 0,
+      "count": 37,
       "exists": true,
       "name": "unregTrainsSource"
     },
@@ -17,7 +17,7 @@
       "name": "markerSource"
     },
     {
-      "count": 0,
+      "count": 213,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,9 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1,
-  "au_count": 0,
+  "raw_count": 427,
+  "au_count": 394,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true
+  "hasOl": true,
+  "sample": {
+    "id": "ACB4403",
+    "train_number": "4S51",
+    "train_name": "ACB4403",
+    "loco": "",
+    "operator": "",
+    "origin": "Kwinana Grain Terminal",
+    "destination": "Eastern Goldfields Railway",
+    "speed": 0,
+    "heading": 0,
+    "km": "",
+    "time": "01:03:31",
+    "date": "23/04/2026",
+    "description": "CBH SG Empty Grain",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "2ccfb117-720d-4d86-b314-92e9b60879bc",
+    "trKey": "ACB4403",
+    "lat": -31.639919,
+    "lon": 116.621849
+  }
 }
