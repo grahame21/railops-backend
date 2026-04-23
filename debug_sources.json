@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 664,
+      "count": 599,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 94,
+      "count": 104,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 643,
+      "count": 859,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 758,
+      "count": 703,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1838,
-  "au_count": 1697,
+  "raw_count": 1836,
+  "au_count": 1733,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "NR59",
-    "train_number": "5PM5",
-    "train_name": "NR59",
+    "id": "TSRS032",
+    "train_number": "M1-1",
+    "train_name": "TSRS032",
     "loco": "",
     "operator": "",
-    "origin": "Kewdale",
-    "destination": "MFT (South Dynon)",
-    "speed": 13,
+    "origin": "",
+    "destination": "",
+    "speed": 65,
     "heading": 0,
     "km": "",
-    "time": "21:27:00",
+    "time": "22:10:42",
     "date": "23/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "b34efd1e-04a5-4e5e-9249-e1b61cb9fd9b",
-    "trKey": "NR59",
-    "lat": -31.985863,
-    "lon": 115.974067
+    "description": "Metro North West & Bankstown Line",
+    "cId": "27816dfb-2401-4e4c-aaa9-416e448fc6d7",
+    "servId": "2392d693-4601-42a1-945b-4fb0ee1ba71e",
+    "trKey": "TSRS032",
+    "lat": -33.690231,
+    "lon": 150.910751
   }
 }
