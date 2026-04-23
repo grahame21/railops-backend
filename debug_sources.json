@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 688,
+      "count": 657,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 99,
+      "count": 95,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1043,
+      "count": 961,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 787,
+      "count": 752,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2096,
-  "au_count": 1977,
+  "raw_count": 1985,
+  "au_count": 1873,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "VLINE-8443",
-    "train_number": "8443",
-    "train_name": "VLINE-8443",
+    "id": "TNSW-7413-5001",
+    "train_number": "L1EK",
+    "train_name": "TNSW-7413-5001",
     "loco": "",
     "operator": "",
-    "origin": "",
-    "destination": "",
+    "origin": "Blacktown",
+    "destination": "Olympic Park",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "20:14:13",
+    "time": "21:07:36",
     "date": "23/04/2026",
-    "description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
+    "description": "T7 Olympic Park Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "VLINE-8443",
-    "lat": -38.1987,
-    "lon": 146.538818
+    "trKey": "TNSW-7413-5001",
+    "lat": -33.86418,
+    "lon": 151.04685
   }
 }
