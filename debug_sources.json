@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 727,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 97,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 969,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 824,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2133,
-  "au_count": 2043,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D113",
-    "train_number": "D113",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D113",
-    "loco": "",
-    "operator": "",
-    "origin": "Ipswich",
-    "destination": "Caboolture",
-    "speed": 0,
-    "heading": 0,
-    "km": "",
-    "time": "11:26:46",
-    "date": "23/04/2026",
-    "description": "IPCA",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_D113",
-    "lat": -27.089041,
-    "lon": 152.955688
-  }
+  "hasOl": true
 }
