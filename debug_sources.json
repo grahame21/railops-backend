@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 569,
+      "count": 523,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 104,
+      "count": 102,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 701,
+      "count": 753,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 673,
+      "count": 625,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1697,
-  "au_count": 1626,
+  "raw_count": 1627,
+  "au_count": 1556,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9609-4592",
-    "train_number": "204R",
-    "train_name": "TNSW-9609-4592",
+    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY99",
+    "train_number": "DY99",
+    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY99",
     "loco": "",
     "operator": "",
-    "origin": "Emu Plains",
-    "destination": "Berowra via City ",
+    "origin": "Springfield",
+    "destination": "Brisbane City",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "23:05:24",
+    "time": "23:26:03",
     "date": "23/04/2026",
-    "description": "T1 Western Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "SPBR",
+    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
     "servId": "",
-    "trKey": "TNSW-9609-4592",
-    "lat": -33.76383,
-    "lon": 150.86847
+    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY99",
+    "lat": -27.452061,
+    "lon": 153.036819
   }
 }
