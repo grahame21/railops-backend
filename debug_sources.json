@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 657,
+      "count": 664,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 95,
+      "count": 94,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 961,
+      "count": 643,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 752,
+      "count": 758,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1985,
-  "au_count": 1873,
+  "raw_count": 1838,
+  "au_count": 1697,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7413-5001",
-    "train_number": "L1EK",
-    "train_name": "TNSW-7413-5001",
+    "id": "NR59",
+    "train_number": "5PM5",
+    "train_name": "NR59",
     "loco": "",
     "operator": "",
-    "origin": "Blacktown",
-    "destination": "Olympic Park",
-    "speed": 0,
+    "origin": "Kewdale",
+    "destination": "MFT (South Dynon)",
+    "speed": 13,
     "heading": 0,
     "km": "",
-    "time": "21:07:36",
+    "time": "21:27:00",
     "date": "23/04/2026",
-    "description": "T7 Olympic Park Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
-    "servId": "",
-    "trKey": "TNSW-7413-5001",
-    "lat": -33.86418,
-    "lon": 151.04685
+    "description": "PN Intermodal",
+    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
+    "servId": "b34efd1e-04a5-4e5e-9249-e1b61cb9fd9b",
+    "trKey": "NR59",
+    "lat": -31.985863,
+    "lon": 115.974067
   }
 }
