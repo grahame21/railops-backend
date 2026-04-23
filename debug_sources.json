@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 778,
+      "count": 695,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 47,
+      "count": 46,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1165,
+      "count": 993,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 825,
+      "count": 741,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2233,
-  "au_count": 2117,
+  "raw_count": 1979,
+  "au_count": 1883,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-7273-2796",
-    "train_number": "141A",
-    "train_name": "TNSW-7273-2796",
+    "id": "TNSW-2099-7930",
+    "train_number": "L1BG",
+    "train_name": "TNSW-2099-7930",
     "loco": "",
     "operator": "",
-    "origin": "Berowra and Hornsby",
-    "destination": "North Shore via Strathfield and City",
+    "origin": "Blacktown",
+    "destination": "Olympic Park",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "08:31:00",
+    "time": "09:18:32",
     "date": "24/04/2026",
-    "description": "T9 Northern Line",
+    "description": "T7 Olympic Park Line",
     "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "TNSW-7273-2796",
-    "lat": -33.89027,
-    "lon": 151.200191
+    "trKey": "TNSW-2099-7930",
+    "lat": -33.847072,
+    "lon": 151.068053
   }
 }
