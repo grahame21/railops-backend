@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 523,
+      "count": 509,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 102,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 753,
+      "count": 329,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 625,
+      "count": 602,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1627,
-  "au_count": 1556,
+  "raw_count": 1369,
+  "au_count": 1264,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY99",
-    "train_number": "DY99",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY99",
+    "id": "ACD6050",
+    "train_number": "3MP1",
+    "train_name": "ACD6050",
     "loco": "",
     "operator": "",
-    "origin": "Springfield",
-    "destination": "Brisbane City",
-    "speed": 0,
+    "origin": "North Dynon",
+    "destination": "Aurizon, Forrestfield",
+    "speed": 61,
     "heading": 0,
-    "km": "",
-    "time": "23:26:03",
+    "km": "20 km",
+    "time": "23:50:00",
     "date": "23/04/2026",
-    "description": "SPBR",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
-    "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_DY99",
-    "lat": -27.452061,
-    "lon": 153.036819
+    "description": "Aurizon Intermodal",
+    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
+    "servId": "890cd6d5-4243-4aa5-ac69-60804dfbe339",
+    "trKey": "ACD6050",
+    "lat": -31.87615,
+    "lon": 116.035053
   }
 }
