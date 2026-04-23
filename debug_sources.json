@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 776,
+      "count": 688,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 100,
+      "count": 99,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 733,
+      "count": 1043,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 876,
+      "count": 787,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2119,
-  "au_count": 2017,
+  "raw_count": 2096,
+  "au_count": 1977,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "TNSW-9224-8553",
-    "train_number": "602L",
-    "train_name": "TNSW-9224-8553",
+    "id": "VLINE-8443",
+    "train_number": "8443",
+    "train_name": "VLINE-8443",
     "loco": "",
     "operator": "",
-    "origin": "Cronulla",
-    "destination": "Bondi Junction via City",
+    "origin": "",
+    "destination": "",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "19:37:01",
+    "time": "20:14:13",
     "date": "23/04/2026",
-    "description": "T4 Eastern Suburbs & Illawarra Line",
-    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
+    "cId": "08a6e392-c351-4145-8ddd-ba15e55c28ef",
     "servId": "",
-    "trKey": "TNSW-9224-8553",
-    "lat": -33.888094,
-    "lon": 151.243111
+    "trKey": "VLINE-8443",
+    "lat": -38.1987,
+    "lon": 146.538818
   }
 }
