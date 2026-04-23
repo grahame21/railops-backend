@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 928,
+      "count": 807,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 84,
+      "count": 86,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1287,
+      "count": 55,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1012,
+      "count": 893,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,15 +32,15 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2668,
-  "au_count": 2510,
+  "raw_count": 1814,
+  "au_count": 1723,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "MM-612M",
-    "train_number": "CGB",
-    "train_name": "MM-612M",
+    "id": "MM-86M",
+    "train_number": "BEG",
+    "train_name": "MM-86M",
     "loco": "",
     "operator": "",
     "origin": "",
@@ -48,13 +48,13 @@
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "09:28:36",
+    "time": "10:12:20",
     "date": "23/04/2026",
-    "description": "Craigieburn Line",
+    "description": "Belgrave Line",
     "cId": "8a12cdda-ab2e-43ce-baad-e3f00fe7fa9c",
-    "servId": "57e4f52e-d88e-4110-8a33-061732512faa",
-    "trKey": "MM-612M",
-    "lat": -37.693836,
-    "lon": 144.916016
+    "servId": "384b58e5-f994-45f3-a84b-a332d43b5c62",
+    "trKey": "MM-86M",
+    "lat": -37.905758,
+    "lon": 145.336975
   }
 }
