@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 972,
+      "count": 967,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 98,
+      "count": 93,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 1389,
+      "count": 1091,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 1070,
+      "count": 1060,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2835,
-  "au_count": 2740,
+  "raw_count": 2666,
+  "au_count": 2584,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "8105",
-    "train_number": "2122",
-    "train_name": "8105",
+    "id": "TNSW-8601-8461",
+    "train_number": "87-W",
+    "train_name": "TNSW-8601-8461",
     "loco": "",
     "operator": "",
-    "origin": "Crisps Creek",
-    "destination": "Clyde Yard",
-    "speed": 8,
+    "origin": "City Circle",
+    "destination": "Liverpool via Regents Park",
+    "speed": 0,
     "heading": 0,
-    "km": "225 km",
-    "time": "17:51:00",
+    "km": "",
+    "time": "17:47:52",
     "date": "23/04/2026",
-    "description": "PN Garbage Train",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "1b69f842-c2bb-468d-bb93-61cdf3cdc5b5",
-    "trKey": "8105",
-    "lat": -34.76373,
-    "lon": 149.714773
+    "description": "T3 Liverpool & Inner West Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
+    "servId": "",
+    "trKey": "TNSW-8601-8461",
+    "lat": -33.926819,
+    "lon": 150.925476
   }
 }
