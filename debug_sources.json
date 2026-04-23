@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 509,
+      "count": 41,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 93,
+      "count": 48,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 329,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 602,
+      "count": 89,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 1369,
-  "au_count": 1264,
+  "raw_count": 179,
+  "au_count": 166,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "ACD6050",
-    "train_number": "3MP1",
-    "train_name": "ACD6050",
+    "id": "SO3",
+    "train_number": "985T",
+    "train_name": "SO3",
     "loco": "",
     "operator": "",
-    "origin": "North Dynon",
-    "destination": "Aurizon, Forrestfield",
-    "speed": 61,
+    "origin": "longreach",
+    "destination": "brisbane-roma-st",
+    "speed": 0,
     "heading": 0,
-    "km": "20 km",
-    "time": "23:50:00",
-    "date": "23/04/2026",
-    "description": "Aurizon Intermodal",
-    "cId": "01e5aad9-fc0c-4b7a-a39d-d5166bf44f25",
-    "servId": "890cd6d5-4243-4aa5-ac69-60804dfbe339",
-    "trKey": "ACD6050",
-    "lat": -31.87615,
-    "lon": 116.035053
+    "km": "",
+    "time": "03:27:19",
+    "date": "24/04/2026",
+    "description": "Spirit of the Outback",
+    "cId": "8fa70797-777c-41e6-8be8-8bd7cd38b666",
+    "servId": "",
+    "trKey": "SO3",
+    "lat": -23.862907,
+    "lon": 151.23693
   }
 }
