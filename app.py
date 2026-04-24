@@ -29,11 +29,14 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 for folder in [DATA_DIR, STATIC_DATA_DIR, STATIC_DOWNLOADS_DIR]:
     folder.mkdir(parents=True, exist_ok=True)
 
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
+
 def iso_now() -> str:
     return utc_now().isoformat()
+
 
 def load_json(path: Path, default):
     if not path.exists():
@@ -43,9 +46,11 @@ def load_json(path: Path, default):
     except Exception:
         return default
 
+
 def save_json(path: Path, payload) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
+
 
 def add_cors(resp):
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -55,6 +60,7 @@ def add_cors(resp):
     resp.headers["Pragma"] = "no-cache"
     resp.headers["Expires"] = "0"
     return resp
+
 
 def ensure_seed_files() -> None:
     if not USERS_FILE.exists():
@@ -110,7 +116,9 @@ def ensure_seed_files() -> None:
         if not p.exists():
             p.write_text(content, encoding='utf-8')
 
+
 ensure_seed_files()
+
 
 def log_event(action: str, details: dict | None = None) -> None:
     payload = load_json(LOGS_FILE, {'events': []})
@@ -127,8 +135,10 @@ def log_event(action: str, details: dict | None = None) -> None:
     payload['events'] = payload['events'][:200]
     save_json(LOGS_FILE, payload)
 
+
 def get_users():
     return load_json(USERS_FILE, {'admins': [], 'guests': [], 'flight_only_users': []})
+
 
 def find_user(username: str):
     users = get_users()
@@ -143,6 +153,7 @@ def find_user(username: str):
             return 'flight_only', flight_user
     return None, None
 
+
 def is_expired(expires_at: str | None) -> bool:
     if not expires_at:
         return False
@@ -150,6 +161,7 @@ def is_expired(expires_at: str | None) -> bool:
         return datetime.fromisoformat(expires_at) < utc_now()
     except Exception:
         return False
+
 
 def verify_password(stored_password: str | None, provided_password: str) -> bool:
     if not stored_password or not provided_password:
@@ -164,11 +176,13 @@ def verify_password(stored_password: str | None, provided_password: str) -> bool
 
     return stored_password == provided_password
 
+
 def _is_password_hash(value: str) -> bool:
     if not isinstance(value, str):
         return False
     hash_patterns = ['pbkdf2:', 'scrypt$', 'bcrypt$', 'argon2']
     return any(value.startswith(pattern) for pattern in hash_patterns)
+
 
 def login_required(fn):
     @wraps(fn)
@@ -177,6 +191,7 @@ def login_required(fn):
             return redirect(url_for('login_page'))
         return fn(*args, **kwargs)
     return wrapper
+
 
 def admin_required(fn):
     @wraps(fn)
@@ -187,6 +202,7 @@ def admin_required(fn):
             abort(403)
         return fn(*args, **kwargs)
     return wrapper
+
 
 @app.get('/')
 def home():
@@ -202,6 +218,7 @@ def home():
         "hint": "Use /trains.json, /health, /downloads/loco_database.html, /downloads/recently_added.html, /downloads/loco_numbers_only.html, /downloads/loco_database.xlsx, or /downloads/loco_numbers_only.xlsx"
     })
 
+
 @app.route('/health', methods=['GET', 'OPTIONS'])
 def health():
     if request.method == 'OPTIONS':
@@ -214,6 +231,7 @@ def health():
     })
     return add_cors(resp)
 
+
 @app.route('/trains.json', methods=['GET', 'OPTIONS'])
 def public_trains_json():
     if request.method == 'OPTIONS':
@@ -224,20 +242,19 @@ def public_trains_json():
         STATIC_DATA_DIR / 'trains.json',
     ]
 
-    trains_path = None
-    for candidate in candidates:
-        if candidate.exists():
-            trains_path = candidate
-            break
+    existing = [p for p in candidates if p.exists()]
 
-    if trains_path is None:
+    if not existing:
         return add_cors(make_response(json.dumps({
             "ok": False,
             "error": "trains.json not found"
         }), 404))
 
+    trains_path = max(existing, key=lambda p: p.stat().st_mtime)
+
     resp = make_response(send_file(trains_path, mimetype='application/json'))
     return add_cors(resp)
+
 
 @app.route('/downloads/<path:filename>', methods=['GET', 'OPTIONS'])
 def public_downloads(filename: str):
@@ -246,6 +263,7 @@ def public_downloads(filename: str):
 
     resp = make_response(send_from_directory(STATIC_DOWNLOADS_DIR, filename, as_attachment=False))
     return add_cors(resp)
+
 
 @app.get('/login')
 def login_page():
@@ -257,6 +275,7 @@ def login_page():
         else:
             return redirect(url_for('dashboard_page'))
     return render_template('login.html')
+
 
 @app.post('/login')
 def login_submit():
@@ -311,16 +330,19 @@ def login_submit():
     else:
         return redirect(url_for('dashboard_page'))
 
+
 @app.get('/logout')
 def logout():
     log_event('logout')
     session.clear()
     return redirect(url_for('login_page'))
 
+
 @app.get('/dashboard')
 @login_required
 def dashboard_page():
     return render_template('dashboard.html')
+
 
 @app.get('/flight')
 def flight_page():
@@ -329,6 +351,7 @@ def flight_page():
     if session.get('role') not in ['flight_only', 'admin']:
         abort(403)
     return render_template('flight.html')
+
 
 @app.get('/admin')
 @admin_required
@@ -354,6 +377,7 @@ def admin_page():
         github_repo=os.getenv('GITHUB_REPO', 'grahame21/railops-backend'),
     )
 
+
 @app.get('/session')
 def session_info():
     return jsonify(
@@ -364,6 +388,7 @@ def session_info():
             'role': session.get('role'),
         }
     )
+
 
 @app.post('/admin/create-guest')
 @admin_required
@@ -408,6 +433,7 @@ def create_guest():
     flash(f'Guest account {username} created.', 'success')
     return redirect(url_for('admin_page'))
 
+
 @app.post('/admin/toggle-guest/<username>')
 @admin_required
 def toggle_guest(username: str):
@@ -420,6 +446,7 @@ def toggle_guest(username: str):
             flash(f'Guest {username} updated.', 'success')
             break
     return redirect(url_for('admin_page'))
+
 
 @app.post('/admin/generate-token')
 @admin_required
@@ -450,6 +477,7 @@ def generate_token():
     log_event('create_token', {'label': label})
     flash(f'Token created: {token}', 'success')
     return redirect(url_for('admin_page'))
+
 
 @app.post('/admin/run-fast-scraper')
 @admin_required
@@ -483,10 +511,12 @@ def run_fast_scraper():
 
     return redirect(url_for('admin_page'))
 
+
 @app.get('/admin/files/<path:filename>')
 @admin_required
 def admin_files(filename: str):
     return send_from_directory(STATIC_DATA_DIR, filename, as_attachment=False)
+
 
 @app.get('/access')
 def token_access():
@@ -507,19 +537,23 @@ def token_access():
             return redirect(url_for('dashboard_page'))
     abort(403)
 
+
 @app.get('/flight-tracker')
 @login_required
 def flight_tracker_placeholder():
     return render_template('simple_page.html', title='Flight Tracker', message='Hook your ADS-B page or route in here.')
+
 
 @app.get('/loco-db')
 @login_required
 def locomotive_db_placeholder():
     return render_template('simple_page.html', title='Locomotive Database', message='Point this route to your locomotive database viewer.')
 
+
 @app.errorhandler(403)
 def forbidden(_):
     return render_template('simple_page.html', title='Access denied', message='You do not have permission to open this page.'), 403
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
