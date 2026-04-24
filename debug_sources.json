@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 281,
+      "count": 0,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 76,
+      "count": 0,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 195,
+      "count": 1,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 357,
+      "count": 0,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,9 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 812,
-  "au_count": 753,
+  "raw_count": 1,
+  "au_count": 0,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
-  "hasOl": true,
-  "sample": {
-    "id": "NR65",
-    "train_number": "6MB4",
-    "train_name": "NR65",
-    "loco": "",
-    "operator": "",
-    "origin": "MFT (South Dynon)",
-    "destination": "Acacia Ridge",
-    "speed": 68,
-    "heading": 0,
-    "km": "462 km",
-    "time": "03:40:00",
-    "date": "25/04/2026",
-    "description": "PN Intermodal",
-    "cId": "18402348-3c0f-4dee-8bf5-3a8bbbf9945b",
-    "servId": "c7cc90d0-1969-430b-839c-c48db55b71ff",
-    "trKey": "NR65",
-    "lat": -34.79086,
-    "lon": 147.79824
-  }
+  "hasOl": true
 }
