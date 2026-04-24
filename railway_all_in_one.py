@@ -1,14 +1,20 @@
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
-SCRIPTS = [
+SCRIPTS = []
+
+if os.environ.get("RESET_OUTPUTS_ONCE", "").strip() == "1":
+    SCRIPTS.append("reset_loco_outputs.py")
+
+SCRIPTS.extend([
     "fast_scraper.py",
     "update_locos.py",
     "export_locos_to_excel.py",
-]
+])
 
 def run_step(script_name: str) -> None:
     script_path = BASE_DIR / script_name
