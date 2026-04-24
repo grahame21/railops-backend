@@ -2,22 +2,22 @@
   "method": "page_sources",
   "sources_found": [
     {
-      "count": 691,
+      "count": 702,
       "exists": true,
       "name": "regTrainsSource"
     },
     {
-      "count": 109,
+      "count": 121,
       "exists": true,
       "name": "unregTrainsSource"
     },
     {
-      "count": 979,
+      "count": 767,
       "exists": true,
       "name": "markerSource"
     },
     {
-      "count": 800,
+      "count": 823,
       "exists": true,
       "name": "arrowMarkersSource"
     },
@@ -32,29 +32,29 @@
       "name": "trainMarkers"
     }
   ],
-  "raw_count": 2090,
-  "au_count": 2027,
+  "raw_count": 2030,
+  "au_count": 1969,
   "url_after_open": "https://trainfinder.otenko.com/home/nextlevel",
   "hasMap": true,
   "hasOl": true,
   "sample": {
-    "id": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBD3",
-    "train_number": "JBD3",
-    "train_name": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBD3",
+    "id": "TNSW-4386-5971",
+    "train_number": "5--M",
+    "train_name": "TNSW-4386-5971",
     "loco": "",
     "operator": "",
-    "origin": "Caboolture",
-    "destination": "Doomben",
+    "origin": "Macarthur",
+    "destination": "City Circle via Airport",
     "speed": 0,
     "heading": 0,
     "km": "",
-    "time": "13:51:02",
+    "time": "14:24:19",
     "date": "24/04/2026",
-    "description": "CADB",
-    "cId": "c077596c-452c-48f8-8e11-7d925e1f0146",
+    "description": "T8 Airport & South Line",
+    "cId": "aa49d747-1a7f-4a6d-8ab6-fb6b1a97cf21",
     "servId": "",
-    "trKey": "QLD7DBC12428F13E6FACD8FDFD0866122D3_JBD3",
-    "lat": -27.43099,
-    "lon": 153.069778
+    "trKey": "TNSW-4386-5971",
+    "lat": -33.95248,
+    "lon": 151.01503
   }
 }
