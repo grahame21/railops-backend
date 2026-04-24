@@ -6,7 +6,7 @@ from functools import wraps
 from pathlib import Path
 
 import requests
-from flask import Flask, abort, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
+from flask import Flask, abort, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for, make_response, send_file
 
 # [AUTH ENHANCEMENT] Optional werkzeug for password hashing support
 try:
@@ -18,6 +18,7 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / 'data'
 STATIC_DATA_DIR = BASE_DIR / 'static' / 'data'
+STATIC_DOWNLOADS_DIR = BASE_DIR / 'static' / 'downloads'
 USERS_FILE = DATA_DIR / 'users.json'
 TOKENS_FILE = DATA_DIR / 'guest_tokens.json'
 LOGS_FILE = DATA_DIR / 'activity_log.json'
@@ -26,7 +27,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'change-this-secret-key-now')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
-for folder in [DATA_DIR, STATIC_DATA_DIR]:
+for folder in [DATA_DIR, STATIC_DATA_DIR, STATIC_DOWNLOADS_DIR]:
     folder.mkdir(parents=True, exist_ok=True)
 
 
@@ -52,6 +53,16 @@ def save_json(path: Path, payload) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
 
 
+def add_cors(resp):
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Expires"] = "0"
+    return resp
+
+
 def ensure_seed_files() -> None:
     if not USERS_FILE.exists():
         save_json(
@@ -75,7 +86,6 @@ def ensure_seed_files() -> None:
                         'device_id': None,
                     }
                 ],
-                # [AUTH ENHANCEMENT] New flight_only users category (optional)
                 'flight_only_users': []
             },
         )
@@ -139,7 +149,6 @@ def find_user(username: str):
     for guest in users.get('guests', []):
         if guest['username'] == username:
             return 'guest', guest
-    # [AUTH ENHANCEMENT] Support flight_only users in JSON
     for flight_user in users.get('flight_only_users', []):
         if flight_user['username'] == username:
             return 'flight_only', flight_user
@@ -155,12 +164,7 @@ def is_expired(expires_at: str | None) -> bool:
         return False
 
 
-# [AUTH ENHANCEMENT] Robust password validation supporting both plain text and hashed
 def verify_password(stored_password: str | None, provided_password: str) -> bool:
-    """
-    Verify password against stored value.
-    Supports both plain-text (current system) and hashed passwords (optional future use).
-    """
     if not stored_password or not provided_password:
         return False
 
@@ -210,7 +214,58 @@ def home():
             return redirect(url_for('flight_page'))
         else:
             return redirect(url_for('dashboard_page'))
-    return redirect(url_for('login_page'))
+    return jsonify({
+        "ok": True,
+        "hint": "Use /trains.json, /health, /downloads/loco_database.html, /downloads/recently_added.html, /downloads/loco_numbers_only.html, /downloads/loco_database.xlsx, or /downloads/loco_numbers_only.xlsx"
+    })
+
+
+@app.route('/health', methods=['GET', 'OPTIONS'])
+def health():
+    if request.method == 'OPTIONS':
+        return add_cors(make_response("", 204))
+
+    resp = jsonify({
+        "ok": True,
+        "service": "railops-backend",
+        "time": iso_now()
+    })
+    return add_cors(resp)
+
+
+@app.route('/trains.json', methods=['GET', 'OPTIONS'])
+def public_trains_json():
+    if request.method == 'OPTIONS':
+        return add_cors(make_response("", 204))
+
+    candidates = [
+        BASE_DIR / 'trains.json',
+        STATIC_DATA_DIR / 'trains.json',
+    ]
+
+    trains_path = None
+    for candidate in candidates:
+        if candidate.exists():
+            trains_path = candidate
+            break
+
+    if trains_path is None:
+        return add_cors(make_response(json.dumps({
+            "ok": False,
+            "error": "trains.json not found"
+        }), 404))
+
+    resp = make_response(send_file(trains_path, mimetype='application/json'))
+    return add_cors(resp)
+
+
+@app.route('/downloads/<path:filename>', methods=['GET', 'OPTIONS'])
+def public_downloads(filename: str):
+    if request.method == 'OPTIONS':
+        return add_cors(make_response("", 204))
+
+    resp = make_response(send_from_directory(STATIC_DOWNLOADS_DIR, filename, as_attachment=False))
+    return add_cors(resp)
 
 
 @app.get('/login')
