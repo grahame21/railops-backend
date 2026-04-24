@@ -18,6 +18,12 @@ TF_LOGIN_URL = "https://trainfinder.otenko.com/home/nextlevel"
 COOKIE_PKL = "trainfinder_cookies.pkl"
 COOKIE_TXT = "cookie.txt"
 
+MAP_STABILIZE_SECONDS = 12
+POST_ZOOM_WAIT_SECONDS = 8
+SOURCE_POLL_ATTEMPTS = 18
+SOURCE_POLL_INTERVAL = 5
+PAGE_REFRESH_ATTEMPTS = 2
+
 
 def now_utc_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
@@ -246,7 +252,7 @@ def _looks_logged_in(driver: webdriver.Chrome) -> bool:
         url = (driver.current_url or "").lower()
         src = (driver.page_source or "").lower()
 
-        if "useR_name".lower() in src or "pasS_word".lower() in src:
+        if "user_name" in src or "pass_word" in src or "useR_name".lower() in src or "pasS_word".lower() in src:
             return False
         if "returnurl=" in url:
             return False
@@ -334,24 +340,7 @@ def ensure_session(
         return driver, False, f"session error: {type(e).__name__}: {e}"
 
 
-def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    debug: Dict[str, Any] = {
-        "method": "page_sources",
-        "sources_found": [],
-        "raw_count": 0,
-        "au_count": 0,
-    }
-
-    driver.get(TF_LOGIN_URL)
-    time.sleep(5)
-    dismiss_warning(driver)
-
-    debug["url_after_open"] = driver.current_url
-
-    print("\n⏳ Waiting 30 seconds for map to stabilize...")
-    time.sleep(30)
-
-    print("🌏 Zooming to Australia...")
+def _zoom_to_australia(driver: webdriver.Chrome) -> None:
     try:
         driver.execute_script(
             """
@@ -359,16 +348,15 @@ def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, An
                 var australia = [112, -44, 154, -10];
                 var proj = window.map.getView().getProjection();
                 var extent = ol.proj.transformExtent(australia, 'EPSG:4326', proj);
-                window.map.getView().fit(extent, { duration: 3000, maxZoom: 8 });
+                window.map.getView().fit(extent, { duration: 2000, maxZoom: 8 });
             }
             """
         )
     except Exception:
         pass
 
-    print("⏳ Waiting 60 seconds for trains to load...")
-    time.sleep(60)
 
+def _collect_page_sources(driver: webdriver.Chrome) -> Dict[str, Any]:
     script = r"""
     var allTrains = [];
     var sourceStats = [];
@@ -436,17 +424,51 @@ def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, An
         allTrains: allTrains,
         sourceStats: sourceStats,
         hasMap: !!window.map,
-        hasOl: !!window.ol
+        hasOl: !!window.ol,
+        title: document.title || '',
+        url: window.location.href || ''
     };
     """
-
     result = driver.execute_script(script)
-    raw_trains = result.get("allTrains", []) if isinstance(result, dict) else []
-    debug["sources_found"] = result.get("sourceStats", []) if isinstance(result, dict) else []
-    debug["hasMap"] = result.get("hasMap", False) if isinstance(result, dict) else False
-    debug["hasOl"] = result.get("hasOl", False) if isinstance(result, dict) else False
-    debug["raw_count"] = len(raw_trains)
+    return result if isinstance(result, dict) else {}
 
+
+def _poll_for_live_sources(driver: webdriver.Chrome) -> Dict[str, Any]:
+    last_result: Dict[str, Any] = {}
+
+    for attempt in range(1, SOURCE_POLL_ATTEMPTS + 1):
+        result = _collect_page_sources(driver)
+        raw_trains = result.get("allTrains", []) if isinstance(result, dict) else []
+        source_stats = result.get("sourceStats", []) if isinstance(result, dict) else []
+
+        total_source_count = 0
+        for src in source_stats:
+            try:
+                total_source_count += int(src.get("count") or 0)
+            except Exception:
+                pass
+
+        result["raw_count"] = len(raw_trains)
+        result["source_total_count"] = total_source_count
+        result["poll_attempt"] = attempt
+
+        print(
+            f"🔎 Poll {attempt}/{SOURCE_POLL_ATTEMPTS}: "
+            f"raw={len(raw_trains)} source_total={total_source_count}",
+            flush=True
+        )
+
+        last_result = result
+
+        if len(raw_trains) > 0 or total_source_count > 0:
+            return result
+
+        time.sleep(SOURCE_POLL_INTERVAL)
+
+    return last_result
+
+
+def _filter_au_trains(raw_trains: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     trains: List[Dict[str, Any]] = []
     seen: set[str] = set()
 
@@ -484,9 +506,73 @@ def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, An
         seen.add(dedup)
         trains.append(rec)
 
-    debug["au_count"] = len(trains)
+    return trains
 
-    if trains:
-        debug["sample"] = trains[0]
 
-    return trains, debug
+def scrape_trains_from_page(driver: webdriver.Chrome) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    debug: Dict[str, Any] = {
+        "method": "page_sources",
+        "sources_found": [],
+        "raw_count": 0,
+        "au_count": 0,
+        "refresh_attempts_used": 0,
+    }
+
+    final_raw_trains: List[Dict[str, Any]] = []
+    final_result: Dict[str, Any] = {}
+
+    for refresh_attempt in range(1, PAGE_REFRESH_ATTEMPTS + 1):
+        driver.get(TF_LOGIN_URL)
+        time.sleep(5)
+        dismiss_warning(driver)
+
+        debug["url_after_open"] = driver.current_url
+
+        print(f"\n⏳ Waiting {MAP_STABILIZE_SECONDS} seconds for map to stabilize...")
+        time.sleep(MAP_STABILIZE_SECONDS)
+
+        print("🌏 Zooming to Australia...")
+        _zoom_to_australia(driver)
+
+        print(f"⏳ Waiting {POST_ZOOM_WAIT_SECONDS} seconds after zoom...")
+        time.sleep(POST_ZOOM_WAIT_SECONDS)
+
+        result = _poll_for_live_sources(driver)
+        raw_trains = result.get("allTrains", []) if isinstance(result, dict) else []
+        source_stats = result.get("sourceStats", []) if isinstance(result, dict) else []
+
+        final_result = result
+        final_raw_trains = raw_trains
+
+        debug["refresh_attempts_used"] = refresh_attempt
+        debug["sources_found"] = source_stats
+        debug["hasMap"] = result.get("hasMap", False)
+        debug["hasOl"] = result.get("hasOl", False)
+        debug["page_title"] = result.get("title", "")
+        debug["page_url"] = result.get("url", "")
+        debug["raw_count"] = len(raw_trains)
+        debug["source_total_count"] = result.get("source_total_count", 0)
+        debug["poll_attempt"] = result.get("poll_attempt", 0)
+
+        au_trains = _filter_au_trains(raw_trains)
+        debug["au_count"] = len(au_trains)
+
+        if au_trains:
+            if au_trains:
+                debug["sample"] = au_trains[0]
+            return au_trains, debug
+
+        if refresh_attempt < PAGE_REFRESH_ATTEMPTS:
+            print(f"⚠️ No AU trains found after refresh attempt {refresh_attempt}. Refreshing page and retrying...")
+            try:
+                driver.refresh()
+            except Exception:
+                pass
+            time.sleep(6)
+
+    final_au_trains = _filter_au_trains(final_raw_trains)
+    debug["au_count"] = len(final_au_trains)
+    if final_au_trains:
+        debug["sample"] = final_au_trains[0]
+
+    return final_au_trains, debug
