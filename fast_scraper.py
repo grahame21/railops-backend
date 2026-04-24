@@ -14,7 +14,7 @@ WAIT_BETWEEN_ATTEMPTS = 20
 
 def main():
     driver, ok, msg = ensure_session(headless=True)
-    print(msg)
+    print(msg, flush=True)
 
     try:
         if not ok:
@@ -33,16 +33,19 @@ def main():
             raw_count = int(debug.get("raw_count") or 0)
             au_count = int(debug.get("au_count") or 0)
 
-            print(f"debug method: {debug.get('method')}")
-            print(f"debug hasMap: {debug.get('hasMap')}")
-            print(f"debug hasOl: {debug.get('hasOl')}")
-            print(f"debug raw_count: {raw_count}")
-            print(f"debug au_count: {au_count}")
+            print(f"debug method: {debug.get('method')}", flush=True)
+            print(f"debug hasMap: {debug.get('hasMap')}", flush=True)
+            print(f"debug hasOl: {debug.get('hasOl')}", flush=True)
+            print(f"debug raw_count: {raw_count}", flush=True)
+            print(f"debug au_count: {au_count}", flush=True)
+            print(f"debug refresh_attempts_used: {debug.get('refresh_attempts_used')}", flush=True)
+            print(f"debug poll_attempt: {debug.get('poll_attempt')}", flush=True)
 
             for source in debug.get("sources_found", []):
                 print(
                     f"source {source.get('name')}: "
-                    f"exists={source.get('exists')} count={source.get('count')}"
+                    f"exists={source.get('exists')} count={source.get('count')}",
+                    flush=True,
                 )
 
             final_trains = trains
@@ -50,15 +53,19 @@ def main():
 
             if raw_count > 0 and au_count > 0 and len(trains) > 0:
                 got_live_data = True
-                print(f"✅ Live data found on attempt {attempt}: {len(trains)} trains")
+                print(f"✅ Live data found on attempt {attempt}: {len(trains)} trains", flush=True)
                 break
 
             if attempt < MAX_ATTEMPTS:
-                print(f"⚠️ Empty live data on attempt {attempt}. Waiting {WAIT_BETWEEN_ATTEMPTS}s and retrying...")
+                print(
+                    f"⚠️ Empty or unusable live data on attempt {attempt}. "
+                    f"Waiting {WAIT_BETWEEN_ATTEMPTS}s and retrying whole scrape...",
+                    flush=True,
+                )
                 try:
                     driver.refresh()
                 except Exception as exc:
-                    print(f"⚠️ Refresh failed: {exc}")
+                    print(f"⚠️ Driver refresh failed: {exc}", flush=True)
                 time.sleep(WAIT_BETWEEN_ATTEMPTS)
 
         note = "ok" if got_live_data else "ok - kept previous"
@@ -68,10 +75,17 @@ def main():
             note=note,
             preserve_existing_if_empty=True,
         )
-        print(result["note"])
+
+        print(result["note"], flush=True)
+
+        if not got_live_data:
+            print("⚠️ No fresh live data found after all attempts. Previous trains file was preserved if available.", flush=True)
 
     finally:
-        driver.quit()
+        try:
+            driver.quit()
+        except Exception:
+            pass
 
 
 if __name__ == "__main__":
