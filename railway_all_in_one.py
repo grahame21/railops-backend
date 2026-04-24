@@ -14,6 +14,7 @@ SCRIPTS.extend([
     "fast_scraper.py",
     "update_locos.py",
     "export_locos_to_excel.py",
+    "sync_outputs_to_web.py",
 ])
 
 def run_step(script_name: str) -> None:
