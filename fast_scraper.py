@@ -5,11 +5,41 @@ from trainfinder_backend import (
     write_debug_json,
 )
 
+import json
+import os
 import time
+import requests
 
 
 MAX_ATTEMPTS = 3
 WAIT_BETWEEN_ATTEMPTS = 20
+
+PUSH_URL = os.environ.get(
+    "PUSH_URL",
+    "https://railops-backend-web-production.up.railway.app/push_trains"
+).strip()
+PUSH_TOKEN = os.environ.get("PUSH_TOKEN", "").strip()
+
+
+def push_to_web(payload: dict) -> None:
+    if not PUSH_URL or not PUSH_TOKEN:
+        print("⚠️ PUSH_URL or PUSH_TOKEN missing; skipping push to web service", flush=True)
+        return
+
+    try:
+        response = requests.post(
+            PUSH_URL,
+            headers={
+                "Content-Type": "application/json",
+                "X-Auth-Token": PUSH_TOKEN,
+            },
+            data=json.dumps(payload),
+            timeout=60,
+        )
+        print(f"📤 Push status: HTTP {response.status_code}", flush=True)
+        print(f"📤 Push response: {response.text[:300]}", flush=True)
+    except Exception as exc:
+        print(f"❌ Push failed: {exc}", flush=True)
 
 
 def main():
@@ -77,6 +107,7 @@ def main():
         )
 
         print(result["note"], flush=True)
+        push_to_web(result)
 
         if not got_live_data:
             print("⚠️ No fresh live data found after all attempts. Previous trains file was preserved if available.", flush=True)
