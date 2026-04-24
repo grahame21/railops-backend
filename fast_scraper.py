@@ -1,3 +1,8 @@
+import json
+import os
+import time
+import requests
+
 from trainfinder_backend import (
     ensure_session,
     scrape_trains_from_page,
@@ -5,18 +10,16 @@ from trainfinder_backend import (
     write_debug_json,
 )
 
-import json
-import os
-import time
-import requests
-
-
 MAX_ATTEMPTS = 3
 WAIT_BETWEEN_ATTEMPTS = 20
 
 PUSH_URL = os.environ.get(
     "PUSH_URL",
     "https://railops-backend-web-production.up.railway.app/push_trains"
+).strip()
+PUSH_FILES_URL = os.environ.get(
+    "PUSH_FILES_URL",
+    "https://railops-backend-web-production.up.railway.app/push_files"
 ).strip()
 PUSH_TOKEN = os.environ.get("PUSH_TOKEN", "").strip()
 
@@ -36,10 +39,10 @@ def push_to_web(payload: dict) -> None:
             data=json.dumps(payload),
             timeout=60,
         )
-        print(f"📤 Push status: HTTP {response.status_code}", flush=True)
-        print(f"📤 Push response: {response.text[:300]}", flush=True)
+        print(f"📤 Push trains status: HTTP {response.status_code}", flush=True)
+        print(f"📤 Push trains response: {response.text[:300]}", flush=True)
     except Exception as exc:
-        print(f"❌ Push failed: {exc}", flush=True)
+        print(f"❌ Push trains failed: {exc}", flush=True)
 
 
 def main():
@@ -51,7 +54,6 @@ def main():
             raise RuntimeError(msg)
 
         final_trains = []
-        final_debug = {}
         got_live_data = False
 
         for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -79,7 +81,6 @@ def main():
                 )
 
             final_trains = trains
-            final_debug = debug
 
             if raw_count > 0 and au_count > 0 and len(trains) > 0:
                 got_live_data = True
