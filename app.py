@@ -34,6 +34,7 @@ STATIC_DOWNLOADS_DIR = BASE_DIR / "static" / "downloads"
 USERS_FILE = DATA_DIR / "users.json"
 TOKENS_FILE = DATA_DIR / "guest_tokens.json"
 LOGS_FILE = DATA_DIR / "activity_log.json"
+LIVE_TRAINS_FILE = BASE_DIR / "live_trains.json"
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "change-this-secret-key-now")
@@ -67,8 +68,8 @@ def save_json(path: Path, payload) -> None:
 
 def add_cors(resp):
     resp.headers["Access-Control-Allow-Origin"] = "*"
-    resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Cache-Control"
+    resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS, POST"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Cache-Control, X-Auth-Token"
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     resp.headers["Pragma"] = "no-cache"
     resp.headers["Expires"] = "0"
@@ -107,6 +108,16 @@ def ensure_seed_files() -> None:
 
     if not LOGS_FILE.exists():
         save_json(LOGS_FILE, {"events": []})
+
+    if not LIVE_TRAINS_FILE.exists():
+        save_json(
+            LIVE_TRAINS_FILE,
+            {
+                "lastUpdated": iso_now(),
+                "note": "No live trains uploaded yet",
+                "trains": [],
+            },
+        )
 
     placeholders = {
         "locomotives.db": "Put your real locomotives.db in this folder.\n",
@@ -245,23 +256,44 @@ def public_trains_json():
     if request.method == "OPTIONS":
         return add_cors(make_response("", 204))
 
-    trains_path = BASE_DIR / "trains.json"
-
-    if not trains_path.exists():
+    if not LIVE_TRAINS_FILE.exists():
         return add_cors(
             make_response(
                 json.dumps(
                     {
                         "ok": False,
-                        "error": "live trains.json not found",
+                        "error": "live trains file not found",
                     }
                 ),
                 404,
             )
         )
 
-    resp = make_response(send_file(trains_path, mimetype="application/json"))
+    resp = make_response(send_file(LIVE_TRAINS_FILE, mimetype="application/json"))
     return add_cors(resp)
+
+
+@app.route("/push_trains", methods=["POST", "OPTIONS"])
+def push_trains():
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+
+    push_token = os.getenv("PUSH_TOKEN", "").strip()
+    supplied_token = request.headers.get("X-Auth-Token", "").strip()
+
+    if not push_token or supplied_token != push_token:
+        return add_cors(make_response(json.dumps({"ok": False, "error": "unauthorized"}), 401))
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return add_cors(make_response(json.dumps({"ok": False, "error": "invalid json"}), 400))
+
+    trains = payload.get("trains")
+    if not isinstance(trains, list):
+        return add_cors(make_response(json.dumps({"ok": False, "error": "missing trains list"}), 400))
+
+    save_json(LIVE_TRAINS_FILE, payload)
+    return add_cors(jsonify({"ok": True, "saved": len(trains)}))
 
 
 @app.route("/downloads/<path:filename>", methods=["GET", "OPTIONS"])
@@ -368,11 +400,10 @@ def admin_page():
     tokens = load_json(TOKENS_FILE, {"tokens": []})
     logs = load_json(LOGS_FILE, {"events": []})
     file_links = [
-        {"name": "Live Train Data", "path": "/admin/files/trains.json"},
-        {"name": "Locomotive Database", "path": "/admin/files/locomotives.db"},
-        {"name": "Flight Tracker Data", "path": "/admin/files/flight_data.json"},
-        {"name": "Exports Folder Note", "path": "/admin/files/exports-readme.txt"},
-        {"name": "Updater Status", "path": "/admin/files/updater-status.json"},
+        {"name": "Live Train Data", "path": "/trains.json"},
+        {"name": "Locomotive Database", "path": "/downloads/loco_database.html"},
+        {"name": "Recently Added", "path": "/downloads/recently_added.html"},
+        {"name": "Numbers Only", "path": "/downloads/loco_numbers_only.html"},
     ]
     return render_template(
         "admin.html",
@@ -485,80 +516,6 @@ def generate_token():
     log_event("create_token", {"label": label})
     flash(f"Token created: {token}", "success")
     return redirect(url_for("admin_page"))
-
-
-@app.post("/admin/run-fast-scraper")
-@admin_required
-def run_fast_scraper():
-    github_token = os.getenv("GITHUB_PAT")
-    github_repo = os.getenv("GITHUB_REPO")
-    workflow_id = os.getenv("GITHUB_WORKFLOW_ID")
-    branch = os.getenv("GITHUB_WORKFLOW_REF", "main")
-
-    if not github_token or not github_repo or not workflow_id:
-        flash(
-            "GitHub workflow trigger is not configured yet. Add GITHUB_PAT, GITHUB_REPO, and GITHUB_WORKFLOW_ID.",
-            "error",
-        )
-        return redirect(url_for("admin_page"))
-
-    url = f"https://api.github.com/repos/{github_repo}/actions/workflows/{workflow_id}/dispatches"
-    headers = {
-        "Authorization": f"Bearer {github_token}",
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
-    payload = {"ref": branch}
-
-    try:
-        response = requests.post(url, headers=headers, json=payload, timeout=20)
-        if response.status_code == 204:
-            log_event("run_fast_scraper", {"workflow": workflow_id, "repo": github_repo})
-            flash("Fast scraper workflow triggered successfully.", "success")
-        else:
-            flash(f"GitHub trigger failed: HTTP {response.status_code} - {response.text[:180]}", "error")
-    except requests.RequestException as exc:
-        flash(f"GitHub trigger failed: {exc}", "error")
-
-    return redirect(url_for("admin_page"))
-
-
-@app.get("/admin/files/<path:filename>")
-@admin_required
-def admin_files(filename: str):
-    return send_from_directory(STATIC_DATA_DIR, filename, as_attachment=False)
-
-
-@app.get("/access")
-def token_access():
-    token = request.args.get("token", "").strip()
-    payload = load_json(TOKENS_FILE, {"tokens": []})
-    for item in payload.get("tokens", []):
-        if item["token"] == token:
-            if item.get("disabled"):
-                abort(403)
-            if is_expired(item.get("expires_at")):
-                abort(403)
-            session.permanent = True
-            session["logged_in"] = True
-            session["username"] = item.get("label", "token-guest")
-            session["display_name"] = item.get("label", "Guest Access")
-            session["role"] = "guest"
-            log_event("token_login", {"label": item.get("label")})
-            return redirect(url_for("dashboard_page"))
-    abort(403)
-
-
-@app.get("/flight-tracker")
-@login_required
-def flight_tracker_placeholder():
-    return render_template("simple_page.html", title="Flight Tracker", message="Hook your ADS-B page or route in here.")
-
-
-@app.get("/loco-db")
-@login_required
-def locomotive_db_placeholder():
-    return render_template("simple_page.html", title="Locomotive Database", message="Point this route to your locomotive database viewer.")
 
 
 @app.errorhandler(403)
