@@ -1,4 +1,4 @@
-import os
+import json
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -11,6 +11,7 @@ FILES_TO_DELETE = [
     BASE_DIR / "loco_summary.txt",
     BASE_DIR / "debug_sources.json",
     BASE_DIR / "trains.json",
+    BASE_DIR / "live_trains.json",
     DOWNLOADS_DIR / "loco_database.html",
     DOWNLOADS_DIR / "recently_added.html",
     DOWNLOADS_DIR / "loco_numbers_only.html",
@@ -35,10 +36,22 @@ def main():
         except Exception as exc:
             print(f"Failed deleting {path}: {exc}", flush=True)
 
+    # recreate clean starter files
     (BASE_DIR / "locos.json").write_text("{}\n", encoding="utf-8")
     (BASE_DIR / "loco_history.json").write_text('{"locos": {}, "updates": []}\n', encoding="utf-8")
     (BASE_DIR / "loco_export.csv").write_text("", encoding="utf-8")
     (BASE_DIR / "loco_summary.txt").write_text("Fresh reset completed.\n", encoding="utf-8")
+    (BASE_DIR / "live_trains.json").write_text(
+        json.dumps(
+            {
+                "lastUpdated": None,
+                "note": "No live trains uploaded yet",
+                "trains": []
+            },
+            indent=2
+        ) + "\n",
+        encoding="utf-8"
+    )
 
     print(f"Reset complete. Deleted {deleted} existing files.", flush=True)
     print("=== RESET LOCO OUTPUTS COMPLETE ===", flush=True)
