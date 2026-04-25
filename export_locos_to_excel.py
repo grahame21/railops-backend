@@ -2,7 +2,7 @@ import os
 import json
 import re
 import html
-from datetime import datetime
+from datetime import datetime, timezone
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
@@ -45,7 +45,7 @@ def is_real_loco_id(value):
 def load_json(filename):
     if not os.path.exists(filename):
         return {}
-    with open(filename, 'r', encoding='utf-8') as f:
+    with open(filename, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -66,13 +66,13 @@ def load_blocked_loco_rules():
     prefixes = []
     if not os.path.exists(BLOCKED_FILE):
         return exact, prefixes
-    with open(BLOCKED_FILE, 'r', encoding='utf-8') as f:
+    with open(BLOCKED_FILE, "r", encoding="utf-8") as f:
         for raw_line in f:
             line = raw_line.strip()
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 continue
             value = normalize_loco(line)
-            if value.endswith('*'):
+            if value.endswith("*"):
                 prefix = value[:-1]
                 if prefix:
                     prefixes.append(prefix)
@@ -95,10 +95,10 @@ def load_blocked_descriptions():
     blocked = []
     if not os.path.exists(BLOCKED_DESCRIPTIONS_FILE):
         return blocked
-    with open(BLOCKED_DESCRIPTIONS_FILE, 'r', encoding='utf-8') as f:
+    with open(BLOCKED_DESCRIPTIONS_FILE, "r", encoding="utf-8") as f:
         for raw_line in f:
             line = raw_line.strip().lower()
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 continue
             blocked.append(line)
     return blocked
@@ -113,13 +113,29 @@ def description_is_blocked(description, blocked_descriptions):
 
 def natural_sort_key(value):
     text = normalize_loco(value)
-    return [int(part) if part.isdigit() else part for part in re.split(r'(\d+)', text)]
+    return [int(part) if part.isdigit() else part for part in re.split(r"(\d+)", text)]
 
 
 def parse_datetime_sort(value):
     text = safe_text(value)
     if not text:
         return datetime.min
+
+    candidates = []
+
+    if text.endswith("Z"):
+        candidates.append(text.replace("Z", "+00:00"))
+    candidates.append(text)
+
+    for item in candidates:
+        try:
+            parsed = datetime.fromisoformat(item)
+            if parsed.tzinfo is None:
+                return parsed
+            return parsed.astimezone(timezone.utc).replace(tzinfo=None)
+        except ValueError:
+            pass
+
     for fmt in (
         "%Y-%m-%d %H:%M:%S",
         "%Y-%m-%d %H:%M",
@@ -132,7 +148,37 @@ def parse_datetime_sort(value):
             return datetime.strptime(text, fmt)
         except ValueError:
             pass
+
     return datetime.min
+
+
+def parse_datetime_for_browser(value):
+    text = safe_text(value)
+    if not text:
+        return ""
+
+    candidates = []
+
+    if text.endswith("Z"):
+        candidates.append(text)
+        candidates.append(text.replace("Z", "+00:00"))
+    else:
+        candidates.append(text)
+
+    for item in candidates:
+        try:
+            parsed = datetime.fromisoformat(item)
+            if parsed.tzinfo is None:
+                return ""
+            return parsed.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+        except ValueError:
+            pass
+
+    try:
+        parsed = datetime.strptime(text, "%Y-%m-%dT%H:%M:%SZ")
+        return parsed.replace(tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+    except ValueError:
+        return ""
 
 
 def get_visible_locos(locos):
@@ -146,7 +192,7 @@ def get_visible_locos(locos):
             continue
         if not is_real_loco_id(loco_number):
             continue
-        description = data.get('vehicle_description') or data.get('last_description') or ''
+        description = data.get("vehicle_description") or data.get("last_description") or ""
         if description_is_blocked(description, blocked_descriptions):
             continue
         visible.append((normalize_loco(loco_number), data))
@@ -158,7 +204,7 @@ def autosize_columns(ws, widths):
         ws.column_dimensions[get_column_letter(idx)].width = width
 
 
-def apply_print_settings(ws, orientation='portrait', repeat_header=True):
+def apply_print_settings(ws, orientation="portrait", repeat_header=True):
     ws.page_margins = PageMargins(
         left=MARGIN_1_5CM,
         right=MARGIN_1_5CM,
@@ -171,15 +217,15 @@ def apply_print_settings(ws, orientation='portrait', repeat_header=True):
     ws.page_setup.fitToWidth = 1
     ws.page_setup.fitToHeight = False
     if repeat_header:
-        ws.print_title_rows = '1:1'
+        ws.print_title_rows = "1:1"
 
 
 def make_row(loco_number, data):
     return [
         loco_number,
-        safe_text(data.get('current_operator')),
-        safe_text(data.get('vehicle_description') or data.get('last_description')),
-        safe_text(data.get('date_time_added') or data.get('first_seen')),
+        safe_text(data.get("current_operator")),
+        safe_text(data.get("vehicle_description") or data.get("last_description")),
+        safe_text(data.get("date_time_added") or data.get("first_seen")),
     ]
 
 
@@ -213,7 +259,7 @@ def write_numbers_pages(ws, running_order, center, columns=NUMBERS_ONLY_COLUMNS,
             ws.row_breaks.append(Break(id=next_page_row - 1))
             row_pointer = next_page_row + NUMBERS_ONLY_PAGE_GAP
 
-    apply_print_settings(ws, orientation='portrait', repeat_header=False)
+    apply_print_settings(ws, orientation="portrait", repeat_header=False)
 
 
 def format_dt_display(value):
@@ -224,6 +270,21 @@ def format_dt_display(value):
     if dt == datetime.min:
         return text
     return dt.strftime("%d %b %Y %H:%M")
+
+
+def make_time_cell(value):
+    raw_text = safe_text(value)
+    browser_iso = parse_datetime_for_browser(raw_text)
+
+    if browser_iso:
+        return (
+            f'<td class="local-datetime" data-utc="{html.escape(browser_iso)}">'
+            f'{html.escape(raw_text or browser_iso)}'
+            f"</td>"
+        )
+
+    display = format_dt_display(raw_text)
+    return f"<td>{html.escape(display)}</td>"
 
 
 def build_numbers_columns_html(running_order, columns=NUMBERS_ONLY_COLUMNS):
@@ -239,21 +300,73 @@ def build_numbers_columns_html(running_order, columns=NUMBERS_ONLY_COLUMNS):
         chunk = locos[start:end]
         if chunk:
             items = "".join(f"<li>{html.escape(item)}</li>" for item in chunk)
-            groups.append(f"<ol class=\"number-col\" start=\"{start + 1}\">{items}</ol>")
-    return f"<div class=\"numbers-columns\">{''.join(groups)}</div>"
+            groups.append(f'<ol class="number-col" start="{start + 1}">{items}</ol>')
+    return f'<div class="numbers-columns">{"".join(groups)}</div>'
+
+
+def local_time_script():
+    return """
+<script>
+(function () {
+  function formatLocalTimes() {
+    const nodes = document.querySelectorAll(".local-datetime[data-utc]");
+    const tzNode = document.getElementById("localTimeZoneLabel");
+    let tzLabel = "";
+
+    try {
+      tzLabel = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    } catch (e) {
+      tzLabel = "";
+    }
+
+    if (tzNode && tzLabel) {
+      tzNode.textContent = "Showing times in " + tzLabel;
+    } else if (tzNode) {
+      tzNode.textContent = "Showing times in your local device time";
+    }
+
+    nodes.forEach((node) => {
+      const raw = node.getAttribute("data-utc");
+      if (!raw) return;
+
+      const dt = new Date(raw);
+      if (isNaN(dt.getTime())) return;
+
+      const formatted = dt.toLocaleString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: undefined
+      });
+
+      node.textContent = formatted;
+      node.setAttribute("title", "UTC: " + raw);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", formatLocalTimes);
+  } else {
+    formatLocalTimes();
+  }
+})();
+</script>
+"""
 
 
 def render_html_page(title, subtitle, body, stats, active_tab):
-    updated = html.escape(stats.get('generated_at', ''))
-    visible_count = stats.get('visible_count', 0)
+    updated = html.escape(stats.get("generated_at", ""))
+    visible_count = stats.get("visible_count", 0)
     nav = [
-        ('database', 'Full database', 'loco_database.html'),
-        ('recent', 'Recently added', 'recently_added.html'),
-        ('numbers', 'Numbers only', 'loco_numbers_only.html'),
-        ('xlsx', 'Download workbook', 'loco_database.xlsx'),
-        ('numbers_xlsx', 'Download numbers workbook', 'loco_numbers_only.xlsx'),
+        ("database", "Full database", "loco_database.html"),
+        ("recent", "Recently added", "recently_added.html"),
+        ("numbers", "Numbers only", "loco_numbers_only.html"),
+        ("xlsx", "Download workbook", "loco_database.xlsx"),
+        ("numbers_xlsx", "Download numbers workbook", "loco_numbers_only.xlsx"),
     ]
-    nav_html = ''.join(
+    nav_html = "".join(
         f'<a class="nav-link {"active" if key == active_tab else ""}" href="{html.escape(link)}">{html.escape(label)}</a>'
         for key, label, link in nav
     )
@@ -297,6 +410,7 @@ def render_html_page(title, subtitle, body, stats, active_tab):
     .number-col li:last-child {{ border-bottom: 0; }}
     .hint {{ color: var(--muted); font-size: 0.92rem; margin-top: 10px; }}
     .empty {{ padding: 16px; color: var(--muted); }}
+    .time-note {{ color: var(--muted); font-size: 0.92rem; margin-top: 10px; }}
     @media (max-width: 760px) {{
       .wrap {{ padding: 10px; }}
       h1 {{ font-size: 1.35rem; }}
@@ -313,12 +427,16 @@ def render_html_page(title, subtitle, body, stats, active_tab):
       <div class="subtitle">{html.escape(subtitle)}</div>
       <div class="stats">
         <span class="chip">Visible locos: {visible_count}</span>
-        <span class="chip">Updated: {updated}</span>
+        <span class="chip">Generated: {updated}</span>
       </div>
       <nav class="nav">{nav_html}</nav>
     </section>
-    <section class="panel">{body}</section>
+    <section class="panel">
+      {body}
+      <div class="time-note" id="localTimeZoneLabel">Showing times in your local device time</div>
+    </section>
   </div>
+  {local_time_script()}
 </body>
 </html>
 """
@@ -327,20 +445,29 @@ def render_html_page(title, subtitle, body, stats, active_tab):
 def build_database_table(rows):
     if not rows:
         return '<div class="empty">No locos available.</div>'
-    body_rows = ''.join(
-        '<tr>' + ''.join(f'<td>{html.escape(value)}</td>' for value in row) + '</tr>'
-        for row in rows
-    )
+
+    body_rows = ""
+    for row in rows:
+        loco_number, operator, description, dt_raw = row
+        body_rows += (
+            "<tr>"
+            f"<td>{html.escape(loco_number)}</td>"
+            f"<td>{html.escape(operator)}</td>"
+            f"<td>{html.escape(description)}</td>"
+            f"{make_time_cell(dt_raw)}"
+            "</tr>"
+        )
+
     return (
         '<div class="table-wrap"><table><thead><tr>'
-        '<th>Loco Number</th><th>Current Operator</th><th>Vehicle Description</th><th>Date/Time Added</th>'
-        '</tr></thead><tbody>' + body_rows + '</tbody></table></div>'
+        "<th>Loco Number</th><th>Current Operator</th><th>Vehicle Description</th><th>Date/Time Added</th>"
+        "</tr></thead><tbody>" + body_rows + "</tbody></table></div>"
         '<div class="hint">This page is rebuilt automatically every time the loco updater runs.</div>'
     )
 
 
 def write_text_file(path, content):
-    with open(path, 'w', encoding='utf-8') as f:
+    with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
 
@@ -348,28 +475,25 @@ def build_html_exports(running_order, recently_added, stats):
     running_rows = [make_row(loco_number, data) for loco_number, data in running_order]
     recent_rows = [make_row(loco_number, data) for loco_number, data in recently_added]
 
-    running_rows = [[row[0], row[1], row[2], format_dt_display(row[3])] for row in running_rows]
-    recent_rows = [[row[0], row[1], row[2], format_dt_display(row[3])] for row in recent_rows]
-
     write_text_file(
         HTML_DATABASE_FILE,
         render_html_page(
-            title='RailOps Loco Database',
-            subtitle='Full loco list in running order. Handy for phone viewing and quick searching in-browser.',
+            title="RailOps Loco Database",
+            subtitle="Full loco list in running order. Handy for phone viewing and quick searching in-browser.",
             body=build_database_table(running_rows),
             stats=stats,
-            active_tab='database',
+            active_tab="database",
         )
     )
 
     write_text_file(
         HTML_RECENT_FILE,
         render_html_page(
-            title='RailOps Recently Added Locos',
-            subtitle='Newest locos first, based on the Date/Time Added field.',
+            title="RailOps Recently Added Locos",
+            subtitle="Newest locos first, based on the Date/Time Added field.",
             body=build_database_table(recent_rows),
             stats=stats,
-            active_tab='recent',
+            active_tab="recent",
         )
     )
 
@@ -380,11 +504,11 @@ def build_html_exports(running_order, recently_added, stats):
     write_text_file(
         HTML_NUMBERS_FILE,
         render_html_page(
-            title='RailOps Loco Numbers Only',
-            subtitle='Numbers-only mobile page in running order.',
+            title="RailOps Loco Numbers Only",
+            subtitle="Numbers-only mobile page in running order.",
             body=numbers_body,
             stats=stats,
-            active_tab='numbers',
+            active_tab="numbers",
         )
     )
 
@@ -401,7 +525,7 @@ def build_workbooks(locos):
     running_order = sorted(visible_locos, key=lambda x: natural_sort_key(x[0]))
     recently_added = sorted(
         visible_locos,
-        key=lambda x: parse_datetime_sort(x[1].get('date_time_added') or x[1].get('first_seen')),
+        key=lambda x: parse_datetime_sort(x[1].get("date_time_added") or x[1].get("first_seen")),
         reverse=True,
     )
 
@@ -424,35 +548,35 @@ def build_workbooks(locos):
     for loco_number, data in running_order:
         ws_locos.append(make_row(loco_number, data))
     autosize_columns(ws_locos, widths)
-    ws_locos.freeze_panes = 'A2'
-    apply_print_settings(ws_locos, orientation='portrait')
+    ws_locos.freeze_panes = "A2"
+    apply_print_settings(ws_locos, orientation="portrait")
 
     write_header(ws_recent, headers, bold, center)
     for loco_number, data in recently_added:
         ws_recent.append(make_row(loco_number, data))
     autosize_columns(ws_recent, widths)
-    ws_recent.freeze_panes = 'A2'
-    apply_print_settings(ws_recent, orientation='portrait')
+    ws_recent.freeze_panes = "A2"
+    apply_print_settings(ws_recent, orientation="portrait")
 
     write_numbers_pages(ws_numbers, running_order, center)
 
     ws_blocked.append(["Blocked Loco Rule"])
-    ws_blocked['A1'].font = bold
-    ws_blocked['A1'].alignment = center
-    ws_blocked.column_dimensions['A'].width = 24
+    ws_blocked["A1"].font = bold
+    ws_blocked["A1"].alignment = center
+    ws_blocked.column_dimensions["A"].width = 24
     for loco in blocked_exact_sorted:
         ws_blocked.append([loco])
     for prefix in blocked_prefix_sorted:
         ws_blocked.append([f"{prefix}*"])
-    apply_print_settings(ws_blocked, orientation='portrait')
+    apply_print_settings(ws_blocked, orientation="portrait")
 
-    ws_blocked_desc.append(['Blocked Vehicle Description'])
-    ws_blocked_desc['A1'].font = bold
-    ws_blocked_desc['A1'].alignment = center
-    ws_blocked_desc.column_dimensions['A'].width = 36
+    ws_blocked_desc.append(["Blocked Vehicle Description"])
+    ws_blocked_desc["A1"].font = bold
+    ws_blocked_desc["A1"].alignment = center
+    ws_blocked_desc.column_dimensions["A"].width = 36
     for desc in blocked_descriptions:
         ws_blocked_desc.append([desc])
-    apply_print_settings(ws_blocked_desc, orientation='portrait')
+    apply_print_settings(ws_blocked_desc, orientation="portrait")
 
     lines = [
         "This workbook is rebuilt automatically by the loco updater.",
@@ -473,11 +597,14 @@ def build_workbooks(locos):
         "Download files:",
         "- /downloads/loco_database.xlsx",
         "- /downloads/loco_numbers_only.xlsx",
+        "",
+        "HTML pages show date/time values in the viewer's local device time.",
+        "XLSX files stay as static exported values.",
     ]
     for line in lines:
         ws_info.append([line])
-    ws_info.column_dimensions['A'].width = 110
-    apply_print_settings(ws_info, orientation='portrait', repeat_header=False)
+    ws_info.column_dimensions["A"].width = 110
+    apply_print_settings(ws_info, orientation="portrait", repeat_header=False)
 
     wb.save(XLSX_FILE)
 
@@ -488,17 +615,16 @@ def build_workbooks(locos):
     wb_numbers.save(NUMBERS_ONLY_FILE)
 
     stats = {
-        'visible_count': len(running_order),
-        'blocked_exact_count': len(blocked_exact_sorted),
-        'blocked_prefix_count': len(blocked_prefix_sorted),
-        'blocked_description_count': len(blocked_descriptions),
-        'recent_count': len(recently_added),
-        'generated_at': datetime.now().strftime('%d %b %Y %H:%M'),
+        "visible_count": len(running_order),
+        "blocked_exact_count": len(blocked_exact_sorted),
+        "blocked_prefix_count": len(blocked_prefix_sorted),
+        "blocked_description_count": len(blocked_descriptions),
+        "recent_count": len(recently_added),
+        "generated_at": datetime.now().strftime("%d %b %Y %H:%M"),
     }
     build_html_exports(running_order, recently_added, stats)
 
     return stats
-
 
 
 def main():
@@ -518,5 +644,5 @@ def main():
     print(f"🚫 Blocked descriptions listed: {stats['blocked_description_count']}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
