@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Selenium / temp
+debug_sources.json
+cookie.txt
+trainfinder_cookies.pkl
+
+# Generated runtime data
+trains.json
+live_trains.json
+locos.json
+loco_history.json
+loco_export.csv
+loco_summary.txt
+
+# Generated downloads
+static/downloads/loco_database.html
+static/downloads/recently_added.html
+static/downloads/loco_numbers_only.html
+static/downloads/loco_database.xlsx
+static/downloads/loco_numbers_only.xlsx
