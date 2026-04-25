@@ -279,12 +279,18 @@ def make_time_cell(value):
     if browser_iso:
         return (
             f'<td class="local-datetime" data-utc="{html.escape(browser_iso)}">'
-            f'{html.escape(raw_text or browser_iso)}'
+            f'<div class="local-time-main">{html.escape(browser_iso)}</div>'
+            f'<div class="local-time-raw">Raw: {html.escape(raw_text)}</div>'
             f"</td>"
         )
 
     display = format_dt_display(raw_text)
-    return f"<td>{html.escape(display)}</td>"
+    return (
+        f"<td>"
+        f'<div class="local-time-main">{html.escape(display)}</div>'
+        f'<div class="local-time-raw">Raw: {html.escape(raw_text)}</div>'
+        f"</td>"
+    )
 
 
 def build_numbers_columns_html(running_order, columns=NUMBERS_ONLY_COLUMNS):
@@ -330,19 +336,27 @@ def local_time_script():
       if (!raw) return;
 
       const dt = new Date(raw);
-      if (isNaN(dt.getTime())) return;
+      if (isNaN(dt.getTime())) {
+        node.classList.add("time-parse-failed");
+        return;
+      }
 
       const formatted = dt.toLocaleString(undefined, {
         year: "numeric",
         month: "short",
         day: "2-digit",
         hour: "2-digit",
-        minute: "2-digit",
-        second: undefined
+        minute: "2-digit"
       });
 
-      node.textContent = formatted;
-      node.setAttribute("title", "UTC: " + raw);
+      const main = node.querySelector(".local-time-main");
+      if (main) {
+        main.textContent = formatted;
+      } else {
+        node.textContent = formatted;
+      }
+
+      node.setAttribute("title", "UTC source: " + raw);
     });
   }
 
@@ -411,6 +425,9 @@ def render_html_page(title, subtitle, body, stats, active_tab):
     .hint {{ color: var(--muted); font-size: 0.92rem; margin-top: 10px; }}
     .empty {{ padding: 16px; color: var(--muted); }}
     .time-note {{ color: var(--muted); font-size: 0.92rem; margin-top: 10px; }}
+    .local-time-main {{ font-weight: 600; }}
+    .local-time-raw {{ color: var(--muted); font-size: 0.8rem; margin-top: 4px; }}
+    .time-parse-failed .local-time-main {{ color: #ffb3b3; }}
     @media (max-width: 760px) {{
       .wrap {{ padding: 10px; }}
       h1 {{ font-size: 1.35rem; }}
@@ -598,7 +615,8 @@ def build_workbooks(locos):
         "- /downloads/loco_database.xlsx",
         "- /downloads/loco_numbers_only.xlsx",
         "",
-        "HTML pages show date/time values in the viewer's local device time.",
+        "HTML pages show date/time values in the viewer's local device time when the source timestamps include UTC information.",
+        "The raw stored timestamp is shown under each converted time for checking.",
         "XLSX files stay as static exported values.",
     ]
     for line in lines:
