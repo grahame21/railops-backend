@@ -4,14 +4,16 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Selenium / temp
+# Selenium / temp / cookies
 debug_sources.json
 cookie.txt
 trainfinder_cookies.pkl
 
-# Generated runtime data
+# Generated runtime train data
 trains.json
 live_trains.json
+
+# Generated runtime loco data
 locos.json
 loco_history.json
 loco_export.csv
