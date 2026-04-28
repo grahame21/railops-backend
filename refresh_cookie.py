@@ -74,27 +74,87 @@ def wait_for_element(driver, by, value, timeout=30):
     return None
 
 
-def get_aspxauth_cookie(driver):
-    for cookie in driver.get_cookies():
-        if cookie.get("name", "").lower() == ".aspxauth":
-            value = cookie.get("value", "").strip()
-            if value:
-                return cookie
-
-    return None
-
-
-def wait_for_auth_cookie(driver, timeout=30):
+def wait_for_auth_cookie(driver, timeout=45):
     end = time.time() + timeout
 
     while time.time() < end:
-        cookie = get_aspxauth_cookie(driver)
-        if cookie:
-            return cookie
+        cookies = driver.get_cookies()
+
+        for cookie in cookies:
+            name = cookie.get("name", "")
+            value = cookie.get("value", "").strip()
+
+            if name.lower() == ".aspxauth" and value:
+                return cookie
 
         time.sleep(1)
 
     return None
+
+
+def close_trainfinder_popup(driver):
+    """
+    Closes the TrainFinder rules / obligation popup after login.
+    """
+    log("Checking for TrainFinder popup...")
+
+    possible_selectors = [
+        ".jsPanel-btn-close",
+        ".jsPanel-hdr-r .jsPanel-btn-close",
+        ".jsPanel-headerbar .jsPanel-btn-close",
+        "button.jsPanel-btn-close",
+        ".jsPanel-btn.jsPanel-btn-close",
+    ]
+
+    for selector in possible_selectors:
+        try:
+            buttons = driver.find_elements(By.CSS_SELECTOR, selector)
+
+            for button in buttons:
+                if button.is_displayed():
+                    driver.execute_script("arguments[0].click();", button)
+                    log(f"Closed popup using selector: {selector}")
+                    time.sleep(2)
+                    return True
+        except Exception:
+            pass
+
+    # Fallback: click the large white X in the top-right of the popup.
+    try:
+        driver.execute_script("""
+            const buttons = Array.from(document.querySelectorAll('*'));
+            const closeBtn = buttons.find(el => {
+                const txt = (el.innerText || el.textContent || '').trim();
+                return txt === '×' || txt === 'X' || txt === 'x';
+            });
+            if (closeBtn) closeBtn.click();
+        """)
+        time.sleep(2)
+        log("Tried closing popup using text fallback.")
+        return True
+    except Exception as e:
+        log(f"No popup close fallback worked: {e}")
+
+    log("No popup close button found. Continuing anyway.")
+    return False
+
+
+def save_cookie_files(driver, auth_cookie):
+    cookies = driver.get_cookies()
+
+    cookie_value = auth_cookie["value"].strip()
+
+    Path(COOKIE_TXT).write_text(cookie_value, encoding="utf-8")
+
+    with open(COOKIE_JSON, "w", encoding="utf-8") as f:
+        json.dump(cookies, f, indent=2)
+
+    with open(COOKIE_PKL, "wb") as f:
+        pickle.dump(cookies, f)
+
+    log(f"Saved {COOKIE_TXT}")
+    log(f"Saved {COOKIE_JSON}")
+    log(f"Saved {COOKIE_PKL}")
 
 
 def main():
@@ -138,7 +198,7 @@ def main():
 
         save_debug(driver, "04_filled_login")
 
-        log("Clicking the real TrainFinder Log In button...")
+        log("Clicking real TrainFinder login button...")
 
         clicked = False
 
@@ -161,7 +221,7 @@ def main():
             )
 
             clicked = True
-            log("Clicked TrainFinder login button using CSS selector.")
+            log("Clicked TrainFinder login button.")
         except Exception as e:
             log(f"CSS login button click failed: {e}")
 
@@ -191,7 +251,7 @@ def main():
             raise RuntimeError("TrainFinder appears to be rejecting the username or password")
 
         log("Waiting for .ASPXAUTH cookie...")
-        auth_cookie = wait_for_auth_cookie(driver, timeout=35)
+        auth_cookie = wait_for_auth_cookie(driver, timeout=45)
 
         if not auth_cookie:
             save_debug(driver, "09_no_aspxauth_cookie")
@@ -205,22 +265,16 @@ def main():
 
             raise RuntimeError("could not establish TrainFinder session - no .ASPXAUTH cookie found")
 
-        cookie_value = auth_cookie["value"].strip()
+        log("TrainFinder auth cookie found.")
 
-        Path(COOKIE_TXT).write_text(cookie_value, encoding="utf-8")
+        close_trainfinder_popup(driver)
+        time.sleep(3)
 
-        cookies = driver.get_cookies()
+        save_debug(driver, "10_after_popup_close")
 
-        with open(COOKIE_JSON, "w", encoding="utf-8") as f:
-            json.dump(cookies, f, indent=2)
-
-        with open(COOKIE_PKL, "wb") as f:
-            pickle.dump(cookies, f)
+        save_cookie_files(driver, auth_cookie)
 
         log("TrainFinder session established successfully.")
-        log(f"Saved {COOKIE_TXT}")
-        log(f"Saved {COOKIE_JSON}")
-        log(f"Saved {COOKIE_PKL}")
 
     except Exception as e:
         log(f"Refresh failed: {e}")
