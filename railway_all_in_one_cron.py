@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -7,7 +8,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent
+APP_DIR = Path(__file__).resolve().parent
+WORK_DIR = Path("/tmp/railops-work")
+
 
 DATABASE_FILES = [
     "trains.json",
@@ -29,14 +32,18 @@ def log(message: str) -> None:
     print(message, flush=True)
 
 
-def run(command: list[str], label: str, allow_fail: bool = False) -> int:
+def run(command: list[str], label: str, cwd: Path, allow_fail: bool = False, show_command: bool = True) -> int:
     log("")
     log(f"=== RUNNING {label} ===")
-    log("Command: " + " ".join(command))
+
+    if show_command:
+        log("Command: " + " ".join(command))
+    else:
+        log("Command: [hidden/redacted]")
 
     result = subprocess.run(
         command,
-        cwd=BASE_DIR,
+        cwd=cwd,
         text=True,
     )
 
@@ -48,31 +55,52 @@ def run(command: list[str], label: str, allow_fail: bool = False) -> int:
     return result.returncode
 
 
-def git_config() -> None:
-    name = os.getenv("GIT_COMMIT_NAME", "RailOps Railway Bot")
-    email = os.getenv("GIT_COMMIT_EMAIL", "railops-bot@users.noreply.github.com")
-
-    run(["git", "config", "user.name", name], "git config user.name", allow_fail=True)
-    run(["git", "config", "user.email", email], "git config user.email", allow_fail=True)
-
-
-def setup_github_auth() -> bool:
+def clone_repo() -> Path:
     token = os.getenv("GITHUB_TOKEN_PUSH", "").strip()
     repo = os.getenv("GITHUB_REPO", "grahame21/railops-backend").strip()
     branch = os.getenv("GITHUB_BRANCH", "main").strip()
 
     if not token:
-        log("Missing GITHUB_TOKEN_PUSH. Cannot push database files to GitHub.")
-        return False
+        raise RuntimeError("Missing Railway variable GITHUB_TOKEN_PUSH")
+
+    if repo.endswith(".git"):
+        repo = repo[:-4]
+
+    if "/" not in repo:
+        raise RuntimeError(f"GITHUB_REPO looks wrong: {repo}")
+
+    if WORK_DIR.exists():
+        shutil.rmtree(WORK_DIR)
 
     authed_url = f"https://x-access-token:{token}@github.com/{repo}.git"
 
-    run(["git", "remote", "set-url", "origin", authed_url], "set authenticated git remote", allow_fail=True)
-    run(["git", "fetch", "origin", branch], "git fetch", allow_fail=True)
-    run(["git", "checkout", branch], "git checkout branch", allow_fail=True)
-    run(["git", "pull", "--rebase", "origin", branch], "git pull rebase", allow_fail=True)
+    log("")
+    log("=== CLONING GITHUB REPO ===")
+    log(f"Repo: {repo}")
+    log(f"Branch: {branch}")
+    log("Token: [hidden]")
 
-    return True
+    clone_code = subprocess.run(
+        ["git", "clone", "--branch", branch, "--depth", "1", authed_url, str(WORK_DIR)],
+        cwd=Path("/tmp"),
+        text=True,
+    ).returncode
+
+    if clone_code != 0:
+        raise RuntimeError("git clone failed. Check GITHUB_TOKEN_PUSH, GITHUB_REPO, and repo access permissions.")
+
+    if not (WORK_DIR / ".git").exists():
+        raise RuntimeError("Clone finished but .git folder is missing.")
+
+    return WORK_DIR
+
+
+def git_config(repo_dir: Path) -> None:
+    name = os.getenv("GIT_COMMIT_NAME", "RailOps Railway Bot")
+    email = os.getenv("GIT_COMMIT_EMAIL", "railops-bot@users.noreply.github.com")
+
+    run(["git", "config", "user.name", name], "git config user.name", cwd=repo_dir)
+    run(["git", "config", "user.email", email], "git config user.email", cwd=repo_dir)
 
 
 def load_json_file(path: Path):
@@ -85,45 +113,29 @@ def load_json_file(path: Path):
         return None
 
 
-def get_train_count() -> int:
-    """
-    Counts trains from trains.json.
-    Supports:
-    - {"trains": [...]}
-    - [...]
-    - {"data": [...]}
-    - {"items": [...]}
-    """
-    trains_file = BASE_DIR / "trains.json"
-    payload = load_json_file(trains_file)
+def count_records(path: Path, possible_keys: list[str]) -> int:
+    payload = load_json_file(path)
 
     if isinstance(payload, list):
         return len(payload)
 
     if isinstance(payload, dict):
-        for key in ["trains", "data", "items", "features"]:
+        for key in possible_keys:
             if isinstance(payload.get(key), list):
                 return len(payload[key])
 
     return 0
 
 
-def get_loco_count() -> int:
-    locos_file = BASE_DIR / "locos.json"
-    payload = load_json_file(locos_file)
-
-    if isinstance(payload, list):
-        return len(payload)
-
-    if isinstance(payload, dict):
-        for key in ["locos", "data", "items"]:
-            if isinstance(payload.get(key), list):
-                return len(payload[key])
-
-    return 0
+def get_train_count(repo_dir: Path) -> int:
+    return count_records(repo_dir / "trains.json", ["trains", "data", "items", "features"])
 
 
-def run_scraper() -> bool:
+def get_loco_count(repo_dir: Path) -> int:
+    return count_records(repo_dir / "locos.json", ["locos", "data", "items"])
+
+
+def run_scraper(repo_dir: Path) -> bool:
     scraper_script = os.getenv("SCRAPER_SCRIPT", "").strip()
 
     if scraper_script:
@@ -132,10 +144,10 @@ def run_scraper() -> bool:
         candidates = ["fast_scraper.py", "update_trains.py"]
 
     for script in candidates:
-        script_path = BASE_DIR / script
+        script_path = repo_dir / script
 
         if script_path.exists():
-            code = run([sys.executable, script], script, allow_fail=True)
+            code = run([sys.executable, script], script, cwd=repo_dir, allow_fail=True)
 
             if code != 0:
                 log(f"Scraper returned non-zero code: {code}")
@@ -147,15 +159,15 @@ def run_scraper() -> bool:
     return False
 
 
-def run_database_generator() -> bool:
+def run_database_generator(repo_dir: Path) -> bool:
     generator = os.getenv("DATABASE_GENERATOR_SCRIPT", "railops_loco_database.py").strip()
-    generator_path = BASE_DIR / generator
+    generator_path = repo_dir / generator
 
     if not generator_path.exists():
         log(f"Database generator not found: {generator}")
         return False
 
-    code = run([sys.executable, generator], generator, allow_fail=True)
+    code = run([sys.executable, generator], generator, cwd=repo_dir, allow_fail=True)
 
     if code != 0:
         log(f"Database generator returned non-zero code: {code}")
@@ -164,23 +176,38 @@ def run_database_generator() -> bool:
     return True
 
 
-def add_database_files() -> None:
+def show_file_summary(repo_dir: Path) -> None:
+    log("")
+    log("=== GENERATED FILE SUMMARY ===")
+
     for file_path in DATABASE_FILES:
-        path = BASE_DIR / file_path
+        path = repo_dir / file_path
 
         if path.exists():
-            run(["git", "add", file_path], f"git add {file_path}", allow_fail=True)
+            log(f"{file_path} - {path.stat().st_size} bytes")
+        else:
+            log(f"{file_path} - missing")
+
+    log(f"Current trains.json train count: {get_train_count(repo_dir)}")
+    log(f"Current locos.json loco count: {get_loco_count(repo_dir)}")
+
+
+def add_database_files(repo_dir: Path) -> None:
+    for file_path in DATABASE_FILES:
+        path = repo_dir / file_path
+
+        if path.exists():
+            run(["git", "add", file_path], f"git add {file_path}", cwd=repo_dir, allow_fail=True)
         else:
             log(f"Skipping missing file: {file_path}")
 
 
-def commit_and_push() -> bool:
-    repo = os.getenv("GITHUB_REPO", "grahame21/railops-backend").strip()
+def commit_and_push(repo_dir: Path) -> bool:
     branch = os.getenv("GITHUB_BRANCH", "main").strip()
 
     status = subprocess.run(
         ["git", "diff", "--cached", "--quiet"],
-        cwd=BASE_DIR,
+        cwd=repo_dir,
     )
 
     if status.returncode == 0:
@@ -190,15 +217,13 @@ def commit_and_push() -> bool:
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     message = os.getenv("GIT_COMMIT_MESSAGE", f"Update RailOps database files - {timestamp}")
 
-    commit_code = run(["git", "commit", "-m", message], "git commit", allow_fail=True)
+    commit_code = run(["git", "commit", "-m", message], "git commit", cwd=repo_dir, allow_fail=True)
 
     if commit_code != 0:
         log("Git commit failed.")
         return False
 
-    run(["git", "pull", "--rebase", "origin", branch], "git pull before push", allow_fail=True)
-
-    push_code = run(["git", "push", "origin", branch], f"git push {repo} {branch}", allow_fail=True)
+    push_code = run(["git", "push", "origin", branch], f"git push origin {branch}", cwd=repo_dir, allow_fail=True)
 
     if push_code != 0:
         log("Git push failed.")
@@ -207,45 +232,24 @@ def commit_and_push() -> bool:
     return True
 
 
-def show_file_summary() -> None:
-    log("")
-    log("=== GENERATED FILE SUMMARY ===")
-
-    for file_path in DATABASE_FILES:
-        path = BASE_DIR / file_path
-
-        if path.exists():
-            log(f"{file_path} - {path.stat().st_size} bytes")
-        else:
-            log(f"{file_path} - missing")
-
-    log(f"Current trains.json train count: {get_train_count()}")
-    log(f"Current locos.json loco count: {get_loco_count()}")
-
-
 def main() -> int:
     start = time.time()
 
     log("=== RAILOPS RAILWAY ALL-IN-ONE CRON START ===")
     log("UTC: " + datetime.now(timezone.utc).isoformat())
 
-    git_config()
+    repo_dir = clone_repo()
+    git_config(repo_dir)
 
-    git_ready = setup_github_auth()
-
-    if not git_ready:
-        log("GitHub auth is not ready. Stopping without crash.")
-        return 0
-
-    old_train_count = get_train_count()
-    old_loco_count = get_loco_count()
+    old_train_count = get_train_count(repo_dir)
+    old_loco_count = get_loco_count(repo_dir)
 
     log(f"Before scrape trains count: {old_train_count}")
     log(f"Before scrape locos count: {old_loco_count}")
 
-    scraper_ok = run_scraper()
+    scraper_ok = run_scraper(repo_dir)
 
-    new_train_count = get_train_count()
+    new_train_count = get_train_count(repo_dir)
 
     log(f"After scrape trains count: {new_train_count}")
 
@@ -266,13 +270,13 @@ def main() -> int:
         )
         return 0
 
-    generator_ok = run_database_generator()
+    generator_ok = run_database_generator(repo_dir)
 
     if not generator_ok:
         log("Database generator failed. Not committing. Exiting cleanly.")
         return 0
 
-    final_loco_count = get_loco_count()
+    final_loco_count = get_loco_count(repo_dir)
 
     log(f"After database generation locos count: {final_loco_count}")
 
@@ -286,13 +290,17 @@ def main() -> int:
             )
             return 0
 
-    show_file_summary()
+    show_file_summary(repo_dir)
 
-    add_database_files()
-    commit_and_push()
+    add_database_files(repo_dir)
+    commit_ok = commit_and_push(repo_dir)
 
     elapsed = round(time.time() - start, 2)
-    log(f"=== RAILOPS RAILWAY ALL-IN-ONE CRON DONE in {elapsed}s ===")
+
+    if commit_ok:
+        log(f"=== RAILOPS RAILWAY ALL-IN-ONE CRON DONE in {elapsed}s ===")
+    else:
+        log(f"=== RAILOPS RAILWAY ALL-IN-ONE CRON FINISHED WITH COMMIT/PUSH ISSUE in {elapsed}s ===")
 
     return 0
 
