@@ -17,6 +17,37 @@ except ImportError:
     Workbook = None
 
 
+# ============================================================
+# RailOps Loco Database Generator
+#
+# Goes in repo root:
+# railops-backend/railops_loco_database.py
+#
+# Reads:
+# - trains.json
+# - locos.json
+# - blocklist.json
+#
+# Writes:
+# - locos.json
+# - loco_history.json
+# - loco_export.csv
+# - loco_summary.txt
+# - static/downloads/loco_database.html
+# - static/downloads/recently_added.html
+# - static/downloads/loco_numbers_only.html
+# - static/downloads/loco_database.xlsx
+# - static/downloads/loco_numbers_only.xlsx
+#
+# Main rules:
+# - Existing locos are kept.
+# - New locos are added.
+# - Missing locos from one scrape are NOT deleted.
+# - Loco numbers sort naturally: NR 1, NR 2, NR 10.
+# - Page shows "Added last update: X".
+# ============================================================
+
+
 BASE_DIR = Path(__file__).resolve().parent
 
 TRAINS_FILE = BASE_DIR / "trains.json"
@@ -37,6 +68,10 @@ LOCO_NUMBERS_ONLY_XLSX = DOWNLOADS_DIR / "loco_numbers_only.xlsx"
 BLOCKLIST_FILE = BASE_DIR / "blocklist.json"
 
 
+# ============================================================
+# Basic helpers
+# ============================================================
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -52,6 +87,7 @@ def ensure_dirs() -> None:
 def load_json(path: Path, default):
     if not path.exists():
         return deepcopy(default)
+
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
@@ -62,6 +98,134 @@ def save_json(path: Path, payload) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
+
+def norm_text(value: Any) -> str:
+    if value is None:
+        return ""
+    return str(value).strip()
+
+
+def norm_key(value: Any) -> str:
+    text = norm_text(value).upper()
+    text = re.sub(r"\s+", "", text)
+    text = text.replace("-", "")
+    return text
+
+
+def get_first(d: dict[str, Any], keys: list[str]) -> str:
+    for key in keys:
+        value = d.get(key)
+        if value not in [None, ""]:
+            return norm_text(value)
+    return ""
+
+
+def maybe_properties(train: Any) -> dict[str, Any]:
+    if not isinstance(train, dict):
+        return {}
+
+    if isinstance(train.get("properties"), dict):
+        merged = dict(train["properties"])
+
+        for key, value in train.items():
+            if key != "properties" and key not in merged:
+                merged[key] = value
+
+        return merged
+
+    return train
+
+
+# ============================================================
+# Sorting/display helpers
+# ============================================================
+
+def loco_sort_key(value: Any):
+    """
+    Natural alphabetical loco sort:
+    NR1, NR2, NR10 instead of NR1, NR10, NR2.
+    Also displays nicely with prefix/class grouping.
+    """
+    text = norm_text(value).upper().replace(" ", "").replace("-", "")
+
+    parts = re.findall(r"[A-Z]+|\d+", text)
+
+    key = []
+
+    for part in parts:
+        if part.isdigit():
+            key.append((1, int(part)))
+        else:
+            key.append((0, part))
+
+    return key or [(0, text)]
+
+
+def display_loco_number(value: Any) -> str:
+    """
+    Displays:
+    NR1 -> NR 1
+    NR10 -> NR 10
+    ACD6071 -> ACD 6071
+
+    Keeps unknown/weird numbers unchanged.
+    """
+    text = norm_text(value).upper().replace(" ", "").replace("-", "")
+
+    match = re.match(r"^([A-Z]+)(\d+)([A-Z]?)$", text)
+
+    if match:
+        prefix, number, suffix = match.groups()
+        return f"{prefix} {number}{suffix}"
+
+    return norm_text(value)
+
+
+def parse_date_sort(value: Any) -> datetime:
+    text = norm_text(value)
+
+    if not text:
+        return datetime(1970, 1, 1, tzinfo=timezone.utc)
+
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except Exception:
+        pass
+
+    for fmt in [
+        "%Y-%m-%d %H:%M:%S",
+        "%d/%m/%Y %H:%M:%S",
+        "%d %b %Y %H:%M",
+        "%d %b %Y at %I:%M %p",
+    ]:
+        try:
+            return datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
+        except Exception:
+            pass
+
+    return datetime(1970, 1, 1, tzinfo=timezone.utc)
+
+
+def display_date(value: Any) -> str:
+    dt = parse_date_sort(value)
+
+    if dt.year == 1970:
+        return ""
+
+    return dt.strftime("%d %b %Y %H:%M")
+
+
+def esc(value: Any) -> str:
+    return html.escape(norm_text(value))
+
+
+def loco_value(loco: dict[str, Any], keys: list[str]) -> str:
+    return get_first(loco, keys)
+
+
+# ============================================================
+# Load source files
+# ============================================================
 
 def load_trains_payload() -> dict[str, Any]:
     if TRAINS_FILE.exists():
@@ -127,39 +291,9 @@ def load_blocklist() -> dict[str, list[str]]:
     }
 
 
-def norm_text(value: Any) -> str:
-    if value is None:
-        return ""
-    return str(value).strip()
-
-
-def norm_key(value: Any) -> str:
-    text = norm_text(value).upper()
-    text = re.sub(r"\s+", "", text)
-    return text
-
-
-def get_first(d: dict[str, Any], keys: list[str]) -> str:
-    for key in keys:
-        value = d.get(key)
-        if value not in [None, ""]:
-            return norm_text(value)
-    return ""
-
-
-def maybe_properties(train: Any) -> dict[str, Any]:
-    if not isinstance(train, dict):
-        return {}
-
-    if isinstance(train.get("properties"), dict):
-        merged = dict(train["properties"])
-        for key, value in train.items():
-            if key != "properties" and key not in merged:
-                merged[key] = value
-        return merged
-
-    return train
-
+# ============================================================
+# Extract train/loco data
+# ============================================================
 
 def extract_loco_number(train: dict[str, Any]) -> str:
     candidates = [
@@ -196,14 +330,16 @@ def extract_loco_number(train: dict[str, Any]) -> str:
     text = re.sub(r"^(LOCO|Loco|loco)\s*[:#-]?\s*", "", text).strip()
 
     match = re.search(r"[A-Z]{1,8}[- ]?\d{1,5}[A-Z]?", text.upper())
+
     if match:
-        return match.group(0).replace(" ", "")
+        return match.group(0).replace(" ", "").replace("-", "")
 
     match = re.search(r"\b\d{3,6}\b", text)
+
     if match:
         return match.group(0)
 
-    return text.upper().replace(" ", "")
+    return text.upper().replace(" ", "").replace("-", "")
 
 
 def extract_train_id(train: dict[str, Any]) -> str:
@@ -262,8 +398,13 @@ def extract_route_text(train: dict[str, Any]) -> str:
         get_first(train, ["destination", "to"]),
         get_first(train, ["route", "line", "path"]),
     ]
+
     return " ".join([p for p in parts if p])
 
+
+# ============================================================
+# Blocklist
+# ============================================================
 
 def is_blocked_value(value: str, patterns: list[str], wildcard: bool = False) -> bool:
     if not value:
@@ -273,6 +414,7 @@ def is_blocked_value(value: str, patterns: list[str], wildcard: bool = False) ->
 
     for pattern in patterns:
         p = str(pattern).strip()
+
         if not p:
             continue
 
@@ -286,48 +428,36 @@ def is_blocked_value(value: str, patterns: list[str], wildcard: bool = False) ->
     return False
 
 
-def is_loco_blocked(loco_number: str, train: dict[str, Any], blocklist: dict[str, list[str]]) -> tuple[bool, str]:
+def is_loco_blocked(
+    loco_number: str,
+    train: dict[str, Any],
+    blocklist: dict[str, list[str]],
+) -> tuple[bool, str]:
+
     if is_blocked_value(loco_number, blocklist["blocked_locos"], wildcard=True):
         return True, "blocked_loco"
 
     route_text = extract_route_text(train)
+
     if is_blocked_value(route_text, blocklist["blocked_routes"]):
         return True, "blocked_route"
 
     description = extract_description(train)
+
     if is_blocked_value(description, blocklist["blocked_descriptions"]):
         return True, "blocked_description"
 
     operator = extract_operator(train)
+
     if is_blocked_value(operator, blocklist["blocked_operators"]):
         return True, "blocked_operator"
 
     return False, ""
 
 
-def parse_date_sort(value: Any) -> datetime:
-    text = norm_text(value)
-    if not text:
-        return datetime(1970, 1, 1, tzinfo=timezone.utc)
-
-    try:
-        return datetime.fromisoformat(text.replace("Z", "+00:00"))
-    except Exception:
-        pass
-
-    for fmt in [
-        "%Y-%m-%d %H:%M:%S",
-        "%d/%m/%Y %H:%M:%S",
-        "%d %b %Y %H:%M",
-        "%d %b %Y at %I:%M %p",
-    ]:
-        try:
-            return datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
-        except Exception:
-            pass
-
-    return datetime(1970, 1, 1, tzinfo=timezone.utc)
-
+# ============================================================
+# Merge database
+# ============================================================
 
 def preferred_existing_date(existing: dict[str, Any]) -> str:
     for key in [
@@ -340,8 +470,10 @@ def preferred_existing_date(existing: dict[str, Any]) -> str:
         "created_at",
     ]:
         value = existing.get(key)
+
         if value:
             return norm_text(value)
+
     return ""
 
 
@@ -372,7 +504,11 @@ def make_loco_record_from_train(train: dict[str, Any], now_iso: str) -> dict[str
     }
 
 
-def merge_locos(existing_locos: list[dict[str, Any]], trains: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
+def merge_locos(
+    existing_locos: list[dict[str, Any]],
+    trains: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
+
     now_iso = iso_now()
     blocklist = load_blocklist()
 
@@ -401,6 +537,7 @@ def merge_locos(existing_locos: list[dict[str, Any]], trains: list[dict[str, Any
 
     for raw_train in trains:
         train = maybe_properties(raw_train)
+
         if not train:
             continue
 
@@ -411,23 +548,25 @@ def merge_locos(existing_locos: list[dict[str, Any]], trains: list[dict[str, Any
             continue
 
         blocked, reason = is_loco_blocked(loco_number, train, blocklist)
+
         if blocked:
             continue
 
         seen_this_run += 1
 
         new_record = make_loco_record_from_train(train, now_iso)
+
         if not new_record:
             continue
 
         if loco_key in master:
             existing = master[loco_key]
-
             original_added = preferred_existing_date(existing) or now_iso
 
             for key, value in new_record.items():
                 if key == "date_time_added":
                     continue
+
                 if value not in [None, ""]:
                     existing[key] = value
 
@@ -441,11 +580,9 @@ def merge_locos(existing_locos: list[dict[str, Any]], trains: list[dict[str, Any
     merged = list(master.values())
 
     merged.sort(
-        key=lambda x: (
-            parse_date_sort(x.get("date_time_added")).timestamp(),
-            norm_key(x.get("loco_number")),
-        ),
-        reverse=True,
+        key=lambda x: loco_sort_key(
+            get_first(x, ["loco_number", "Loco Number", "number", "loco"])
+        )
     )
 
     return merged, new_added, seen_this_run
@@ -458,28 +595,24 @@ def visible_locos(locos: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for loco in locos:
         loco_number = get_first(loco, ["loco_number", "Loco Number", "number", "loco", "id"])
         blocked, _ = is_loco_blocked(loco_number, loco, blocklist)
+
         if not blocked:
             output.append(loco)
+
+    output.sort(
+        key=lambda x: loco_sort_key(
+            get_first(x, ["loco_number", "Loco Number", "number", "loco"])
+        )
+    )
 
     return output
 
 
-def esc(value: Any) -> str:
-    return html.escape(norm_text(value))
+# ============================================================
+# HTML generation
+# ============================================================
 
-
-def display_date(value: Any) -> str:
-    dt = parse_date_sort(value)
-    if dt.year == 1970:
-        return ""
-    return dt.strftime("%d %b %Y %H:%M")
-
-
-def loco_value(loco: dict[str, Any], keys: list[str]) -> str:
-    return get_first(loco, keys)
-
-
-def html_header(title: str, active: str, count: int, generated: str) -> str:
+def html_header(title: str, active: str, count: int, generated: str, added_last_update: int = 0) -> str:
     def button(label: str, href: str, is_active: bool = False) -> str:
         cls = "btn active" if is_active else "btn"
         return f'<a class="{cls}" href="{href}">{html.escape(label)}</a>'
@@ -501,6 +634,8 @@ def html_header(title: str, active: str, count: int, generated: str) -> str:
   --muted:#9fb3d3;
   --accent:#58b6ff;
   --pill:#123f68;
+  --good:#113f2d;
+  --goodline:#2f8f61;
 }}
 * {{ box-sizing:border-box; }}
 html, body {{
@@ -538,6 +673,10 @@ h1 {{
   border-radius:999px;
   margin:4px 8px 10px 0;
   font-size:18px;
+}}
+.pill.good {{
+  background:var(--good);
+  border-color:var(--goodline);
 }}
 .nav {{
   display:flex;
@@ -609,9 +748,10 @@ td.muted {{ color:var(--muted); }}
 <body>
 <div class="card">
   <h1>{esc(title)}</h1>
-  <div class="subtitle">Newest locos first, based on the Date/Time Added field.</div>
+  <div class="subtitle">Sorted alphabetically and naturally by loco number.</div>
   <div>
     <span class="pill">Visible locos: {count}</span>
+    <span class="pill good">Added last update: {added_last_update}</span>
     <span class="pill">Generated: {esc(generated)}</span>
   </div>
   <div class="nav">
@@ -629,10 +769,18 @@ def html_footer() -> str:
     return "</body></html>\n"
 
 
-def generate_database_html(locos: list[dict[str, Any]], generated_label: str) -> None:
+def generate_database_html(
+    locos: list[dict[str, Any]],
+    generated_label: str,
+    added_last_update: int = 0,
+) -> None:
+
     rows = []
 
-    for loco in locos:
+    for loco in sorted(
+        locos,
+        key=lambda x: loco_sort_key(loco_value(x, ["loco_number", "Loco Number", "number", "loco"])),
+    ):
         loco_number = loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
         operator = loco_value(loco, ["current_operator", "Current Operator", "operator"])
         description = loco_value(loco, ["vehicle_description", "Vehicle Description", "description"])
@@ -643,7 +791,7 @@ def generate_database_html(locos: list[dict[str, Any]], generated_label: str) ->
         rows.append(
             f"""
 <tr>
-  <td><strong>{esc(loco_number)}</strong></td>
+  <td><strong>{esc(display_loco_number(loco_number))}</strong></td>
   <td>{esc(operator)}</td>
   <td>{esc(description)}</td>
   <td>{esc(train_id)}</td>
@@ -653,7 +801,14 @@ def generate_database_html(locos: list[dict[str, Any]], generated_label: str) ->
 """
         )
 
-    html_text = html_header("RailOps Loco Database", "full", len(locos), generated_label)
+    html_text = html_header(
+        "RailOps Loco Database",
+        "full",
+        len(locos),
+        generated_label,
+        added_last_update,
+    )
+
     html_text += """
 <div class="card table-wrap">
 <table>
@@ -669,21 +824,32 @@ def generate_database_html(locos: list[dict[str, Any]], generated_label: str) ->
 </thead>
 <tbody>
 """
+
     html_text += "\n".join(rows)
+
     html_text += """
 </tbody>
 </table>
 </div>
 """
+
     html_text += html_footer()
 
     LOCO_DATABASE_HTML.write_text(html_text, encoding="utf-8")
 
 
-def generate_recent_html(locos: list[dict[str, Any]], generated_label: str, limit: int = 300) -> None:
+def generate_recent_html(
+    locos: list[dict[str, Any]],
+    generated_label: str,
+    added_last_update: int = 0,
+    limit: int = 300,
+) -> None:
+
     recent = sorted(
         locos,
-        key=lambda x: parse_date_sort(loco_value(x, ["date_time_added", "Date/Time Added", "first_seen", "added"])),
+        key=lambda x: parse_date_sort(
+            loco_value(x, ["date_time_added", "Date/Time Added", "first_seen", "added"])
+        ),
         reverse=True,
     )[:limit]
 
@@ -698,7 +864,7 @@ def generate_recent_html(locos: list[dict[str, Any]], generated_label: str, limi
         rows.append(
             f"""
 <tr>
-  <td><strong>{esc(loco_number)}</strong></td>
+  <td><strong>{esc(display_loco_number(loco_number))}</strong></td>
   <td>{esc(operator)}</td>
   <td>{esc(description)}</td>
   <td><strong>{esc(display_date(added))}</strong><div class="raw">Raw: {esc(added)}</div></td>
@@ -706,7 +872,14 @@ def generate_recent_html(locos: list[dict[str, Any]], generated_label: str, limi
 """
         )
 
-    html_text = html_header("RailOps Recently Added Locos", "recent", len(locos), generated_label)
+    html_text = html_header(
+        "RailOps Recently Added Locos",
+        "recent",
+        len(locos),
+        generated_label,
+        added_last_update,
+    )
+
     html_text += """
 <div class="card table-wrap">
 <table>
@@ -720,30 +893,48 @@ def generate_recent_html(locos: list[dict[str, Any]], generated_label: str, limi
 </thead>
 <tbody>
 """
+
     html_text += "\n".join(rows)
+
     html_text += """
 </tbody>
 </table>
 </div>
 """
+
     html_text += html_footer()
 
     RECENTLY_ADDED_HTML.write_text(html_text, encoding="utf-8")
 
 
-def generate_numbers_html(locos: list[dict[str, Any]], generated_label: str) -> None:
+def generate_numbers_html(
+    locos: list[dict[str, Any]],
+    generated_label: str,
+    added_last_update: int = 0,
+) -> None:
+
     numbers = sorted(
         {
             loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
             for loco in locos
             if loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
         },
-        key=lambda x: (re.sub(r"\d+", "", x), [int(n) for n in re.findall(r"\d+", x)] or [0], x),
+        key=loco_sort_key,
     )
 
-    items = "\n".join(f'<div class="number-item">{esc(number)}</div>' for number in numbers)
+    items = "\n".join(
+        f'<div class="number-item">{esc(display_loco_number(number))}</div>'
+        for number in numbers
+    )
 
-    html_text = html_header("RailOps Loco Numbers Only", "numbers", len(locos), generated_label)
+    html_text = html_header(
+        "RailOps Loco Numbers Only",
+        "numbers",
+        len(locos),
+        generated_label,
+        added_last_update,
+    )
+
     html_text += f"""
 <div class="card">
   <div class="numbers">
@@ -751,10 +942,15 @@ def generate_numbers_html(locos: list[dict[str, Any]], generated_label: str) -> 
   </div>
 </div>
 """
+
     html_text += html_footer()
 
     LOCO_NUMBERS_ONLY_HTML.write_text(html_text, encoding="utf-8")
 
+
+# ============================================================
+# CSV / XLSX / summary
+# ============================================================
 
 def generate_csv(locos: list[dict[str, Any]]) -> None:
     fields = [
@@ -790,6 +986,7 @@ def style_sheet(ws) -> None:
         for cell in row:
             cell.border = border
             cell.alignment = Alignment(vertical="top", wrap_text=True)
+
             if cell.row == 1:
                 cell.fill = header_fill
                 cell.font = header_font
@@ -801,9 +998,11 @@ def style_sheet(ws) -> None:
     for column_cells in ws.columns:
         max_len = 10
         col_letter = get_column_letter(column_cells[0].column)
+
         for cell in column_cells:
             value = "" if cell.value is None else str(cell.value)
             max_len = max(max_len, min(len(value), 45))
+
         ws.column_dimensions[col_letter].width = max_len + 2
 
 
@@ -831,10 +1030,15 @@ def generate_xlsx(locos: list[dict[str, Any]]) -> None:
 
     ws.append(headers)
 
-    for loco in locos:
+    for loco in sorted(
+        locos,
+        key=lambda x: loco_sort_key(loco_value(x, ["loco_number", "Loco Number", "number", "loco"])),
+    ):
+        raw_loco_number = loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
+
         ws.append(
             [
-                loco_value(loco, ["loco_number", "Loco Number", "number", "loco"]),
+                display_loco_number(raw_loco_number),
                 loco_value(loco, ["current_operator", "Current Operator", "operator"]),
                 loco_value(loco, ["vehicle_description", "Vehicle Description", "description"]),
                 loco_value(loco, ["train_id", "Train ID", "service"]),
@@ -860,11 +1064,12 @@ def generate_xlsx(locos: list[dict[str, Any]]) -> None:
             loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
             for loco in locos
             if loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
-        }
+        },
+        key=loco_sort_key,
     )
 
     for number in numbers:
-        ws2.append([number])
+        ws2.append([display_loco_number(number)])
 
     style_sheet(ws2)
     wb2.save(LOCO_NUMBERS_ONLY_XLSX)
@@ -878,6 +1083,7 @@ def generate_summary(
     seen_this_run: int,
     generated_iso: str,
 ) -> None:
+
     text = f"""RailOps Loco Database Summary
 Generated UTC: {generated_iso}
 
@@ -887,12 +1093,19 @@ Existing locos before merge: {existing_before}
 New locos added this run: {new_added_count}
 Final visible/master locos: {merged_count}
 
+Sort order: Natural alphabetical order, e.g. NR 1, NR 2, NR 10
+Display format: Prefix and number separated, e.g. NR1 displays as NR 1
 Storage mode: GitHub committed database files
 Rule: Existing locos are kept even if missing from a scrape.
 Blocklist file: blocklist.json
 """
+
     LOCO_SUMMARY_FILE.write_text(text, encoding="utf-8")
 
+
+# ============================================================
+# Main
+# ============================================================
 
 def main() -> None:
     ensure_dirs()
@@ -902,6 +1115,7 @@ def main() -> None:
 
     trains_payload = load_trains_payload()
     trains = trains_payload.get("trains", [])
+
     if not isinstance(trains, list):
         trains = []
 
@@ -911,9 +1125,12 @@ def main() -> None:
     merged, new_added, seen_this_run = merge_locos(existing, trains)
     visible = visible_locos(merged)
 
+    added_last_update = len(new_added)
+
     save_json(LOCOS_FILE, visible)
 
     history = load_json(LOCO_HISTORY_FILE, [])
+
     if not isinstance(history, list):
         history = []
 
@@ -924,10 +1141,12 @@ def main() -> None:
             "source_trains": len(trains),
             "seen_this_run": seen_this_run,
             "existing_before": existing_before,
-            "new_added": len(new_added),
+            "new_added": added_last_update,
             "final_count": len(visible),
             "new_loco_numbers": [
-                loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
+                display_loco_number(
+                    loco_value(loco, ["loco_number", "Loco Number", "number", "loco"])
+                )
                 for loco in new_added
             ],
         },
@@ -936,16 +1155,17 @@ def main() -> None:
     history = history[:500]
     save_json(LOCO_HISTORY_FILE, history)
 
-    generate_database_html(visible, generated_label)
-    generate_recent_html(visible, generated_label)
-    generate_numbers_html(visible, generated_label)
+    generate_database_html(visible, generated_label, added_last_update)
+    generate_recent_html(visible, generated_label, added_last_update)
+    generate_numbers_html(visible, generated_label, added_last_update)
     generate_csv(visible)
     generate_xlsx(visible)
+
     generate_summary(
         trains_count=len(trains),
         existing_before=existing_before,
         merged_count=len(visible),
-        new_added_count=len(new_added),
+        new_added_count=added_last_update,
         seen_this_run=seen_this_run,
         generated_iso=generated_iso,
     )
@@ -954,12 +1174,16 @@ def main() -> None:
     print(f"Source trains: {len(trains)}")
     print(f"Existing locos before merge: {existing_before}")
     print(f"Seen this run: {seen_this_run}")
-    print(f"New locos added: {len(new_added)}")
+    print(f"New locos added this run: {added_last_update}")
     print(f"Final visible locos: {len(visible)}")
+    print("Sort order: natural alphabetical")
+    print("Display example: NR1 -> NR 1, NR10 -> NR 10")
     print(f"Wrote: {LOCOS_FILE}")
     print(f"Wrote: {RECENTLY_ADDED_HTML}")
     print(f"Wrote: {LOCO_DATABASE_HTML}")
     print(f"Wrote: {LOCO_NUMBERS_ONLY_HTML}")
+    print(f"Wrote: {LOCO_DATABASE_XLSX}")
+    print(f"Wrote: {LOCO_NUMBERS_ONLY_XLSX}")
 
 
 if __name__ == "__main__":
