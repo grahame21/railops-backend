@@ -1,12 +1,14 @@
 RailOps Loco Database Summary
-Generated UTC: 2026-04-29T12:07:01.818019Z
+Generated UTC: 2026-04-29T12:30:58.885937Z
 
-Source trains this run: 943
-Locos seen this run: 861
-Existing locos before merge: 1430
-New locos added this run: 24
-Final visible/master locos: 1454
+Source trains this run: 972
+Locos seen this run: 870
+Existing locos before merge: 1454
+New locos added this run: 18
+Final visible/master locos: 1472
 
+Sort order: Natural alphabetical order, e.g. NR 1, NR 2, NR 10
+Display format: Prefix and number separated, e.g. NR1 displays as NR 1
 Storage mode: GitHub committed database files
 Rule: Existing locos are kept even if missing from a scrape.
 Blocklist file: blocklist.json
