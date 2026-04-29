@@ -19,33 +19,17 @@ except ImportError:
 # ============================================================
 # RailOps Loco Database Generator
 #
-# Goes in repo root:
-# railops-backend/railops_loco_database.py
+# Sort order:
+# 1. Number-only locos first: 1102, 1428, 5009
+# 2. Normal alpha/numeric locos next: ACD6071, NR82, XRNO028
+# 3. 3V passenger/regional services last: 3V12, 3V45
 #
-# Reads:
-# - trains.json
-# - locos.json
-# - blocklist.json
+# Display format:
+# - No spaces in loco numbers.
+# - NR1 stays NR1, not NR 1.
 #
-# Writes:
-# - locos.json
-# - loco_history.json
-# - loco_export.csv
-# - loco_summary.txt
-# - static/downloads/loco_database.html
-# - static/downloads/recently_added.html
-# - static/downloads/loco_numbers_only.html
-# - static/downloads/loco_database.xlsx
-# - static/downloads/loco_numbers_only.xlsx
-#
-# Main rules:
-# - Existing locos are kept.
-# - New locos are added.
-# - Missing locos from one scrape are NOT deleted.
-# - Blocklist still applies.
-# - Sorts naturally: NR1, NR2, NR10.
-# - Displays loco numbers without spaces.
-# - Generated/display times are converted by the browser to phone local time.
+# Time display:
+# - HTML pages convert UTC times to the phone/browser local timezone.
 # ============================================================
 
 
@@ -141,14 +125,16 @@ def maybe_properties(train: Any) -> dict[str, Any]:
 # Sorting/display helpers
 # ============================================================
 
-def loco_sort_key(value: Any):
+def natural_parts(value: Any):
     """
-    Natural alphabetical loco sort:
-    NR1, NR2, NR10 instead of NR1, NR10, NR2.
+    Turns NR10 into:
+    [(0, "NR"), (1, 10)]
+
+    This lets Python sort NR2 before NR10.
     """
     text = norm_text(value).upper().replace(" ", "").replace("-", "")
-
     parts = re.findall(r"[A-Z]+|\d+", text)
+
     key = []
 
     for part in parts:
@@ -158,6 +144,36 @@ def loco_sort_key(value: Any):
             key.append((0, part))
 
     return key or [(0, text)]
+
+
+def loco_sort_key(value: Any):
+    """
+    Custom RailOps sort:
+
+    1. Pure numbers first:
+       1102, 1428, 5009
+
+    2. Normal alpha/numeric locos next:
+       ACD6071, NR82, XRNO028
+
+    3. 3V services at the bottom:
+       3V12, 3V45
+    """
+    text = norm_text(value).upper().replace(" ", "").replace("-", "")
+
+    if not text:
+        return (8, [(0, "")])
+
+    # Put Victorian/regional passenger-style 3V services at the bottom.
+    if text.startswith("3V"):
+        return (9, natural_parts(text))
+
+    # Put pure number locos at the very top.
+    if re.fullmatch(r"\d+", text):
+        return (0, [(1, int(text))])
+
+    # Everything else natural alphabetical.
+    return (1, natural_parts(text))
 
 
 def display_loco_number(value: Any) -> str:
@@ -194,11 +210,6 @@ def parse_date_sort(value: Any) -> datetime:
             pass
 
     return datetime(1970, 1, 1, tzinfo=timezone.utc)
-
-
-def is_probably_iso(value: Any) -> bool:
-    text = norm_text(value)
-    return bool(re.match(r"^\d{4}-\d{2}-\d{2}T", text)) or text.endswith("Z")
 
 
 def html_local_time(value: Any) -> str:
@@ -490,7 +501,7 @@ def make_loco_record_from_train(train: dict[str, Any], now_iso: str) -> dict[str
     lon = get_first(train, ["lon", "lng", "longitude", "x"])
 
     return {
-        "loco_number": loco_number,
+        "loco_number": display_loco_number(loco_number),
         "current_operator": operator,
         "vehicle_description": description,
         "train_id": train_id,
@@ -809,7 +820,7 @@ td.muted {{ color:var(--muted); }}
 <body>
 <div class="card">
   <h1>{esc(title)}</h1>
-  <div class="subtitle">Sorted in natural loco order, with blocked locos/routes/descriptions removed.</div>
+  <div class="subtitle">Numbered locos first, then natural loco order, with 3V services at the bottom.</div>
   <div>
     <span class="pill">Visible locos: {count}</span>
     <span class="pill good">Added last update: {added_last_update}</span>
@@ -1161,7 +1172,11 @@ Existing locos before merge: {existing_before}
 New locos added this run: {new_added_count}
 Final visible/master locos: {merged_count}
 
-Sort order: Natural alphabetical order, e.g. NR1, NR2, NR10
+Sort order:
+1. Number-only locos first, e.g. 1102, 1428, 5009
+2. Normal natural alphabetical order, e.g. ACD6071, NR2, NR10
+3. 3V services at the bottom
+
 Display format: No spaces in loco numbers, e.g. NR1 stays NR1
 Storage mode: GitHub committed database files
 Rule: Existing locos are kept even if missing from a scrape.
@@ -1243,7 +1258,7 @@ def main() -> None:
     print(f"Seen this run: {seen_this_run}")
     print(f"New locos added this run: {added_last_update}")
     print(f"Final visible locos: {len(visible)}")
-    print("Sort order: natural alphabetical")
+    print("Sort order: numbers first, normal locos next, 3V bottom")
     print("Display format: no spaces in loco numbers")
     print("HTML display time: phone/browser local timezone")
     print(f"Wrote: {LOCOS_FILE}")
