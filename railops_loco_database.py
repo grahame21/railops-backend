@@ -2,7 +2,6 @@ import csv
 import fnmatch
 import html
 import json
-import os
 import re
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -43,8 +42,9 @@ except ImportError:
 # - Existing locos are kept.
 # - New locos are added.
 # - Missing locos from one scrape are NOT deleted.
-# - Loco numbers sort naturally: NR 1, NR 2, NR 10.
-# - Page shows "Added last update: X".
+# - Blocklist still applies.
+# - Sorts naturally: NR1, NR2, NR10.
+# - Displays loco numbers without spaces.
 # ============================================================
 
 
@@ -67,10 +67,6 @@ LOCO_NUMBERS_ONLY_XLSX = DOWNLOADS_DIR / "loco_numbers_only.xlsx"
 
 BLOCKLIST_FILE = BASE_DIR / "blocklist.json"
 
-
-# ============================================================
-# Basic helpers
-# ============================================================
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -144,12 +140,10 @@ def loco_sort_key(value: Any):
     """
     Natural alphabetical loco sort:
     NR1, NR2, NR10 instead of NR1, NR10, NR2.
-    Also displays nicely with prefix/class grouping.
     """
     text = norm_text(value).upper().replace(" ", "").replace("-", "")
 
     parts = re.findall(r"[A-Z]+|\d+", text)
-
     key = []
 
     for part in parts:
@@ -163,22 +157,13 @@ def loco_sort_key(value: Any):
 
 def display_loco_number(value: Any) -> str:
     """
-    Displays:
-    NR1 -> NR 1
-    NR10 -> NR 10
-    ACD6071 -> ACD 6071
-
-    Keeps unknown/weird numbers unchanged.
+    Displays loco numbers without spaces:
+    NR1 stays NR1
+    NR10 stays NR10
+    ACD6071 stays ACD6071
     """
     text = norm_text(value).upper().replace(" ", "").replace("-", "")
-
-    match = re.match(r"^([A-Z]+)(\d+)([A-Z]?)$", text)
-
-    if match:
-        prefix, number, suffix = match.groups()
-        return f"{prefix} {number}{suffix}"
-
-    return norm_text(value)
+    return text
 
 
 def parse_date_sort(value: Any) -> datetime:
@@ -547,7 +532,7 @@ def merge_locos(
         if not loco_key:
             continue
 
-        blocked, reason = is_loco_blocked(loco_number, train, blocklist)
+        blocked, _reason = is_loco_blocked(loco_number, train, blocklist)
 
         if blocked:
             continue
@@ -748,7 +733,7 @@ td.muted {{ color:var(--muted); }}
 <body>
 <div class="card">
   <h1>{esc(title)}</h1>
-  <div class="subtitle">Sorted alphabetically and naturally by loco number.</div>
+  <div class="subtitle">Sorted in natural loco order, with blocked locos/routes/descriptions removed.</div>
   <div>
     <span class="pill">Visible locos: {count}</span>
     <span class="pill good">Added last update: {added_last_update}</span>
@@ -1093,8 +1078,8 @@ Existing locos before merge: {existing_before}
 New locos added this run: {new_added_count}
 Final visible/master locos: {merged_count}
 
-Sort order: Natural alphabetical order, e.g. NR 1, NR 2, NR 10
-Display format: Prefix and number separated, e.g. NR1 displays as NR 1
+Sort order: Natural alphabetical order, e.g. NR1, NR2, NR10
+Display format: No spaces in loco numbers, e.g. NR1 stays NR1
 Storage mode: GitHub committed database files
 Rule: Existing locos are kept even if missing from a scrape.
 Blocklist file: blocklist.json
@@ -1177,7 +1162,7 @@ def main() -> None:
     print(f"New locos added this run: {added_last_update}")
     print(f"Final visible locos: {len(visible)}")
     print("Sort order: natural alphabetical")
-    print("Display example: NR1 -> NR 1, NR10 -> NR 10")
+    print("Display format: no spaces in loco numbers")
     print(f"Wrote: {LOCOS_FILE}")
     print(f"Wrote: {RECENTLY_ADDED_HTML}")
     print(f"Wrote: {LOCO_DATABASE_HTML}")
