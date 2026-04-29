@@ -4,20 +4,28 @@
     "TEST*",
     "DEMO*",
     "UNKNOWN",
-    "UNREG"
+    "UNREG",
+    "MARKERSOURCE*",
+    "ARROWMARKERSSOURCE*",
+    "*MARKERSOURCE*",
+    "*ARROWMARKERSSOURCE*"
   ],
   "blocked_routes": [
     "TEST TRAIN",
     "LINE TEST",
     "V/LINE TEST",
-    "DEMO SERVICE"
+    "DEMO SERVICE",
+    "MARKERSOURCE",
+    "ARROWMARKERSSOURCE"
   ],
   "blocked_descriptions": [
     "test train",
     "line test",
     "placeholder",
     "dummy",
-    "not in service"
+    "not in service",
+    "markersource",
+    "arrowmarkerssource"
   ],
   "blocked_operators": [],
   "notes": {
@@ -27,6 +35,3 @@
     "blocked_operators": "Blocks if operator contains this text."
   }
 }
-MARKERSOURCE*
-ARROWMARKERSSOURCE*
-
