@@ -7,7 +7,6 @@ from datetime import datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
 
-import requests
 from flask import (
     Flask,
     abort,
@@ -32,9 +31,8 @@ except ImportError:
 
 # ============================================================
 # RailOps paths
-# IMPORTANT:
 # Railway volume is mounted at /app/data.
-# All generated/live files must be stored there, not in BASE_DIR.
+# All live/generated files are stored in /app/data.
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -42,10 +40,9 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = Path(os.getenv("DATA_DIR", "/app/data")).resolve()
 DOWNLOADS_DIR = Path(os.getenv("DOWNLOAD_DIR", str(DATA_DIR / "downloads"))).resolve()
 PRIVATE_DATA_DIR = DATA_DIR / "private"
+BACKUPS_DIR = DATA_DIR / "backups"
 
-# Old repo folders, used only for one-time seeding if files exist
 OLD_REPO_DATA_DIR = BASE_DIR / "data"
-OLD_STATIC_DATA_DIR = BASE_DIR / "static" / "data"
 OLD_STATIC_DOWNLOADS_DIR = BASE_DIR / "static" / "downloads"
 
 USERS_FILE = PRIVATE_DATA_DIR / "users.json"
@@ -63,6 +60,7 @@ RECENTLY_ADDED_HTML = DOWNLOADS_DIR / "recently_added.html"
 LOCO_NUMBERS_ONLY_HTML = DOWNLOADS_DIR / "loco_numbers_only.html"
 LOCO_DATABASE_XLSX = DOWNLOADS_DIR / "loco_database.xlsx"
 LOCO_NUMBERS_ONLY_XLSX = DOWNLOADS_DIR / "loco_numbers_only.xlsx"
+
 
 ALLOWED_PUSH_TARGETS = {
     "live_trains.json": LIVE_TRAINS_FILE,
@@ -87,7 +85,7 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
 
 # ============================================================
-# Basic helpers
+# Helpers
 # ============================================================
 
 def utc_now() -> datetime:
@@ -102,6 +100,7 @@ def ensure_dirs() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
     PRIVATE_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    BACKUPS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_json(path: Path, default):
@@ -121,7 +120,7 @@ def save_json(path: Path, payload) -> None:
 def add_cors(resp):
     resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS, POST"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Cache-Control, X-Auth-Token"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type, Cache-Control, X-Auth-Token, X-Allow-Smaller"
     resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
     resp.headers["Pragma"] = "no-cache"
     resp.headers["Expires"] = "0"
@@ -130,8 +129,8 @@ def add_cors(resp):
 
 def seed_file_if_missing(source: Path, destination: Path) -> None:
     """
-    Copies an old bundled repo file into the Railway volume only once.
-    It will NEVER overwrite existing /app/data files.
+    Copies old repo files into the Railway volume once only.
+    This never overwrites existing /app/data files.
     """
     try:
         if destination.exists():
@@ -144,10 +143,87 @@ def seed_file_if_missing(source: Path, destination: Path) -> None:
         print(f"[seed] failed {source} -> {destination}: {exc}")
 
 
+def count_json_records_from_file(path: Path) -> int:
+    """
+    Counts records in a JSON file.
+    Supports:
+    [] list format
+    {"locos": []}
+    {"trains": []}
+    {"items": []}
+    {"data": []}
+    """
+    if not path.exists():
+        return 0
+
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return 0
+
+    if isinstance(payload, list):
+        return len(payload)
+
+    if isinstance(payload, dict):
+        for key in ["locos", "trains", "items", "data"]:
+            if isinstance(payload.get(key), list):
+                return len(payload[key])
+
+    return 0
+
+
+def count_json_records_from_bytes(raw: bytes) -> int:
+    """
+    Counts records in uploaded JSON bytes.
+    Supports:
+    [] list format
+    {"locos": []}
+    {"trains": []}
+    {"items": []}
+    {"data": []}
+    """
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except Exception:
+        return 0
+
+    if isinstance(payload, list):
+        return len(payload)
+
+    if isinstance(payload, dict):
+        for key in ["locos", "trains", "items", "data"]:
+            if isinstance(payload.get(key), list):
+                return len(payload[key])
+
+    return 0
+
+
+def backup_existing_file(path: Path) -> str | None:
+    """
+    Creates a timestamped backup before overwriting a file.
+    Backups go into /app/data/backups.
+    """
+    if not path.exists():
+        return None
+
+    BACKUPS_DIR.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+
+    try:
+        relative_name = str(path.relative_to(DATA_DIR)).replace("/", "__")
+    except Exception:
+        relative_name = path.name
+
+    backup_path = BACKUPS_DIR / f"{timestamp}__{relative_name}"
+    shutil.copy2(path, backup_path)
+
+    return str(backup_path)
+
+
 def ensure_seed_files() -> None:
     ensure_dirs()
 
-    # One-time seed from old repo locations, without overwriting volume data
     seed_file_if_missing(OLD_REPO_DATA_DIR / "users.json", USERS_FILE)
     seed_file_if_missing(OLD_REPO_DATA_DIR / "guest_tokens.json", TOKENS_FILE)
     seed_file_if_missing(OLD_REPO_DATA_DIR / "activity_log.json", LOGS_FILE)
@@ -165,7 +241,6 @@ def ensure_seed_files() -> None:
     seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "loco_database.xlsx", LOCO_DATABASE_XLSX)
     seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "loco_numbers_only.xlsx", LOCO_NUMBERS_ONLY_XLSX)
 
-    # Create defaults only if missing
     if not USERS_FILE.exists():
         save_json(
             USERS_FILE,
@@ -356,7 +431,7 @@ def home():
                 "/downloads/loco_numbers_only.xlsx, "
                 "/locos.json, /loco_history.json, "
                 "/loco_export.csv, /loco_summary.txt, "
-                "/debug/storage, /debug/write-test"
+                "/debug/storage, /debug/backups"
             ),
             "data_dir": str(DATA_DIR),
             "downloads_dir": str(DOWNLOADS_DIR),
@@ -376,10 +451,12 @@ def health():
             "time": iso_now(),
             "data_dir": str(DATA_DIR),
             "downloads_dir": str(DOWNLOADS_DIR),
+            "backups_dir": str(BACKUPS_DIR),
             "data_dir_exists": DATA_DIR.exists(),
             "downloads_dir_exists": DOWNLOADS_DIR.exists(),
             "trains_exists": LIVE_TRAINS_FILE.exists(),
             "locos_exists": LIVE_LOCOS_FILE.exists(),
+            "locos_count": count_json_records_from_file(LIVE_LOCOS_FILE),
             "history_exists": LIVE_LOCO_HISTORY_FILE.exists(),
         }
     )
@@ -416,6 +493,7 @@ def debug_storage():
         "data_dir": str(DATA_DIR),
         "downloads_dir": str(DOWNLOADS_DIR),
         "private_data_dir": str(PRIVATE_DATA_DIR),
+        "backups_dir": str(BACKUPS_DIR),
         "data_dir_exists": DATA_DIR.exists(),
         "downloads_dir_exists": DOWNLOADS_DIR.exists(),
         "private_data_dir_exists": PRIVATE_DATA_DIR.exists(),
@@ -424,6 +502,7 @@ def debug_storage():
                 "path": str(path),
                 "exists": path.exists(),
                 "size": path.stat().st_size if path.exists() else 0,
+                "records": count_json_records_from_file(path) if path.suffix.lower() == ".json" else None,
                 "modified_utc": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()
                 if path.exists()
                 else None,
@@ -457,6 +536,45 @@ def debug_write_test():
             }
         )
     )
+
+
+@app.route("/debug/backups", methods=["GET", "OPTIONS"])
+def debug_backups():
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+
+    ensure_dirs()
+
+    backups = []
+
+    for path in sorted(BACKUPS_DIR.glob("*"), key=lambda p: p.stat().st_mtime, reverse=True):
+        backups.append(
+            {
+                "name": path.name,
+                "size": path.stat().st_size,
+                "modified_utc": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat(),
+                "download_url": f"/debug/backups/{path.name}",
+            }
+        )
+
+    return add_cors(
+        jsonify(
+            {
+                "ok": True,
+                "backup_dir": str(BACKUPS_DIR),
+                "count": len(backups),
+                "backups": backups[:200],
+            }
+        )
+    )
+
+
+@app.route("/debug/backups/<path:filename>", methods=["GET", "OPTIONS"])
+def download_backup(filename: str):
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+
+    return add_cors(send_from_directory(BACKUPS_DIR, filename, as_attachment=True))
 
 
 # ============================================================
@@ -525,7 +643,9 @@ def public_downloads(filename: str):
 
 
 # ============================================================
-# Push routes
+# Upload routes
+# These are routes inside app.py, not separate files.
+# /push_files protects the loco database from smaller uploads.
 # ============================================================
 
 @app.route("/push_trains", methods=["POST", "OPTIONS"])
@@ -547,12 +667,32 @@ def push_trains():
     if not isinstance(trains, list):
         return add_cors(make_response(json.dumps({"ok": False, "error": "missing trains list"}), 400))
 
+    backup_path = backup_existing_file(LIVE_TRAINS_FILE)
     save_json(LIVE_TRAINS_FILE, payload)
-    return add_cors(jsonify({"ok": True, "saved": len(trains), "path": str(LIVE_TRAINS_FILE)}))
+
+    return add_cors(
+        jsonify(
+            {
+                "ok": True,
+                "saved": len(trains),
+                "path": str(LIVE_TRAINS_FILE),
+                "backup": backup_path,
+            }
+        )
+    )
 
 
 @app.route("/push_files", methods=["POST", "OPTIONS"])
 def push_files():
+    """
+    This route receives generated loco database files.
+
+    Protection added:
+    - It checks locos.json before saving.
+    - If the incoming locos.json has fewer records than the current saved one,
+      the whole upload is rejected.
+    - Existing files are backed up before overwrite.
+    """
     if request.method == "OPTIONS":
         return add_cors(make_response("", 204))
 
@@ -570,7 +710,13 @@ def push_files():
     if not isinstance(files, list):
         return add_cors(make_response(json.dumps({"ok": False, "error": "missing files list"}), 400))
 
-    saved = []
+    allow_smaller = bool(payload.get("allow_smaller", False))
+    allow_smaller = allow_smaller or str(request.headers.get("X-Allow-Smaller", "")).lower() == "true"
+
+    existing_loco_count = count_json_records_from_file(LIVE_LOCOS_FILE)
+    incoming_loco_count = None
+
+    decoded_files = []
     skipped = []
 
     for item in files:
@@ -592,13 +738,79 @@ def push_files():
 
         try:
             raw = base64.b64decode(content_b64.encode("utf-8"))
+        except Exception as exc:
+            skipped.append({"path": relative_path, "reason": f"base64 decode failed: {exc}"})
+            continue
+
+        if relative_path == "locos.json":
+            incoming_loco_count = count_json_records_from_bytes(raw)
+
+        decoded_files.append(
+            {
+                "relative_path": relative_path,
+                "target": target,
+                "raw": raw,
+            }
+        )
+
+    if (
+        incoming_loco_count is not None
+        and existing_loco_count > 0
+        and incoming_loco_count < existing_loco_count
+        and not allow_smaller
+    ):
+        return add_cors(
+            make_response(
+                json.dumps(
+                    {
+                        "ok": False,
+                        "error": "refused_smaller_loco_database",
+                        "message": "Incoming locos.json has fewer locos than the current saved Railway database, so nothing was overwritten.",
+                        "existing_loco_count": existing_loco_count,
+                        "incoming_loco_count": incoming_loco_count,
+                        "current_file": str(LIVE_LOCOS_FILE),
+                        "next_step": "Fix the generator so it merges old locos with new scraped locos before uploading.",
+                    },
+                    indent=2,
+                ),
+                409,
+            )
+        )
+
+    saved = []
+
+    for item in decoded_files:
+        relative_path = item["relative_path"]
+        target = item["target"]
+        raw = item["raw"]
+
+        try:
             target.parent.mkdir(parents=True, exist_ok=True)
+            backup_path = backup_existing_file(target)
             target.write_bytes(raw)
-            saved.append({"path": relative_path, "bytes": len(raw), "saved_to": str(target)})
+
+            saved.append(
+                {
+                    "path": relative_path,
+                    "bytes": len(raw),
+                    "saved_to": str(target),
+                    "backup": backup_path,
+                }
+            )
         except Exception as exc:
             skipped.append({"path": relative_path, "reason": str(exc)})
 
-    return add_cors(jsonify({"ok": True, "saved": saved, "skipped": skipped}))
+    return add_cors(
+        jsonify(
+            {
+                "ok": True,
+                "saved": saved,
+                "skipped": skipped,
+                "existing_loco_count": existing_loco_count,
+                "incoming_loco_count": incoming_loco_count,
+            }
+        )
+    )
 
 
 # ============================================================
@@ -710,6 +922,7 @@ def admin_page():
         {"name": "Locomotive Database XLSX", "path": "/downloads/loco_database.xlsx"},
         {"name": "Numbers Only XLSX", "path": "/downloads/loco_numbers_only.xlsx"},
         {"name": "Debug Storage", "path": "/debug/storage"},
+        {"name": "Backups", "path": "/debug/backups"},
     ]
 
     return render_template(
@@ -878,7 +1091,7 @@ def not_found(_):
             {
                 "ok": False,
                 "error": "not_found",
-                "message": "Route not found. Try /health, /debug/storage, /trains.json, /locos.json, or /downloads/recently_added.html",
+                "message": "Route not found. Try /health, /debug/storage, /debug/backups, /trains.json, /locos.json, or /downloads/recently_added.html",
             }
         ),
         404,
