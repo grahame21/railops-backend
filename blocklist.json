@@ -1,0 +1,29 @@
+{
+  "blocked_locos": [
+    "TNSW*",
+    "TEST*",
+    "DEMO*",
+    "UNKNOWN",
+    "UNREG"
+  ],
+  "blocked_routes": [
+    "TEST TRAIN",
+    "LINE TEST",
+    "V/LINE TEST",
+    "DEMO SERVICE"
+  ],
+  "blocked_descriptions": [
+    "test train",
+    "line test",
+    "placeholder",
+    "dummy",
+    "not in service"
+  ],
+  "blocked_operators": [],
+  "notes": {
+    "blocked_locos": "Use exact loco numbers or wildcard patterns. Example: TNSW* blocks anything starting with TNSW.",
+    "blocked_routes": "Blocks if route/service/train ID contains this text.",
+    "blocked_descriptions": "Blocks if vehicle description contains this text.",
+    "blocked_operators": "Blocks if operator contains this text."
+  }
+}
