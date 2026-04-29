@@ -45,6 +45,7 @@ except ImportError:
 # - Blocklist still applies.
 # - Sorts naturally: NR1, NR2, NR10.
 # - Displays loco numbers without spaces.
+# - Generated/display times are converted by the browser to phone local time.
 # ============================================================
 
 
@@ -67,6 +68,10 @@ LOCO_NUMBERS_ONLY_XLSX = DOWNLOADS_DIR / "loco_numbers_only.xlsx"
 
 BLOCKLIST_FILE = BASE_DIR / "blocklist.json"
 
+
+# ============================================================
+# Basic helpers
+# ============================================================
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -191,13 +196,22 @@ def parse_date_sort(value: Any) -> datetime:
     return datetime(1970, 1, 1, tzinfo=timezone.utc)
 
 
-def display_date(value: Any) -> str:
-    dt = parse_date_sort(value)
+def is_probably_iso(value: Any) -> bool:
+    text = norm_text(value)
+    return bool(re.match(r"^\d{4}-\d{2}-\d{2}T", text)) or text.endswith("Z")
 
-    if dt.year == 1970:
+
+def html_local_time(value: Any) -> str:
+    """
+    Creates a span that Safari/Chrome converts into the phone's local time.
+    If JavaScript fails, it falls back to the raw value.
+    """
+    text = norm_text(value)
+    if not text:
         return ""
 
-    return dt.strftime("%d %b %Y %H:%M")
+    safe = esc(text)
+    return f'<span class="local-time" data-utc="{safe}">{safe}</span>'
 
 
 def esc(value: Any) -> str:
@@ -510,7 +524,7 @@ def merge_locos(
             continue
 
         item = dict(item)
-        item["loco_number"] = loco_number or loco_key
+        item["loco_number"] = display_loco_number(loco_number or loco_key)
 
         if not preferred_existing_date(item):
             item["date_time_added"] = now_iso
@@ -555,10 +569,12 @@ def merge_locos(
                 if value not in [None, ""]:
                     existing[key] = value
 
+            existing["loco_number"] = display_loco_number(existing.get("loco_number"))
             existing["date_time_added"] = original_added
             existing["last_seen"] = now_iso
             master[loco_key] = existing
         else:
+            new_record["loco_number"] = display_loco_number(new_record.get("loco_number"))
             master[loco_key] = new_record
             new_added.append(new_record)
 
@@ -582,6 +598,8 @@ def visible_locos(locos: list[dict[str, Any]]) -> list[dict[str, Any]]:
         blocked, _ = is_loco_blocked(loco_number, loco, blocklist)
 
         if not blocked:
+            loco = dict(loco)
+            loco["loco_number"] = display_loco_number(loco_number)
             output.append(loco)
 
     output.sort(
@@ -597,7 +615,60 @@ def visible_locos(locos: list[dict[str, Any]]) -> list[dict[str, Any]]:
 # HTML generation
 # ============================================================
 
-def html_header(title: str, active: str, count: int, generated: str, added_last_update: int = 0) -> str:
+def browser_time_script() -> str:
+    return """
+<script>
+(function () {
+  function formatLocalTime(value) {
+    if (!value) return "";
+
+    var text = String(value).trim();
+    var iso = text;
+
+    if (iso.endsWith("Z") === false && iso.indexOf("+") === -1 && iso.indexOf("T") !== -1) {
+      iso = iso + "Z";
+    }
+
+    var date = new Date(iso);
+
+    if (isNaN(date.getTime())) {
+      return text;
+    }
+
+    return new Intl.DateTimeFormat(navigator.language || "en-AU", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZoneName: "short"
+    }).format(date);
+  }
+
+  function timezoneName() {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || "local time";
+    } catch (err) {
+      return "local time";
+    }
+  }
+
+  document.querySelectorAll(".local-time").forEach(function (el) {
+    var value = el.getAttribute("data-utc");
+    el.textContent = formatLocalTime(value);
+    el.title = "Converted from UTC to your phone/browser timezone: " + timezoneName();
+  });
+
+  document.querySelectorAll(".phone-timezone").forEach(function (el) {
+    el.textContent = timezoneName();
+  });
+})();
+</script>
+"""
+
+
+def html_header(title: str, active: str, count: int, generated_utc: str, added_last_update: int = 0) -> str:
     def button(label: str, href: str, is_active: bool = False) -> str:
         cls = "btn active" if is_active else "btn"
         return f'<a class="{cls}" href="{href}">{html.escape(label)}</a>'
@@ -663,11 +734,16 @@ h1 {{
   background:var(--good);
   border-color:var(--goodline);
 }}
+.small-note {{
+  color:var(--muted);
+  font-size:15px;
+  margin-top:4px;
+}}
 .nav {{
   display:flex;
   flex-wrap:wrap;
   gap:12px;
-  margin-top:8px;
+  margin-top:12px;
 }}
 .btn {{
   display:inline-block;
@@ -737,8 +813,9 @@ td.muted {{ color:var(--muted); }}
   <div>
     <span class="pill">Visible locos: {count}</span>
     <span class="pill good">Added last update: {added_last_update}</span>
-    <span class="pill">Generated: {esc(generated)}</span>
+    <span class="pill">Generated: {html_local_time(generated_utc)}</span>
   </div>
+  <div class="small-note">Times are shown in your phone/browser timezone: <span class="phone-timezone">local time</span>.</div>
   <div class="nav">
     {button("Full database", "loco_database.html", active == "full")}
     {button("Recently added", "recently_added.html", active == "recent")}
@@ -751,12 +828,12 @@ td.muted {{ color:var(--muted); }}
 
 
 def html_footer() -> str:
-    return "</body></html>\n"
+    return browser_time_script() + "\n</body></html>\n"
 
 
 def generate_database_html(
     locos: list[dict[str, Any]],
-    generated_label: str,
+    generated_utc: str,
     added_last_update: int = 0,
 ) -> None:
 
@@ -780,8 +857,8 @@ def generate_database_html(
   <td>{esc(operator)}</td>
   <td>{esc(description)}</td>
   <td>{esc(train_id)}</td>
-  <td><strong>{esc(display_date(added))}</strong><div class="raw">Raw: {esc(added)}</div></td>
-  <td>{esc(display_date(last_seen))}<div class="raw">Raw: {esc(last_seen)}</div></td>
+  <td><strong>{html_local_time(added)}</strong><div class="raw">Raw UTC: {esc(added)}</div></td>
+  <td>{html_local_time(last_seen)}<div class="raw">Raw UTC: {esc(last_seen)}</div></td>
 </tr>
 """
         )
@@ -790,7 +867,7 @@ def generate_database_html(
         "RailOps Loco Database",
         "full",
         len(locos),
-        generated_label,
+        generated_utc,
         added_last_update,
     )
 
@@ -825,7 +902,7 @@ def generate_database_html(
 
 def generate_recent_html(
     locos: list[dict[str, Any]],
-    generated_label: str,
+    generated_utc: str,
     added_last_update: int = 0,
     limit: int = 300,
 ) -> None:
@@ -852,7 +929,7 @@ def generate_recent_html(
   <td><strong>{esc(display_loco_number(loco_number))}</strong></td>
   <td>{esc(operator)}</td>
   <td>{esc(description)}</td>
-  <td><strong>{esc(display_date(added))}</strong><div class="raw">Raw: {esc(added)}</div></td>
+  <td><strong>{html_local_time(added)}</strong><div class="raw">Raw UTC: {esc(added)}</div></td>
 </tr>
 """
         )
@@ -861,7 +938,7 @@ def generate_recent_html(
         "RailOps Recently Added Locos",
         "recent",
         len(locos),
-        generated_label,
+        generated_utc,
         added_last_update,
     )
 
@@ -894,7 +971,7 @@ def generate_recent_html(
 
 def generate_numbers_html(
     locos: list[dict[str, Any]],
-    generated_label: str,
+    generated_utc: str,
     added_last_update: int = 0,
 ) -> None:
 
@@ -916,7 +993,7 @@ def generate_numbers_html(
         "RailOps Loco Numbers Only",
         "numbers",
         len(locos),
-        generated_label,
+        generated_utc,
         added_last_update,
     )
 
@@ -957,6 +1034,7 @@ def generate_csv(locos: list[dict[str, Any]]) -> None:
 
         for loco in locos:
             row = {field: loco.get(field, "") for field in fields}
+            row["loco_number"] = display_loco_number(row.get("loco_number"))
             writer.writerow(row)
 
 
@@ -1006,8 +1084,8 @@ def generate_xlsx(locos: list[dict[str, Any]]) -> None:
         "Vehicle Description",
         "Train/Service",
         "Route",
-        "Date/Time Added",
-        "Last Seen",
+        "Date/Time Added UTC",
+        "Last Seen UTC",
         "Latitude",
         "Longitude",
         "Source",
@@ -1072,6 +1150,11 @@ def generate_summary(
     text = f"""RailOps Loco Database Summary
 Generated UTC: {generated_iso}
 
+Note:
+HTML pages convert generated/date times to your phone/browser local timezone automatically.
+If your phone is in Adelaide, it shows Adelaide time.
+If your phone is in Melbourne or Sydney, it shows Melbourne/Sydney time.
+
 Source trains this run: {trains_count}
 Locos seen this run: {seen_this_run}
 Existing locos before merge: {existing_before}
@@ -1096,7 +1179,6 @@ def main() -> None:
     ensure_dirs()
 
     generated_iso = iso_now()
-    generated_label = datetime.now().strftime("%d %b %Y %H:%M")
 
     trains_payload = load_trains_payload()
     trains = trains_payload.get("trains", [])
@@ -1140,9 +1222,9 @@ def main() -> None:
     history = history[:500]
     save_json(LOCO_HISTORY_FILE, history)
 
-    generate_database_html(visible, generated_label, added_last_update)
-    generate_recent_html(visible, generated_label, added_last_update)
-    generate_numbers_html(visible, generated_label, added_last_update)
+    generate_database_html(visible, generated_iso, added_last_update)
+    generate_recent_html(visible, generated_iso, added_last_update)
+    generate_numbers_html(visible, generated_iso, added_last_update)
     generate_csv(visible)
     generate_xlsx(visible)
 
@@ -1163,6 +1245,7 @@ def main() -> None:
     print(f"Final visible locos: {len(visible)}")
     print("Sort order: natural alphabetical")
     print("Display format: no spaces in loco numbers")
+    print("HTML display time: phone/browser local timezone")
     print(f"Wrote: {LOCOS_FILE}")
     print(f"Wrote: {RECENTLY_ADDED_HTML}")
     print(f"Wrote: {LOCO_DATABASE_HTML}")
