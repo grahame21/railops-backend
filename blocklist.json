@@ -1,6 +1,9 @@
 {
   "blocked_locos": [
     "TNSW*",
+    "QLD7*",
+    "JP2*",
+    "MM-*",
     "TEST*",
     "DEMO*",
     "UNKNOWN",
@@ -16,7 +19,15 @@
     "V/LINE TEST",
     "DEMO SERVICE",
     "MARKERSOURCE",
-    "ARROWMARKERSSOURCE"
+    "ARROWMARKERSSOURCE",
+    "UNREG",
+    "DULWICH HILL LINE",
+    "GCR1",
+    "GUNGAHLIN PLACE - ALINGA STREET",
+    "NEWCASTLE INTERCHANGE - NEWCASTLE BEACH LINE",
+    "METRO NORTH WEST & BANKSTOWN LINE",
+    "RANDWICK LINE",
+    "KINGSFORD LINE"
   ],
   "blocked_descriptions": [
     "test train",
@@ -25,7 +36,15 @@
     "dummy",
     "not in service",
     "markersource",
-    "arrowmarkerssource"
+    "arrowmarkerssource",
+    "unreg",
+    "Dulwich Hill Line",
+    "GCR1",
+    "Gungahlin Place - Alinga Street",
+    "Newcastle Interchange - Newcastle Beach Line",
+    "Metro North West & Bankstown Line",
+    "Randwick Line",
+    "Kingsford Line"
   ],
   "blocked_operators": [],
   "notes": {
