@@ -32,7 +32,13 @@ def log(message: str) -> None:
     print(message, flush=True)
 
 
-def run(command: list[str], label: str, cwd: Path, allow_fail: bool = False, show_command: bool = True) -> int:
+def run(
+    command: list[str],
+    label: str,
+    cwd: Path,
+    allow_fail: bool = False,
+    show_command: bool = True,
+) -> int:
     log("")
     log(f"=== RUNNING {label} ===")
 
@@ -80,14 +86,16 @@ def clone_repo() -> Path:
     log(f"Branch: {branch}")
     log("Token: [hidden]")
 
-    clone_code = subprocess.run(
+    clone_result = subprocess.run(
         ["git", "clone", "--branch", branch, "--depth", "1", authed_url, str(WORK_DIR)],
         cwd=Path("/tmp"),
         text=True,
-    ).returncode
+    )
 
-    if clone_code != 0:
-        raise RuntimeError("git clone failed. Check GITHUB_TOKEN_PUSH, GITHUB_REPO, and repo access permissions.")
+    if clone_result.returncode != 0:
+        raise RuntimeError(
+            "git clone failed. Check GITHUB_TOKEN_PUSH, GITHUB_REPO, branch name, and repo token permissions."
+        )
 
     if not (WORK_DIR / ".git").exists():
         raise RuntimeError("Clone finished but .git folder is missing.")
@@ -128,11 +136,17 @@ def count_records(path: Path, possible_keys: list[str]) -> int:
 
 
 def get_train_count(repo_dir: Path) -> int:
-    return count_records(repo_dir / "trains.json", ["trains", "data", "items", "features"])
+    return count_records(
+        repo_dir / "trains.json",
+        ["trains", "data", "items", "features"],
+    )
 
 
 def get_loco_count(repo_dir: Path) -> int:
-    return count_records(repo_dir / "locos.json", ["locos", "data", "items"])
+    return count_records(
+        repo_dir / "locos.json",
+        ["locos", "data", "items"],
+    )
 
 
 def run_scraper(repo_dir: Path) -> bool:
@@ -147,7 +161,12 @@ def run_scraper(repo_dir: Path) -> bool:
         script_path = repo_dir / script
 
         if script_path.exists():
-            code = run([sys.executable, script], script, cwd=repo_dir, allow_fail=True)
+            code = run(
+                [sys.executable, script],
+                script,
+                cwd=repo_dir,
+                allow_fail=True,
+            )
 
             if code != 0:
                 log(f"Scraper returned non-zero code: {code}")
@@ -167,7 +186,12 @@ def run_database_generator(repo_dir: Path) -> bool:
         log(f"Database generator not found: {generator}")
         return False
 
-    code = run([sys.executable, generator], generator, cwd=repo_dir, allow_fail=True)
+    code = run(
+        [sys.executable, generator],
+        generator,
+        cwd=repo_dir,
+        allow_fail=True,
+    )
 
     if code != 0:
         log(f"Database generator returned non-zero code: {code}")
@@ -193,11 +217,20 @@ def show_file_summary(repo_dir: Path) -> None:
 
 
 def add_database_files(repo_dir: Path) -> None:
+    """
+    Force-add generated database files even if .gitignore ignores static/downloads,
+    xlsx files, csv files, or generated outputs.
+    """
     for file_path in DATABASE_FILES:
         path = repo_dir / file_path
 
         if path.exists():
-            run(["git", "add", file_path], f"git add {file_path}", cwd=repo_dir, allow_fail=True)
+            run(
+                ["git", "add", "-f", file_path],
+                f"git add -f {file_path}",
+                cwd=repo_dir,
+                allow_fail=True,
+            )
         else:
             log(f"Skipping missing file: {file_path}")
 
@@ -217,13 +250,23 @@ def commit_and_push(repo_dir: Path) -> bool:
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     message = os.getenv("GIT_COMMIT_MESSAGE", f"Update RailOps database files - {timestamp}")
 
-    commit_code = run(["git", "commit", "-m", message], "git commit", cwd=repo_dir, allow_fail=True)
+    commit_code = run(
+        ["git", "commit", "-m", message],
+        "git commit",
+        cwd=repo_dir,
+        allow_fail=True,
+    )
 
     if commit_code != 0:
         log("Git commit failed.")
         return False
 
-    push_code = run(["git", "push", "origin", branch], f"git push origin {branch}", cwd=repo_dir, allow_fail=True)
+    push_code = run(
+        ["git", "push", "origin", branch],
+        f"git push origin {branch}",
+        cwd=repo_dir,
+        allow_fail=True,
+    )
 
     if push_code != 0:
         log("Git push failed.")
@@ -293,6 +336,7 @@ def main() -> int:
     show_file_summary(repo_dir)
 
     add_database_files(repo_dir)
+
     commit_ok = commit_and_push(repo_dir)
 
     elapsed = round(time.time() - start, 2)
