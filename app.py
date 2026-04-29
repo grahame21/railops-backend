@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import secrets
+import shutil
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
@@ -28,40 +29,66 @@ try:
 except ImportError:
     HAS_WERKZEUG = False
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data"
-STATIC_DATA_DIR = BASE_DIR / "static" / "data"
-STATIC_DOWNLOADS_DIR = BASE_DIR / "static" / "downloads"
-USERS_FILE = DATA_DIR / "users.json"
-TOKENS_FILE = DATA_DIR / "guest_tokens.json"
-LOGS_FILE = DATA_DIR / "activity_log.json"
 
-LIVE_TRAINS_FILE = BASE_DIR / "live_trains.json"
-LIVE_LOCOS_FILE = BASE_DIR / "locos.json"
-LIVE_LOCO_HISTORY_FILE = BASE_DIR / "loco_history.json"
-LIVE_LOCO_EXPORT_FILE = BASE_DIR / "loco_export.csv"
-LIVE_LOCO_SUMMARY_FILE = BASE_DIR / "loco_summary.txt"
+# ============================================================
+# RailOps paths
+# IMPORTANT:
+# Railway volume is mounted at /app/data.
+# All generated/live files must be stored there, not in BASE_DIR.
+# ============================================================
+
+BASE_DIR = Path(__file__).resolve().parent
+
+DATA_DIR = Path(os.getenv("DATA_DIR", "/app/data")).resolve()
+DOWNLOADS_DIR = Path(os.getenv("DOWNLOAD_DIR", str(DATA_DIR / "downloads"))).resolve()
+PRIVATE_DATA_DIR = DATA_DIR / "private"
+
+# Old repo folders, used only for one-time seeding if files exist
+OLD_REPO_DATA_DIR = BASE_DIR / "data"
+OLD_STATIC_DATA_DIR = BASE_DIR / "static" / "data"
+OLD_STATIC_DOWNLOADS_DIR = BASE_DIR / "static" / "downloads"
+
+USERS_FILE = PRIVATE_DATA_DIR / "users.json"
+TOKENS_FILE = PRIVATE_DATA_DIR / "guest_tokens.json"
+LOGS_FILE = PRIVATE_DATA_DIR / "activity_log.json"
+
+LIVE_TRAINS_FILE = Path(os.getenv("TRAINS_FILE", str(DATA_DIR / "trains.json"))).resolve()
+LIVE_LOCOS_FILE = Path(os.getenv("LOCOS_FILE", str(DATA_DIR / "locos.json"))).resolve()
+LIVE_LOCO_HISTORY_FILE = Path(os.getenv("LOCO_HISTORY_FILE", str(DATA_DIR / "loco_history.json"))).resolve()
+LIVE_LOCO_EXPORT_FILE = Path(os.getenv("LOCO_EXPORT_FILE", str(DATA_DIR / "loco_export.csv"))).resolve()
+LIVE_LOCO_SUMMARY_FILE = Path(os.getenv("LOCO_SUMMARY_FILE", str(DATA_DIR / "loco_summary.txt"))).resolve()
+
+LOCO_DATABASE_HTML = DOWNLOADS_DIR / "loco_database.html"
+RECENTLY_ADDED_HTML = DOWNLOADS_DIR / "recently_added.html"
+LOCO_NUMBERS_ONLY_HTML = DOWNLOADS_DIR / "loco_numbers_only.html"
+LOCO_DATABASE_XLSX = DOWNLOADS_DIR / "loco_database.xlsx"
+LOCO_NUMBERS_ONLY_XLSX = DOWNLOADS_DIR / "loco_numbers_only.xlsx"
 
 ALLOWED_PUSH_TARGETS = {
     "live_trains.json": LIVE_TRAINS_FILE,
+    "trains.json": LIVE_TRAINS_FILE,
+
     "locos.json": LIVE_LOCOS_FILE,
     "loco_history.json": LIVE_LOCO_HISTORY_FILE,
     "loco_export.csv": LIVE_LOCO_EXPORT_FILE,
     "loco_summary.txt": LIVE_LOCO_SUMMARY_FILE,
-    "downloads/loco_database.html": STATIC_DOWNLOADS_DIR / "loco_database.html",
-    "downloads/recently_added.html": STATIC_DOWNLOADS_DIR / "recently_added.html",
-    "downloads/loco_numbers_only.html": STATIC_DOWNLOADS_DIR / "loco_numbers_only.html",
-    "downloads/loco_database.xlsx": STATIC_DOWNLOADS_DIR / "loco_database.xlsx",
-    "downloads/loco_numbers_only.xlsx": STATIC_DOWNLOADS_DIR / "loco_numbers_only.xlsx",
+
+    "downloads/loco_database.html": LOCO_DATABASE_HTML,
+    "downloads/recently_added.html": RECENTLY_ADDED_HTML,
+    "downloads/loco_numbers_only.html": LOCO_NUMBERS_ONLY_HTML,
+    "downloads/loco_database.xlsx": LOCO_DATABASE_XLSX,
+    "downloads/loco_numbers_only.xlsx": LOCO_NUMBERS_ONLY_XLSX,
 }
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "change-this-secret-key-now")
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
-for folder in [DATA_DIR, STATIC_DATA_DIR, STATIC_DOWNLOADS_DIR]:
-    folder.mkdir(parents=True, exist_ok=True)
 
+# ============================================================
+# Basic helpers
+# ============================================================
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
@@ -69,6 +96,12 @@ def utc_now() -> datetime:
 
 def iso_now() -> str:
     return utc_now().isoformat()
+
+
+def ensure_dirs() -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    PRIVATE_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_json(path: Path, default):
@@ -95,7 +128,44 @@ def add_cors(resp):
     return resp
 
 
+def seed_file_if_missing(source: Path, destination: Path) -> None:
+    """
+    Copies an old bundled repo file into the Railway volume only once.
+    It will NEVER overwrite existing /app/data files.
+    """
+    try:
+        if destination.exists():
+            return
+        if source.exists():
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+            print(f"[seed] copied {source} -> {destination}")
+    except Exception as exc:
+        print(f"[seed] failed {source} -> {destination}: {exc}")
+
+
 def ensure_seed_files() -> None:
+    ensure_dirs()
+
+    # One-time seed from old repo locations, without overwriting volume data
+    seed_file_if_missing(OLD_REPO_DATA_DIR / "users.json", USERS_FILE)
+    seed_file_if_missing(OLD_REPO_DATA_DIR / "guest_tokens.json", TOKENS_FILE)
+    seed_file_if_missing(OLD_REPO_DATA_DIR / "activity_log.json", LOGS_FILE)
+
+    seed_file_if_missing(BASE_DIR / "live_trains.json", LIVE_TRAINS_FILE)
+    seed_file_if_missing(BASE_DIR / "trains.json", LIVE_TRAINS_FILE)
+    seed_file_if_missing(BASE_DIR / "locos.json", LIVE_LOCOS_FILE)
+    seed_file_if_missing(BASE_DIR / "loco_history.json", LIVE_LOCO_HISTORY_FILE)
+    seed_file_if_missing(BASE_DIR / "loco_export.csv", LIVE_LOCO_EXPORT_FILE)
+    seed_file_if_missing(BASE_DIR / "loco_summary.txt", LIVE_LOCO_SUMMARY_FILE)
+
+    seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "loco_database.html", LOCO_DATABASE_HTML)
+    seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "recently_added.html", RECENTLY_ADDED_HTML)
+    seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "loco_numbers_only.html", LOCO_NUMBERS_ONLY_HTML)
+    seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "loco_database.xlsx", LOCO_DATABASE_XLSX)
+    seed_file_if_missing(OLD_STATIC_DOWNLOADS_DIR / "loco_numbers_only.xlsx", LOCO_NUMBERS_ONLY_XLSX)
+
+    # Create defaults only if missing
     if not USERS_FILE.exists():
         save_json(
             USERS_FILE,
@@ -150,21 +220,31 @@ def ensure_seed_files() -> None:
     if not LIVE_LOCO_SUMMARY_FILE.exists():
         LIVE_LOCO_SUMMARY_FILE.write_text("No loco summary uploaded yet.\n", encoding="utf-8")
 
-    placeholders = {
-        "locomotives.db": "Put your real locomotives.db in this folder.\n",
-        "flight_data.json": json.dumps({"lastUpdated": iso_now(), "aircraft": []}, indent=2),
-        "exports-readme.txt": "Store CSV or JSON exports here.\n",
-        "updater-status.json": json.dumps({"lastRun": None, "status": "idle"}, indent=2),
-    }
+    if not RECENTLY_ADDED_HTML.exists():
+        RECENTLY_ADDED_HTML.write_text(
+            "<!doctype html><html><body><h1>RailOps Recently Added Locos</h1><p>No recently added loco file uploaded yet.</p></body></html>",
+            encoding="utf-8",
+        )
 
-    for name, content in placeholders.items():
-        p = STATIC_DATA_DIR / name
-        if not p.exists():
-            p.write_text(content, encoding="utf-8")
+    if not LOCO_DATABASE_HTML.exists():
+        LOCO_DATABASE_HTML.write_text(
+            "<!doctype html><html><body><h1>RailOps Loco Database</h1><p>No loco database file uploaded yet.</p></body></html>",
+            encoding="utf-8",
+        )
+
+    if not LOCO_NUMBERS_ONLY_HTML.exists():
+        LOCO_NUMBERS_ONLY_HTML.write_text(
+            "<!doctype html><html><body><h1>RailOps Loco Numbers Only</h1><p>No numbers-only file uploaded yet.</p></body></html>",
+            encoding="utf-8",
+        )
 
 
 ensure_seed_files()
 
+
+# ============================================================
+# Auth helpers
+# ============================================================
 
 def log_event(action: str, details: dict | None = None) -> None:
     payload = load_json(LOGS_FILE, {"events": []})
@@ -189,13 +269,13 @@ def get_users():
 def find_user(username: str):
     users = get_users()
     for admin in users.get("admins", []):
-        if admin["username"] == username:
+        if admin.get("username") == username:
             return "admin", admin
     for guest in users.get("guests", []):
-        if guest["username"] == username:
+        if guest.get("username") == username:
             return "guest", guest
     for flight_user in users.get("flight_only_users", []):
-        if flight_user["username"] == username:
+        if flight_user.get("username") == username:
             return "flight_only", flight_user
     return None, None
 
@@ -207,6 +287,13 @@ def is_expired(expires_at: str | None) -> bool:
         return datetime.fromisoformat(expires_at) < utc_now()
     except Exception:
         return False
+
+
+def _is_password_hash(value: str) -> bool:
+    if not isinstance(value, str):
+        return False
+    hash_patterns = ["pbkdf2:", "scrypt$", "bcrypt$", "argon2"]
+    return any(value.startswith(pattern) for pattern in hash_patterns)
 
 
 def verify_password(stored_password: str | None, provided_password: str) -> bool:
@@ -221,13 +308,6 @@ def verify_password(stored_password: str | None, provided_password: str) -> bool
             pass
 
     return stored_password == provided_password
-
-
-def _is_password_hash(value: str) -> bool:
-    if not isinstance(value, str):
-        return False
-    hash_patterns = ["pbkdf2:", "scrypt$", "bcrypt$", "argon2"]
-    return any(value.startswith(pattern) for pattern in hash_patterns)
 
 
 def login_required(fn):
@@ -250,6 +330,10 @@ def admin_required(fn):
     return wrapper
 
 
+# ============================================================
+# Public / health / debug routes
+# ============================================================
+
 @app.get("/")
 def home():
     if session.get("logged_in"):
@@ -259,10 +343,23 @@ def home():
             return redirect(url_for("flight_page"))
         else:
             return redirect(url_for("dashboard_page"))
+
     return jsonify(
         {
             "ok": True,
-            "hint": "Use /trains.json, /health, /downloads/loco_database.html, /downloads/recently_added.html, /downloads/loco_numbers_only.html, /downloads/loco_database.xlsx, /downloads/loco_numbers_only.xlsx, /locos.json, /loco_history.json, /loco_export.csv, /loco_summary.txt",
+            "hint": (
+                "Use /trains.json, /health, "
+                "/downloads/loco_database.html, "
+                "/downloads/recently_added.html, "
+                "/downloads/loco_numbers_only.html, "
+                "/downloads/loco_database.xlsx, "
+                "/downloads/loco_numbers_only.xlsx, "
+                "/locos.json, /loco_history.json, "
+                "/loco_export.csv, /loco_summary.txt, "
+                "/debug/storage, /debug/write-test"
+            ),
+            "data_dir": str(DATA_DIR),
+            "downloads_dir": str(DOWNLOADS_DIR),
         }
     )
 
@@ -277,10 +374,94 @@ def health():
             "ok": True,
             "service": "railops-backend",
             "time": iso_now(),
+            "data_dir": str(DATA_DIR),
+            "downloads_dir": str(DOWNLOADS_DIR),
+            "data_dir_exists": DATA_DIR.exists(),
+            "downloads_dir_exists": DOWNLOADS_DIR.exists(),
+            "trains_exists": LIVE_TRAINS_FILE.exists(),
+            "locos_exists": LIVE_LOCOS_FILE.exists(),
+            "history_exists": LIVE_LOCO_HISTORY_FILE.exists(),
         }
     )
     return add_cors(resp)
 
+
+@app.route("/debug/storage", methods=["GET", "OPTIONS"])
+def debug_storage():
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+
+    ensure_dirs()
+
+    files_to_check = [
+        USERS_FILE,
+        TOKENS_FILE,
+        LOGS_FILE,
+        LIVE_TRAINS_FILE,
+        LIVE_LOCOS_FILE,
+        LIVE_LOCO_HISTORY_FILE,
+        LIVE_LOCO_EXPORT_FILE,
+        LIVE_LOCO_SUMMARY_FILE,
+        LOCO_DATABASE_HTML,
+        RECENTLY_ADDED_HTML,
+        LOCO_NUMBERS_ONLY_HTML,
+        LOCO_DATABASE_XLSX,
+        LOCO_NUMBERS_ONLY_XLSX,
+    ]
+
+    payload = {
+        "ok": True,
+        "message": "This shows internal Railway volume storage. You cannot browse /app/data directly in Safari.",
+        "base_dir": str(BASE_DIR),
+        "data_dir": str(DATA_DIR),
+        "downloads_dir": str(DOWNLOADS_DIR),
+        "private_data_dir": str(PRIVATE_DATA_DIR),
+        "data_dir_exists": DATA_DIR.exists(),
+        "downloads_dir_exists": DOWNLOADS_DIR.exists(),
+        "private_data_dir_exists": PRIVATE_DATA_DIR.exists(),
+        "files": [
+            {
+                "path": str(path),
+                "exists": path.exists(),
+                "size": path.stat().st_size if path.exists() else 0,
+                "modified_utc": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()
+                if path.exists()
+                else None,
+            }
+            for path in files_to_check
+        ],
+    }
+
+    return add_cors(jsonify(payload))
+
+
+@app.route("/debug/write-test", methods=["GET", "OPTIONS"])
+def debug_write_test():
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+
+    ensure_dirs()
+
+    test_file = DATA_DIR / "railway_volume_test.txt"
+    now = iso_now()
+
+    test_file.write_text(f"Railway volume write test at {now}\n", encoding="utf-8")
+
+    return add_cors(
+        jsonify(
+            {
+                "ok": True,
+                "wrote": str(test_file),
+                "exists": test_file.exists(),
+                "content": test_file.read_text(encoding="utf-8"),
+            }
+        )
+    )
+
+
+# ============================================================
+# Public file routes
+# ============================================================
 
 @app.route("/trains.json", methods=["GET", "OPTIONS"])
 def public_trains_json():
@@ -288,7 +469,16 @@ def public_trains_json():
         return add_cors(make_response("", 204))
     if not LIVE_TRAINS_FILE.exists():
         return add_cors(make_response(json.dumps({"ok": False, "error": "live trains file not found"}), 404))
-    return add_cors(make_response(send_file(LIVE_TRAINS_FILE, mimetype="application/json")))
+    return add_cors(send_file(LIVE_TRAINS_FILE, mimetype="application/json"))
+
+
+@app.route("/live_trains.json", methods=["GET", "OPTIONS"])
+def public_live_trains_json_alias():
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+    if not LIVE_TRAINS_FILE.exists():
+        return add_cors(make_response(json.dumps({"ok": False, "error": "live trains file not found"}), 404))
+    return add_cors(send_file(LIVE_TRAINS_FILE, mimetype="application/json"))
 
 
 @app.route("/locos.json", methods=["GET", "OPTIONS"])
@@ -297,7 +487,7 @@ def public_locos_json():
         return add_cors(make_response("", 204))
     if not LIVE_LOCOS_FILE.exists():
         return add_cors(make_response("[]", 200))
-    return add_cors(make_response(send_file(LIVE_LOCOS_FILE, mimetype="application/json")))
+    return add_cors(send_file(LIVE_LOCOS_FILE, mimetype="application/json"))
 
 
 @app.route("/loco_history.json", methods=["GET", "OPTIONS"])
@@ -306,7 +496,7 @@ def public_loco_history_json():
         return add_cors(make_response("", 204))
     if not LIVE_LOCO_HISTORY_FILE.exists():
         return add_cors(make_response("[]", 200))
-    return add_cors(make_response(send_file(LIVE_LOCO_HISTORY_FILE, mimetype="application/json")))
+    return add_cors(send_file(LIVE_LOCO_HISTORY_FILE, mimetype="application/json"))
 
 
 @app.route("/loco_export.csv", methods=["GET", "OPTIONS"])
@@ -315,7 +505,7 @@ def public_loco_export_csv():
         return add_cors(make_response("", 204))
     if not LIVE_LOCO_EXPORT_FILE.exists():
         return add_cors(make_response("", 200))
-    return add_cors(make_response(send_file(LIVE_LOCO_EXPORT_FILE, mimetype="text/csv")))
+    return add_cors(send_file(LIVE_LOCO_EXPORT_FILE, mimetype="text/csv"))
 
 
 @app.route("/loco_summary.txt", methods=["GET", "OPTIONS"])
@@ -324,8 +514,19 @@ def public_loco_summary_txt():
         return add_cors(make_response("", 204))
     if not LIVE_LOCO_SUMMARY_FILE.exists():
         return add_cors(make_response("", 200))
-    return add_cors(make_response(send_file(LIVE_LOCO_SUMMARY_FILE, mimetype="text/plain")))
+    return add_cors(send_file(LIVE_LOCO_SUMMARY_FILE, mimetype="text/plain"))
 
+
+@app.route("/downloads/<path:filename>", methods=["GET", "OPTIONS"])
+def public_downloads(filename: str):
+    if request.method == "OPTIONS":
+        return add_cors(make_response("", 204))
+    return add_cors(send_from_directory(DOWNLOADS_DIR, filename, as_attachment=False))
+
+
+# ============================================================
+# Push routes
+# ============================================================
 
 @app.route("/push_trains", methods=["POST", "OPTIONS"])
 def push_trains():
@@ -347,7 +548,7 @@ def push_trains():
         return add_cors(make_response(json.dumps({"ok": False, "error": "missing trains list"}), 400))
 
     save_json(LIVE_TRAINS_FILE, payload)
-    return add_cors(jsonify({"ok": True, "saved": len(trains)}))
+    return add_cors(jsonify({"ok": True, "saved": len(trains), "path": str(LIVE_TRAINS_FILE)}))
 
 
 @app.route("/push_files", methods=["POST", "OPTIONS"])
@@ -379,6 +580,7 @@ def push_files():
 
         relative_path = str(item.get("path", "")).strip()
         content_b64 = item.get("content_base64")
+
         if not relative_path or not isinstance(content_b64, str):
             skipped.append({"path": relative_path, "reason": "missing path/content"})
             continue
@@ -392,20 +594,16 @@ def push_files():
             raw = base64.b64decode(content_b64.encode("utf-8"))
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(raw)
-            saved.append({"path": relative_path, "bytes": len(raw)})
+            saved.append({"path": relative_path, "bytes": len(raw), "saved_to": str(target)})
         except Exception as exc:
             skipped.append({"path": relative_path, "reason": str(exc)})
 
     return add_cors(jsonify({"ok": True, "saved": saved, "skipped": skipped}))
 
 
-@app.route("/downloads/<path:filename>", methods=["GET", "OPTIONS"])
-def public_downloads(filename: str):
-    if request.method == "OPTIONS":
-        return add_cors(make_response("", 204))
-    resp = make_response(send_from_directory(STATIC_DOWNLOADS_DIR, filename, as_attachment=False))
-    return add_cors(resp)
-
+# ============================================================
+# Login / dashboard / admin
+# ============================================================
 
 @app.get("/login")
 def login_page():
@@ -440,8 +638,8 @@ def login_submit():
         if user.get("device_lock"):
             users = get_users()
             for guest in users.get("guests", []):
-                if guest["username"] == username:
-                    if guest.get("device_id") and guest["device_id"] != device_id:
+                if guest.get("username") == username:
+                    if guest.get("device_id") and guest.get("device_id") != device_id:
                         flash("This guest account is locked to another device.", "error")
                         return redirect(url_for("login_page"))
                     guest["device_id"] = device_id
@@ -499,6 +697,7 @@ def admin_page():
     users = get_users()
     tokens = load_json(TOKENS_FILE, {"tokens": []})
     logs = load_json(LOGS_FILE, {"events": []})
+
     file_links = [
         {"name": "Live Train Data", "path": "/trains.json"},
         {"name": "Locos JSON", "path": "/locos.json"},
@@ -510,7 +709,9 @@ def admin_page():
         {"name": "Numbers Only HTML", "path": "/downloads/loco_numbers_only.html"},
         {"name": "Locomotive Database XLSX", "path": "/downloads/loco_database.xlsx"},
         {"name": "Numbers Only XLSX", "path": "/downloads/loco_numbers_only.xlsx"},
+        {"name": "Debug Storage", "path": "/debug/storage"},
     ]
+
     return render_template(
         "admin.html",
         guest_accounts=users.get("guests", []),
@@ -562,6 +763,7 @@ def create_guest():
             return redirect(url_for("admin_page"))
 
     users = get_users()
+    users.setdefault("guests", [])
     users["guests"].append(
         {
             "username": username,
@@ -574,6 +776,7 @@ def create_guest():
         }
     )
     save_json(USERS_FILE, users)
+
     log_event("create_guest", {"guest": username})
     flash(f"Guest account {username} created.", "success")
     return redirect(url_for("admin_page"))
@@ -584,7 +787,7 @@ def create_guest():
 def toggle_guest(username: str):
     users = get_users()
     for guest in users.get("guests", []):
-        if guest["username"] == username:
+        if guest.get("username") == username:
             guest["disabled"] = not guest.get("disabled", False)
             save_json(USERS_FILE, users)
             log_event("toggle_guest", {"guest": username, "disabled": guest["disabled"]})
@@ -599,6 +802,7 @@ def generate_token():
     label = request.form.get("label", "").strip() or "Guest token"
     expires_days = request.form.get("expires_days", "").strip()
     token = secrets.token_urlsafe(18)
+
     expires_at = None
     if expires_days:
         try:
@@ -608,6 +812,7 @@ def generate_token():
             return redirect(url_for("admin_page"))
 
     payload = load_json(TOKENS_FILE, {"tokens": []})
+    payload.setdefault("tokens", [])
     payload["tokens"].insert(
         0,
         {
@@ -618,10 +823,40 @@ def generate_token():
             "disabled": False,
         },
     )
+
     save_json(TOKENS_FILE, payload)
     log_event("create_token", {"label": label})
     flash(f"Token created: {token}", "success")
     return redirect(url_for("admin_page"))
+
+
+@app.get("/access")
+def token_access():
+    token = request.args.get("token", "").strip()
+
+    if not token:
+        return redirect(url_for("login_page"))
+
+    payload = load_json(TOKENS_FILE, {"tokens": []})
+
+    for item in payload.get("tokens", []):
+        if item.get("token") == token:
+            if item.get("disabled"):
+                abort(403)
+            if is_expired(item.get("expires_at")):
+                abort(403)
+
+            session.permanent = True
+            session["logged_in"] = True
+            session["username"] = f"token:{item.get('label', 'guest')}"
+            session["display_name"] = item.get("label", "Guest token")
+            session["role"] = "guest"
+            session["device_id"] = request.headers.get("User-Agent", "")[:120]
+
+            log_event("token_login", {"label": item.get("label")})
+            return redirect(url_for("dashboard_page"))
+
+    abort(403)
 
 
 @app.errorhandler(403)
@@ -633,6 +868,20 @@ def forbidden(_):
             message="You do not have permission to open this page.",
         ),
         403,
+    )
+
+
+@app.errorhandler(404)
+def not_found(_):
+    return (
+        jsonify(
+            {
+                "ok": False,
+                "error": "not_found",
+                "message": "Route not found. Try /health, /debug/storage, /trains.json, /locos.json, or /downloads/recently_added.html",
+            }
+        ),
+        404,
     )
 
 
