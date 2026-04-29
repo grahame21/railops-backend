@@ -1,6 +1,0 @@
-[phases.setup]
-nixPkgs = ["...", "git", "python311", "chromium", "chromedriver"]
-aptPkgs = ["...", "xvfb"]
-
-[start]
-cmd = "python railway_all_in_one_cron.py"
