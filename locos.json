@@ -53,10 +53,10 @@
     "vehicle_description": "JBR \"Aurora Australis\" Riverina Tour",
     "train_id": "SL08",
     "route": "SL08 Temora Orange",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-34.451017",
-    "lon": "147.530627",
+    "lat": "-34.45643",
+    "lon": "147.655613",
     "source": "trains.json"
   },
   {
@@ -77,10 +77,10 @@
     "vehicle_description": "",
     "train_id": "2M43",
     "route": "2M43",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.695163",
-    "lon": "149.93668",
+    "lat": "-34.753423",
+    "lon": "149.723613",
     "source": "trains.json"
   },
   {
@@ -101,10 +101,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "JW175",
     "route": "JW175 PWCS Kooragang Wambo / Jerry Plains",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-32.580223",
-    "lon": "151.032133",
+    "lat": "-32.581793",
+    "lon": "151.034827",
     "source": "trains.json"
   },
   {
@@ -125,10 +125,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "WG917",
     "route": "WG917 NCIG Kooragang Wilpinjong",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.438323",
-    "lon": "150.149587",
+    "lat": "-32.371727",
+    "lon": "149.985333",
     "source": "trains.json"
   },
   {
@@ -137,10 +137,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "BW979",
     "route": "BW979 NCIG Kooragang Mt Arthur",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.334287",
-    "lon": "150.904707",
+    "lat": "-32.334317",
+    "lon": "150.906267",
     "source": "trains.json"
   },
   {
@@ -149,10 +149,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "MN765",
     "route": "MN765 PWCS Kooragang Mangoola",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.318403",
-    "lon": "150.716373",
+    "lat": "-32.32202",
+    "lon": "150.714733",
     "source": "trains.json"
   },
   {
@@ -173,22 +173,34 @@
     "vehicle_description": "AZ Coal",
     "train_id": "MP970",
     "route": "MP970 Mt Pleasant NCIG Kooragang",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-32.871097",
-    "lon": "151.74216",
+    "lat": "-32.871807",
+    "lon": "151.74636",
     "source": "trains.json"
   },
   {
     "loco_number": "5032",
     "current_operator": "",
     "vehicle_description": "AZ Coal",
-    "train_id": "WG705",
-    "route": "WG705 NCIG Kooragang / Mac Generation Antiene Wilpinjong",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "train_id": "AT706",
+    "route": "AT706 Wilpinjong Mac Generation Antiene",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-32.333007",
-    "lon": "149.875413",
+    "lat": "-32.332473",
+    "lon": "149.93584",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "5033",
+    "current_operator": "",
+    "vehicle_description": "Up Ardglen Bank Engines",
+    "train_id": "AZBKUP",
+    "route": "AZBKUP Chilcotts Creek Loop Ardglen Loop",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-31.675073",
+    "lon": "150.748467",
     "source": "trains.json"
   },
   {
@@ -197,10 +209,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "JW981",
     "route": "JW981 NCIG Kooragang Wambo / Jerry Plains",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.624043",
-    "lon": "151.139427",
+    "lat": "-32.580713",
+    "lon": "151.033787",
     "source": "trains.json"
   },
   {
@@ -221,10 +233,10 @@
     "vehicle_description": "Down Ardglen Bank Engines",
     "train_id": "AZBKDN",
     "route": "AZBKDN Ardglen Loop Chilcotts Creek Loop",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.669197",
-    "lon": "150.74176",
+    "lat": "-31.674487",
+    "lon": "150.747733",
     "source": "trains.json"
   },
   {
@@ -233,10 +245,10 @@
     "vehicle_description": "AZ Light Engine",
     "train_id": "D952",
     "route": "D952",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.456843",
-    "lon": "150.861533",
+    "lat": "-34.453103",
+    "lon": "150.84776",
     "source": "trains.json"
   },
   {
@@ -257,10 +269,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "MC56R",
     "route": "MC56R",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-34.186187",
-    "lon": "150.999947",
+    "lat": "-34.184083",
+    "lon": "151.003493",
     "source": "trains.json"
   },
   {
@@ -269,10 +281,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "MC56",
     "route": "MC56 Metropolitan Colliery Bluescope Coal Bridge",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-34.187653",
-    "lon": "150.993227",
+    "lat": "-34.186187",
+    "lon": "150.99612",
     "source": "trains.json"
   },
   {
@@ -365,10 +377,10 @@
     "vehicle_description": "AZ Coal",
     "train_id": "NB937",
     "route": "NB937 NCIG  Kooragang Narrabri",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.24608",
-    "lon": "150.434947",
+    "lat": "-31.10039",
+    "lon": "150.268787",
     "source": "trains.json"
   },
   {
@@ -377,10 +389,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "4MS1",
     "route": "4MS1 North Dynon Glenlee",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.60937",
-    "lon": "150.324093",
+    "lat": "-34.45127",
+    "lon": "150.452667",
     "source": "trains.json"
   },
   {
@@ -413,10 +425,10 @@
     "vehicle_description": "PN Melbourne Freight Terminal Shunter",
     "train_id": "9928",
     "route": "9928 MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.804743",
-    "lon": "144.91348",
+    "lat": "-37.803847",
+    "lon": "144.918893",
     "source": "trains.json"
   },
   {
@@ -461,10 +473,10 @@
     "vehicle_description": "PN Grain",
     "train_id": "9325",
     "route": "9325 Inner Harbour Southern NSW",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-34.854807",
-    "lon": "147.572467",
+    "lat": "-34.85496",
+    "lon": "147.572587",
     "source": "trains.json"
   },
   {
@@ -492,6 +504,18 @@
     "source": "trains.json"
   },
   {
+    "loco_number": "8151",
+    "current_operator": "",
+    "vehicle_description": "PN Intermodal Trip Train - RSS Crewed",
+    "train_id": "1154",
+    "route": "1154 St Marys Freight Hub Port Botany, DP World",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-33.791413",
+    "lon": "150.952",
+    "source": "trains.json"
+  },
+  {
     "loco_number": "8152",
     "current_operator": "",
     "vehicle_description": "PN Garbage Train",
@@ -509,10 +533,10 @@
     "vehicle_description": "PN Limestone",
     "train_id": "2928",
     "route": "2928 Marulan South Quarry Cringila Yard",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.761227",
-    "lon": "150.032613",
+    "lat": "-34.72942",
+    "lon": "150.02324",
     "source": "trains.json"
   },
   {
@@ -581,10 +605,10 @@
     "vehicle_description": "PN Light Engine",
     "train_id": "D824",
     "route": "D824",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-33.14346",
-    "lon": "148.1638",
+    "lat": "-33.142587",
+    "lon": "148.17472",
     "source": "trains.json"
   },
   {
@@ -749,10 +773,10 @@
     "vehicle_description": "PN Light Engine",
     "train_id": "D212",
     "route": "D212",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.543333",
-    "lon": "150.374053",
+    "lat": "-34.543027",
+    "lon": "150.3742",
     "source": "trains.json"
   },
   {
@@ -785,9 +809,9 @@
     "vehicle_description": "8235",
     "train_id": "8235",
     "route": "8235",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-31.359443",
+    "lat": "-31.359407",
     "lon": "150.64516",
     "source": "trains.json"
   },
@@ -809,10 +833,10 @@
     "vehicle_description": "PN Grain",
     "train_id": "5430",
     "route": "5430 North West NSW Carrington / Cargill Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.804567",
-    "lon": "151.66432",
+    "lat": "-32.90455",
+    "lon": "151.75028",
     "source": "trains.json"
   },
   {
@@ -855,12 +879,12 @@
     "loco_number": "9203",
     "current_operator": "",
     "vehicle_description": "PN Coal",
-    "train_id": "MR218",
-    "route": "MR218 Moolarben PWCS Kooragang",
-    "last_seen": "2026-04-29T23:45:49.028656Z",
+    "train_id": "MR913",
+    "route": "MR913 NCIG Kooragang Moolarben",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.867157",
-    "lon": "151.753933",
+    "lat": "-32.906043",
+    "lon": "151.747147",
     "source": "trains.json"
   },
   {
@@ -869,10 +893,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "MB513",
     "route": "MB513 PWCS Kooragang Maules Creek",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.709183",
-    "lon": "150.778453",
+    "lat": "-31.445103",
+    "lon": "150.660107",
     "source": "trains.json"
   },
   {
@@ -893,10 +917,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "GR425",
     "route": "GR425",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.671607",
-    "lon": "151.370413",
+    "lat": "-32.671603",
+    "lon": "151.370573",
     "source": "trains.json"
   },
   {
@@ -905,10 +929,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "BE534",
     "route": "BE534 Boggabri East PWCS Kooragang",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-31.236293",
-    "lon": "150.41756",
+    "lat": "-31.328507",
+    "lon": "150.555693",
     "source": "trains.json"
   },
   {
@@ -929,10 +953,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "MB934",
     "route": "MB934 Maules Creek NCIG Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.852713",
-    "lon": "151.694293",
+    "lat": "-32.870997",
+    "lon": "151.739187",
     "source": "trains.json"
   },
   {
@@ -977,10 +1001,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "2PM5",
     "route": "2PM5 Kewdale MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-36.208063",
-    "lon": "140.588787",
+    "lat": "-36.30487",
+    "lon": "140.772933",
     "source": "trains.json"
   },
   {
@@ -989,10 +1013,10 @@
     "vehicle_description": "",
     "train_id": "2M40",
     "route": "2M40",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-34.6958",
-    "lon": "149.939973",
+    "lat": "-34.75264",
+    "lon": "149.724627",
     "source": "trains.json"
   },
   {
@@ -1025,22 +1049,22 @@
     "vehicle_description": "Manildra Mills Shunter",
     "train_id": "MRA1",
     "route": "MRA1 Manildra",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-33.18659",
-    "lon": "148.69636",
+    "lat": "-33.186607",
+    "lon": "148.69624",
     "source": "trains.json"
   },
   {
     "loco_number": "ACB4403",
     "current_operator": "",
-    "vehicle_description": "Aurizon Loaded Sulphur containers",
-    "train_id": "4029",
-    "route": "4029 Kwinana BIS Malcolm",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Aurizon Cockburn Cement - Lime and Cement Train",
+    "train_id": "5C71",
+    "route": "5C71 West Kalgoorlie Parkeston",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-30.772224",
-    "lon": "121.43203",
+    "lat": "-30.771503",
+    "lon": "121.433159",
     "source": "trains.json"
   },
   {
@@ -1053,6 +1077,18 @@
     "date_time_added": "2026-04-29T17:19:50.671764Z",
     "lat": "-31.640715",
     "lon": "116.626572",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "ACD6046",
+    "current_operator": "",
+    "vehicle_description": "Aurizon Mineral Sands Shuttle",
+    "train_id": "5553",
+    "route": "5553 Broken Hill Yard Bemax Siding",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-31.99004",
+    "lon": "141.413613",
     "source": "trains.json"
   },
   {
@@ -1073,10 +1109,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "3PS1",
     "route": "3PS1 Aurizon, Forrestfield Glenlee",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-32.70473",
-    "lon": "137.94276",
+    "lat": "-33.076893",
+    "lon": "138.045933",
     "source": "trains.json"
   },
   {
@@ -1109,10 +1145,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "4PM1",
     "route": "4PM1 Aurizon, Forrestfield North Dynon",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.743467",
-    "lon": "129.200707",
+    "lat": "-30.613747",
+    "lon": "130.40708",
     "source": "trains.json"
   },
   {
@@ -1130,13 +1166,13 @@
   {
     "loco_number": "ACD6059",
     "current_operator": "",
-    "vehicle_description": "SCT Intermodal",
-    "train_id": "4AM9",
-    "route": "4AM9 SCT, Penfield SCT, Laverton",
-    "last_seen": "2026-04-29T17:19:50.671764Z",
+    "vehicle_description": "SCT Steel Transfer",
+    "train_id": "9743V",
+    "route": "9743V North Dynon SCT, Laverton",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.86471",
-    "lon": "144.768013",
+    "lat": "-37.801013",
+    "lon": "144.920067",
     "source": "trains.json"
   },
   {
@@ -1145,10 +1181,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "3SP1",
     "route": "3SP1 Glenlee Kwinana",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.551447",
-    "lon": "133.366347",
+    "lat": "-30.54543",
+    "lon": "133.208053",
     "source": "trains.json"
   },
   {
@@ -1157,10 +1193,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "3MP1",
     "route": "3MP1 North Dynon Aurizon, Forrestfield",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.02881",
-    "lon": "124.200653",
+    "lat": "-31.033953",
+    "lon": "123.67244",
     "source": "trains.json"
   },
   {
@@ -1169,10 +1205,10 @@
     "vehicle_description": "Aurizon Empty Grain",
     "train_id": "1513S",
     "route": "1513S Dry Creek North Gladstone",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.378663",
-    "lon": "138.1828",
+    "lat": "-33.27873",
+    "lon": "138.3502",
     "source": "trains.json"
   },
   {
@@ -1193,10 +1229,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "5DA2",
     "route": "5DA2 Berrimah (Darwin) Gillman Yard (Port Flat)",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-12.588917",
-    "lon": "130.97188",
+    "lat": "-13.47035",
+    "lon": "131.457627",
     "source": "trains.json"
   },
   {
@@ -1239,12 +1275,12 @@
     "loco_number": "BL33",
     "current_operator": "",
     "vehicle_description": "PN Grain",
-    "train_id": "7732V",
-    "route": "7732V Western Victoria Geelong Grain Loop",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "train_id": "7731V",
+    "route": "7731V Geelong Grain Loop Western Victoria",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-38.108027",
-    "lon": "144.364013",
+    "lat": "-38.107557",
+    "lon": "144.359413",
     "source": "trains.json"
   },
   {
@@ -1277,22 +1313,34 @@
     "vehicle_description": "SSR Containerised Freight",
     "train_id": "8178",
     "route": "8178 Grainforce Siding, Kelso Port Botany",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-33.960827",
-    "lon": "151.218667",
+    "lat": "-33.96245",
+    "lon": "151.2196",
     "source": "trains.json"
   },
   {
     "loco_number": "C509",
     "current_operator": "",
     "vehicle_description": "SSR Cement Clinker",
-    "train_id": "2243",
-    "route": "2243 Maldon Cement Works Berrima Cement Works",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "train_id": "2240",
+    "route": "2240 Berrima Cement Works Maldon Cement Works",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.509697",
-    "lon": "150.332693",
+    "lat": "-34.52326",
+    "lon": "150.3762",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "C510",
+    "current_operator": "",
+    "vehicle_description": "SSR Loaded Aggregates",
+    "train_id": "2278",
+    "route": "2278 Peppertree Quarry Berrima",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-34.762327",
+    "lon": "150.033173",
     "source": "trains.json"
   },
   {
@@ -1325,10 +1373,10 @@
     "vehicle_description": "SSR Loaded Aggregates",
     "train_id": "2186",
     "route": "2186 Peppertree Quarry Boral, Enfield",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.169747",
-    "lon": "150.608747",
+    "lat": "-34.068743",
+    "lon": "150.807147",
     "source": "trains.json"
   },
   {
@@ -1337,10 +1385,10 @@
     "vehicle_description": "Aurizon Loaded Grain",
     "train_id": "5456",
     "route": "5456 North West NSW Carrington",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.911667",
-    "lon": "151.768347",
+    "lat": "-32.903213",
+    "lon": "151.756133",
     "source": "trains.json"
   },
   {
@@ -1349,10 +1397,10 @@
     "vehicle_description": "SSR Empty Aggregates",
     "train_id": "1289",
     "route": "1289 Boral, Cooks River Peppertree Quarry",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.92963",
-    "lon": "150.923373",
+    "lat": "-34.09734",
+    "lon": "150.748053",
     "source": "trains.json"
   },
   {
@@ -1397,10 +1445,10 @@
     "vehicle_description": "QUBE BlueScope Steel",
     "train_id": "5WB7",
     "route": "5WB7 Port Kembla Acacia Ridge",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.8872",
-    "lon": "152.314773",
+    "lat": "-31.80616",
+    "lon": "152.51792",
     "source": "trains.json"
   },
   {
@@ -1445,10 +1493,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "3PG1",
     "route": "3PG1 SCT, Forrestfield SCT, Parkes",
-    "last_seen": "2026-04-29T23:45:49.028656Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-30.762807",
-    "lon": "129.0106",
+    "lat": "-30.546917",
+    "lon": "133.298373",
     "source": "trains.json"
   },
   {
@@ -1469,10 +1517,10 @@
     "vehicle_description": "SSR Grain",
     "train_id": "5MC5",
     "route": "5MC5 Appleton Dock Southern NSW",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.814733",
-    "lon": "147.267973",
+    "lat": "-34.81464",
+    "lon": "147.26708",
     "source": "trains.json"
   },
   {
@@ -1493,10 +1541,10 @@
     "vehicle_description": "SSR Shunter",
     "train_id": "SHNT",
     "route": "SHNT",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.200357",
-    "lon": "150.646013",
+    "lat": "-34.19828",
+    "lon": "150.643907",
     "source": "trains.json"
   },
   {
@@ -1517,10 +1565,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "2MP9",
     "route": "2MP9 SCT, Laverton SCT, Forrestfield",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.22403",
-    "lon": "119.30268",
+    "lat": "-31.26941",
+    "lon": "119.16632",
     "source": "trains.json"
   },
   {
@@ -1541,10 +1589,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "4MP9",
     "route": "4MP9 SCT, Laverton SCT, Forrestfield",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.955903",
-    "lon": "138.587693",
+    "lat": "-34.77369",
+    "lon": "138.63884",
     "source": "trains.json"
   },
   {
@@ -1553,10 +1601,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "4BM9",
     "route": "4BM9 SCT, Bromelton SCT, Laverton",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.818647",
-    "lon": "151.089613",
+    "lat": "-33.886007",
+    "lon": "151.049387",
     "source": "trains.json"
   },
   {
@@ -1565,10 +1613,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "4MB9",
     "route": "4MB9 SCT, Laverton SCT, Bromelton",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.88346",
-    "lon": "150.998253",
+    "lat": "-33.88294",
+    "lon": "151.064653",
     "source": "trains.json"
   },
   {
@@ -1601,10 +1649,10 @@
     "vehicle_description": "NSW Trainlink Xplorer",
     "train_id": "NP23",
     "route": "NP23 Central Moree/Armidale",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-33.039617",
-    "lon": "151.521333",
+    "lat": "-32.906523",
+    "lon": "151.735667",
     "source": "trains.json"
   },
   {
@@ -1661,10 +1709,10 @@
     "vehicle_description": "NSW Trainlink Xplorer",
     "train_id": "SP32",
     "route": "SP32 Canberra Central",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-33.92988",
-    "lon": "151.13972",
+    "lat": "-33.883837",
+    "lon": "151.205587",
     "source": "trains.json"
   },
   {
@@ -1709,10 +1757,10 @@
     "vehicle_description": "SSR Cement",
     "train_id": "1243",
     "route": "1243 Clyde Yard Berrima Cement Works",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.508857",
-    "lon": "150.334507",
+    "lat": "-34.507873",
+    "lon": "150.332533",
     "source": "trains.json"
   },
   {
@@ -1745,9 +1793,9 @@
     "vehicle_description": "QUBE Loaded Balco & Zinc",
     "train_id": "4120S",
     "route": "4120S Bowmans Pelican Point / Port Flat",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-34.16454",
+    "lat": "-34.164947",
     "lon": "138.273213",
     "source": "trains.json"
   },
@@ -1865,10 +1913,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "4AD1",
     "route": "4AD1 Gillman Yard (Port Flat) Berrimah (Darwin)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.860997",
-    "lon": "134.942667",
+    "lat": "-30.70909",
+    "lon": "134.588613",
     "source": "trains.json"
   },
   {
@@ -1877,10 +1925,10 @@
     "vehicle_description": "Aurizon Intermodal",
     "train_id": "3DA6",
     "route": "3DA6 Berrimah (Darwin) Gillman Yard (Port Flat)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.095847",
-    "lon": "137.405907",
+    "lat": "-32.398197",
+    "lon": "137.687147",
     "source": "trains.json"
   },
   {
@@ -1901,10 +1949,10 @@
     "vehicle_description": "Aurizon Empty Grain / Wagon Transfer",
     "train_id": "1411S",
     "route": "1411S Dry Creek North Port Pirie",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.17993",
-    "lon": "138.012893",
+    "lat": "-33.17953",
+    "lon": "138.01232",
     "source": "trains.json"
   },
   {
@@ -1913,10 +1961,10 @@
     "vehicle_description": "Aurizon Loaded Copper",
     "train_id": "8102",
     "route": "8102 Pimba Gillman Yard (Port Flat)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-34.81349",
-    "lon": "138.602",
+    "lat": "-34.83981",
+    "lon": "138.549107",
     "source": "trains.json"
   },
   {
@@ -1949,10 +1997,10 @@
     "vehicle_description": "ORA Coal",
     "train_id": "BC179",
     "route": "BC179 PWCS Kooragang Bulga",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.678063",
-    "lon": "151.12432",
+    "lat": "-32.677913",
+    "lon": "151.12764",
     "source": "trains.json"
   },
   {
@@ -1961,10 +2009,10 @@
     "vehicle_description": "Aurizon Loaded Ore",
     "train_id": "9612",
     "route": "9612 Wirrida Whyalla",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-32.433323",
-    "lon": "137.764773",
+    "lat": "-32.480077",
+    "lon": "137.770893",
     "source": "trains.json"
   },
   {
@@ -2091,12 +2139,12 @@
     "loco_number": "HM2753",
     "current_operator": "",
     "vehicle_description": "Hunter Line Service",
-    "train_id": "V729",
-    "route": "V729 Newcastle Interchange Telarah",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "train_id": "V739",
+    "route": "V739 Newcastle Interchange Telarah",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-32.726923",
-    "lon": "151.53992",
+    "lat": "-32.915397",
+    "lon": "151.745187",
     "source": "trains.json"
   },
   {
@@ -2153,10 +2201,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "HV167",
     "route": "HV167 PWCS Kooragang Hunter Valley",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.391527",
-    "lon": "151.00204",
+    "lat": "-32.39158",
+    "lon": "150.998093",
     "source": "trains.json"
   },
   {
@@ -2177,22 +2225,22 @@
     "vehicle_description": "PN Coal",
     "train_id": "WK132",
     "route": "WK132 Warkworth PWCS Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.89914",
-    "lon": "151.766427",
+    "lat": "-32.90193",
+    "lon": "151.767107",
     "source": "trains.json"
   },
   {
     "loco_number": "LE2851",
     "current_operator": "",
-    "vehicle_description": "Empty Car Provisioning (Forms SN34)",
-    "train_id": "SN19",
-    "route": "SN19 Moss Vale Goulburn",
-    "last_seen": "2026-04-29T23:45:49.028656Z",
+    "vehicle_description": "Southern Highlands Service",
+    "train_id": "SN43",
+    "route": "SN43 Campbelltown Moss Vale",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-34.704127",
-    "lon": "150.142653",
+    "lat": "-34.141317",
+    "lon": "150.7366",
     "source": "trains.json"
   },
   {
@@ -2208,27 +2256,39 @@
     "source": "trains.json"
   },
   {
+    "loco_number": "LE2854",
+    "current_operator": "",
+    "vehicle_description": "Empty Car Provisioning",
+    "train_id": "HN41",
+    "route": "HN41 Central Sydenham XPT Maintenance Centre",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-33.89698",
+    "lon": "151.187827",
+    "source": "trains.json"
+  },
+  {
     "loco_number": "LE2855",
     "current_operator": "",
     "vehicle_description": "South Coast Service",
     "train_id": "KN48",
     "route": "KN48 Bomaderry (Nowra) Kiama",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:28:19.918328Z",
-    "lat": "-34.809803",
-    "lon": "150.64372",
+    "lat": "-34.673943",
+    "lon": "150.8534",
     "source": "trains.json"
   },
   {
     "loco_number": "LE2857",
     "current_operator": "",
     "vehicle_description": "Additional Bathurst Service",
-    "train_id": "WN30",
-    "route": "WN30 Bathurst Lithgow",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "train_id": "WN32",
+    "route": "WN32 Bathurst Lithgow",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-33.47954",
-    "lon": "150.16152",
+    "lat": "-33.49983",
+    "lon": "149.725867",
     "source": "trains.json"
   },
   {
@@ -2249,10 +2309,10 @@
     "vehicle_description": "Sydney Trains Empty Car Transfer",
     "train_id": "HN43",
     "route": "HN43 Central Sydenham XPT Maintenance Centre",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-33.91664",
-    "lon": "151.161013",
+    "lat": "-33.917947",
+    "lon": "151.15872",
     "source": "trains.json"
   },
   {
@@ -2280,15 +2340,27 @@
     "source": "trains.json"
   },
   {
+    "loco_number": "LE2864",
+    "current_operator": "",
+    "vehicle_description": "Southern Highlands Service",
+    "train_id": "SN41",
+    "route": "SN41 Campbelltown Moss Vale",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-34.29709",
+    "lon": "150.585413",
+    "source": "trains.json"
+  },
+  {
     "loco_number": "LZ3114",
     "current_operator": "",
     "vehicle_description": "CBH SG Empty Grain",
     "train_id": "5S51",
     "route": "5S51 Kwinana Grain Terminal Eastern Goldfields Railway",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-31.641633",
-    "lon": "116.631253",
+    "lat": "-31.640027",
+    "lon": "116.6494",
     "source": "trains.json"
   },
   {
@@ -2333,10 +2405,10 @@
     "vehicle_description": "SSR Empty Manildra Grain",
     "train_id": "9375",
     "route": "9375 Bomaderry Southern NSW",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.73284",
-    "lon": "146.7334",
+    "lat": "-34.73311",
+    "lon": "146.73528",
     "source": "trains.json"
   },
   {
@@ -2369,10 +2441,10 @@
     "vehicle_description": "SSR Empty Manildra Grain",
     "train_id": "9577",
     "route": "9577 Bomaderry North West NSW",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.40134",
-    "lon": "151.03488",
+    "lat": "-32.401343",
+    "lon": "151.034867",
     "source": "trains.json"
   },
   {
@@ -2417,10 +2489,10 @@
     "vehicle_description": "SSR Loco Movement/Shunter",
     "train_id": "SSR",
     "route": "SSR",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-30.9801",
-    "lon": "150.249547",
+    "lat": "-30.978017",
+    "lon": "150.244813",
     "source": "trains.json"
   },
   {
@@ -2429,10 +2501,10 @@
     "vehicle_description": "Hurstbridge Line",
     "train_id": "HBE",
     "route": "HBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.813179",
-    "lon": "144.973969",
+    "lat": "-37.7243",
+    "lon": "145.069336",
     "source": "trains.json"
   },
   {
@@ -2441,10 +2513,10 @@
     "vehicle_description": "Mernda Line",
     "train_id": "MDD",
     "route": "MDD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.799171",
-    "lon": "144.9944",
+    "lat": "-37.652088",
+    "lon": "145.032593",
     "source": "trains.json"
   },
   {
@@ -2453,10 +2525,10 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.875565",
-    "lon": "145.292038",
+    "lat": "-37.82658",
+    "lon": "145.058517",
     "source": "trains.json"
   },
   {
@@ -2489,10 +2561,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.816391",
-    "lon": "144.889694",
+    "lat": "-37.859951",
+    "lon": "144.849701",
     "source": "trains.json"
   },
   {
@@ -2501,10 +2573,10 @@
     "vehicle_description": "Lilydale Line",
     "train_id": "LIL",
     "route": "LIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.817833",
-    "lon": "145.197739",
+    "lat": "-37.811447",
+    "lon": "144.957031",
     "source": "trains.json"
   },
   {
@@ -2537,10 +2609,10 @@
     "vehicle_description": "Mernda Line",
     "train_id": "MDD",
     "route": "MDD",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.782677",
-    "lon": "144.991592",
+    "lat": "-37.77668",
+    "lon": "144.993256",
     "source": "trains.json"
   },
   {
@@ -2561,22 +2633,22 @@
     "vehicle_description": "Mernda Line",
     "train_id": "MDD",
     "route": "MDD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.729",
-    "lon": "145.00267",
+    "lat": "-37.817966",
+    "lon": "144.966827",
     "source": "trains.json"
   },
   {
     "loco_number": "MM64M",
     "current_operator": "",
-    "vehicle_description": "Belgrave Line",
-    "train_id": "BEG",
-    "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Glen Waverley Line",
+    "train_id": "GWY",
+    "route": "GWY",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.820862",
-    "lon": "145.025208",
+    "lat": "-37.838863",
+    "lon": "145.027054",
     "source": "trains.json"
   },
   {
@@ -2594,13 +2666,13 @@
   {
     "loco_number": "MM78M",
     "current_operator": "",
-    "vehicle_description": "Belgrave Line",
-    "train_id": "BEG",
-    "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Glen Waverley Line",
+    "train_id": "GWY",
+    "route": "GWY",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.818069",
-    "lon": "144.951721",
+    "lat": "-37.873135",
+    "lon": "145.106277",
     "source": "trains.json"
   },
   {
@@ -2609,10 +2681,10 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.908634",
-    "lon": "145.35553",
+    "lat": "-37.85968",
+    "lon": "145.284256",
     "source": "trains.json"
   },
   {
@@ -2621,10 +2693,10 @@
     "vehicle_description": "Lilydale Line",
     "train_id": "LIL",
     "route": "LIL",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.819374",
-    "lon": "145.122879",
+    "lat": "-37.757156",
+    "lon": "145.345871",
     "source": "trains.json"
   },
   {
@@ -2681,10 +2753,10 @@
     "vehicle_description": "Lilydale Line",
     "train_id": "LIL",
     "route": "LIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.757126",
-    "lon": "145.345825",
+    "lat": "-37.818859",
+    "lon": "145.186691",
     "source": "trains.json"
   },
   {
@@ -2702,13 +2774,13 @@
   {
     "loco_number": "MM99M",
     "current_operator": "",
-    "vehicle_description": "Glen Waverley Line",
-    "train_id": "GWY",
-    "route": "GWY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Belgrave Line",
+    "train_id": "BEG",
+    "route": "BEG",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.817986",
-    "lon": "144.967407",
+    "lat": "-37.820103",
+    "lon": "145.150635",
     "source": "trains.json"
   },
   {
@@ -2717,7 +2789,7 @@
     "vehicle_description": "Alamein Line",
     "train_id": "ALM",
     "route": "ALM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
     "lat": "-37.865559",
     "lon": "145.08017",
@@ -2729,10 +2801,10 @@
     "vehicle_description": "Lilydale Line",
     "train_id": "LIL",
     "route": "LIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.809586",
-    "lon": "144.963547",
+    "lat": "-37.818272",
+    "lon": "145.115143",
     "source": "trains.json"
   },
   {
@@ -2741,10 +2813,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.819595",
-    "lon": "144.961319",
+    "lat": "-37.905159",
+    "lon": "145.039322",
     "source": "trains.json"
   },
   {
@@ -2777,22 +2849,22 @@
     "vehicle_description": "Alamein Line",
     "train_id": "ALM",
     "route": "ALM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.825397",
-    "lon": "145.054382",
+    "lat": "-37.834927",
+    "lon": "145.069778",
     "source": "trains.json"
   },
   {
     "loco_number": "MM178M",
     "current_operator": "",
-    "vehicle_description": "Glen Waverley Line",
-    "train_id": "GWY",
-    "route": "GWY",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "vehicle_description": "Lilydale Line",
+    "train_id": "LIL",
+    "route": "LIL",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.873135",
-    "lon": "145.106277",
+    "lat": "-37.820469",
+    "lon": "144.981354",
     "source": "trains.json"
   },
   {
@@ -2861,10 +2933,10 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.826546",
-    "lon": "145.059006",
+    "lat": "-37.822845",
+    "lon": "145.100937",
     "source": "trains.json"
   },
   {
@@ -2906,13 +2978,13 @@
   {
     "loco_number": "MM264M",
     "current_operator": "",
-    "vehicle_description": "Mernda Line",
-    "train_id": "MDD",
-    "route": "MDD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Hurstbridge Line",
+    "train_id": "HBE",
+    "route": "HBE",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.805717",
-    "lon": "144.993561",
+    "lat": "-37.78418",
+    "lon": "144.997116",
     "source": "trains.json"
   },
   {
@@ -2921,10 +2993,10 @@
     "vehicle_description": "Hurstbridge Line",
     "train_id": "HBE",
     "route": "HBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.768669",
-    "lon": "145.04599",
+    "lat": "-37.713577",
+    "lon": "145.147659",
     "source": "trains.json"
   },
   {
@@ -2933,10 +3005,10 @@
     "vehicle_description": "Glen Waverley Line",
     "train_id": "GWY",
     "route": "GWY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.873135",
-    "lon": "145.106277",
+    "lat": "-37.869812",
+    "lon": "145.063629",
     "source": "trains.json"
   },
   {
@@ -2945,10 +3017,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.819431",
-    "lon": "144.952408",
+    "lat": "-37.843014",
+    "lon": "144.883606",
     "source": "trains.json"
   },
   {
@@ -2957,22 +3029,22 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.822845",
-    "lon": "145.100937",
+    "lat": "-37.820938",
+    "lon": "144.954315",
     "source": "trains.json"
   },
   {
     "loco_number": "MM288M",
     "current_operator": "",
-    "vehicle_description": "Glen Waverley Line",
-    "train_id": "GWY",
-    "route": "GWY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Belgrave Line",
+    "train_id": "BEG",
+    "route": "BEG",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.82711",
-    "lon": "145.002472",
+    "lat": "-37.825653",
+    "lon": "145.068573",
     "source": "trains.json"
   },
   {
@@ -3029,10 +3101,10 @@
     "vehicle_description": "Williamstown Line",
     "train_id": "WIL",
     "route": "WIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.838467",
-    "lon": "144.883957",
+    "lat": "-37.824436",
+    "lon": "144.887497",
     "source": "trains.json"
   },
   {
@@ -3041,10 +3113,10 @@
     "vehicle_description": "Upfield Line",
     "train_id": "UFD",
     "route": "UFD",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.774498",
-    "lon": "144.958801",
+    "lat": "-37.806274",
+    "lon": "144.941513",
     "source": "trains.json"
   },
   {
@@ -3053,10 +3125,10 @@
     "vehicle_description": "Sandringham Line",
     "train_id": "SHM",
     "route": "SHM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.884438",
-    "lon": "145.000565",
+    "lat": "-37.849201",
+    "lon": "144.989944",
     "source": "trains.json"
   },
   {
@@ -3089,10 +3161,10 @@
     "vehicle_description": "Upfield Line",
     "train_id": "UFD",
     "route": "UFD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.737236",
-    "lon": "144.96315",
+    "lat": "-37.720791",
+    "lon": "144.96138",
     "source": "trains.json"
   },
   {
@@ -3101,10 +3173,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.87059",
-    "lon": "144.74556",
+    "lat": "-37.870342",
+    "lon": "144.746063",
     "source": "trains.json"
   },
   {
@@ -3113,10 +3185,10 @@
     "vehicle_description": "Sandringham Line",
     "train_id": "SHM",
     "route": "SHM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.918079",
-    "lon": "144.994019",
+    "lat": "-37.883331",
+    "lon": "144.999786",
     "source": "trains.json"
   },
   {
@@ -3125,10 +3197,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.82053",
-    "lon": "144.98082",
+    "lat": "-37.864067",
+    "lon": "145.026947",
     "source": "trains.json"
   },
   {
@@ -3137,10 +3209,10 @@
     "vehicle_description": "Sandringham Line",
     "train_id": "SHM",
     "route": "SHM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.823833",
-    "lon": "144.988205",
+    "lat": "-37.911839",
+    "lon": "145.000122",
     "source": "trains.json"
   },
   {
@@ -3149,10 +3221,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.891438",
-    "lon": "145.041794",
+    "lat": "-37.818382",
+    "lon": "144.966797",
     "source": "trains.json"
   },
   {
@@ -3182,13 +3254,13 @@
   {
     "loco_number": "MM592M",
     "current_operator": "",
-    "vehicle_description": "Upfield Line",
-    "train_id": "UFD",
-    "route": "UFD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Craigieburn Line",
+    "train_id": "CGB",
+    "route": "CGB",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.762245",
-    "lon": "144.960526",
+    "lat": "-37.817925",
+    "lon": "144.951508",
     "source": "trains.json"
   },
   {
@@ -3209,10 +3281,10 @@
     "vehicle_description": "Craigieburn Line",
     "train_id": "CGB",
     "route": "CGB",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.602249",
-    "lon": "144.943176",
+    "lat": "-37.756828",
+    "lon": "144.916214",
     "source": "trains.json"
   },
   {
@@ -3221,10 +3293,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.864067",
-    "lon": "145.026947",
+    "lat": "-37.854366",
+    "lon": "145.017273",
     "source": "trains.json"
   },
   {
@@ -3233,10 +3305,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.899891",
-    "lon": "144.660172",
+    "lat": "-37.797939",
+    "lon": "144.913422",
     "source": "trains.json"
   },
   {
@@ -3266,13 +3338,13 @@
   {
     "loco_number": "MM658M",
     "current_operator": "",
-    "vehicle_description": "Craigieburn Line",
-    "train_id": "CGB",
-    "route": "CGB",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Upfield Line",
+    "train_id": "UFD",
+    "route": "UFD",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.818508",
-    "lon": "144.966064",
+    "lat": "-37.699352",
+    "lon": "144.958664",
     "source": "trains.json"
   },
   {
@@ -3293,10 +3365,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.863876",
-    "lon": "144.772339",
+    "lat": "-37.803417",
+    "lon": "144.938126",
     "source": "trains.json"
   },
   {
@@ -3317,10 +3389,10 @@
     "vehicle_description": "Sandringham Line",
     "train_id": "SHM",
     "route": "SHM",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.818222",
-    "lon": "144.969177",
+    "lat": "-37.823956",
+    "lon": "144.988647",
     "source": "trains.json"
   },
   {
@@ -3341,22 +3413,22 @@
     "vehicle_description": "Williamstown Line",
     "train_id": "WIL",
     "route": "WIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.799355",
-    "lon": "144.923859",
+    "lat": "-37.799362",
+    "lon": "144.923706",
     "source": "trains.json"
   },
   {
     "loco_number": "MM680M",
     "current_operator": "",
-    "vehicle_description": "Craigieburn Line",
-    "train_id": "CGB",
-    "route": "CGB",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Upfield Line",
+    "train_id": "UFD",
+    "route": "UFD",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.790089",
-    "lon": "144.929657",
+    "lat": "-37.781166",
+    "lon": "144.953079",
     "source": "trains.json"
   },
   {
@@ -3413,10 +3485,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.848213",
-    "lon": "144.860733",
+    "lat": "-37.818893",
+    "lon": "144.965286",
     "source": "trains.json"
   },
   {
@@ -3434,13 +3506,13 @@
   {
     "loco_number": "MM772M",
     "current_operator": "",
-    "vehicle_description": "Upfield Line",
-    "train_id": "UFD",
-    "route": "UFD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Craigieburn Line",
+    "train_id": "CGB",
+    "route": "CGB",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.818085",
-    "lon": "144.967575",
+    "lat": "-37.717758",
+    "lon": "144.921402",
     "source": "trains.json"
   },
   {
@@ -3449,10 +3521,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.829243",
-    "lon": "144.994095",
+    "lat": "-37.890171",
+    "lon": "145.041946",
     "source": "trains.json"
   },
   {
@@ -3485,10 +3557,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.816043",
-    "lon": "144.889245",
+    "lat": "-37.899891",
+    "lon": "144.660172",
     "source": "trains.json"
   },
   {
@@ -3497,10 +3569,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.857838",
-    "lon": "145.020615",
+    "lat": "-37.82407",
+    "lon": "144.989868",
     "source": "trains.json"
   },
   {
@@ -3509,10 +3581,10 @@
     "vehicle_description": "Frankston Line",
     "train_id": "FKN",
     "route": "FKN",
-    "last_seen": "2026-04-30T00:02:48.407086Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.908772",
-    "lon": "145.03862",
+    "lat": "-37.836975",
+    "lon": "144.992584",
     "source": "trains.json"
   },
   {
@@ -3521,10 +3593,10 @@
     "vehicle_description": "Craigieburn Line",
     "train_id": "CGB",
     "route": "CGB",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.705505",
-    "lon": "144.917526",
+    "lat": "-37.813107",
+    "lon": "144.973923",
     "source": "trains.json"
   },
   {
@@ -3545,10 +3617,10 @@
     "vehicle_description": "Williamstown Line",
     "train_id": "WIL",
     "route": "WIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.818806",
-    "lon": "144.966156",
+    "lat": "-37.867859",
+    "lon": "144.905609",
     "source": "trains.json"
   },
   {
@@ -3557,10 +3629,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.818043",
-    "lon": "144.95134",
+    "lat": "-37.846497",
+    "lon": "144.844482",
     "source": "trains.json"
   },
   {
@@ -3617,10 +3689,10 @@
     "vehicle_description": "Williamstown Line",
     "train_id": "WIL",
     "route": "WIL",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.867859",
-    "lon": "144.905609",
+    "lat": "-37.819412",
+    "lon": "144.962967",
     "source": "trains.json"
   },
   {
@@ -3641,10 +3713,10 @@
     "vehicle_description": "Craigieburn Line",
     "train_id": "CGB",
     "route": "CGB",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.775349",
-    "lon": "144.921799",
+    "lat": "-37.602249",
+    "lon": "144.943176",
     "source": "trains.json"
   },
   {
@@ -3665,10 +3737,10 @@
     "vehicle_description": "Glen Waverley Line",
     "train_id": "GWY",
     "route": "GWY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.834873",
-    "lon": "145.022949",
+    "lat": "-37.879631",
+    "lon": "145.16272",
     "source": "trains.json"
   },
   {
@@ -3689,10 +3761,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.824436",
-    "lon": "144.887497",
+    "lat": "-37.819096",
+    "lon": "144.964905",
     "source": "trains.json"
   },
   {
@@ -3701,10 +3773,10 @@
     "vehicle_description": "Werribee Line",
     "train_id": "WER",
     "route": "WER",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:28:19.918328Z",
-    "lat": "-37.799458",
-    "lon": "144.924332",
+    "lat": "-37.863876",
+    "lon": "144.772339",
     "source": "trains.json"
   },
   {
@@ -3725,10 +3797,10 @@
     "vehicle_description": "Hurstbridge Line",
     "train_id": "HBE",
     "route": "HBE",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.715252",
-    "lon": "145.14653",
+    "lat": "-37.743984",
+    "lon": "145.066467",
     "source": "trains.json"
   },
   {
@@ -3761,10 +3833,10 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.82658",
-    "lon": "145.058517",
+    "lat": "-37.823875",
+    "lon": "144.990219",
     "source": "trains.json"
   },
   {
@@ -3785,10 +3857,10 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.818085",
-    "lon": "144.966644",
+    "lat": "-37.815445",
+    "lon": "145.229919",
     "source": "trains.json"
   },
   {
@@ -3797,10 +3869,10 @@
     "vehicle_description": "Hurstbridge Line",
     "train_id": "HBE",
     "route": "HBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.707073",
-    "lon": "145.110641",
+    "lat": "-37.640743",
+    "lon": "145.190781",
     "source": "trains.json"
   },
   {
@@ -3821,10 +3893,10 @@
     "vehicle_description": "Mernda Line",
     "train_id": "MDD",
     "route": "MDD",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.817966",
-    "lon": "144.966827",
+    "lat": "-37.754288",
+    "lon": "144.998673",
     "source": "trains.json"
   },
   {
@@ -3857,22 +3929,22 @@
     "vehicle_description": "Hurstbridge Line",
     "train_id": "HBE",
     "route": "HBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.699112",
-    "lon": "145.098373",
+    "lat": "-37.809837",
+    "lon": "144.99263",
     "source": "trains.json"
   },
   {
     "loco_number": "MM940M",
     "current_operator": "",
-    "vehicle_description": "Hurstbridge Line",
-    "train_id": "HBE",
-    "route": "HBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Mernda Line",
+    "train_id": "MDD",
+    "route": "MDD",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.778687",
-    "lon": "145.030426",
+    "lat": "-37.811344",
+    "lon": "144.973007",
     "source": "trains.json"
   },
   {
@@ -3905,7 +3977,7 @@
     "vehicle_description": "Alamein Line",
     "train_id": "ALM",
     "route": "ALM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
     "lat": "-37.863087",
     "lon": "145.080841",
@@ -3917,10 +3989,10 @@
     "vehicle_description": "Glen Waverley Line",
     "train_id": "GWY",
     "route": "GWY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.873226",
-    "lon": "145.065369",
+    "lat": "-37.817986",
+    "lon": "144.967407",
     "source": "trains.json"
   },
   {
@@ -3929,10 +4001,10 @@
     "vehicle_description": "Belgrave Line",
     "train_id": "BEG",
     "route": "BEG",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.820103",
-    "lon": "145.150635",
+    "lat": "-37.8255",
+    "lon": "145.017746",
     "source": "trains.json"
   },
   {
@@ -3965,10 +4037,10 @@
     "vehicle_description": "Glen Waverley Line",
     "train_id": "GWY",
     "route": "GWY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.879681",
-    "lon": "145.162949",
+    "lat": "-37.826584",
+    "lon": "144.997726",
     "source": "trains.json"
   },
   {
@@ -4049,10 +4121,10 @@
     "vehicle_description": "Pakenham Line",
     "train_id": "PKM",
     "route": "PKM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-38.060658",
-    "lon": "145.382278",
+    "lat": "-37.924248",
+    "lon": "145.120041",
     "source": "trains.json"
   },
   {
@@ -4073,10 +4145,10 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.712002",
-    "lon": "144.782669",
+    "lat": "-37.577152",
+    "lon": "144.729538",
     "source": "trains.json"
   },
   {
@@ -4097,22 +4169,22 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.801571",
-    "lon": "144.881332",
+    "lat": "-37.801792",
+    "lon": "144.901367",
     "source": "trains.json"
   },
   {
     "loco_number": "MM9909M",
     "current_operator": "",
-    "vehicle_description": "Cranbourne Line",
-    "train_id": "CBE",
-    "route": "CBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Sunbury Line",
+    "train_id": "SUY",
+    "route": "SUY",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.840614",
-    "lon": "144.992935",
+    "lat": "-37.771515",
+    "lon": "144.820114",
     "source": "trains.json"
   },
   {
@@ -4157,10 +4229,10 @@
     "vehicle_description": "Pakenham Line",
     "train_id": "PKM",
     "route": "PKM",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-38.077389",
-    "lon": "145.46991",
+    "lat": "-37.842751",
+    "lon": "144.997589",
     "source": "trains.json"
   },
   {
@@ -4190,13 +4262,13 @@
   {
     "loco_number": "MM9921M",
     "current_operator": "",
-    "vehicle_description": "Cranbourne Line",
-    "train_id": "CBE",
-    "route": "CBE",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Sunbury Line",
+    "train_id": "SUY",
+    "route": "SUY",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.924248",
-    "lon": "145.120041",
+    "lat": "-37.799679",
+    "lon": "144.957657",
     "source": "trains.json"
   },
   {
@@ -4238,13 +4310,13 @@
   {
     "loco_number": "MM9928M",
     "current_operator": "",
-    "vehicle_description": "Sunbury Line",
-    "train_id": "SUY",
-    "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Pakenham Line",
+    "train_id": "PKM",
+    "route": "PKM",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.774128",
-    "lon": "144.822128",
+    "lat": "-37.84203",
+    "lon": "144.996002",
     "source": "trains.json"
   },
   {
@@ -4337,10 +4409,10 @@
     "vehicle_description": "Cranbourne Line",
     "train_id": "CBE",
     "route": "CBE",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.885925",
-    "lon": "145.057983",
+    "lat": "-38.099689",
+    "lon": "145.280548",
     "source": "trains.json"
   },
   {
@@ -4373,10 +4445,10 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:28:19.918328Z",
-    "lat": "-37.578968",
-    "lon": "144.728043",
+    "lat": "-37.723122",
+    "lon": "144.791229",
     "source": "trains.json"
   },
   {
@@ -4385,10 +4457,10 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.77953",
-    "lon": "144.826157",
+    "lat": "-37.696918",
+    "lon": "144.770813",
     "source": "trains.json"
   },
   {
@@ -4397,22 +4469,22 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.700352",
-    "lon": "144.773514",
+    "lat": "-37.78484",
+    "lon": "144.8302",
     "source": "trains.json"
   },
   {
     "loco_number": "MM9956M",
     "current_operator": "",
-    "vehicle_description": "Pakenham Line",
-    "train_id": "PKM",
-    "route": "PKM",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Sunbury Line",
+    "train_id": "SUY",
+    "route": "SUY",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.877926",
-    "lon": "145.043381",
+    "lat": "-37.801903",
+    "lon": "144.884171",
     "source": "trains.json"
   },
   {
@@ -4430,13 +4502,13 @@
   {
     "loco_number": "MM9958M",
     "current_operator": "",
-    "vehicle_description": "Sunbury Line",
-    "train_id": "SUY",
-    "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Cranbourne Line",
+    "train_id": "CBE",
+    "route": "CBE",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.802742",
-    "lon": "144.893387",
+    "lat": "-37.883038",
+    "lon": "145.051529",
     "source": "trains.json"
   },
   {
@@ -4457,22 +4529,22 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.799679",
-    "lon": "144.957657",
+    "lat": "-37.707417",
+    "lon": "144.779068",
     "source": "trains.json"
   },
   {
     "loco_number": "MM9961M",
     "current_operator": "",
-    "vehicle_description": "Sunbury Line",
-    "train_id": "SUY",
-    "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Pakenham Line",
+    "train_id": "PKM",
+    "route": "PKM",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-37.799789",
-    "lon": "144.957809",
+    "lat": "-37.920803",
+    "lon": "145.115479",
     "source": "trains.json"
   },
   {
@@ -4505,10 +4577,10 @@
     "vehicle_description": "Cranbourne Line",
     "train_id": "CBE",
     "route": "CBE",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-38.100006",
-    "lon": "145.281265",
+    "lat": "-37.885933",
+    "lon": "145.057739",
     "source": "trains.json"
   },
   {
@@ -4529,10 +4601,10 @@
     "vehicle_description": "Sunbury Line",
     "train_id": "SUY",
     "route": "SUY",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-37.714417",
-    "lon": "144.784607",
+    "lat": "-37.800137",
+    "lon": "144.961044",
     "source": "trains.json"
   },
   {
@@ -4584,27 +4656,39 @@
     "source": "trains.json"
   },
   {
+    "loco_number": "MRL002",
+    "current_operator": "",
+    "vehicle_description": "SSR Grain",
+    "train_id": "4545",
+    "route": "4545 Carrington North West NSW",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-31.403047",
+    "lon": "150.359293",
+    "source": "trains.json"
+  },
+  {
     "loco_number": "MTPV1",
     "current_operator": "",
     "vehicle_description": "Track Inspection Vehicle",
     "train_id": "HM26",
     "route": "HM26",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-33.968293",
-    "lon": "151.104773",
+    "lat": "-33.879527",
+    "lon": "151.208693",
     "source": "trains.json"
   },
   {
     "loco_number": "MTPV2",
     "current_operator": "",
     "vehicle_description": "Track Inspection Vehicle",
-    "train_id": "HM69",
-    "route": "HM69",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "train_id": "HM70",
+    "route": "HM70",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-33.892307",
-    "lon": "151.198813",
+    "lat": "-33.897993",
+    "lon": "151.188547",
     "source": "trains.json"
   },
   {
@@ -4613,10 +4697,10 @@
     "vehicle_description": "Northern Line Service",
     "train_id": "8080",
     "route": "8080 Swan Hill Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.79985",
-    "lon": "144.867267",
+    "lat": "-37.814237",
+    "lon": "144.94924",
     "source": "trains.json"
   },
   {
@@ -4637,10 +4721,10 @@
     "vehicle_description": "SSR BG Grain",
     "train_id": "9098",
     "route": "9098 Piangil Line / Deniliquin Line Tottenham Yard",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.81484",
-    "lon": "144.924067",
+    "lat": "-37.815033",
+    "lon": "144.923573",
     "source": "trains.json"
   },
   {
@@ -4661,10 +4745,10 @@
     "vehicle_description": "PN Loaded Fuel Service",
     "train_id": "5446",
     "route": "5446 Esprance West Kalgoorlie",
-    "last_seen": "2026-04-29T17:19:50.671764Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.8419",
-    "lon": "121.870373",
+    "lat": "-33.851397",
+    "lon": "121.893427",
     "source": "trains.json"
   },
   {
@@ -4697,10 +4781,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "3PS7",
     "route": "3PS7 Kewdale SFT (Chullora)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.27146",
-    "lon": "138.35764",
+    "lat": "-33.108097",
+    "lon": "138.623147",
     "source": "trains.json"
   },
   {
@@ -4709,7 +4793,7 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "5SP5",
     "route": "5SP5 SFT (Chullora) Kewdale",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
     "lat": "-33.13303",
     "lon": "148.099947",
@@ -4721,10 +4805,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "2PM6",
     "route": "2PM6 Kewdale MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-34.999037",
-    "lon": "138.783787",
+    "lat": "-35.058243",
+    "lon": "138.938667",
     "source": "trains.json"
   },
   {
@@ -4733,10 +4817,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "4BM4",
     "route": "4BM4 Acacia Ridge MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.598187",
-    "lon": "151.16856",
+    "lat": "-33.69567",
+    "lon": "151.100787",
     "source": "trains.json"
   },
   {
@@ -4745,10 +4829,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "3PM7",
     "route": "3PM7 Kewdale MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.192397",
-    "lon": "138.038147",
+    "lat": "-33.413453",
+    "lon": "138.162173",
     "source": "trains.json"
   },
   {
@@ -4766,13 +4850,13 @@
   {
     "loco_number": "NR20",
     "current_operator": "",
-    "vehicle_description": "PN Intermodal Shuttle, Loads at Wumbulgal",
-    "train_id": "3396",
-    "route": "3396 Griffith Murrami",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "PN Intermodal Shuttle",
+    "train_id": "3397",
+    "route": "3397 Murrami Griffith",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.371803",
-    "lon": "146.2292",
+    "lat": "-34.286207",
+    "lon": "146.04404",
     "source": "trains.json"
   },
   {
@@ -4781,10 +4865,10 @@
     "vehicle_description": "PN Infrabuild Steel",
     "train_id": "4SB3",
     "route": "4SB3 Chullora Acacia Ridge",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.13482",
-    "lon": "151.9368",
+    "lat": "-32.00752",
+    "lon": "151.965987",
     "source": "trains.json"
   },
   {
@@ -4793,10 +4877,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "3SP7",
     "route": "3SP7 SFT (Chullora) Kewdale",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.500697",
-    "lon": "131.371493",
+    "lat": "-30.568313",
+    "lon": "130.802813",
     "source": "trains.json"
   },
   {
@@ -4829,10 +4913,22 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "3PM6",
     "route": "3PM6 Kewdale MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.008467",
-    "lon": "135.616107",
+    "lat": "-31.12115",
+    "lon": "135.952",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "NR52",
+    "current_operator": "",
+    "vehicle_description": "PN Intermodal Shuttle, Loads at Wumbulgal",
+    "train_id": "3396",
+    "route": "3396 Griffith Murrami",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-34.28627",
+    "lon": "146.044467",
     "source": "trains.json"
   },
   {
@@ -4841,10 +4937,10 @@
     "vehicle_description": "JBR The Overland",
     "train_id": "5AM8",
     "route": "5AM8 Adelaide Parklands Terminal Melbourne Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-36.201417",
-    "lon": "140.575387",
+    "lat": "-36.375447",
+    "lon": "141.009413",
     "source": "trains.json"
   },
   {
@@ -4865,10 +4961,10 @@
     "vehicle_description": "JBR Indian Pacifc",
     "train_id": "4SA8",
     "route": "4SA8 Central Station Adelaide Parklands Terminal",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.42915",
-    "lon": "140.007",
+    "lat": "-32.648953",
+    "lon": "139.461133",
     "source": "trains.json"
   },
   {
@@ -4889,10 +4985,10 @@
     "vehicle_description": "PN Infrabuild Steel",
     "train_id": "3NY3",
     "route": "3NY3 Morandoo Whyalla",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-32.987387",
-    "lon": "137.582373",
+    "lat": "-32.99058",
+    "lon": "137.581093",
     "source": "trains.json"
   },
   {
@@ -4913,10 +5009,10 @@
     "vehicle_description": "NR76",
     "train_id": "NR76",
     "route": "NR76",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.804273",
-    "lon": "144.91312",
+    "lat": "-37.80468",
+    "lon": "144.914533",
     "source": "trains.json"
   },
   {
@@ -4925,10 +5021,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "4PM4",
     "route": "4PM4 Kewdale MFT (South Dynon)",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.852487",
-    "lon": "120.11864",
+    "lat": "-30.893173",
+    "lon": "120.870093",
     "source": "trains.json"
   },
   {
@@ -4997,10 +5093,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "4MS2",
     "route": "4MS2 MFT (South Dynon) SFT (Chullora)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.723303",
-    "lon": "149.772227",
+    "lat": "-34.687483",
+    "lon": "150.169173",
     "source": "trains.json"
   },
   {
@@ -5021,10 +5117,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "4MP7",
     "route": "4MP7 MFT (South Dynon) Kewdale",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.958173",
-    "lon": "122.462187",
+    "lat": "-30.907453",
+    "lon": "121.94616",
     "source": "trains.json"
   },
   {
@@ -5045,10 +5141,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "4PS6",
     "route": "4PS6 Kewdale SFT (Chullora)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.97166",
-    "lon": "122.556293",
+    "lat": "-31.016063",
+    "lon": "123.01448",
     "source": "trains.json"
   },
   {
@@ -5057,10 +5153,10 @@
     "vehicle_description": "JBR The Ghan Expedition",
     "train_id": "4AD8E",
     "route": "4AD8E Adelaide Parklands Terminal Berrima Passenger Terminal (Darwin)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-25.428263",
-    "lon": "133.491067",
+    "lat": "-25.159878",
+    "lon": "133.560187",
     "source": "trains.json"
   },
   {
@@ -5093,10 +5189,10 @@
     "vehicle_description": "PN Intermodal",
     "train_id": "4MP5",
     "route": "4MP5 MFT (South Dynon) Kewdale",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.99895",
-    "lon": "138.813467",
+    "lat": "-35.013107",
+    "lon": "138.699013",
     "source": "trains.json"
   },
   {
@@ -5153,10 +5249,10 @@
     "vehicle_description": "Aurizon Cockburn Cement - Empty Lime and Cement Train",
     "train_id": "4C74",
     "route": "4C74 Parkeston West Kalgoorlie",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.242203",
-    "lon": "115.785614",
+    "lat": "-32.241013",
+    "lon": "115.785072",
     "source": "trains.json"
   },
   {
@@ -5165,10 +5261,10 @@
     "vehicle_description": "Aurizon Kalgoorlie Mixed Freight",
     "train_id": "4426",
     "route": "4426 West Kalgoorlie Kwinana",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.24239",
-    "lon": "115.785637",
+    "lat": "-32.241211",
+    "lon": "115.785133",
     "source": "trains.json"
   },
   {
@@ -5189,10 +5285,10 @@
     "vehicle_description": "QUBE Container Train",
     "train_id": "1311",
     "route": "1311 Moorebank IMEX Terminal RIFL (Bomen)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-34.645267",
-    "lon": "148.026667",
+    "lat": "-34.818437",
+    "lon": "147.734267",
     "source": "trains.json"
   },
   {
@@ -5213,10 +5309,10 @@
     "vehicle_description": "QUBE Grain",
     "train_id": "3966",
     "route": "3966 Southern NSW Inner Harbour",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.546207",
-    "lon": "148.34564",
+    "lat": "-34.625523",
+    "lon": "148.588947",
     "source": "trains.json"
   },
   {
@@ -5225,10 +5321,10 @@
     "vehicle_description": "QUBE Loaded Ore",
     "train_id": "8412",
     "route": "8412 CSA Mine Cobar Carrington",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.566237",
-    "lon": "149.380733",
+    "lat": "-33.440937",
+    "lon": "149.57812",
     "source": "trains.json"
   },
   {
@@ -5249,10 +5345,10 @@
     "vehicle_description": "QUBE Container Shuttle / Grain Shuttle",
     "train_id": "3318",
     "route": "3318 RIFL (Bomen) / Southern NSW Junee / Southern NSW",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.357117",
-    "lon": "146.896587",
+    "lat": "-34.357393",
+    "lon": "146.897653",
     "source": "trains.json"
   },
   {
@@ -5393,10 +5489,10 @@
     "vehicle_description": "SSR Light Engine",
     "train_id": "D547",
     "route": "D547",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:28:19.918328Z",
-    "lat": "-31.350113",
-    "lon": "150.64636",
+    "lat": "-31.256447",
+    "lon": "150.471373",
     "source": "trains.json"
   },
   {
@@ -5429,10 +5525,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "1PM9",
     "route": "1PM9 SCT, Forrestfield SCT, Laverton",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-35.197547",
-    "lon": "139.39932",
+    "lat": "-35.465703",
+    "lon": "139.6814",
     "source": "trains.json"
   },
   {
@@ -5441,10 +5537,10 @@
     "vehicle_description": "SCT Intermodal",
     "train_id": "3MP9",
     "route": "3MP9 SCT, Laverton SCT, Forrestfield",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-30.707917",
-    "lon": "129.543307",
+    "lat": "-30.760623",
+    "lon": "129.032107",
     "source": "trains.json"
   },
   {
@@ -5477,10 +5573,10 @@
     "vehicle_description": "SSR Loaded Aggregates",
     "train_id": "2280",
     "route": "2280 Peppertree Quarry Maldon Cement Works",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-34.733043",
-    "lon": "150.023907",
+    "lat": "-34.717567",
+    "lon": "150.070267",
     "source": "trains.json"
   },
   {
@@ -5489,10 +5585,10 @@
     "vehicle_description": "SSR Loaded Aggregates",
     "train_id": "2184",
     "route": "2184 Peppertree Quarry Boral, Cooks River",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-33.923357",
-    "lon": "151.174467",
+    "lat": "-33.923293",
+    "lon": "151.174573",
     "source": "trains.json"
   },
   {
@@ -5501,10 +5597,10 @@
     "vehicle_description": "SSR Grain",
     "train_id": "1341",
     "route": "1341 Weston Milling, Enfield Southern NSW",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-34.421483",
-    "lon": "147.90112",
+    "lat": "-34.317683",
+    "lon": "147.914547",
     "source": "trains.json"
   },
   {
@@ -5537,10 +5633,10 @@
     "vehicle_description": "Southern Highlands Service",
     "train_id": "SN54",
     "route": "SN54 Moss Vale Campbelltown",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-34.368517",
-    "lon": "150.544493",
+    "lat": "-34.19703",
+    "lon": "150.66164",
     "source": "trains.json"
   },
   {
@@ -5561,10 +5657,10 @@
     "vehicle_description": "Additional Bathurst Service",
     "train_id": "WN31",
     "route": "WN31 Lithgow Bathurst",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-33.51167",
-    "lon": "149.760187",
+    "lat": "-33.42578",
+    "lon": "149.583187",
     "source": "trains.json"
   },
   {
@@ -5573,22 +5669,22 @@
     "vehicle_description": "Hunter Line Service",
     "train_id": "V638",
     "route": "V638 Muswellbrook Newcastle Interchange",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-32.76922",
-    "lon": "151.62296",
+    "lat": "-32.92387",
+    "lon": "151.75856",
     "source": "trains.json"
   },
   {
     "loco_number": "TE2813",
     "current_operator": "",
     "vehicle_description": "Southern Highlands Service",
-    "train_id": "SN26",
-    "route": "SN26 Goulburn Central",
-    "last_seen": "2026-04-29T23:45:49.028656Z",
+    "train_id": "SN56",
+    "route": "SN56 Moss Vale Campbelltown",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T18:02:14.194502Z",
-    "lat": "-34.4679",
-    "lon": "150.420053",
+    "lat": "-34.54657",
+    "lon": "150.372253",
     "source": "trains.json"
   },
   {
@@ -5621,10 +5717,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "MR908",
     "route": "MR908 Moolarben NCIG Kooragang",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-32.871197",
-    "lon": "151.738867",
+    "lat": "-32.87401",
+    "lon": "151.7472",
     "source": "trains.json"
   },
   {
@@ -5645,10 +5741,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "MR955",
     "route": "MR955 NCIG Kooragang Moolarben",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-32.26481",
-    "lon": "149.795187",
+    "lat": "-32.268943",
+    "lon": "149.802453",
     "source": "trains.json"
   },
   {
@@ -5681,10 +5777,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "HV344",
     "route": "HV344 Hunter Valley PWCS Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.83683",
-    "lon": "151.687187",
+    "lat": "-32.83684",
+    "lon": "151.68716",
     "source": "trains.json"
   },
   {
@@ -5693,10 +5789,10 @@
     "vehicle_description": "PN Loaded Aggregate",
     "train_id": "2126",
     "route": "2126 Lynwood Siding (Marulan) Holcim RDC Rooty Hill",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-34.232987",
-    "lon": "150.58004",
+    "lat": "-34.12507",
+    "lon": "150.74448",
     "source": "trains.json"
   },
   {
@@ -5777,10 +5873,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "ND108",
     "route": "ND108 Newdell PWCS Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.869353",
-    "lon": "151.75732",
+    "lat": "-32.868037",
+    "lon": "151.754173",
     "source": "trains.json"
   },
   {
@@ -5789,10 +5885,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "MB940",
     "route": "MB940 Maules Creek NCIG Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-31.34854",
-    "lon": "150.61964",
+    "lat": "-31.461877",
+    "lon": "150.673093",
     "source": "trains.json"
   },
   {
@@ -5801,10 +5897,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "MR972",
     "route": "MR972 Moolarben NCIG Kooragang",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.427743",
-    "lon": "150.13468",
+    "lat": "-32.423077",
+    "lon": "150.275173",
     "source": "trains.json"
   },
   {
@@ -5813,10 +5909,10 @@
     "vehicle_description": "PN Coal",
     "train_id": "BG237",
     "route": "BG237 PWCS Kooragang Bengalla",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.722673",
-    "lon": "151.493907",
+    "lat": "-32.69579",
+    "lon": "151.391827",
     "source": "trains.json"
   },
   {
@@ -5895,12 +5991,12 @@
     "loco_number": "VL27",
     "current_operator": "",
     "vehicle_description": "Empty Car Provisioning",
-    "train_id": "9987",
-    "route": "9987 Southern Cross VLP Arrival Yard",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "train_id": "8580",
+    "route": "8580 Newport Workshops Southern Cross",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.962523",
-    "lon": "144.49932",
+    "lat": "-37.836687",
+    "lon": "144.884373",
     "source": "trains.json"
   },
   {
@@ -5966,13 +6062,13 @@
   {
     "loco_number": "VL62",
     "current_operator": "",
-    "vehicle_description": "Northern Line Service",
-    "train_id": "8072",
-    "route": "8072 Echuca Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "South Western Line Service",
+    "train_id": "8741",
+    "route": "8741 Southern Cross Waurn Ponds",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.811763",
-    "lon": "144.946307",
+    "lat": "-37.786547",
+    "lon": "144.83104",
     "source": "trains.json"
   },
   {
@@ -5985,6 +6081,18 @@
     "date_time_added": "2026-04-30T00:02:48.407086Z",
     "lat": "-37.805347",
     "lon": "144.930533",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VL75",
+    "current_operator": "",
+    "vehicle_description": "Western Line Service",
+    "train_id": "8219",
+    "route": "8219 Southern Cross Melton (M-F)",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.786523",
+    "lon": "144.831027",
     "source": "trains.json"
   },
   {
@@ -6027,24 +6135,24 @@
     "loco_number": "VL88",
     "current_operator": "",
     "vehicle_description": "South Western Line Service",
-    "train_id": "8731",
-    "route": "8731 Southern Cross South Geelong (M-F) / Waurn Ponds (S-S)",
-    "last_seen": "2026-04-30T01:03:19.068540Z",
+    "train_id": "8758",
+    "route": "8758 South Geelong (M-F) Waurn Ponds (S-S) Southern Cross",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-38.112893",
-    "lon": "144.354267",
+    "lat": "-37.91197",
+    "lon": "144.59964",
     "source": "trains.json"
   },
   {
     "loco_number": "VL90",
     "current_operator": "",
-    "vehicle_description": "South Western Line Service",
-    "train_id": "8752",
-    "route": "8752 Waurn Ponds Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "vehicle_description": "Western Line Service",
+    "train_id": "8121",
+    "route": "8121 Southern Cross Wendouree (M-F)",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.790093",
-    "lon": "144.833933",
+    "lat": "-37.800327",
+    "lon": "144.929653",
     "source": "trains.json"
   },
   {
@@ -6065,10 +6173,10 @@
     "vehicle_description": "South Western Line Service",
     "train_id": "8916",
     "route": "8916 Wyndham Vale Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.804587",
-    "lon": "144.938573",
+    "lat": "-37.80389",
+    "lon": "144.940653",
     "source": "trains.json"
   },
   {
@@ -6089,10 +6197,10 @@
     "vehicle_description": "South Western Line Service",
     "train_id": "8754",
     "route": "8754 South Geelong (M-F) Waurn Ponds (S-S) Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.911613",
-    "lon": "144.59968",
+    "lat": "-37.815633",
+    "lon": "144.951027",
     "source": "trains.json"
   },
   {
@@ -6101,10 +6209,10 @@
     "vehicle_description": "South Western Line Service",
     "train_id": "8756",
     "route": "8756 Waurn Ponds Southern Cross",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-38.068923",
-    "lon": "144.382013",
+    "lat": "-37.910987",
+    "lon": "144.599773",
     "source": "trains.json"
   },
   {
@@ -6113,10 +6221,10 @@
     "vehicle_description": "South Western Line Service",
     "train_id": "8737",
     "route": "8737 Southern Cross Waurn Ponds",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.90394",
-    "lon": "144.601333",
+    "lat": "-38.112843",
+    "lon": "144.354253",
     "source": "trains.json"
   },
   {
@@ -6264,6 +6372,18 @@
     "source": "trains.json"
   },
   {
+    "loco_number": "VL140",
+    "current_operator": "",
+    "vehicle_description": "South Western Line Service",
+    "train_id": "8743",
+    "route": "8743 Southern Cross South Geelong (M-F) Waurn Ponds (S-S)",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.80194",
+    "lon": "144.901453",
+    "source": "trains.json"
+  },
+  {
     "loco_number": "VL354",
     "current_operator": "",
     "vehicle_description": "SRS Shunter",
@@ -6297,6 +6417,18 @@
     "date_time_added": "2026-04-30T00:02:48.407086Z",
     "lat": "-37.818039",
     "lon": "144.951248",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8021",
+    "current_operator": "",
+    "vehicle_description": "Bendigo - Melbourne Via Sunbury",
+    "train_id": "8021",
+    "route": "8021",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.81868",
+    "lon": "144.950745",
     "source": "trains.json"
   },
   {
@@ -6377,10 +6509,10 @@
     "vehicle_description": "Swan Hill - Melbourne Via Bendigo",
     "train_id": "8080",
     "route": "8080",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.802231",
-    "lon": "144.888229",
+    "lat": "-37.818748",
+    "lon": "144.952454",
     "source": "trains.json"
   },
   {
@@ -6425,10 +6557,10 @@
     "vehicle_description": "Ballarat - Melbourne Via Melton",
     "train_id": "8115",
     "route": "8115",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-37.72596",
-    "lon": "144.643433",
+    "lat": "-37.5397",
+    "lon": "143.819672",
     "source": "trains.json"
   },
   {
@@ -6453,6 +6585,18 @@
     "date_time_added": "2026-04-30T00:02:48.407086Z",
     "lat": "-37.817768",
     "lon": "144.950882",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8121",
+    "current_operator": "",
+    "vehicle_description": "Ballarat - Melbourne Via Melton",
+    "train_id": "8121",
+    "route": "8121",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.79866",
+    "lon": "144.918121",
     "source": "trains.json"
   },
   {
@@ -6485,10 +6629,10 @@
     "vehicle_description": "Ballarat - Melbourne Via Melton",
     "train_id": "8126",
     "route": "8126",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.53978",
-    "lon": "143.820221",
+    "lat": "-37.78297",
+    "lon": "144.802017",
     "source": "trains.json"
   },
   {
@@ -6605,10 +6749,10 @@
     "vehicle_description": "Ballarat - Melbourne Via Melton",
     "train_id": "8217",
     "route": "8217",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.727131",
-    "lon": "144.646042",
+    "lat": "-37.703209",
+    "lon": "144.571976",
     "source": "trains.json"
   },
   {
@@ -6617,10 +6761,10 @@
     "vehicle_description": "Ballarat - Melbourne Via Melton",
     "train_id": "8219",
     "route": "8219",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.818111",
-    "lon": "144.950501",
+    "lat": "-37.766109",
+    "lon": "144.735703",
     "source": "trains.json"
   },
   {
@@ -6665,10 +6809,22 @@
     "vehicle_description": "Ballarat - Melbourne Via Melton",
     "train_id": "8232",
     "route": "8232",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.783001",
-    "lon": "144.802063",
+    "lat": "-37.81691",
+    "lon": "144.952377",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8234",
+    "current_operator": "",
+    "vehicle_description": "Ballarat - Melbourne Via Melton",
+    "train_id": "8234",
+    "route": "8234",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.743549",
+    "lon": "144.683929",
     "source": "trains.json"
   },
   {
@@ -6773,10 +6929,10 @@
     "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
     "train_id": "8420",
     "route": "8420",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:03:19.068540Z",
-    "lat": "-37.81768",
-    "lon": "144.970398",
+    "lat": "-37.818161",
+    "lon": "144.950409",
     "source": "trains.json"
   },
   {
@@ -6785,10 +6941,22 @@
     "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
     "train_id": "8421",
     "route": "8421",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.81884",
-    "lon": "144.95192",
+    "lat": "-37.84639",
+    "lon": "145.006882",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8422",
+    "current_operator": "",
+    "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
+    "train_id": "8422",
+    "route": "8422",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.85738",
+    "lon": "145.020355",
     "source": "trains.json"
   },
   {
@@ -6905,10 +7073,10 @@
     "vehicle_description": "Geelong - Melbourne Via Geelong",
     "train_id": "8735",
     "route": "8735",
-    "last_seen": "2026-04-30T00:32:55.361185Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-37.815071",
-    "lon": "144.948837",
+    "lat": "-38.159382",
+    "lon": "144.360489",
     "source": "trains.json"
   },
   {
@@ -6941,10 +7109,10 @@
     "vehicle_description": "Geelong - Melbourne Via Geelong",
     "train_id": "8741",
     "route": "8741",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.816849",
-    "lon": "144.951721",
+    "lat": "-37.829552",
+    "lon": "144.676834",
     "source": "trains.json"
   },
   {
@@ -6960,6 +7128,18 @@
     "source": "trains.json"
   },
   {
+    "loco_number": "VLINE8743",
+    "current_operator": "",
+    "vehicle_description": "Geelong - Melbourne Via Geelong",
+    "train_id": "8743",
+    "route": "8743",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.801941",
+    "lon": "144.901428",
+    "source": "trains.json"
+  },
+  {
     "loco_number": "VLINE8744",
     "current_operator": "",
     "vehicle_description": "Geelong - Melbourne Via Geelong",
@@ -6969,6 +7149,18 @@
     "date_time_added": "2026-04-30T00:02:48.407086Z",
     "lat": "-37.81612",
     "lon": "144.951279",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8745",
+    "current_operator": "",
+    "vehicle_description": "Geelong - Melbourne Via Geelong",
+    "train_id": "8745",
+    "route": "8745",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.815578",
+    "lon": "144.950897",
     "source": "trains.json"
   },
   {
@@ -7013,10 +7205,10 @@
     "vehicle_description": "Geelong - Melbourne Via Geelong",
     "train_id": "8752",
     "route": "8752",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.796768",
-    "lon": "144.843018",
+    "lat": "-37.81818",
+    "lon": "144.951996",
     "source": "trains.json"
   },
   {
@@ -7025,10 +7217,34 @@
     "vehicle_description": "Geelong - Melbourne Via Geelong",
     "train_id": "8754",
     "route": "8754",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-37.832249",
-    "lon": "144.69574",
+    "lat": "-37.817181",
+    "lon": "144.952286",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8756",
+    "current_operator": "",
+    "vehicle_description": "Geelong - Melbourne Via Geelong",
+    "train_id": "8756",
+    "route": "8756",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-37.777359",
+    "lon": "144.771408",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "VLINE8762",
+    "current_operator": "",
+    "vehicle_description": "Geelong - Melbourne Via Geelong",
+    "train_id": "8762",
+    "route": "8762",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-38.158989",
+    "lon": "144.35994",
     "source": "trains.json"
   },
   {
@@ -7109,10 +7325,10 @@
     "vehicle_description": "NSW TrainLink XPT",
     "train_id": "NT32",
     "route": "NT32 Roma St (Brisbane) Central Station (Sydney)",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-30.429123",
-    "lon": "153.033093",
+    "lat": "-30.71016",
+    "lon": "152.912613",
     "source": "trains.json"
   },
   {
@@ -7133,10 +7349,10 @@
     "vehicle_description": "NSW TrainLink XPT",
     "train_id": "NT36",
     "route": "NT36 Grafton Central",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T01:31:05.843372Z",
-    "lat": "-32.162583",
-    "lon": "151.944267",
+    "lat": "-32.379907",
+    "lon": "151.81952",
     "source": "trains.json"
   },
   {
@@ -7145,10 +7361,10 @@
     "vehicle_description": "NSW TrainLink XPT",
     "train_id": "NT33",
     "route": "NT33 Central Casino",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:02:48.407086Z",
-    "lat": "-32.16541",
-    "lon": "151.942507",
+    "lat": "-31.914883",
+    "lon": "152.041867",
     "source": "trains.json"
   },
   {
@@ -7169,10 +7385,22 @@
     "vehicle_description": "NSW Trainlink XPT",
     "train_id": "WT27",
     "route": "WT27 Central Dubbo",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-30T00:32:55.361185Z",
-    "lat": "-33.549883",
-    "lon": "149.283413",
+    "lat": "-33.290587",
+    "lon": "149.103",
+    "source": "trains.json"
+  },
+  {
+    "loco_number": "XP2019",
+    "current_operator": "",
+    "vehicle_description": "NSW TrainLink XPT",
+    "train_id": "NT35",
+    "route": "NT35 Central Grafton",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
+    "date_time_added": "2026-04-30T02:02:41.795371Z",
+    "lat": "-33.872523",
+    "lon": "151.095693",
     "source": "trains.json"
   },
   {
@@ -7205,10 +7433,10 @@
     "vehicle_description": "ORA Coal",
     "train_id": "MN247",
     "route": "MN247 PWCS Kooragang Mangoola",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.66567",
-    "lon": "151.307667",
+    "lat": "-32.55384",
+    "lon": "151.154627",
     "source": "trains.json"
   },
   {
@@ -7229,10 +7457,10 @@
     "vehicle_description": "ORA Coal",
     "train_id": "MO174",
     "route": "MO174 Mt Owen PWCS Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.424537",
-    "lon": "151.097627",
+    "lat": "-32.484897",
+    "lon": "151.13564",
     "source": "trains.json"
   },
   {
@@ -7265,10 +7493,10 @@
     "vehicle_description": "ORA Coal",
     "train_id": "UL338",
     "route": "UL338 Ulan PWCS Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:19:50.671764Z",
-    "lat": "-32.372783",
-    "lon": "150.449507",
+    "lat": "-32.351143",
+    "lon": "150.60792",
     "source": "trains.json"
   },
   {
@@ -7289,10 +7517,10 @@
     "vehicle_description": "ORA Coal",
     "train_id": "UL122",
     "route": "UL122 Ulan PWCS Kooragang",
-    "last_seen": "2026-04-30T01:31:05.843372Z",
+    "last_seen": "2026-04-30T02:02:41.795371Z",
     "date_time_added": "2026-04-29T17:31:31.316802Z",
-    "lat": "-32.270597",
-    "lon": "149.774507",
+    "lat": "-32.315",
+    "lon": "149.859893",
     "source": "trains.json"
   }
 ]
