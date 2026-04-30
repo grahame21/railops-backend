@@ -1,15 +1,23 @@
 RailOps Loco Database Summary
-Generated Local: 1/5/2026 00:00 Adelaide time
-Generated ISO: 2026-05-01T00:00:00+09:30
+Generated UTC: 2026-04-30T18:03:22.455793Z
 
-Database has been reset.
+Note:
+HTML pages convert generated/date times to your phone/browser local timezone automatically.
+If your phone is in Adelaide, it shows Adelaide time.
+If your phone is in Melbourne or Sydney, it shows Melbourne/Sydney time.
 
-Source trains this run: 0
-Locos seen this run: 0
-Existing locos before merge: 0
-New locos added this run: 0
-Final visible/master locos: 0
+Source trains this run: 636
+Locos seen this run: 636
+Existing locos before merge: 568
+New locos added this run: 123
+Final visible/master locos: 691
 
+Sort order:
+1. Number-only locos first, e.g. 1102, 1428, 5009
+2. Normal natural alphabetical order, e.g. ACD6071, NR2, NR10
+3. 3V services at the bottom
+
+Display format: No spaces in loco numbers, e.g. NR1 stays NR1
 Storage mode: GitHub committed database files
 Rule: Existing locos are kept even if missing from a scrape.
 Blocklist file: blocklist.json
