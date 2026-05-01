@@ -5,51 +5,340 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RailOps Loco Numbers Only</title>
 <style>
-*{box-sizing:border-box}
-html,body{
+:root {
+  color-scheme: dark;
+  --bg:#071222;
+  --panel:#102039;
+  --panel2:#0d1a2f;
+  --line:#274569;
+  --text:#eaf2ff;
+  --muted:#9fb3d3;
+  --accent:#58b6ff;
+  --pill:#123f68;
+  --good:#113f2d;
+  --goodline:#2f8f61;
+}
+* { box-sizing:border-box; }
+html, body {
   margin:0;
   padding:0;
-  background:#071222;
-  color:#eaf2ff;
+  background:var(--bg);
+  color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
-body{padding:24px}
-.card{
-  background:linear-gradient(180deg,#102039,#0d1a2f);
-  border:1px solid #274569;
-  border-radius:22px;
-  padding:24px;
-  max-width:920px;
-  margin:auto;
-  box-shadow:0 16px 36px rgba(0,0,0,.25);
+body { padding:24px; }
+.card {
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:22px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
 }
-h1{
+h1 {
+  font-size:34px;
+  line-height:1.1;
   margin:0 0 12px;
-  font-size:clamp(32px,6vw,56px);
-  line-height:1.05;
 }
-p{
-  color:#9fb3d3;
-  font-size:20px;
-  line-height:1.45;
+.subtitle {
+  color:var(--muted);
+  font-size:22px;
+  line-height:1.35;
+  margin-bottom:18px;
 }
-.pill{
+.pill {
   display:inline-block;
-  background:#113f2d;
-  border:1px solid #2f8f61;
+  background:var(--pill);
+  border:1px solid #28557f;
+  padding:10px 16px;
   border-radius:999px;
-  padding:10px 14px;
-  margin:6px 6px 6px 0;
+  margin:4px 8px 10px 0;
+  font-size:18px;
+}
+.pill.good {
+  background:var(--good);
+  border-color:var(--goodline);
+}
+.small-note {
+  color:var(--muted);
+  font-size:15px;
+  margin-top:4px;
+}
+.nav {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:12px;
+}
+.btn {
+  display:inline-block;
+  text-decoration:none;
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px 20px;
+  font-size:20px;
+  background:#081426;
+}
+.btn.active {
+  background:var(--accent);
+  color:#03101d;
   font-weight:800;
+}
+.table-wrap {
+  overflow-x:auto;
+  border:1px solid var(--line);
+  border-radius:18px;
+}
+table {
+  width:100%;
+  min-width:900px;
+  border-collapse:collapse;
+  background:#0d1b31;
+}
+th, td {
+  border-bottom:1px solid var(--line);
+  padding:16px;
+  text-align:left;
+  vertical-align:top;
+  font-size:18px;
+}
+th {
+  font-size:20px;
+  background:#10213b;
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+td.muted { color:var(--muted); }
+.raw { color:var(--muted); font-size:15px; margin-top:6px; }
+.numbers {
+  columns:5 130px;
+  column-gap:32px;
+  font-size:20px;
+  line-height:1.9;
+}
+.number-item {
+  break-inside:avoid;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+@media (max-width:700px) {
+  body { padding:14px; }
+  h1 { font-size:28px; }
+  .subtitle { font-size:20px; }
+  th, td { font-size:17px; padding:14px; }
+  .btn { font-size:18px; }
 }
 </style>
 </head>
 <body>
 <div class="card">
   <h1>RailOps Loco Numbers Only</h1>
-  <span class="pill">Database reset</span>
-  <span class="pill">Started: 1/5/2026 20:00 Adelaide time</span>
-  <p>No loco numbers yet. The next Railway cron run will rebuild this from the next good scrape.</p>
+  <div class="subtitle">Numbered locos first, then natural loco order, with 3V services at the bottom.</div>
+  <div>
+    <span class="pill">Visible locos: 137</span>
+    <span class="pill good">Added last update: 137</span>
+    <span class="pill">Generated: <span class="local-time" data-utc="2026-05-01T16:02:22.506253Z">2026-05-01T16:02:22.506253Z</span></span>
+  </div>
+  <div class="small-note">Times are shown in your phone/browser timezone: <span class="phone-timezone">local time</span>.</div>
+  <div class="nav">
+    <a class="btn" href="loco_database.html">Full database</a>
+    <a class="btn" href="recently_added.html">Recently added</a>
+    <a class="btn active" href="loco_numbers_only.html">Numbers only</a>
+    <a class="btn" href="loco_database.xlsx">Download workbook</a>
+    <a class="btn" href="loco_numbers_only.xlsx">Download numbers workbook</a>
+  </div>
 </div>
-</body>
-</html>
+
+<div class="card">
+  <div class="numbers">
+    <div class="number-item">1102</div>
+<div class="number-item">1437</div>
+<div class="number-item">5005</div>
+<div class="number-item">5009</div>
+<div class="number-item">5021</div>
+<div class="number-item">5031</div>
+<div class="number-item">5032</div>
+<div class="number-item">5034</div>
+<div class="number-item">5041</div>
+<div class="number-item">6003</div>
+<div class="number-item">6008</div>
+<div class="number-item">6011</div>
+<div class="number-item">6021</div>
+<div class="number-item">6027</div>
+<div class="number-item">6043</div>
+<div class="number-item">8122</div>
+<div class="number-item">8146</div>
+<div class="number-item">8151</div>
+<div class="number-item">8216</div>
+<div class="number-item">8234</div>
+<div class="number-item">8257</div>
+<div class="number-item">9029</div>
+<div class="number-item">9203</div>
+<div class="number-item">9206</div>
+<div class="number-item">9301</div>
+<div class="number-item">9302</div>
+<div class="number-item">9304</div>
+<div class="number-item">9305</div>
+<div class="number-item">9307</div>
+<div class="number-item">9311</div>
+<div class="number-item">9313</div>
+<div class="number-item">9416</div>
+<div class="number-item">42103</div>
+<div class="number-item">ACB4403</div>
+<div class="number-item">ACB4404</div>
+<div class="number-item">ACD6049</div>
+<div class="number-item">ACD6051</div>
+<div class="number-item">ACD6052</div>
+<div class="number-item">ACD6057</div>
+<div class="number-item">ACD6066</div>
+<div class="number-item">ACD6071</div>
+<div class="number-item">ACD6073</div>
+<div class="number-item">ALF19</div>
+<div class="number-item">CEY003</div>
+<div class="number-item">CF4424</div>
+<div class="number-item">CF4427</div>
+<div class="number-item">CF4429</div>
+<div class="number-item">CF4431</div>
+<div class="number-item">CF4433</div>
+<div class="number-item">CM3305</div>
+<div class="number-item">CSR014</div>
+<div class="number-item">CSR017</div>
+<div class="number-item">CSR019</div>
+<div class="number-item">CSR020</div>
+<div class="number-item">G513</div>
+<div class="number-item">G516</div>
+<div class="number-item">G520</div>
+<div class="number-item">G534</div>
+<div class="number-item">G539</div>
+<div class="number-item">GWB106</div>
+<div class="number-item">GWU001</div>
+<div class="number-item">GWU006</div>
+<div class="number-item">GWU008</div>
+<div class="number-item">GWU011</div>
+<div class="number-item">GWU013</div>
+<div class="number-item">HM2701</div>
+<div class="number-item">HM2702</div>
+<div class="number-item">HM2754</div>
+<div class="number-item">HM2755</div>
+<div class="number-item">LDP002</div>
+<div class="number-item">LDP004</div>
+<div class="number-item">LDP008</div>
+<div class="number-item">LZ3109</div>
+<div class="number-item">MAN001</div>
+<div class="number-item">MAN007</div>
+<div class="number-item">MAN008</div>
+<div class="number-item">MAN010</div>
+<div class="number-item">NR4</div>
+<div class="number-item">NR5</div>
+<div class="number-item">NR8</div>
+<div class="number-item">NR10</div>
+<div class="number-item">NR11</div>
+<div class="number-item">NR20</div>
+<div class="number-item">NR39</div>
+<div class="number-item">NR40</div>
+<div class="number-item">NR43</div>
+<div class="number-item">NR47</div>
+<div class="number-item">NR56</div>
+<div class="number-item">NR58</div>
+<div class="number-item">NR59</div>
+<div class="number-item">NR63</div>
+<div class="number-item">NR64</div>
+<div class="number-item">NR78</div>
+<div class="number-item">NR96</div>
+<div class="number-item">NR103</div>
+<div class="number-item">NR107</div>
+<div class="number-item">NR113</div>
+<div class="number-item">NR115</div>
+<div class="number-item">PHC001</div>
+<div class="number-item">Q4004</div>
+<div class="number-item">Q4013</div>
+<div class="number-item">QE003</div>
+<div class="number-item">QE005</div>
+<div class="number-item">QL012</div>
+<div class="number-item">QL019</div>
+<div class="number-item">QR5400</div>
+<div class="number-item">QR5404</div>
+<div class="number-item">RB2353</div>
+<div class="number-item">S312</div>
+<div class="number-item">SCT008</div>
+<div class="number-item">SSR104</div>
+<div class="number-item">T373</div>
+<div class="number-item">TT04</div>
+<div class="number-item">TT08</div>
+<div class="number-item">TT103</div>
+<div class="number-item">TT105</div>
+<div class="number-item">TT107</div>
+<div class="number-item">TT115</div>
+<div class="number-item">TT126</div>
+<div class="number-item">TT129</div>
+<div class="number-item">TT130</div>
+<div class="number-item">TT206</div>
+<div class="number-item">VL11</div>
+<div class="number-item">VL354</div>
+<div class="number-item">VLINE8061</div>
+<div class="number-item">VLINE8459</div>
+<div class="number-item">VLINE8821</div>
+<div class="number-item">VR79</div>
+<div class="number-item">XP2009</div>
+<div class="number-item">XP2013</div>
+<div class="number-item">XRN005</div>
+<div class="number-item">XRN009</div>
+<div class="number-item">XRN018</div>
+<div class="number-item">XRN021</div>
+<div class="number-item">XRN022</div>
+<div class="number-item">XRN028</div>
+<div class="number-item">XRN029</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function formatLocalTime(value) {
+    if (!value) return "";
+
+    var text = String(value).trim();
+    var iso = text;
+
+    if (iso.endsWith("Z") === false && iso.indexOf("+") === -1 && iso.indexOf("T") !== -1) {
+      iso = iso + "Z";
+    }
+
+    var date = new Date(iso);
+
+    if (isNaN(date.getTime())) {
+      return text;
+    }
+
+    return new Intl.DateTimeFormat(navigator.language || "en-AU", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZoneName: "short"
+    }).format(date);
+  }
+
+  function timezoneName() {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || "local time";
+    } catch (err) {
+      return "local time";
+    }
+  }
+
+  document.querySelectorAll(".local-time").forEach(function (el) {
+    var value = el.getAttribute("data-utc");
+    el.textContent = formatLocalTime(value);
+    el.title = "Converted from UTC to your phone/browser timezone: " + timezoneName();
+  });
+
+  document.querySelectorAll(".phone-timezone").forEach(function (el) {
+    el.textContent = timezoneName();
+  });
+})();
+</script>
+
+</body></html>
