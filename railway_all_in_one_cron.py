@@ -15,7 +15,10 @@ WORK_DIR = Path("/tmp/railops-work")
 DATABASE_FILES = [
     "trains.json",
     "live_trains.json",
+
+    # Locomotive database files
     "locos.json",
+    "locos_master.json",
     "loco_history.json",
     "loco_export.csv",
     "loco_summary.txt",
@@ -25,6 +28,11 @@ DATABASE_FILES = [
     "static/downloads/loco_numbers_only.html",
     "static/downloads/loco_database.xlsx",
     "static/downloads/loco_numbers_only.xlsx",
+
+    # V/Line regional passenger service database files
+    "vline_services.json",
+    "vline_services.csv",
+    "static/downloads/vline_services.html",
 ]
 
 
@@ -149,6 +157,13 @@ def get_loco_count(repo_dir: Path) -> int:
     )
 
 
+def get_vline_count(repo_dir: Path) -> int:
+    return count_records(
+        repo_dir / "vline_services.json",
+        ["services", "vline_services", "data", "items"],
+    )
+
+
 def run_scraper(repo_dir: Path) -> bool:
     scraper_script = os.getenv("SCRAPER_SCRIPT", "").strip()
 
@@ -176,6 +191,37 @@ def run_scraper(repo_dir: Path) -> bool:
 
     log("No scraper found. Expected fast_scraper.py or update_trains.py")
     return False
+
+
+def run_vline_generator(repo_dir: Path) -> bool:
+    """
+    Builds the separate V/Line regional passenger service database before
+    the loco database applies its blocklist.
+
+    This lets VLINE* be blocked from locos.json while still being saved into:
+    - vline_services.json
+    - vline_services.csv
+    - static/downloads/vline_services.html
+    """
+    generator = os.getenv("VLINE_GENERATOR_SCRIPT", "vline_database.py").strip()
+    generator_path = repo_dir / generator
+
+    if not generator_path.exists():
+        log(f"V/Line database generator not found: {generator}. Skipping V/Line database.")
+        return True
+
+    code = run(
+        [sys.executable, generator],
+        generator,
+        cwd=repo_dir,
+        allow_fail=True,
+    )
+
+    if code != 0:
+        log(f"V/Line database generator returned non-zero code: {code}")
+        return False
+
+    return True
 
 
 def run_database_generator(repo_dir: Path) -> bool:
@@ -214,6 +260,7 @@ def show_file_summary(repo_dir: Path) -> None:
 
     log(f"Current trains.json train count: {get_train_count(repo_dir)}")
     log(f"Current locos.json loco count: {get_loco_count(repo_dir)}")
+    log(f"Current vline_services.json service count: {get_vline_count(repo_dir)}")
 
 
 def add_database_files(repo_dir: Path) -> None:
@@ -286,9 +333,11 @@ def main() -> int:
 
     old_train_count = get_train_count(repo_dir)
     old_loco_count = get_loco_count(repo_dir)
+    old_vline_count = get_vline_count(repo_dir)
 
     log(f"Before scrape trains count: {old_train_count}")
     log(f"Before scrape locos count: {old_loco_count}")
+    log(f"Before scrape V/Line services count: {old_vline_count}")
 
     scraper_ok = run_scraper(repo_dir)
 
@@ -313,6 +362,12 @@ def main() -> int:
         )
         return 0
 
+    vline_ok = run_vline_generator(repo_dir)
+
+    if not vline_ok:
+        log("V/Line database generator failed. Not committing. Exiting cleanly.")
+        return 0
+
     generator_ok = run_database_generator(repo_dir)
 
     if not generator_ok:
@@ -320,8 +375,10 @@ def main() -> int:
         return 0
 
     final_loco_count = get_loco_count(repo_dir)
+    final_vline_count = get_vline_count(repo_dir)
 
     log(f"After database generation locos count: {final_loco_count}")
+    log(f"After V/Line database generation services count: {final_vline_count}")
 
     if old_loco_count > 0 and final_loco_count < old_loco_count:
         allow_smaller = os.getenv("ALLOW_SMALLER_LOCO_DATABASE", "false").lower() == "true"
