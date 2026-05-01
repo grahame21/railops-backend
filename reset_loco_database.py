@@ -2,24 +2,27 @@ import json
 import os
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 
 # ============================================================
-# RailOps database reset script
+# RailOps locomotive database reset script
 #
 # What this does:
 # 1. Clones your GitHub backend repo into /tmp
 # 2. Resets the locomotive database files
-# 3. Commits the reset
-# 4. Pushes it back to GitHub
+# 3. Sets database restart/start time to:
+#    1/5/2026 20:00 Adelaide time
+# 4. Commits the reset
+# 5. Pushes it back to GitHub
 #
 # It does NOT reset:
 # - trains.json
 # - blocklist.json
 # - cookie.txt
-# - scraper scripts
+# - fast_scraper.py
+# - railway_all_in_one_cron.py
+# - railops_loco_database.py
 # ============================================================
 
 
@@ -35,8 +38,8 @@ GITHUB_BRANCH = os.getenv("GITHUB_BRANCH", "main").strip()
 
 WORK_DIR = Path(os.getenv("RESET_WORK_DIR", "/tmp/railops-reset-work")).resolve()
 
-RESTART_LOCAL_TEXT = "1/5/2026 00:00 Adelaide time"
-RESTART_ISO = "2026-05-01T00:00:00+09:30"
+RESTART_LOCAL_TEXT = "1/5/2026 20:00 Adelaide time"
+RESTART_ISO = "2026-05-01T20:00:00+09:30"
 
 COMMIT_MESSAGE = f"Reset RailOps locomotive database - {RESTART_ISO}"
 
@@ -141,7 +144,7 @@ p{{
 <div class="card">
   <h1>{title}</h1>
   <span class="pill">Database reset</span>
-  <span class="pill">Restart: {RESTART_LOCAL_TEXT}</span>
+  <span class="pill">Started: {RESTART_LOCAL_TEXT}</span>
   <p>{message}</p>
 </div>
 </body>
@@ -202,11 +205,7 @@ def reset_files(repo_dir: Path):
 
     print("\n=== RESETTING DATABASE FILES ===", flush=True)
 
-    # Main database reset
     write_json(locos_file, [])
-
-    # If you later use a master database, this resets it too.
-    # If you do not use it, this harmlessly creates an empty master file.
     write_json(locos_master_file, [])
 
     write_json(
@@ -220,7 +219,7 @@ def reset_files(repo_dir: Path):
                 "new_added": 0,
                 "final_count": 0,
                 "new_loco_numbers": [],
-                "note": f"Locomotive database reset. Restart time set to {RESTART_LOCAL_TEXT}."
+                "note": f"Locomotive database reset. Database started at {RESTART_LOCAL_TEXT}."
             }
         ],
     )
@@ -233,8 +232,8 @@ def reset_files(repo_dir: Path):
     write_text(
         summary_file,
         f"""RailOps Loco Database Summary
-Generated Local: {RESTART_LOCAL_TEXT}
-Generated ISO: {RESTART_ISO}
+Database Started Local: {RESTART_LOCAL_TEXT}
+Database Started ISO: {RESTART_ISO}
 
 Database has been reset.
 
@@ -274,8 +273,6 @@ Blocklist file: blocklist.json
         ),
     )
 
-    # Remove old workbooks so stale downloads do not hang around.
-    # Your normal database cron will recreate them on the next successful run.
     remove_if_exists(database_xlsx)
     remove_if_exists(numbers_xlsx)
 
@@ -284,7 +281,6 @@ def commit_and_push(repo_dir: Path):
     print("\n=== COMMITTING RESET TO GITHUB ===", flush=True)
 
     run(["git", "status", "--short"], cwd=repo_dir, allow_fail=True)
-
     run(["git", "add", "-A"], cwd=repo_dir)
 
     diff_result = run(
@@ -308,8 +304,8 @@ def commit_and_push(repo_dir: Path):
 
 def main():
     print("=== RAILOPS LOCOMOTIVE DATABASE RESET START ===", flush=True)
-    print(f"Restart time: {RESTART_LOCAL_TEXT}", flush=True)
-    print(f"Restart ISO: {RESTART_ISO}", flush=True)
+    print(f"Database started local: {RESTART_LOCAL_TEXT}", flush=True)
+    print(f"Database started ISO: {RESTART_ISO}", flush=True)
 
     repo_dir = clone_repo()
     reset_files(repo_dir)
