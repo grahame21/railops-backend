@@ -1,33 +1,6 @@
 {
-  "generated": "2026-05-02T16:34:08.948017+00:00",
-  "count": 2,
+  "generated": "2026-05-02T17:02:27.682786+00:00",
+  "count": 0,
   "source": "trains.json",
-  "services": [
-    {
-      "train_id": "VLINE8459",
-      "service_number": "8459",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-      "date_time_added": "02:24:19",
-      "lat": "-38.198189",
-      "lon": "146.541153",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8821",
-      "service_number": "8821",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "02:32:28",
-      "lat": "-38.214661",
-      "lon": "144.314941",
-      "source": "TrainFinder"
-    }
-  ]
+  "services": []
 }
