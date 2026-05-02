@@ -1,6 +1,46 @@
 {
-  "generated": "2026-05-02T19:32:38.117360+00:00",
-  "count": 0,
+  "generated": "2026-05-02T20:02:18.964940+00:00",
+  "count": 3,
   "source": "trains.json",
-  "services": []
+  "services": [
+    {
+      "train_id": "VLINE8004",
+      "service_number": "8004",
+      "route": "",
+      "origin": "",
+      "destination": "",
+      "current_operator": "V/Line",
+      "vehicle_description": "Bendigo - Melbourne Via Sunbury",
+      "date_time_added": "06:01:44",
+      "lat": "-36.795368",
+      "lon": "144.248871",
+      "source": "TrainFinder"
+    },
+    {
+      "train_id": "VLINE8104",
+      "service_number": "8104",
+      "route": "",
+      "origin": "",
+      "destination": "",
+      "current_operator": "V/Line",
+      "vehicle_description": "Ballarat - Melbourne Via Melton",
+      "date_time_added": "06:01:36",
+      "lat": "-37.544479",
+      "lon": "143.848312",
+      "source": "TrainFinder"
+    },
+    {
+      "train_id": "VLINE8404",
+      "service_number": "8404",
+      "route": "",
+      "origin": "",
+      "destination": "",
+      "current_operator": "V/Line",
+      "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
+      "date_time_added": "06:01:44",
+      "lat": "-38.238579",
+      "lon": "146.403549",
+      "source": "TrainFinder"
+    }
+  ]
 }
