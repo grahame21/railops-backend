@@ -1,21 +1,8 @@
 {
-  "generated": "2026-05-02T15:03:29.846498+00:00",
-  "count": 8,
+  "generated": "2026-05-02T15:34:11.599469+00:00",
+  "count": 6,
   "source": "trains.json",
   "services": [
-    {
-      "train_id": "VLINE8059",
-      "service_number": "8059",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Bendigo - Melbourne Via Sunbury",
-      "date_time_added": "00:48:58",
-      "lat": "-36.76511",
-      "lon": "144.28363",
-      "source": "TrainFinder"
-    },
     {
       "train_id": "VLINE8061",
       "service_number": "8061",
@@ -24,22 +11,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Bendigo - Melbourne Via Sunbury",
-      "date_time_added": "01:02:32",
-      "lat": "-37.223549",
-      "lon": "144.406204",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8161",
-      "service_number": "8161",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Ballarat - Melbourne Via Melton",
-      "date_time_added": "00:54:05",
-      "lat": "-37.539661",
-      "lon": "143.819153",
+      "date_time_added": "01:33:06",
+      "lat": "-36.795521",
+      "lon": "144.248795",
       "source": "TrainFinder"
     },
     {
@@ -50,9 +24,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Ballarat - Melbourne Via Melton",
-      "date_time_added": "01:02:34",
-      "lat": "-37.702141",
-      "lon": "144.456543",
+      "date_time_added": "01:33:01",
+      "lat": "-37.58744",
+      "lon": "143.978516",
       "source": "TrainFinder"
     },
     {
@@ -63,9 +37,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-      "date_time_added": "01:02:27",
-      "lat": "-38.183189",
-      "lon": "146.239746",
+      "date_time_added": "01:32:45",
+      "lat": "-38.198689",
+      "lon": "146.538803",
       "source": "TrainFinder"
     },
     {
@@ -76,22 +50,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-      "date_time_added": "01:01:47",
-      "lat": "-38.063149",
-      "lon": "145.395447",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8817",
-      "service_number": "8817",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "01:02:31",
-      "lat": "-38.213291",
-      "lon": "144.332001",
+      "date_time_added": "01:32:54",
+      "lat": "-38.123798",
+      "lon": "145.80632",
       "source": "TrainFinder"
     },
     {
@@ -102,9 +63,22 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "01:02:16",
-      "lat": "-38.034882",
-      "lon": "144.402481",
+      "date_time_added": "01:30:48",
+      "lat": "-38.21587",
+      "lon": "144.306397",
+      "source": "TrainFinder"
+    },
+    {
+      "train_id": "VLINE8821",
+      "service_number": "8821",
+      "route": "",
+      "origin": "",
+      "destination": "",
+      "current_operator": "V/Line",
+      "vehicle_description": "Geelong - Melbourne Via Geelong",
+      "date_time_added": "01:33:02",
+      "lat": "-37.772518",
+      "lon": "144.74913",
       "source": "TrainFinder"
     }
   ]
