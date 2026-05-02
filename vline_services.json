@@ -1,21 +1,8 @@
 {
-  "generated": "2026-05-02T14:03:06.547015+00:00",
-  "count": 15,
+  "generated": "2026-05-02T14:32:09.231201+00:00",
+  "count": 10,
   "source": "trains.json",
   "services": [
-    {
-      "train_id": "VLINE8057",
-      "service_number": "8057",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Bendigo - Melbourne Via Sunbury",
-      "date_time_added": "23:52:08",
-      "lat": "-36.767632",
-      "lon": "144.27919",
-      "source": "TrainFinder"
-    },
     {
       "train_id": "VLINE8059",
       "service_number": "8059",
@@ -24,9 +11,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Bendigo - Melbourne Via Sunbury",
-      "date_time_added": "00:02:23",
-      "lat": "-37.263538",
-      "lon": "144.455048",
+      "date_time_added": "00:30:52",
+      "lat": "-36.950119",
+      "lon": "144.24054",
       "source": "TrainFinder"
     },
     {
@@ -37,22 +24,22 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Bendigo - Melbourne Via Sunbury",
-      "date_time_added": "00:02:30",
-      "lat": "-37.800571",
-      "lon": "144.872635",
+      "date_time_added": "00:30:54",
+      "lat": "-37.483429",
+      "lon": "144.74501",
       "source": "TrainFinder"
     },
     {
-      "train_id": "VLINE8159",
-      "service_number": "8159",
+      "train_id": "VLINE8161",
+      "service_number": "8161",
       "route": "",
       "origin": "",
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Ballarat - Melbourne Via Melton",
-      "date_time_added": "23:49:01",
-      "lat": "-37.53973",
-      "lon": "143.819458",
+      "date_time_added": "00:30:41",
+      "lat": "-37.594082",
+      "lon": "144.146011",
       "source": "TrainFinder"
     },
     {
@@ -63,22 +50,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Ballarat - Melbourne Via Melton",
-      "date_time_added": "00:02:11",
-      "lat": "-37.817612",
-      "lon": "144.953644",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8189",
-      "service_number": "8189",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Ararat - Melbourne Via Ballarat",
-      "date_time_added": "23:42:07",
-      "lat": "-37.28241",
-      "lon": "142.9375",
+      "date_time_added": "00:31:04",
+      "lat": "-37.79018",
+      "lon": "144.833862",
       "source": "TrainFinder"
     },
     {
@@ -89,9 +63,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Ballarat - Melbourne Via Melton",
-      "date_time_added": "00:02:16",
-      "lat": "-37.597141",
-      "lon": "144.111343",
+      "date_time_added": "00:29:22",
+      "lat": "-37.539639",
+      "lon": "143.819168",
       "source": "TrainFinder"
     },
     {
@@ -102,9 +76,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-      "date_time_added": "00:02:03",
-      "lat": "-38.17675",
-      "lon": "146.261292",
+      "date_time_added": "00:25:22",
+      "lat": "-38.198681",
+      "lon": "146.538788",
       "source": "TrainFinder"
     },
     {
@@ -115,9 +89,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-      "date_time_added": "00:02:20",
-      "lat": "-38.065689",
-      "lon": "145.408752",
+      "date_time_added": "00:31:03",
+      "lat": "-38.109501",
+      "lon": "145.763733",
       "source": "TrainFinder"
     },
     {
@@ -128,22 +102,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Traralgon - Melbourne Via Pakenham, Moe & Morwell",
-      "date_time_added": "00:02:21",
-      "lat": "-37.819649",
-      "lon": "144.961594",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8815",
-      "service_number": "8815",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "23:59:04",
-      "lat": "-38.215931",
-      "lon": "144.30603",
+      "date_time_added": "00:30:08",
+      "lat": "-37.912399",
+      "lon": "145.10434",
       "source": "TrainFinder"
     },
     {
@@ -154,9 +115,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "00:02:12",
-      "lat": "-37.832081",
-      "lon": "144.694046",
+      "date_time_added": "00:30:47",
+      "lat": "-37.9734",
+      "lon": "144.479675",
       "source": "TrainFinder"
     },
     {
@@ -167,35 +128,9 @@
       "destination": "",
       "current_operator": "V/Line",
       "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "00:01:55",
-      "lat": "-37.817829",
-      "lon": "144.951798",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8822",
-      "service_number": "8822",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "00:01:10",
-      "lat": "-37.818329",
-      "lon": "144.952789",
-      "source": "TrainFinder"
-    },
-    {
-      "train_id": "VLINE8893",
-      "service_number": "8893",
-      "route": "",
-      "origin": "",
-      "destination": "",
-      "current_operator": "V/Line",
-      "vehicle_description": "Geelong - Melbourne Via Geelong",
-      "date_time_added": "23:52:33",
-      "lat": "-38.215939",
-      "lon": "144.306152",
+      "date_time_added": "00:30:46",
+      "lat": "-37.77718",
+      "lon": "144.770554",
       "source": "TrainFinder"
     }
   ]
