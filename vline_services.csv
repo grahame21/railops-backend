@@ -1,27 +1,24 @@
 train_id,service_number,route,origin,destination,current_operator,vehicle_description,date_time_added,lat,lon,source
-VLINE8013,8013,,,,V/Line,Bendigo - Melbourne Via Sunbury,11:30:30,-37.175621,144.361954,TrainFinder
-VLINE8019,8019,,,,V/Line,Bendigo - Melbourne Via Sunbury,11:30:08,-37.601959,144.71814,TrainFinder
-VLINE8026,8026,,,,V/Line,Bendigo - Melbourne Via Sunbury,11:30:29,-37.645481,144.730591,TrainFinder
-VLINE8028,8028,,,,V/Line,Bendigo - Melbourne Via Sunbury,11:30:44,-37.359268,144.526123,TrainFinder
-VLINE8080,8080,,,,V/Line,Swan Hill - Melbourne Via Bendigo,11:30:40,-37.798031,144.850296,TrainFinder
-VLINE8081,8081,,,,V/Line,Swan Hill - Melbourne Via Bendigo,11:30:27,-35.922112,144.030609,TrainFinder
-VLINE8115,8115,,,,V/Line,Ballarat - Melbourne Via Melton,11:30:43,-37.540001,143.821976,TrainFinder
-VLINE8119,8119,,,,V/Line,Ballarat - Melbourne Via Melton,11:30:55,-37.785759,144.828369,TrainFinder
-VLINE8124,8124,,,,V/Line,Ballarat - Melbourne Via Melton,11:30:10,-37.803028,144.935745,TrainFinder
-VLINE8126,8126,,,,V/Line,Ballarat - Melbourne Via Melton,11:30:30,-37.716629,144.541672,TrainFinder
-VLINE8417,8417,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",11:30:28,-38.08289,145.499725,TrainFinder
-VLINE8419,8419,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",11:30:41,-37.893318,145.074478,TrainFinder
-VLINE8420,8420,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",11:30:25,-37.819408,144.963058,TrainFinder
-VLINE8422,8422,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",11:30:36,-37.975079,145.18718,TrainFinder
-VLINE8426,8426,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",11:30:33,-38.204651,146.309891,TrainFinder
-VLINE8461,8461,,,,V/Line,Bairnsdale - Melbourne Via Traralgon & Sale,11:30:41,-37.829781,147.404114,TrainFinder
-VLINE8671,8671,,,,V/Line,Echuca/Moama - Melbourne Via Bendigo or Heathcote,11:14:56,-36.130932,144.753235,TrainFinder
-VLINE8733,8733,,,,V/Line,Geelong - Melbourne Via Geelong,11:27:35,-38.215889,144.306259,TrainFinder
-VLINE8735,8735,,,,V/Line,Geelong - Melbourne Via Geelong,11:30:28,-38.138142,144.353317,TrainFinder
-VLINE8739,8739,,,,V/Line,Geelong - Melbourne Via Geelong,11:30:14,-37.77702,144.770035,TrainFinder
-VLINE8741,8741,,,,V/Line,Geelong - Melbourne Via Geelong,11:30:38,-37.816929,144.951721,TrainFinder
-VLINE8750,8750,,,,V/Line,Geelong - Melbourne Via Geelong,11:22:37,-37.81744,144.952194,TrainFinder
-VLINE8752,8752,,,,V/Line,Geelong - Melbourne Via Geelong,11:30:10,-37.801891,144.884033,TrainFinder
-VLINE8754,8754,,,,V/Line,Geelong - Melbourne Via Geelong,11:31:01,-37.829689,144.677979,TrainFinder
-VLINE8756,8756,,,,V/Line,Geelong - Melbourne Via Geelong,11:30:09,-38.021389,144.4151,TrainFinder
-VLINE8863,8863,,,,V/Line,Geelong - Melbourne Via Geelong,11:21:22,-38.215981,144.306152,TrainFinder
+VLINE8013,8013,,,,V/Line,Bendigo - Melbourne Via Sunbury,12:02:21,-36.766361,144.281601,TrainFinder
+VLINE8026,8026,,,,V/Line,Bendigo - Melbourne Via Sunbury,11:59:33,-37.819191,144.952087,TrainFinder
+VLINE8028,8028,,,,V/Line,Bendigo - Melbourne Via Sunbury,12:02:17,-37.57999,144.727417,TrainFinder
+VLINE8074,8074,,,,V/Line,Echuca/Moama - Melbourne Via Bendigo or Heathcote,12:02:24,-36.131302,144.753265,TrainFinder
+VLINE8075,8075,,,,V/Line,Echuca/Moama - Melbourne Via Bendigo or Heathcote,12:02:13,-37.817982,144.95282,TrainFinder
+VLINE8080,8080,,,,V/Line,Swan Hill - Melbourne Via Bendigo,11:50:28,-37.817219,144.95192,TrainFinder
+VLINE8081,8081,,,,V/Line,Swan Hill - Melbourne Via Bendigo,11:58:09,-35.656811,143.828583,TrainFinder
+VLINE8121,8121,,,,V/Line,Ballarat - Melbourne Via Melton,12:03:08,-37.80135,144.90274,TrainFinder
+VLINE8126,8126,,,,V/Line,Ballarat - Melbourne Via Melton,12:02:43,-37.798401,144.853897,TrainFinder
+VLINE8183,8183,,,,V/Line,Ararat - Melbourne Via Ballarat,12:02:06,-37.558491,143.859299,TrainFinder
+VLINE8184,8184,,,,V/Line,Ararat - Melbourne Via Ballarat,12:02:31,-37.55904,143.860489,TrainFinder
+VLINE8413,8413,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",11:38:32,-38.198502,146.539246,TrainFinder
+VLINE8421,8421,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",12:02:44,-37.853199,145.016327,TrainFinder
+VLINE8422,8422,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",12:02:07,-37.835232,144.993164,TrainFinder
+VLINE8424,8424,,,,V/Line,"Traralgon - Melbourne Via Pakenham, Moe & Morwell",12:02:36,-38.022579,145.294006,TrainFinder
+VLINE8461,8461,,,,V/Line,Bairnsdale - Melbourne Via Traralgon & Sale,11:45:38,-37.82864,147.628082,TrainFinder
+VLINE8735,8735,,,,V/Line,Geelong - Melbourne Via Geelong,11:49:29,-38.215881,144.306427,TrainFinder
+VLINE8741,8741,,,,V/Line,Geelong - Melbourne Via Geelong,12:01:39,-37.82658,144.648407,TrainFinder
+VLINE8743,8743,,,,V/Line,Geelong - Melbourne Via Geelong,12:02:49,-37.79813,144.850693,TrainFinder
+VLINE8752,8752,,,,V/Line,Geelong - Melbourne Via Geelong,11:41:39,-37.81794,144.952576,TrainFinder
+VLINE8754,8754,,,,V/Line,Geelong - Melbourne Via Geelong,12:02:29,-37.815922,144.950806,TrainFinder
+VLINE8756,8756,,,,V/Line,Geelong - Melbourne Via Geelong,12:03:03,-37.78413,144.812927,TrainFinder
+VLINE8862,8862,,,,V/Line,Geelong - Melbourne Via Geelong,12:02:11,-37.80592,144.939301,TrainFinder
